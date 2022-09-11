@@ -1,0 +1,76 @@
+import {StyleSheet} from 'react-native';
+import {Colors} from 'constants';
+
+export const styles = StyleSheet.create({
+  nixButton: {
+    backgroundColor: '#f8f8f8',
+    width: '100%',
+    marginTop: 8,
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  contentWrapper: {
+    padding: 10,
+    flexDirection: 'row',
+  },
+  icon: {
+    position: 'absolute',
+    top: 6,
+    left: 10,
+    fontSize: 26,
+    marginRight: 10,
+  },
+  title: {
+    textAlign: 'center',
+    color: '#444',
+    fontSize: 15,
+  },
+  facebookBtn: {
+    backgroundColor: '#4267b2',
+  },
+  facebookBtnText: {
+    color: '#fff',
+  },
+  assertive: {
+    backgroundColor: '#ef473a',
+  },
+  assertiveText: {
+    color: '#fff',
+  },
+  positive: {
+    backgroundColor: '#387ef5',
+  },
+  positiveText: {
+    color: '#fff',
+  },
+  calm: {
+    backgroundColor: '#11c1f3',
+  },
+  calmText: {
+    color: '#fff',
+  },
+  primary: {
+    backgroundColor: Colors.Primary,
+  },
+  primaryText: {
+    color: '#fff',
+  },
+  energized: {
+    backgroundColor: '#ffc900',
+  },
+  energizedText: {
+    color: '#fff',
+  },
+  royal: {
+    backgroundColor: '#886aea',
+  },
+  royalText: {
+    color: '#fff',
+  },
+  dark: {
+    backgroundColor: '#444',
+  },
+  darkText: {
+    color: '#fff',
+  },
+});

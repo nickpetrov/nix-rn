@@ -1,0 +1,177 @@
+import React, {useEffect} from 'react';
+import {View, Text, SafeAreaView, Image, ScrollView} from 'react-native';
+import {LoginManager, AccessToken} from 'react-native-fbsdk-next';
+import {appleAuth} from '@invertase/react-native-apple-authentication';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
+import {NixButton} from 'components/NixButton';
+import {useDispatch} from 'hooks/useRedux';
+import {fbLogin} from 'store/auth/auth.actions';
+import {styles} from './LoginScreen.styles';
+import {Routes} from 'navigation/Routes';
+
+interface LoginScreenProps {
+  navigation: NativeStackNavigationProp<any>;
+}
+
+export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
+  useEffect(() => {
+    return () => {
+      if (appleAuth.isSupported) {
+        appleAuth.onCredentialRevoked(async () => {
+          console.warn(
+            'If this function executes, User Credentials have been Revoked',
+          );
+        });
+      }
+    };
+  }, []);
+
+  const dispatch = useDispatch();
+
+  const fbLoginHandler = () => {
+    LoginManager.logInWithPermissions(['public_profile']).then(
+      result => {
+        if (result.isCancelled) {
+          console.log('Login cancelled');
+        } else {
+          console.log(
+            'Login success with permissions: ' +
+              result.grantedPermissions?.toString(),
+          );
+          AccessToken.getCurrentAccessToken().then(data => {
+            console.log(data?.accessToken.toString());
+            dispatch(fbLogin(data?.accessToken.toString() || ''))
+              .then(() => {
+                navigation.navigate({
+                  name: 'Dashboard',
+                  params: {justLoggedIn: true},
+                });
+              })
+              .catch((err: Error) => {
+                console.log(err);
+              });
+          });
+        }
+      },
+      error => {
+        console.log('Login fail with error: ' + error);
+      },
+    );
+  };
+
+  // async function fetchAndUpdateCredentialState(updateCredentialStateForUser) {
+  //   const credentialState = await appleAuth.getCredentialStateForUser(user);
+  //   if (credentialState === appleAuth.State.AUTHORIZED) {
+  //     // updateCredentialStateForUser('AUTHORIZED');
+  //     console.log('AUTHORIZED');
+  //   } else {
+  //     console.log(credentialState);
+  //   }
+  // }
+
+  // const appleLoginHandler = async () => {
+  //   // start a login request
+  //   try {
+  //     const appleAuthRequestResponse = await appleAuth.performRequest({
+  //       requestedOperation: appleAuth.Operation.LOGIN,
+  //       requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+  //     });
+
+  //     console.log('appleAuthRequestResponse', appleAuthRequestResponse);
+
+  //     const {user, email, nonce, identityToken, realUserStatus /* etc */} =
+  //       appleAuthRequestResponse;
+
+  //     fetchAndUpdateCredentialState().catch(error =>
+  //       console.log(`Error: ${error.code}`),
+  //     );
+
+  //     if (identityToken) {
+  //       // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
+  //       console.log(nonce, identityToken);
+  //       dispatch(userActions.appleLogin(appleAuthRequestResponse))
+  //         .then(() => {
+  //           props.navigation.navigate({
+  //             name: 'Dashboard',
+  //             params: {justLoggedIn: true},
+  //           });
+  //         })
+  //         .catch(err => {
+  //           console.log(err);
+  //         });
+  //     } else {
+  //       // no token - failed sign-in?
+  //     }
+
+  //     if (realUserStatus === appleAuth.UserStatus.LIKELY_REAL) {
+  //       console.log("I'm a real person!");
+  //     }
+
+  //     console.warn(`Apple Authentication Completed, ${user}, ${email}`);
+  //   } catch (error) {
+  //     if (error.code === appleAuth.Error.CANCELED) {
+  //       console.warn('User canceled Apple Sign in.');
+  //     } else {
+  //       console.error(error);
+  //     }
+  //   }
+  // };
+
+  return (
+    <SafeAreaView style={styles.loginWrapper}>
+      <ScrollView
+        style={{flex: 1, width: '100%', height: '100%'}}
+        alwaysBounceVertical={false}>
+        <View style={styles.contentWrapper}>
+          <View style={styles.logo}>
+            <Image
+              style={styles.logoImage}
+              source={require('assets/images/icon.png')}
+              resizeMode="contain"
+            />
+            {/* <SvgUri width='100%' source={require('../assets/images/logo2.svg')} resizeMode='contain' /> */}
+          </View>
+          <Text style={styles.title}>Track</Text>
+          <Text style={styles.subtitle}>Food Tracker by Nutritionix</Text>
+          <NixButton
+            title="Sign in with Facebook"
+            type="facebook"
+            iconName="facebook-square"
+            onTap={fbLoginHandler}
+          />
+          <Text style={{...styles.noteText, ...styles.fbDisclamer}}>
+            The app does not post to Facebook
+          </Text>
+          {/* <NixButton title='Sign in with Apple' type='facebook' iconName='facebook-square' onTap={appleLoginHandler} /> */}
+          {/* {Platform.OS == 'ios' ? (
+            <AppleButton
+              buttonStyle={AppleButton.Style.BLACK}
+              buttonType={AppleButton.Type.SIGN_IN}
+              style={{
+                width: '100%',
+                height: 40,
+              }}
+              onPress={appleLoginHandler}
+            />
+          ) : null} */}
+          <NixButton
+            title="Login via Email"
+            onTap={() => navigation.navigate(Routes.Signin)}
+          />
+          <NixButton
+            title="Create Account"
+            onTap={() => navigation.navigate(Routes.Signup)}
+          />
+          <View style={styles.disclaimerWrapper}>
+            <Text style={styles.noteText}>Need help?</Text>
+            <Text style={styles.noteText}>
+              Contact us at{' '}
+              <Text style={styles.highlightText}>support@nutritionix.com</Text>
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
