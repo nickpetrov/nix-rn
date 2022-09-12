@@ -1,11 +1,19 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {SafeAreaView} from 'react-native';
 import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {Settings} from 'react-native-fbsdk-next';
 
 import {Navigation} from 'navigation';
+
+// store
 import {store} from 'store';
+
+// styles
+import {styles} from './App.styles';
+
+Settings.initializeSDK();
 
 const App = () => {
   return (
@@ -20,11 +28,5 @@ const App = () => {
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;
