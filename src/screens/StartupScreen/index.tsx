@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 import {Routes} from 'navigation/Routes';
-import {setUserJwt, updateUserData} from 'store/auth/auth.actions';
+import {getUserDataFromAPI, setUserJwt} from 'store/auth/auth.actions';
 import {useDispatch} from 'hooks';
 
 interface StartupScreenProps {
@@ -20,12 +20,12 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
       if (!authData) {
         navigation.navigate(Routes.LoginScreens);
       } else {
-        const {userData, userJWT} = JSON.parse(authData);
+        const {userJWT} = JSON.parse(authData);
         if (!userJWT) {
           navigation.navigate(Routes.LoginScreens);
         } else {
-          dispatch(updateUserData(userData));
-          dispatch(setUserJwt(userJWT));
+          await dispatch(setUserJwt(userJWT));
+          dispatch(getUserDataFromAPI());
 
           navigation.navigate(Routes.LoggedIn);
         }

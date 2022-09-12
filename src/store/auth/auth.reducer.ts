@@ -1,21 +1,25 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as timeHelper from 'helpers/time.helpers';
 
 import {AnyAction} from 'redux';
-import {
-  UPDATE_USER_DATA,
-  SET_USER_JWT,
-  SIGNIN,
-  LOGOUT,
-  SIGNUP,
-  FB_LOGIN,
-  APPLE_LOGIN,
-} from './auth.actions';
-import {UserData} from './auth.types';
+import {authActionTypes, UserData} from './auth.types';
 
 export type AuthState = UserData;
 
+const getJWTFromStorage = () => {
+  let JWT = '';
+  AsyncStorage.getItem('authData').then(data => {
+    if (data) {
+      const JWTFromStorage = JSON.parse(data)?.JWT;
+      if (JWTFromStorage) JWT = JWTFromStorage;
+    }
+  });
+
+  return JWT;
+};
+
 const initialState: AuthState = {
-  userJWT: '',
+  userJWT: getJWTFromStorage(),
   userData: {
     id: '',
     first_name: '',
@@ -59,7 +63,7 @@ const initialState: AuthState = {
 
 export default (state: AuthState = initialState, action: AnyAction) => {
   switch (action.type) {
-    case UPDATE_USER_DATA:
+    case authActionTypes.UPDATE_USER_DATA:
       console.log(action.newUserObj.timezone);
       timeHelper.setTimezone(action.newUserObj.timezone || 'US/Central');
       const stateWithNewUserData = {
@@ -67,38 +71,38 @@ export default (state: AuthState = initialState, action: AnyAction) => {
         userData: {...state.userData, ...action.newUserObj},
       };
       return stateWithNewUserData;
-    case SET_USER_JWT:
+    case authActionTypes.SET_USER_JWT:
       const stateWithNewJwt = {...state, userJWT: action.newJwt};
       return stateWithNewJwt;
-    case SIGNIN:
+    case authActionTypes.SIGNIN:
       const stateWithSignedInUser = {
         ...state,
         userJWT: action.userData['x-user-jwt'],
         userData: action.userData.user,
       };
       return stateWithSignedInUser;
-    case SIGNUP:
+    case authActionTypes.SIGNUP:
       const stateWithNewUser = {
         ...state,
         userData: action.userData.user,
         userJWT: action.userData['x-user-jwt'],
       };
       return stateWithNewUser;
-    case FB_LOGIN:
+    case authActionTypes.FB_LOGIN:
       const stateWithFacebookUser = {
         ...state,
         userJWT: action.userData['x-user-jwt'],
         userData: action.userData.user,
       };
       return stateWithFacebookUser;
-    case APPLE_LOGIN:
+    case authActionTypes.APPLE_LOGIN:
       const stateWithAppleUser = {
         ...state,
         userJWT: action.userData['x-user-jwt'],
         userData: action.userData.user,
       };
       return stateWithAppleUser;
-    case LOGOUT:
+    case authActionTypes.LOGOUT:
       return initialState;
     default:
       return state;

@@ -48,4 +48,8 @@ export const styles = StyleSheet.create({
   highlightText: {
     color: '#68b500',
   },
+  appleButton: {
+    width: '100%',
+    height: 40,
+  },
 });

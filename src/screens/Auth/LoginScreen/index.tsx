@@ -1,12 +1,22 @@
 import React, {useEffect} from 'react';
-import {View, Text, SafeAreaView, Image, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import {LoginManager, AccessToken} from 'react-native-fbsdk-next';
-import {appleAuth} from '@invertase/react-native-apple-authentication';
+import {
+  appleAuth,
+  AppleButton,
+} from '@invertase/react-native-apple-authentication';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 import {NixButton} from 'components/NixButton';
 import {useDispatch} from 'hooks/useRedux';
-import {fbLogin} from 'store/auth/auth.actions';
+import {appleLogin, fbLogin} from 'store/auth/auth.actions';
 import {styles} from './LoginScreen.styles';
 import {Routes} from 'navigation/Routes';
 
@@ -65,63 +75,68 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
     );
   };
 
-  // async function fetchAndUpdateCredentialState(updateCredentialStateForUser) {
-  //   const credentialState = await appleAuth.getCredentialStateForUser(user);
-  //   if (credentialState === appleAuth.State.AUTHORIZED) {
-  //     // updateCredentialStateForUser('AUTHORIZED');
-  //     console.log('AUTHORIZED');
-  //   } else {
-  //     console.log(credentialState);
-  //   }
-  // }
+  async function fetchAndUpdateCredentialState(user: string) {
+    const credentialState = await appleAuth.getCredentialStateForUser(user);
+    if (credentialState === appleAuth.State.AUTHORIZED) {
+      // updateCredentialStateForUser('AUTHORIZED');
+      console.log('AUTHORIZED');
+    } else {
+      console.log(credentialState);
+    }
+  }
 
-  // const appleLoginHandler = async () => {
-  //   // start a login request
-  //   try {
-  //     const appleAuthRequestResponse = await appleAuth.performRequest({
-  //       requestedOperation: appleAuth.Operation.LOGIN,
-  //       requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
-  //     });
+  const appleLoginHandler = async () => {
+    // start a login request
+    try {
+      const appleAuthRequestResponse = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+      });
 
-  //     console.log('appleAuthRequestResponse', appleAuthRequestResponse);
+      console.log('appleAuthRequestResponse', appleAuthRequestResponse);
 
-  //     const {user, email, nonce, identityToken, realUserStatus /* etc */} =
-  //       appleAuthRequestResponse;
+      const {user, email, nonce, identityToken, realUserStatus /* etc */} =
+        appleAuthRequestResponse;
 
-  //     fetchAndUpdateCredentialState().catch(error =>
-  //       console.log(`Error: ${error.code}`),
-  //     );
+      fetchAndUpdateCredentialState(appleAuthRequestResponse.user).catch(
+        error => console.log(`Error: ${error.code}`),
+      );
 
-  //     if (identityToken) {
-  //       // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
-  //       console.log(nonce, identityToken);
-  //       dispatch(userActions.appleLogin(appleAuthRequestResponse))
-  //         .then(() => {
-  //           props.navigation.navigate({
-  //             name: 'Dashboard',
-  //             params: {justLoggedIn: true},
-  //           });
-  //         })
-  //         .catch(err => {
-  //           console.log(err);
-  //         });
-  //     } else {
-  //       // no token - failed sign-in?
-  //     }
+      if (identityToken) {
+        // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
+        console.log(nonce, identityToken);
+        dispatch(appleLogin(appleAuthRequestResponse))
+          .then(() => {
+            navigation.navigate(Routes.LoggedIn, {
+              screen: Routes.Home,
+              params: {
+                screen: Routes.Dashboard,
+                params: {
+                  justLoggedIn: true,
+                },
+              },
+            });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        // no token - failed sign-in?
+      }
 
-  //     if (realUserStatus === appleAuth.UserStatus.LIKELY_REAL) {
-  //       console.log("I'm a real person!");
-  //     }
+      if (realUserStatus === appleAuth.UserStatus.LIKELY_REAL) {
+        console.log("I'm a real person!");
+      }
 
-  //     console.warn(`Apple Authentication Completed, ${user}, ${email}`);
-  //   } catch (error) {
-  //     if (error.code === appleAuth.Error.CANCELED) {
-  //       console.warn('User canceled Apple Sign in.');
-  //     } else {
-  //       console.error(error);
-  //     }
-  //   }
-  // };
+      console.warn(`Apple Authentication Completed, ${user}, ${email}`);
+    } catch (error: any) {
+      if (error.code === appleAuth.Error.CANCELED) {
+        console.warn('User canceled Apple Sign in.');
+      } else {
+        console.error(error);
+      }
+    }
+  };
 
   return (
     <SafeAreaView style={styles.loginWrapper}>
@@ -148,18 +163,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           <Text style={{...styles.noteText, ...styles.fbDisclamer}}>
             The app does not post to Facebook
           </Text>
-          {/* <NixButton title='Sign in with Apple' type='facebook' iconName='facebook-square' onTap={appleLoginHandler} /> */}
-          {/* {Platform.OS == 'ios' ? (
+          {Platform.OS == 'ios' ? (
             <AppleButton
               buttonStyle={AppleButton.Style.BLACK}
               buttonType={AppleButton.Type.SIGN_IN}
-              style={{
-                width: '100%',
-                height: 40,
-              }}
+              style={styles.appleButton}
               onPress={appleLoginHandler}
             />
-          ) : null} */}
+          ) : null}
           <NixButton
             title="Login via Email"
             onTap={() => navigation.navigate(Routes.Signin)}

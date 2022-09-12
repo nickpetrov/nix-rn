@@ -1,3 +1,13 @@
+export enum authActionTypes {
+  SIGNIN = 'SIGNIN',
+  SIGNUP = 'SIGNUP',
+  UPDATE_USER_DATA = 'UPDATE_USER_DATA',
+  SET_USER_JWT = 'SET_USER_JWT',
+  LOGOUT = 'LOGOUT',
+  FB_LOGIN = 'FB_LOGIN',
+  APPLE_LOGIN = 'APPLE_LOGIN',
+}
+
 export type SignUpRequest = {
   password: string;
   email: string;

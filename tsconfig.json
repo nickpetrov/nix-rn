@@ -16,7 +16,9 @@
       "store/*": ["store/*"],
       "helpers/*": ["helpers/*"],
       "hooks/*": ["hooks/*"],
-      "assets/*": ["assets/*"]
+      "assets/*": ["assets/*"],
+      "api/*": ["api/*"],
+      "config/*": ["config/*"]
     }                          
   }
 }
