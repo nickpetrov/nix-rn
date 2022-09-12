@@ -13,6 +13,29 @@ export const LOGOUT = 'LOGOUT';
 export const FB_LOGIN = 'FB_LOGIN';
 export const APPLE_LOGIN = 'APPLE_LOGIN';
 
+const saveAuthData = (userData: User, userJWT: string) => {
+  AsyncStorage.getItem('authData').then(data => {
+    let prevData = JSON.parse(data || '{}');
+    if (!userJWT) {
+      userJWT = prevData.JWT || null;
+    }
+    if (!prevData || !prevData.userData) {
+      prevData = {userData: {}};
+    }
+    AsyncStorage.setItem(
+      'authData',
+      JSON.stringify({
+        userData: {...prevData.userData, ...userData},
+        userJWT,
+      }),
+    );
+  });
+};
+
+const removeAuthData = () => {
+  AsyncStorage.removeItem('authData');
+};
+
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch) => {
     const response = await fetch(
@@ -169,27 +192,4 @@ export const logout = (dispatch: Dispatch) => {
   dispatch(clearAutocomplete());
   dispatch(resetBasket());
   dispatch({type: LOGOUT});
-};
-
-const saveAuthData = (userData: User, userJWT: string) => {
-  AsyncStorage.getItem('authData').then(data => {
-    let prevData = JSON.parse(data || '{}');
-    if (!userJWT) {
-      userJWT = prevData.JWT || null;
-    }
-    if (!prevData || !prevData.userData) {
-      prevData = {userData: {}};
-    }
-    AsyncStorage.setItem(
-      'authData',
-      JSON.stringify({
-        userData: {...prevData.userData, ...userData},
-        userJWT,
-      }),
-    );
-  });
-};
-
-const removeAuthData = () => {
-  AsyncStorage.removeItem('authData');
 };
