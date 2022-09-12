@@ -139,7 +139,7 @@ export const signup = (data: SignUpRequest) => {
 export const updateUserData = (newUserObj: any) => {
   const request = {...newUserObj};
   return async (dispatch: Dispatch, useState: any) => {
-    const jwt = useState().user.userJWT;
+    const jwt = useState().auth.userJWT;
     const response = await fetch(
       'https://trackapi.nutritionix.com/v2/me/preferences',
       {
@@ -169,7 +169,7 @@ export const setUserJwt = (newUserJwt: string) => {
 
 export const getUserDataFromAPI = () => {
   return async (dispatch: Dispatch, useState: any) => {
-    const jwt = useState().user.userJWT;
+    const jwt = useState().auth.userJWT;
     const response = await fetch('https://trackapi.nutritionix.com/v2/me', {
       method: 'GET',
       headers: {

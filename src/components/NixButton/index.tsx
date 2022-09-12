@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, TouchableOpacity, Text} from 'react-native';
-// import {FontAwesome} from '@expo/vector-icons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import {styles} from './NixButton.styles';
 
@@ -28,7 +28,7 @@ export const NixButton: React.FC<NixButtonProps> = ({
   onTap,
   onPress,
   title,
-  //   iconName,
+  iconName,
 }) => {
   let buttonTypeStyles = {};
   let buttonTypeTextStyles = {};
@@ -90,12 +90,12 @@ export const NixButton: React.FC<NixButtonProps> = ({
         style={styles.contentWrapper}
         onPress={onTap || onPress}
         disabled={disabled}>
-        {/* {iconName ? (
+        {iconName ? (
           <FontAwesome
             name={iconName}
             style={{...styles.icon, ...buttonTypeTextStyles}}
           />
-        ) : null} */}
+        ) : null}
         <View style={{flex: 1, justifyContent: 'center'}}>
           <Text style={{...styles.title, ...buttonTypeTextStyles}}>
             {title}

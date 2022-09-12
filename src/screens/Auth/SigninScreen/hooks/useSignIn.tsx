@@ -38,9 +38,14 @@ export const useSignIn = (navigation: NativeStackNavigationProp<any>) => {
     setIsLoading(true);
     dispatch(signin(values.email, values.password))
       .then(() => {
-        navigation.navigate({
-          name: Routes.Dashboard,
-          params: {justLoggedIn: true},
+        navigation.navigate(Routes.LoggedIn, {
+          screen: Routes.Home,
+          params: {
+            screen: Routes.Dashboard,
+            params: {
+              justLoggedIn: true,
+            },
+          },
         });
       })
       .catch(err => {

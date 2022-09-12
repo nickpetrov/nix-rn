@@ -43,9 +43,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
             console.log(data?.accessToken.toString());
             dispatch(fbLogin(data?.accessToken.toString() || ''))
               .then(() => {
-                navigation.navigate({
-                  name: 'Dashboard',
-                  params: {justLoggedIn: true},
+                navigation.navigate(Routes.LoggedIn, {
+                  screen: Routes.Home,
+                  params: {
+                    screen: Routes.Dashboard,
+                    params: {
+                      justLoggedIn: true,
+                    },
+                  },
                 });
               })
               .catch((err: Error) => {

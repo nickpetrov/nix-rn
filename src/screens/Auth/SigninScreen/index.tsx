@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-// import {FontAwesome} from '@expo/vector-icons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Formik, Field} from 'formik';
 
 import {NixButton} from 'components/NixButton';
@@ -60,17 +60,17 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                     component={NixInput}
                     name="email"
                     label="Email"
-                    // leftComponent={
-                    //   <FontAwesome
-                    //     name={'envelope-o'}
-                    //     size={30}
-                    //     style={{
-                    //       marginRight: 15,
-                    //       marginBottom: 2,
-                    //       color: '#666',
-                    //     }}
-                    //   />
-                    // }
+                    leftComponent={
+                      <FontAwesome
+                        name={'envelope-o'}
+                        size={30}
+                        style={{
+                          marginRight: 15,
+                          marginBottom: 2,
+                          color: '#666',
+                        }}
+                      />
+                    }
                     autoCapitalize="none"
                     keyboardType="email-address"
                   />
@@ -78,18 +78,18 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                     component={NixInput}
                     name="password"
                     label="Password"
-                    // leftComponent={
-                    //   <FontAwesome
-                    //     name={'lock'}
-                    //     size={30}
-                    //     style={{
-                    //       marginRight: 17,
-                    //       marginBottom: 2,
-                    //       marginLeft: 6,
-                    //       color: '#666',
-                    //     }}
-                    //   />
-                    // }
+                    leftComponent={
+                      <FontAwesome
+                        name={'lock'}
+                        size={30}
+                        style={{
+                          marginRight: 17,
+                          marginBottom: 2,
+                          marginLeft: 6,
+                          color: '#666',
+                        }}
+                      />
+                    }
                     autoCapitalize="none"
                     isPassword
                     customShowPasswordComponent={<Text>Show</Text>}

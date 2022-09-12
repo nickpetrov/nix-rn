@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, TextInput} from 'react-native';
-// import {useDispatch} from 'react-redux';
+// import {useDispatch} from 'hooks';
 
 import {BarcodeScanner} from 'components/BarcodeScanner';
 import {styles} from './Header.styles';

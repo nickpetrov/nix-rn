@@ -38,6 +38,7 @@ import {
 import {Header} from 'components/Header';
 import {SideMenu} from './components/SideMenu';
 import {Routes} from './Routes';
+import DrawerButton from 'components/DrawerButton';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -98,8 +99,9 @@ const LoggedInNavigationOptions = ({navigation}: any) => ({
   headerStyle: {
     backgroundColor: Colors.Primary,
   },
+  headerLeft: () => <DrawerButton navigation={navigation} />,
   headerTitle: (props: any) => (
-    <View style={{width: Dimensions.get('window').width - 110}}>
+    <View style={{width: Dimensions.get('window').width - 110, flex: 1}}>
       <Header {...props} navigation={navigation} />
     </View>
   ),
@@ -198,49 +200,33 @@ const LoggedInNavigation = () => {
   );
 };
 
-const SideDrawerNavigationOptions = {
-  //   header: {visible: true},
-  headerStyle: {
-    backgroundColor: '#28F1A6',
-    elevation: 0,
-    shadowOpacity: 0,
-  },
-  headerTintColor: '#333333',
-  //   headerTitleStyle: {
-  //     fontWeight: 'bold',
-  //     color: '#ffffff',
-  //   },
-};
+// const SideDrawerNavigationOptions = {
+//   //   header: {visible: true},
+//   headerStyle: {
+//     backgroundColor: Colors.Primary,
+//     elevation: 0,
+//     shadowOpacity: 0,
+//   },
+//   headerTintColor: '#333333',
+//   //   headerTitleStyle: {
+//   //     fontWeight: 'bold',
+//   //     color: '#ffffff',
+//   //   },
+// };
 
 const SideDrawerNavigation = () => {
   return (
     <Drawer.Navigator
-      screenOptions={SideDrawerNavigationOptions}
+      // screenOptions={SideDrawerNavigationOptions}
       drawerContent={SideMenu}>
-      <Drawer.Screen name={Routes.Home} component={LoggedInNavigation} />
+      <Drawer.Screen
+        name={Routes.Home}
+        component={LoggedInNavigation}
+        options={{headerShown: false}}
+      />
     </Drawer.Navigator>
   );
 };
-
-// const SideDrawerNavigation = createDrawerNavigator(
-//   {
-//     defaultNavigationOptions: {
-//       header: { visible: true },
-//       headerStyle: {
-//         backgroundColor: "#28F1A6",
-//         elevation: 0,
-//         shadowOpacity: 0,
-//       },
-//       headerTintColor: "#333333",
-//       headerTitleStyle: {
-//         fontWeight: "bold",
-//         color: "#ffffff",
-//       },
-//     },
-//     contentOptions: {},
-//     contentComponent: SideMenu,
-//   }
-// );
 
 const LoginNavigation = () => {
   return (
@@ -275,7 +261,11 @@ export const Navigation = () => {
         component={LoginNavigation}
         options={{headerShown: false}}
       />
-      <Stack.Screen name={Routes.LoggedIn} component={SideDrawerNavigation} />
+      <Stack.Screen
+        name={Routes.LoggedIn}
+        component={SideDrawerNavigation}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };

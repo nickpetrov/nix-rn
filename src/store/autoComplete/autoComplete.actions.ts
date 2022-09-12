@@ -6,7 +6,7 @@ export const SHOW_SUGGESTED_FOODS = 'SHOW_SUGGESTED_FOODS';
 
 export const updateSearchResults = (query: string) => {
   return async (dispatch: Dispatch, useState: any) => {
-    const jwt = useState().user.userJWT;
+    const jwt = useState().auth.userJWT;
     const result = await fetch(
       `https://trackapi.nutritionix.com/v2/search/instant?query=${query}`,
       {
@@ -31,7 +31,7 @@ export const clear = () => {
 export const showSuggestedFoods = (mealType: number) => {
   // mealType = 2;
   return async (dispatch: Dispatch, useState: any) => {
-    const jwt = useState().user.userJWT;
+    const jwt = useState().auth.userJWT;
     const result = await fetch(
       `https://trackapi.nutritionix.com/v2/reports/suggested${
         mealType !== undefined && mealType !== -1
