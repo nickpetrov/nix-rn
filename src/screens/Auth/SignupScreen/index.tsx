@@ -60,7 +60,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
                 resizeMode="contain"
               />
             </View>
-            {isStep2 ? (
+            {!isStep2 ? (
               <StepOneForm
                 setIsStep2={setIsStep2}
                 errorTextServer={errorTextServer}
