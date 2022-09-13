@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
   },
   barcodeInAutocomplete: {
     position: 'absolute',
-    right: '5%',
+    right: '10%',
     top: -5,
   },
 });

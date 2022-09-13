@@ -7,9 +7,11 @@ import {
 import thunk, {ThunkDispatch} from 'redux-thunk';
 
 import authReducer from './auth/auth.reducer';
+import autoCompleteReducer from './autoComplete/autoComplete.reducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  autoComplete: autoCompleteReducer,
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));

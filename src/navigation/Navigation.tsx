@@ -1,11 +1,9 @@
 // utils
 import React from 'react';
-import {View, Dimensions} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
 // components
-import {Header} from 'components/Header';
 import {SideMenu} from './components/SideMenu';
 import DrawerButton from 'components/DrawerButton';
 
@@ -106,11 +104,6 @@ const LoggedInNavigationOptions = ({navigation}: any) => ({
     backgroundColor: Colors.Primary,
   },
   headerLeft: () => <DrawerButton navigation={navigation} />,
-  headerTitle: (props: any) => (
-    <View style={{width: Dimensions.get('window').width - 110, flex: 1}}>
-      <Header {...props} navigation={navigation} />
-    </View>
-  ),
 });
 
 const LoggedInNavigation = () => {
