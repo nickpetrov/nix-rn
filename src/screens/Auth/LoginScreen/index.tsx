@@ -1,4 +1,13 @@
+// utils
 import React, {useEffect} from 'react';
+import {LoginManager, AccessToken} from 'react-native-fbsdk-next';
+import {
+  appleAuth,
+  AppleButton,
+} from '@invertase/react-native-apple-authentication';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
+// components
 import {
   View,
   Text,
@@ -7,18 +16,19 @@ import {
   ScrollView,
   Platform,
 } from 'react-native';
-import {LoginManager, AccessToken} from 'react-native-fbsdk-next';
-import {
-  appleAuth,
-  AppleButton,
-} from '@invertase/react-native-apple-authentication';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-
 import {NixButton} from 'components/NixButton';
+
+// hooks
 import {useDispatch} from 'hooks/useRedux';
+
+// actions
 import {appleLogin, fbLogin} from 'store/auth/auth.actions';
-import {styles} from './LoginScreen.styles';
+
+// constants
 import {Routes} from 'navigation/Routes';
+
+//styles
+import {styles} from './LoginScreen.styles';
 
 interface LoginScreenProps {
   navigation: NativeStackNavigationProp<any>;

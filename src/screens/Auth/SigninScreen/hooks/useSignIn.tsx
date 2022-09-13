@@ -1,9 +1,15 @@
+// utils
 import {useState} from 'react';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import * as yup from 'yup';
 
+// hooks
 import {useDispatch} from 'hooks/useRedux';
+
+// actions
 import {signin} from 'store/auth/auth.actions';
+
+// constants
 import {Routes} from 'navigation/Routes';
 
 export const useSignIn = (navigation: NativeStackNavigationProp<any>) => {

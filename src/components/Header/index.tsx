@@ -1,11 +1,18 @@
+// utils
 import React from 'react';
+
+// components
 import {View, TextInput} from 'react-native';
+import {BarcodeScanner} from 'components/BarcodeScanner';
+
+// hooks
 // import {useDispatch} from 'hooks';
 
-import {BarcodeScanner} from 'components/BarcodeScanner';
-import {styles} from './Header.styles';
-
+// actions
 // import * as autocompleteActions from '../../store/actions/autocomplete';
+
+// styles
+import {styles} from './Header.styles';
 
 export const Header = (props: any) => {
   //   const dispatch = useDispatch();

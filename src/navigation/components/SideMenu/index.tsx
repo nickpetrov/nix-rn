@@ -1,4 +1,9 @@
+// utils
 import React, {useCallback} from 'react';
+import InAppReview from 'react-native-in-app-review';
+import {ParamListBase, useNavigation} from '@react-navigation/native';
+
+// components
 import {
   View,
   SafeAreaView,
@@ -11,15 +16,22 @@ import {
 } from 'react-native';
 // import {SvgUri} from 'react-native-svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import InAppReview from 'react-native-in-app-review';
+import {NixButton} from 'components/NixButton';
+
+// hooks
 import {useDispatch} from 'hooks';
 
-import {NixButton} from 'components/NixButton';
+// actions
 import {logout} from 'store/auth/auth.actions';
-import {styles} from './SideMenu.styles';
-import {ParamListBase, useNavigation} from '@react-navigation/native';
-import {DrawerNavigationProp} from '@react-navigation/drawer';
+
+// constants
 import {Routes} from 'navigation/Routes';
+
+// styles
+import {styles} from './SideMenu.styles';
+
+// types
+import {DrawerNavigationProp} from '@react-navigation/drawer';
 
 export const SideMenu: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();

@@ -1,8 +1,12 @@
+// utils
 import React, {useState} from 'react';
+
+// components
 import {View, Text, TextInputProps} from 'react-native';
 import {FloatingLabelInput} from 'react-native-floating-label-input';
 import {FieldProps} from 'formik';
 
+// styles
 import {styles} from './Nixinput.styles';
 
 type NixInputProps = TextInputProps &

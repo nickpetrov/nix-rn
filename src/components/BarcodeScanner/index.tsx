@@ -1,8 +1,14 @@
+// utils
 import React from 'react';
+
+// components
 import {View, TouchableOpacity, Keyboard} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+// hooks
 // import {useDispatch} from 'hooks';
 
+// styles
 import {styles} from './BarcodeScanner.styles';
 
 export const BarcodeScanner = (props: any) => {

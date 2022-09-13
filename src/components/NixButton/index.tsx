@@ -1,7 +1,11 @@
+// utils
 import React from 'react';
+
+// components
 import {View, TouchableOpacity, Text} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
+// styles
 import {styles} from './NixButton.styles';
 
 interface NixButtonProps {

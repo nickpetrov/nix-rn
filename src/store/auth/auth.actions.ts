@@ -1,11 +1,17 @@
+// utils
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// api
 import authService from 'api/authService';
 import apiClient from 'api/index';
 import userService from 'api/userService';
-import {Dispatch} from 'redux';
 
+//actions
 import {clear as clearAutocomplete} from 'store/autoComplete/autoComplete.actions';
 import {reset as resetBasket} from 'store/basket/basket.actions';
+
+// types
+import {Dispatch} from 'redux';
 import {authActionTypes, SignUpRequest, User} from './auth.types';
 
 const saveAuthData = (userData: User, userJWT: string) => {

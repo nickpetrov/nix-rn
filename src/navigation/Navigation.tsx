@@ -1,9 +1,15 @@
+// utils
 import React from 'react';
 import {View, Dimensions} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
-import {Colors} from 'constants';
+// components
+import {Header} from 'components/Header';
+import {SideMenu} from './components/SideMenu';
+import DrawerButton from 'components/DrawerButton';
+
+// screens
 import {LoginScreen, SigninScreen, SignupScreen} from 'screens/Auth';
 import {
   DashboardScreen,
@@ -35,10 +41,10 @@ import {
   HealthkitSyncScreen,
   PreferencesMenuScreen,
 } from 'screens/Preferences';
-import {Header} from 'components/Header';
-import {SideMenu} from './components/SideMenu';
+
+// constants
 import {Routes} from './Routes';
-import DrawerButton from 'components/DrawerButton';
+import {Colors} from 'constants';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();

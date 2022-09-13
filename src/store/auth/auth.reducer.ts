@@ -1,6 +1,10 @@
+// utils
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// helpers
 import * as timeHelper from 'helpers/time.helpers';
 
+//types
 import {AnyAction} from 'redux';
 import {authActionTypes, UserData} from './auth.types';
 
