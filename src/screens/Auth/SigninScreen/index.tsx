@@ -1,4 +1,7 @@
+// utils
 import React from 'react';
+
+// components
 import {
   View,
   Text,
@@ -9,14 +12,19 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Formik, Field} from 'formik';
-
 import {NixButton} from 'components/NixButton';
 import {NixInput} from 'components/NixInput';
+
+// hooks
 import {useSignIn} from './hooks/useSignIn';
+
+// styles
 import {styles} from './SigninScreen.styles';
+
+// types
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface SigninScreenProps {
   navigation: NativeStackNavigationProp<any>;
