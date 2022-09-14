@@ -73,7 +73,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
       ),
       headerRight: () => (
         <BasketButton
-          icon="times"
+          icon="shopping-basket"
           onPress={() => navigation.navigate(Routes.Basket)}
         />
       ),

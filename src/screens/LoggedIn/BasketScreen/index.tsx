@@ -37,7 +37,6 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {BasketFoodProps} from 'store/basket/basket.types';
 
 // constants
-import {Routes} from 'navigation/Routes';
 import {Colors} from 'constants/Colors';
 
 // styles
@@ -91,10 +90,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
         </View>
       ),
       headerRight: () => (
-        <BasketButton
-          icon="times"
-          onPress={() => navigation.navigate(Routes.Basket)}
-        />
+        <BasketButton icon="times" onPress={() => navigation.goBack()} />
       ),
     });
   }, [navigation]);
