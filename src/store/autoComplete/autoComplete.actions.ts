@@ -1,11 +1,12 @@
 import {Dispatch} from 'redux';
+import {RootState} from '../index';
 
 export const UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS';
 export const CLEAR = 'CLEAR';
 export const SHOW_SUGGESTED_FOODS = 'SHOW_SUGGESTED_FOODS';
 
 export const updateSearchResults = (query: string) => {
-  return async (dispatch: Dispatch, useState: any) => {
+  return async (dispatch: Dispatch, useState: () => RootState) => {
     const jwt = useState().auth.userJWT;
     const result = await fetch(
       `https://trackapi.nutritionix.com/v2/search/instant?query=${query}`,
@@ -30,7 +31,7 @@ export const clear = () => {
 
 export const showSuggestedFoods = (mealType: number) => {
   // mealType = 2;
-  return async (dispatch: Dispatch, useState: any) => {
+  return async (dispatch: Dispatch, useState: () => RootState) => {
     const jwt = useState().auth.userJWT;
     const result = await fetch(
       `https://trackapi.nutritionix.com/v2/reports/suggested${

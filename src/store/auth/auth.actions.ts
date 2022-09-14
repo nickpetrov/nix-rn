@@ -13,6 +13,7 @@ import {reset as resetBasket} from 'store/basket/basket.actions';
 // types
 import {Dispatch} from 'redux';
 import {authActionTypes, SignUpRequest, User} from './auth.types';
+import {RootState} from '../index';
 
 const saveAuthData = (userData: User, userJWT: string) => {
   AsyncStorage.getItem('authData').then(data => {
@@ -105,7 +106,7 @@ export const signup = (data: SignUpRequest) => {
   };
 };
 
-export const updateUserData = (newUserObj: any) => {
+export const updateUserData = (newUserObj: User) => {
   const request = {...newUserObj};
   return async (dispatch: Dispatch) => {
     const response = await userService.updateUserData(request);
@@ -131,7 +132,7 @@ export const setUserJwt = (newUserJwt: string) => {
 };
 
 export const getUserDataFromAPI = () => {
-  return async (dispatch: Dispatch, useState: any) => {
+  return async (dispatch: Dispatch, useState: () => RootState) => {
     const jwt = useState().auth.userJWT;
     const response = await userService.getUserData();
 

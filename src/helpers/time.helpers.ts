@@ -13,14 +13,14 @@ export const today = () => {
 export const offsetDays = (
   date: string,
   inputFormat: string,
-  offset: string,
+  offset: number,
 ) => {
   return moment(date, inputFormat).add(offset, 'days').format('YYYY-MM-DD');
 };
 
 export const formatDate = (
   date: string,
-  inputFormat: string,
+  inputFormat: string | undefined,
   outputFormat: string,
 ) => {
   return moment(date, inputFormat).tz(userTimezone).format(outputFormat);

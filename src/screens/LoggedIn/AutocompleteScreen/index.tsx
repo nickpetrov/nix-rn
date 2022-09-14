@@ -1,7 +1,6 @@
 // utils
 import React, {useEffect, useRef, useState} from 'react';
 import moment from 'moment-timezone';
-import {batch} from 'react-redux';
 
 // components
 import {
@@ -25,7 +24,7 @@ import * as autocompleteActions from 'store/autoComplete/autoComplete.actions';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {FoodProps} from 'store/autoComplete/autoComplete.types';
+import {AutoCompleteFoodProps} from 'store/autoComplete/autoComplete.types';
 import {RouteProp} from '@react-navigation/native';
 
 // constants
@@ -44,7 +43,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   route,
 }) => {
   const dispatch = useDispatch();
-  // const {selectedDate} = useSelector(state => state.userLog);
+  const {selectedDate} = useSelector(state => state.userLog);
   const [suggestedTime, setSuggestedTime] = useState('');
   const [currentTab, setCurrentTab] = useState('all');
 
@@ -88,14 +87,12 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
     }
   };
 
-  const addItemToBasket = async (item: FoodProps) => {
+  const addItemToBasket = async (item: AutoCompleteFoodProps) => {
     dispatch(basketActions.addFoodToBasket(item.food_name)).then(() => {
-      batch(() => {
-        // dispatch(basketActions.changeConsumedAt(selectedDate));
-        if (route.params?.mealType) {
-          dispatch(basketActions.changeMealType(route.params?.mealType));
-        }
-      });
+      dispatch(basketActions.changeConsumedAt(selectedDate));
+      if (route.params?.mealType) {
+        dispatch(basketActions.changeMealType(route.params?.mealType));
+      }
       navigation.replace('Basket');
     });
   };

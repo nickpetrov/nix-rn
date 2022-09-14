@@ -6,14 +6,14 @@ import {View, Text, TouchableOpacity, Image} from 'react-native';
 
 // types
 import {mealTypes} from 'store/basket/basket.types';
-import {FoodProps} from 'store/autoComplete/autoComplete.types';
+import {AutoCompleteFoodProps} from 'store/autoComplete/autoComplete.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 // styles
 import {styles} from './MealListItem.styles';
 
 interface MealListItemProps {
-  foodObj: FoodProps;
+  foodObj: AutoCompleteFoodProps;
   mealName?: keyof typeof mealTypes;
   navigation?: NativeStackNavigationProp<any>;
   onTap: () => void;

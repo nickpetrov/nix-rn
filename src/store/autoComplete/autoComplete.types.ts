@@ -4,15 +4,17 @@ export enum autoCompleteActionTypes {
   CLEAR = 'CLEAR',
 }
 
-export interface FoodProps {
+export interface PhotoProps {
+  thumb: string;
+  is_user_uploaded: boolean;
+  highres: string | null;
+}
+
+export interface AutoCompleteFoodProps {
   id: number;
   food_name: string;
   locale: string;
-  photo: {
-    thumb: string;
-    is_user_uploaded: boolean;
-    highres: string | null;
-  };
+  photo: PhotoProps;
   region: number;
   serving_qty: number;
   serving_unit: string;
@@ -26,11 +28,12 @@ export interface FoodProps {
   common_type?: string | null;
   tag_id?: string;
   tag_name?: string;
+  consumed_at?: string;
 }
 
 export interface AutoCompleteState {
-  self: Array<FoodProps>;
-  common: Array<FoodProps>;
-  branded: Array<FoodProps>;
-  suggested: Array<FoodProps>;
+  self: Array<AutoCompleteFoodProps>;
+  common: Array<AutoCompleteFoodProps>;
+  branded: Array<AutoCompleteFoodProps>;
+  suggested: Array<AutoCompleteFoodProps>;
 }

@@ -1,5 +1,5 @@
 import {AnyAction} from 'redux';
-import {basketActionTypes} from './basket.types';
+import {basketActionTypes, BasketState} from './basket.types';
 
 const initialState = {
   foods: [],
@@ -10,14 +10,14 @@ const initialState = {
   meal_type: 1,
 };
 
-export default (state = initialState, action: AnyAction) => {
+export default (state: BasketState = initialState, action: AnyAction) => {
   switch (action.type) {
     case basketActionTypes.ADD_FOOD_TO_BASKET:
       let newFoods = [...state.foods];
       if (typeof action.foods == 'object') {
         newFoods = newFoods.concat(action.foods);
       } else {
-        // newFoods.push(action.foods);
+        newFoods.push(action.foods);
       }
       return {...state, foods: newFoods};
     case basketActionTypes.UPDATE_BASKET_FOODS:
@@ -37,7 +37,7 @@ export default (state = initialState, action: AnyAction) => {
       if (action.basket?.foods?.length) {
         newFoodsAtBasket = newFoodsAtBasket.concat(action.basket.foods);
       } else if (action.basket?.foods) {
-        // newFoodsAtBasket.push(action.basket.foods);
+        newFoodsAtBasket.push(action.basket.foods);
       }
       return {...state, ...action.basket, foods: newFoodsAtBasket};
     case basketActionTypes.RESET:

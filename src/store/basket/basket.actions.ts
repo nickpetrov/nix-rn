@@ -4,13 +4,14 @@ import basketService from 'api/basketService';
 
 // types
 import {Dispatch} from 'redux';
-import {basketActionTypes} from './basket.types';
+import {basketActionTypes, BasketFoodProps, BasketState} from './basket.types';
+import {RootState} from '../index';
 
-const saveBasketToStorage = (basket: any) => {
+const saveBasketToStorage = (basket: Partial<BasketState>) => {
   AsyncStorage.getItem('basket').then(data => {
     let prevData = data ? JSON.parse(data) : {};
     let newFoods = prevData?.foods ? [...prevData?.foods] : [];
-    if (typeof basket?.foods == 'object') {
+    if (typeof basket?.foods === 'object') {
       newFoods = newFoods.concat(basket.foods);
     } else {
       newFoods.push(basket.foods);
@@ -32,10 +33,10 @@ export const addFoodToBasket = (query: string) => {
       throw new Error(response.status.toString());
     }
 
-    const foods = response.data;
-
-    saveBasketToStorage({foods});
-    dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods});
+    const result = response.data;
+    console.log('basket foods', result.foods);
+    saveBasketToStorage({foods: result.foods});
+    dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: result.foods});
   };
 };
 
@@ -45,7 +46,7 @@ export const changeLoggingType = (isSingleFood: boolean) => {
 };
 
 export const changeRecipeName = (newName: string) => {
-  saveBasketToStorage({newName});
+  saveBasketToStorage({recipeName: newName});
   return {type: basketActionTypes.CHANGE_RECIPE_NAME, newName};
 };
 
@@ -54,27 +55,27 @@ export const changeRecipeServings = (servings: string) => {
   return {type: basketActionTypes.CHANGE_RECIPE_SERVINGS, servings};
 };
 
-export const changeRecipeBrand = (recipeBrand: string) => {
-  saveBasketToStorage({recipeBrand});
-  return {type: basketActionTypes.CHANGE_RECIPE_BRAND, recipeBrand};
-};
+// export const changeRecipeBrand = (recipeBrand: string) => {
+//   saveBasketToStorage({recipeBrand});
+//   return {type: basketActionTypes.CHANGE_RECIPE_BRAND, recipeBrand};
+// };
 
 export const changeConsumedAt = (consumed_at: string) => {
   saveBasketToStorage({consumed_at});
   return {type: basketActionTypes.CHANGE_CONSUMED_AT, consumed_at};
 };
 
-export const changeMealType = (newMealType: string) => {
-  saveBasketToStorage({newMealType});
+export const changeMealType = (newMealType: number) => {
+  saveBasketToStorage({meal_type: newMealType});
   return {type: basketActionTypes.CHANGE_MEAL_TYPE, newMealType};
 };
 
-export const mergeBasket = (basket: any) => {
+export const mergeBasket = (basket: BasketState) => {
   return {type: basketActionTypes.MERGE_BASKET, basket};
 };
 
-export const updateFoodAtBasket = (foodObj: any, index: number) => {
-  return async (dispatch: Dispatch, useState: any) => {
+export const updateFoodAtBasket = (foodObj: BasketFoodProps, index: number) => {
+  return async (dispatch: Dispatch, useState: () => RootState) => {
     const oldFoods = useState().basket.foods;
     const newFoods = [...oldFoods];
     newFoods[index] = foodObj;
