@@ -1,59 +1,35 @@
+import autoCompleteService from 'api/autoCompleteService';
 import {Dispatch} from 'redux';
-import {RootState} from '../index';
-
-export const UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS';
-export const CLEAR = 'CLEAR';
-export const SHOW_SUGGESTED_FOODS = 'SHOW_SUGGESTED_FOODS';
+import {autoCompleteActionTypes} from './autoComplete.types';
 
 export const updateSearchResults = (query: string) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
-    const jwt = useState().auth.userJWT;
-    const result = await fetch(
-      `https://trackapi.nutritionix.com/v2/search/instant?query=${query}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-jwt': jwt,
-        },
-        method: 'GET',
-      },
-    );
+  return async (dispatch: Dispatch) => {
+    const result = await autoCompleteService.getInstant(query);
 
-    const searchResult = await result.json();
+    const searchResult = await result.data;
 
-    dispatch({type: UPDATE_SEARCH_RESULTS, searchResult});
+    dispatch({
+      type: autoCompleteActionTypes.UPDATE_SEARCH_RESULTS,
+      searchResult,
+    });
   };
 };
 
 export const clear = () => {
-  return {type: CLEAR};
+  return {type: autoCompleteActionTypes.CLEAR};
 };
 
 export const showSuggestedFoods = (mealType: number) => {
-  // mealType = 2;
-  return async (dispatch: Dispatch, useState: () => RootState) => {
-    const jwt = useState().auth.userJWT;
-    const result = await fetch(
-      `https://trackapi.nutritionix.com/v2/reports/suggested${
-        mealType !== undefined && mealType !== -1
-          ? `?meal_types=[${mealType}]`
-          : ''
-      }`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-jwt': jwt,
-        },
-        method: 'GET',
-      },
-    );
+  return async (dispatch: Dispatch) => {
+    const result = await autoCompleteService.getSuggestedFoods(mealType);
 
-    const response = await result.json();
-    console.log(response.foods);
+    const response = await result.data;
 
-    console.log(response);
     const suggestedFoods = response.foods;
 
-    dispatch({type: SHOW_SUGGESTED_FOODS, suggestedFoods});
+    dispatch({
+      type: autoCompleteActionTypes.SHOW_SUGGESTED_FOODS,
+      suggestedFoods,
+    });
   };
 };

@@ -11,9 +11,11 @@ const saveBasketToStorage = (basket: Partial<BasketState>) => {
   AsyncStorage.getItem('basket').then(data => {
     let prevData = data ? JSON.parse(data) : {};
     let newFoods = prevData?.foods ? [...prevData?.foods] : [];
+
+    //TODO check when we will have time case when foods not array(if it possible left it if not -> refactoring)
     if (typeof basket?.foods === 'object') {
       newFoods = newFoods.concat(basket.foods);
-    } else {
+    } else if (basket.foods) {
       newFoods.push(basket.foods);
     }
 
@@ -34,7 +36,7 @@ export const addFoodToBasket = (query: string) => {
     }
 
     const result = response.data;
-    console.log('basket foods', result.foods);
+
     saveBasketToStorage({foods: result.foods});
     dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: result.foods});
   };
@@ -79,6 +81,7 @@ export const updateFoodAtBasket = (foodObj: BasketFoodProps, index: number) => {
     const oldFoods = useState().basket.foods;
     const newFoods = [...oldFoods];
     newFoods[index] = foodObj;
+    saveBasketToStorage({foods: newFoods});
     dispatch({type: basketActionTypes.UPDATE_BASKET_FOODS, foods: newFoods});
   };
 };

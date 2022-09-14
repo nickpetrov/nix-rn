@@ -172,7 +172,7 @@ export const getUserExerciseslog = (
     );
 
     const result = await response.json();
-    console.log('result', result);
+
     dispatch({
       type: userLogActionTypes.GET_USER_EXERCISES_LOG,
       exercises: result.exercises,

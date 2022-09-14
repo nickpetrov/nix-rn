@@ -1,11 +1,23 @@
+// utils
 import React, {useEffect} from 'react';
-import {Text, SafeAreaView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// components
+import {Text, SafeAreaView} from 'react-native';
+
+// hooks
+import {useDispatch} from 'hooks';
+
+// constants
+import {Routes} from 'navigation/Routes';
+
+// types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-import {Routes} from 'navigation/Routes';
+// actions
 import {getUserDataFromAPI, setUserJwt} from 'store/auth/auth.actions';
-import {useDispatch} from 'hooks';
+import {mergeBasket} from 'store/basket/basket.actions';
+import {BasketState} from 'store/basket/basket.types';
 
 interface StartupScreenProps {
   navigation: NativeStackNavigationProp<any>;
@@ -26,6 +38,20 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
         } else {
           await dispatch(setUserJwt(userJWT));
           dispatch(getUserDataFromAPI());
+
+          //get basekt from storage
+
+          const getBasketFromStorage = async () => {
+            let basket = await AsyncStorage.getItem('basket');
+            if (!basket) {
+              return;
+            } else {
+              const newBasket: BasketState = JSON.parse(basket);
+              console.log(newBasket);
+              dispatch(mergeBasket(newBasket));
+            }
+          };
+          getBasketFromStorage();
 
           navigation.navigate(Routes.LoggedIn);
         }
