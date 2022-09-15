@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // components
-import {Text, SafeAreaView} from 'react-native';
+import {SafeAreaView, ActivityIndicator} from 'react-native';
 
 // hooks
 import {useDispatch} from 'hooks';
@@ -61,8 +61,9 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
   }, [dispatch, navigation]);
 
   return (
-    <SafeAreaView>
-      <Text>authenticating</Text>
+    <SafeAreaView
+      style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+      <ActivityIndicator size="large" />
     </SafeAreaView>
   );
 };

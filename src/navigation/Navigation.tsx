@@ -254,7 +254,11 @@ export const Navigation = () => {
     <Stack.Navigator
     //   screenOptions={{...TransitionPresets.FadeFromBottomAndroid}}>
     >
-      <Stack.Screen name={Routes.Startup} component={StartupScreen} />
+      <Stack.Screen
+        name={Routes.Startup}
+        component={StartupScreen}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name={Routes.LoginScreens}
         component={LoginNavigation}
