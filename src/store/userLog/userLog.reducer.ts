@@ -4,17 +4,17 @@ import {AnyAction} from 'redux';
 
 // types
 import {authActionTypes} from 'store/auth/auth.types';
-import {userLogActionTypes} from './userLog.types';
+import {userLogActionTypes, UserLogState} from './userLog.types';
 
-const initialState = {
+const initialState: UserLogState = {
   foods: [],
-  totals: [{}],
+  totals: [],
   weights: [],
   exercises: [],
   selectedDate: moment().format('YYYY-MM-DD'),
 };
 
-export default (state: any = initialState, action: AnyAction) => {
+export default (state: UserLogState = initialState, action: AnyAction) => {
   switch (action.type) {
     case userLogActionTypes.GET_USER_FOODLOG:
       return {...state, foods: action.foodLog};

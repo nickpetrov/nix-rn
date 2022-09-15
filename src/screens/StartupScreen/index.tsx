@@ -37,7 +37,7 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
           navigation.navigate(Routes.LoginScreens);
         } else {
           await dispatch(setUserJwt(userJWT));
-          dispatch(getUserDataFromAPI());
+          await dispatch(getUserDataFromAPI());
 
           //get basekt from storage
 

@@ -1,7 +1,11 @@
-import {BasketFoodProps} from 'store/basket/basket.types';
+import {
+  FoodProps,
+  mealNameProps,
+  SortedFoodProps,
+} from 'store/userLog/userLog.types';
 import * as timeHelper from './time.helpers';
 
-const mealsList = [
+const mealsList: Array<mealNameProps> = [
   'Breakfast', //1
   'AM Snack', //2
   'Lunch', //3
@@ -10,15 +14,10 @@ const mealsList = [
   'Late Snack', //6
 ];
 
-interface sortedMealItemProps {
-  mealName: string;
-  foods: Array<BasketFoodProps>;
-}
-
 export const sortFoodItem = (
   mealName: string,
-  sortedMealList: Array<sortedMealItemProps>,
-  food: BasketFoodProps,
+  sortedMealList: Array<SortedFoodProps>,
+  food: FoodProps,
 ) => {
   let mealObj = sortedMealList.find(meal => meal.mealName === mealName);
   if (mealObj?.foods) {
@@ -26,20 +25,19 @@ export const sortFoodItem = (
   }
 };
 
-interface Food extends BasketFoodProps {
-  meal_type: number;
-  consumed_at: string;
-}
-
 export const sortFoodsByMeal = (
-  foodsList: Array<Food> = [],
+  foodsList: Array<FoodProps> | [] = [],
   selectedDate = '',
-) => {
-  const sortedFoods: Array<sortedMealItemProps> = [];
+): Array<SortedFoodProps> => {
+  const sortedFoods: Array<{
+    mealName: mealNameProps;
+    foods: Array<FoodProps>;
+    consumed_at: string;
+  }> = [];
   mealsList.map(mealName => {
-    sortedFoods.push({mealName, foods: []});
+    sortedFoods.push({mealName, foods: [], consumed_at: ''});
   });
-  foodsList.map(food => {
+  foodsList.map((food: FoodProps) => {
     if (
       timeHelper.formatDate(food.consumed_at, undefined, 'YYYY-MM-DD') !==
       selectedDate

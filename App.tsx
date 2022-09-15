@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView} from 'react-native';
+import {SafeAreaView, LogBox} from 'react-native';
 import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -14,6 +14,9 @@ import {store} from 'store';
 import {styles} from './App.styles';
 
 Settings.initializeSDK();
+
+// ignore WARNINGS - new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method
+LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 
 const App = () => {
   return (

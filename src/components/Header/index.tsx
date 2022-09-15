@@ -19,6 +19,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 // constants
 import {Routes} from 'navigation/Routes';
+import {useRoute} from '@react-navigation/native';
 
 interface HeaderProps {
   navigation: NativeStackNavigationProp<any>;
@@ -27,9 +28,10 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = props => {
   const dispatch = useDispatch();
+  const route = useRoute();
 
   const showAutocomplete = () => {
-    if (props.navigation) {
+    if (props.navigation && route.name !== Routes.Autocomplete) {
       props.navigation.navigate(Routes.LoggedIn, {
         screen: Routes.Home,
         params: {

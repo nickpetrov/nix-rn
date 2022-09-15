@@ -15,7 +15,6 @@ import {RootState} from '../index';
 export const getDayTotals = (
   beginDate: string,
   endDate: string,
-  userId: number,
   timezone: string,
   dispatch: Dispatch,
 ) => {
@@ -23,16 +22,19 @@ export const getDayTotals = (
     const response = await userLogService.getTotals({
       beginDate,
       endDate,
-      userId,
       timezone,
     });
 
     const totals = response.data;
-
-    dispatch({
-      type: userLogActionTypes.GET_DAY_TOTALS,
-      totals: totals.dates || [],
-    });
+    if (__DEV__) {
+      console.log('totals', totals);
+    }
+    if (totals.dates) {
+      dispatch({
+        type: userLogActionTypes.GET_DAY_TOTALS,
+        totals: totals.dates || [],
+      });
+    }
   };
 };
 
@@ -40,7 +42,6 @@ export const getUserFoodlog = (
   beginDate: string,
   endDate: string,
   offset: number | undefined,
-  userId: number,
 ) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
     endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
@@ -50,19 +51,22 @@ export const getUserFoodlog = (
       beginDate,
       endDate,
       offset,
-      userId,
       timezone,
     });
 
     const userFoodlog = response.data;
-
-    dispatch({
-      type: userLogActionTypes.GET_USER_FOODLOG,
-      foodLog: userFoodlog.foods,
-    });
+    if (__DEV__) {
+      console.log('userFoodlog', userFoodlog.foods);
+    }
+    if (userFoodlog.foods) {
+      dispatch({
+        type: userLogActionTypes.GET_USER_FOODLOG,
+        foodLog: userFoodlog.foods,
+      });
+    }
     const beginDateSelected = useState().userLog.selectedDate;
 
-    getDayTotals(beginDateSelected, endDate, userId, timezone, dispatch);
+    getDayTotals(beginDateSelected, endDate, timezone, dispatch);
   };
 };
 
@@ -70,7 +74,6 @@ export const getUserWeightlog = (
   beginDate: string,
   endDate: string,
   offset: number | undefined,
-  userId: number,
 ) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
     endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
@@ -80,16 +83,19 @@ export const getUserWeightlog = (
       beginDate,
       endDate,
       offset,
-      userId,
       timezone,
     });
 
     const result = response.data;
-
-    dispatch({
-      type: userLogActionTypes.GET_USER_WEIGHT_LOG,
-      weights: result.weights,
-    });
+    if (__DEV__) {
+      console.log('weightsLog', result.weights);
+    }
+    if (result.weights) {
+      dispatch({
+        type: userLogActionTypes.GET_USER_WEIGHT_LOG,
+        weights: result.weights,
+      });
+    }
   };
 };
 
@@ -127,7 +133,6 @@ export const getUserExerciseslog = (
   beginDate: string,
   endDate: string,
   offset: number | undefined,
-  userId: number,
 ) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
     endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
@@ -137,16 +142,19 @@ export const getUserExerciseslog = (
       beginDate,
       endDate,
       offset,
-      userId,
       timezone,
     });
 
     const result = response.data;
-
-    dispatch({
-      type: userLogActionTypes.GET_USER_EXERCISES_LOG,
-      exercises: result.exercises,
-    });
+    if (__DEV__) {
+      console.log('exercisesLog', result.exercises);
+    }
+    if (result.exercises) {
+      dispatch({
+        type: userLogActionTypes.GET_USER_EXERCISES_LOG,
+        exercises: result.exercises,
+      });
+    }
   };
 };
 
@@ -170,10 +178,12 @@ export const addExerciseToLog = (query: string) => {
 
       const result = response.data;
 
-      dispatch({
-        type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
-        exercises: result.exercises,
-      });
+      if (result.exercises) {
+        dispatch({
+          type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
+          exercises: result.exercises,
+        });
+      }
     } else {
       return {error: true};
     }
@@ -201,10 +211,12 @@ export const updateExerciseToLog = (query: string, exercise: any) => {
 
       const result = response.data;
 
-      dispatch({
-        type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
-        exercises: result.exercises,
-      });
+      if (result.exercises) {
+        dispatch({
+          type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
+          exercises: result.exercises,
+        });
+      }
     } else {
       return {error: true};
     }
@@ -248,17 +260,19 @@ export const addFoodToLog = (foodArray: any, loggingOptions: any) => {
 
     const result = response.data;
 
-    dispatch({
-      type: userLogActionTypes.ADD_FOOD_TO_LOG,
-      foodObj: result.foods,
-    });
+    if (result.foods) {
+      dispatch({
+        type: userLogActionTypes.ADD_FOOD_TO_LOG,
+        foodObj: result.foods,
+      });
+    }
   };
 };
 
 export const DeleteFoodFromLog = (foodIds: Array<any>) => {
   return async (dispatch: Dispatch) => {
     const response = await userLogService.deleteFoodFromLog(foodIds);
-    console.log('DeleteFoodFromLog', response);
+
     const result = response.data;
 
     if (result.id) {
@@ -285,10 +299,12 @@ export const setDayNotes = (targetDate: any, newNotes: any) => {
 
     const totals = response.data;
 
-    dispatch({
-      type: userLogActionTypes.SET_DAY_NOTES,
-      totals: totals.dates || [],
-    });
+    if (totals.dates) {
+      dispatch({
+        type: userLogActionTypes.SET_DAY_NOTES,
+        totals: totals.dates || [],
+      });
+    }
   };
 };
 

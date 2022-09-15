@@ -31,4 +31,16 @@ apiClient.interceptors.request.use(
   },
 );
 
+apiClient.interceptors.response.use(
+  function (response) {
+    if (__DEV__) {
+      console.log('API Response:', response);
+    }
+    return response;
+  },
+  async function (error) {
+    return Promise.reject(error.response);
+  },
+);
+
 export default apiClient;

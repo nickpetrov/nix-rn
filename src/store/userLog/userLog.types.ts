@@ -1,3 +1,11 @@
+import {
+  mealTypes,
+  MeasureProps,
+  NutrientProps,
+  TagProp,
+} from 'store/basket/basket.types';
+import {PhotoProps} from '../autoComplete/autoComplete.types';
+
 export enum userLogActionTypes {
   GET_USER_FOODLOG = 'GET_USER_FOODLOG',
   ADD_FOOD_TO_LOG = 'ADD_FOOD_TO_LOG',
@@ -11,4 +19,106 @@ export enum userLogActionTypes {
   GET_USER_EXERCISES_LOG = 'GET_USER_EXERCISES_LOG',
   ADD_USER_EXERCISES_LOG = 'ADD_USER_EXERCISES_LOG',
   UPDATE_USER_EXERCISES_LOG = 'UPDATE_USER_EXERCISES_LOG',
+}
+
+export interface ExerciseProps {
+  compendium_code: number;
+  duration_min: number;
+  id: string;
+  met: number;
+  name: string;
+  nf_calories: number;
+  photo: PhotoProps;
+  share_key: string;
+  tag_id: number;
+  timestamp: string;
+  user_input: string;
+}
+
+export interface WeightProps {
+  id: string;
+  kg: number;
+  timestamp: string;
+}
+
+export interface TotalProps {
+  avg_weight_kg: number;
+  daily_carbs_pct: number;
+  daily_fat_pct: number;
+  daily_kcal_limit: number;
+  daily_protein_pct: number;
+  date: string;
+  exercises_logged: null;
+  foods_logged: number;
+  notes: null;
+  total_cal: number;
+  total_cal_burned: number;
+  total_carbs: number;
+  total_fat: number;
+  total_proteins: number;
+  total_sodium: number;
+  water_consumed_liter: null;
+  weights_logged: number;
+}
+
+export interface FoodProps {
+  alt_measures: Array<MeasureProps>;
+  brand_name: string | null;
+  consumed_at: string;
+  food_name: string;
+  full_nutrients: Array<NutrientProps>;
+  id: string;
+  lat: null;
+  lng: null;
+  meal_type: number;
+  metadata: {is_raw_food: boolean};
+  ndb_no: number;
+  nf_calories: number;
+  nf_cholesterol: number;
+  nf_dietary_fiber: number;
+  nf_p: number;
+  nf_potassium: number;
+  nf_protein: number;
+  nf_saturated_fat: number;
+  nf_sodium: number;
+  nf_sugars: number;
+  nf_total_carbohydrate: number;
+  nf_total_fat: number;
+  nix_brand_id: string | null;
+  nix_brand_name: string | null;
+  nix_item_id: string | null;
+  nix_item_name: string | null;
+  note: string | null;
+  photo: PhotoProps;
+  serving_qty: number;
+  serving_unit: string;
+  serving_weight_grams: number;
+  share_key: string;
+  source: number;
+  tags: Array<TagProp>;
+  upc: null;
+}
+
+export interface UserLogState {
+  foods: Array<FoodProps>;
+  totals: Array<TotalProps>;
+  weights: Array<WeightProps>;
+  exercises: Array<ExerciseProps>;
+  selectedDate: string;
+}
+
+export type mealNameProps =
+  | keyof typeof mealTypes
+  | 'Snack'
+  | 'Excercise'
+  | 'Weigh-in'
+  | 'Water';
+
+export interface SortedFoodProps {
+  mealName: mealNameProps;
+  foods?: Array<FoodProps>;
+  exercises?: Array<ExerciseProps>;
+  weights?: Array<WeightProps>;
+  water?: Array<any>;
+  consumed_at?: string;
 }

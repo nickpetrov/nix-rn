@@ -4,15 +4,13 @@ const userLogService = {
   async getTotals({
     beginDate,
     endDate,
-    userId,
     timezone,
   }: {
     beginDate: string;
     endDate: string;
-    userId: number;
     timezone: string;
   }) {
-    return await apiClient.get(`reports/totals${userId ? `/${userId}` : ''}`, {
+    return await apiClient.get('reports/totals', {
       params: {
         begin: beginDate,
         end: endDate,
@@ -29,16 +27,14 @@ const userLogService = {
     beginDate,
     endDate,
     offset,
-    userId,
     timezone,
   }: {
     beginDate: string;
     endDate: string;
     offset: number | undefined;
-    userId: number;
     timezone: string;
   }) {
-    return await apiClient.get(`log${userId ? `/${userId}` : ''}`, {
+    return await apiClient.get('log', {
       params: {
         begin: beginDate,
         end: endDate,
@@ -52,16 +48,14 @@ const userLogService = {
     beginDate,
     endDate,
     offset,
-    userId,
     timezone,
   }: {
     beginDate: string;
     endDate: string;
     offset: number | undefined;
-    userId: number;
     timezone: string;
   }) {
-    return await apiClient.get(`weight/log${userId ? `/${userId}` : ''}`, {
+    return await apiClient.get('weight/log', {
       params: {
         begin: beginDate,
         end: endDate,
@@ -85,16 +79,14 @@ const userLogService = {
     beginDate,
     endDate,
     offset,
-    userId,
     timezone,
   }: {
     beginDate: string;
     endDate: string;
     offset: number | undefined;
-    userId: number;
     timezone: string;
   }) {
-    return await apiClient.get(`exercise/log${userId ? `/${userId}` : ''}`, {
+    return await apiClient.get('exercise/log', {
       params: {
         begin: beginDate,
         end: endDate,

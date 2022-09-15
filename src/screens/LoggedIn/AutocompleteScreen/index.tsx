@@ -90,8 +90,9 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   const addItemToBasket = async (item: AutoCompleteFoodProps) => {
     dispatch(basketActions.addFoodToBasket(item.food_name)).then(() => {
       dispatch(basketActions.changeConsumedAt(selectedDate));
+
       if (route.params?.mealType) {
-        dispatch(basketActions.changeMealType(route.params?.mealType));
+        dispatch(basketActions.changeMealType(route.params.mealType));
       }
       navigation.replace('Basket');
     });

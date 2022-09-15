@@ -6,17 +6,20 @@ import {View, Text, TouchableOpacity, Image} from 'react-native';
 
 // types
 import {mealTypes} from 'store/basket/basket.types';
-import {AutoCompleteFoodProps} from 'store/autoComplete/autoComplete.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 // styles
 import {styles} from './MealListItem.styles';
 
+// constants
+import {Routes} from 'navigation/Routes';
+import {FoodProps, mealNameProps} from 'store/userLog/userLog.types';
+
 interface MealListItemProps {
-  foodObj: AutoCompleteFoodProps;
-  mealName?: keyof typeof mealTypes;
+  foodObj: FoodProps;
+  mealName?: mealNameProps;
   navigation?: NativeStackNavigationProp<any>;
-  onTap: () => void;
+  onTap?: () => void;
 }
 
 const MealListItem: React.FC<MealListItemProps> = props => {
@@ -25,11 +28,13 @@ const MealListItem: React.FC<MealListItemProps> = props => {
     <TouchableOpacity
       onPress={() =>
         props.navigation
-          ? props.navigation.navigate('FoodInfo', {
+          ? props.navigation.navigate(Routes.FoodInfo, {
               foodObj: foodObj,
-              mealType: mealName ? mealTypes[mealName] : undefined,
+              mealType: mealName
+                ? mealTypes[mealName as keyof typeof mealTypes]
+                : undefined,
             })
-          : props.onTap()
+          : props.onTap && props.onTap()
       }>
       <View style={styles.foodItem}>
         <Image
