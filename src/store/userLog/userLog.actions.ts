@@ -1,6 +1,13 @@
+// utils
 import moment from 'moment-timezone';
 
-import {guessMealTypeByTime} from '../../helpers/foodLogHelpers';
+//helpers
+import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
+
+// services
+import userLogService from 'api/userLogService';
+
+// types
 import {userLogActionTypes} from './userLog.types';
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
@@ -9,23 +16,18 @@ export const getDayTotals = (
   beginDate: string,
   endDate: string,
   userId: number,
+  timezone: string,
   dispatch: Dispatch,
 ) => {
   return async () => {
-    // const jwt = useState().auth.userJWT;
-    const response = await fetch(
-      `https://trackapi.nutritionix.com/v2/reports/totals${
-        userId ? `/${userId}` : ''
-      }?begin=${beginDate}&end=${endDate}&timezone=${'US/Eastern'}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          // 'x-user-jwt': jwt,
-        },
-      },
-    );
+    const response = await userLogService.getTotals({
+      beginDate,
+      endDate,
+      userId,
+      timezone,
+    });
 
-    const totals = await response.json();
+    const totals = response.data;
 
     dispatch({
       type: userLogActionTypes.GET_DAY_TOTALS,
@@ -43,20 +45,16 @@ export const getUserFoodlog = (
   return async (dispatch: Dispatch, useState: () => RootState) => {
     endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
 
-    const jwt = useState().auth.userJWT;
-    const response = await fetch(
-      `https://trackapi.nutritionix.com/v2/log${
-        userId ? `/${userId}` : ''
-      }?offset=${offset}&begin=${beginDate}&end=${endDate}&limit=${'500'}&timezone=${'US/Eastern'}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-jwt': jwt,
-        },
-      },
-    );
+    const timezone = useState().auth.userData.timezone;
+    const response = await userLogService.getUserFoodlog({
+      beginDate,
+      endDate,
+      offset,
+      userId,
+      timezone,
+    });
 
-    const userFoodlog = await response.json();
+    const userFoodlog = response.data;
 
     dispatch({
       type: userLogActionTypes.GET_USER_FOODLOG,
@@ -64,7 +62,7 @@ export const getUserFoodlog = (
     });
     const beginDateSelected = useState().userLog.selectedDate;
 
-    getDayTotals(beginDateSelected, endDate, userId, dispatch);
+    getDayTotals(beginDateSelected, endDate, userId, timezone, dispatch);
   };
 };
 
@@ -77,20 +75,16 @@ export const getUserWeightlog = (
   return async (dispatch: Dispatch, useState: () => RootState) => {
     endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
 
-    const jwt = useState().auth.userJWT;
-    const response = await fetch(
-      `https://trackapi.nutritionix.com/v2/weight/log${
-        userId ? `/${userId}` : ''
-      }?offset=${offset}&begin=${beginDate}&end=${endDate}&limit=${'500'}&timezone=${'US/Eastern'}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-jwt': jwt,
-        },
-      },
-    );
+    const timezone = useState().auth.userData.timezone;
+    const response = await userLogService.getUserWeightlog({
+      beginDate,
+      endDate,
+      offset,
+      userId,
+      timezone,
+    });
 
-    const result = await response.json();
+    const result = response.data;
 
     dispatch({
       type: userLogActionTypes.GET_USER_WEIGHT_LOG,
@@ -100,52 +94,32 @@ export const getUserWeightlog = (
 };
 
 export const addWeightlog = (weights: any) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
-    const jwt = useState().auth.userJWT;
-    const response = await fetch(
-      `https://trackapi.nutritionix.com/v2/weight/log`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-jwt': jwt,
-        },
-        method: 'POST',
-        body: JSON.stringify({weights}),
-      },
-    );
+  return async (dispatch: Dispatch) => {
+    const response = await userLogService.addWeightlog(weights);
 
-    const result = await response.json();
+    const result = response.data;
 
-    if (result.weights)
+    if (result.weights) {
       dispatch({
         type: userLogActionTypes.ADD_WEIGHT_LOG,
         weights: result.weights,
       });
+    }
   };
 };
 
 export const updateWeightlog = (weights: any) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
-    const jwt = useState().auth.userJWT;
-    const response = await fetch(
-      `https://trackapi.nutritionix.com/v2/weight/log`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-jwt': jwt,
-        },
-        method: 'PUT',
-        body: JSON.stringify({weights}),
-      },
-    );
+  return async (dispatch: Dispatch) => {
+    const response = await userLogService.updateWeightlog(weights);
 
-    const result = await response.json();
+    const result = response.data;
 
-    if (result.weights)
+    if (result.weights) {
       dispatch({
         type: userLogActionTypes.UPDATE_WEIGHT_LOG,
         weights: result.weights,
       });
+    }
   };
 };
 
@@ -158,20 +132,16 @@ export const getUserExerciseslog = (
   return async (dispatch: Dispatch, useState: () => RootState) => {
     endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
 
-    const jwt = useState().auth.userJWT;
-    const response = await fetch(
-      `https://trackapi.nutritionix.com/v2/exercise/log${
-        userId ? `/${userId}` : ''
-      }?offset=${offset}&begin=${beginDate}&end=${endDate}&limit=${'500'}&timezone=${'US/Eastern'}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-jwt': jwt,
-        },
-      },
-    );
+    const timezone = useState().auth.userData.timezone;
+    const response = await userLogService.getUserExerciseslog({
+      beginDate,
+      endDate,
+      offset,
+      userId,
+      timezone,
+    });
 
-    const result = await response.json();
+    const result = response.data;
 
     dispatch({
       type: userLogActionTypes.GET_USER_EXERCISES_LOG,
@@ -182,46 +152,23 @@ export const getUserExerciseslog = (
 
 export const addExerciseToLog = (query: string) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
-    const jwt = useState().auth.userJWT;
     const selectedDate = useState().userLog.selectedDate;
 
-    const checkResponse = await fetch(
-      `https://trackapi.nutritionix.com/v2/natural/exercise`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-jwt': jwt,
-        },
-        method: 'POST',
-        body: JSON.stringify({query}),
-      },
-    );
+    const checkResponse = await userLogService.getExerciseByQuery(query);
 
-    const checkResult = await checkResponse.json();
+    const checkResult = checkResponse.data;
 
     if (checkResult.exercises?.length > 0) {
-      const response = await fetch(
-        `https://trackapi.nutritionix.com/v2/exercise/log`,
+      const response = await userLogService.addExerciseLog([
         {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-user-jwt': jwt,
-          },
-          method: 'POST',
-          body: JSON.stringify({
-            exercises: [
-              {
-                ...checkResult.exercises[0],
-                timestamp: moment(selectedDate)
-                  .hours(moment().hours())
-                  .minutes(moment().minutes()),
-              },
-            ],
-          }),
+          ...checkResult.exercises[0],
+          timestamp: moment(selectedDate)
+            .hours(moment().hours())
+            .minutes(moment().minutes()),
         },
-      );
+      ]);
 
-      const result = await response.json();
+      const result = response.data;
 
       dispatch({
         type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
@@ -235,47 +182,24 @@ export const addExerciseToLog = (query: string) => {
 
 export const updateExerciseToLog = (query: string, exercise: any) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
-    const jwt = useState().auth.userJWT;
     const selectedDate = useState().userLog.selectedDate;
 
-    const checkResponse = await fetch(
-      `https://trackapi.nutritionix.com/v2/natural/exercise`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-jwt': jwt,
-        },
-        method: 'POST',
-        body: JSON.stringify({query}),
-      },
-    );
+    const checkResponse = await userLogService.getExerciseByQuery(query);
 
-    const checkResult = await checkResponse.json();
+    const checkResult = checkResponse.data;
 
     if (checkResult.exercises?.length > 0) {
-      const response = await fetch(
-        `https://trackapi.nutritionix.com/v2/exercise/log`,
+      const response = await userLogService.updateExerciseLog([
         {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-user-jwt': jwt,
-          },
-          method: 'PUT',
-          body: JSON.stringify({
-            exercises: [
-              {
-                ...exercise,
-                ...checkResult.exercises[0],
-                timestamp: moment(selectedDate)
-                  .hours(moment().hours())
-                  .minutes(moment().minutes()),
-              },
-            ],
-          }),
+          ...exercise,
+          ...checkResult.exercises[0],
+          timestamp: moment(selectedDate)
+            .hours(moment().hours())
+            .minutes(moment().minutes()),
         },
-      );
+      ]);
 
-      const result = await response.json();
+      const result = response.data;
 
       dispatch({
         type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
@@ -303,7 +227,6 @@ export const addFoodToLog = (foodArray: any, loggingOptions: any) => {
       loggingOptions.meal_type ||
       guessMealTypeByTime(moment(loggingOptions.consumed_at).hour());
 
-    const jwt = useState().auth.userJWT;
     const timezone = useState().auth.userData.timezone;
 
     // if (loggingOptions.sing)
@@ -318,16 +241,12 @@ export const addFoodToLog = (foodArray: any, loggingOptions: any) => {
       delete food.public_id;
     });
 
-    const response = await fetch(`https://trackapi.nutritionix.com/v2/log`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-user-jwt': jwt,
-      },
-      method: 'POST',
-      body: JSON.stringify({...loggingOptions, foods: foodArray}),
-    });
+    const response = await userLogService.addFoodToLog(
+      foodArray,
+      loggingOptions,
+    );
 
-    const result = await response.json();
+    const result = response.data;
 
     dispatch({
       type: userLogActionTypes.ADD_FOOD_TO_LOG,
@@ -338,28 +257,21 @@ export const addFoodToLog = (foodArray: any, loggingOptions: any) => {
 
 export const DeleteFoodFromLog = (foodIds: Array<any>) => {
   return async (dispatch: Dispatch) => {
-    // const jwt = useState().auth.userJWT;
+    const response = await userLogService.deleteFoodFromLog(foodIds);
+    console.log('DeleteFoodFromLog', response);
+    const result = response.data;
 
-    // const response = await fetch(`https://trackapi.nutritionix.com/v2/log`, {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'x-user-jwt': jwt,
-    //   },
-    //   method: 'DELETE',
-    //   body: JSON.stringify({foods: foodIds}),
-    // });
-
-    // const result = await response.json();
-
-    dispatch({
-      type: userLogActionTypes.DELETE_FOOD_FROM_LOG,
-      foodIds: foodIds.map(item => item.id),
-    });
+    if (result.id) {
+      dispatch({
+        type: userLogActionTypes.DELETE_FOOD_FROM_LOG,
+        foodIds: foodIds.map(item => item.id),
+      });
+    }
   };
 };
 
 export const setDayNotes = (targetDate: any, newNotes: any) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (dispatch: Dispatch) => {
     const data = {
       dates: [
         {
@@ -369,20 +281,10 @@ export const setDayNotes = (targetDate: any, newNotes: any) => {
       ],
     };
 
-    const jwt = useState().auth.userJWT;
-    const response = await fetch(
-      `https://trackapi.nutritionix.com/v2/reports/totals`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-jwt': jwt,
-        },
-        body: JSON.stringify(data),
-      },
-    );
+    const response = await userLogService.setDayNotes(data);
 
-    const totals = await response.json();
+    const totals = response.data;
+
     dispatch({
       type: userLogActionTypes.SET_DAY_NOTES,
       totals: totals.dates || [],

@@ -26,7 +26,9 @@ export default (state: any = initialState, action: AnyAction) => {
       const newWeights = state.weights.map((item: any) => {
         if (item.id === action.weights[0].id) {
           return action.weights[0];
-        } else return item;
+        } else {
+          return item;
+        }
       });
       return {...state, weights: newWeights};
     case userLogActionTypes.GET_USER_EXERCISES_LOG:
@@ -38,7 +40,9 @@ export default (state: any = initialState, action: AnyAction) => {
         if (item.id === action.exercises[0].id) {
           console.log(action.exercises[0]);
           return action.exercises[0];
-        } else return item;
+        } else {
+          return item;
+        }
       });
       return {...state, weights: newExercises};
     case userLogActionTypes.ADD_FOOD_TO_LOG:

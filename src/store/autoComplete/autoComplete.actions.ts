@@ -6,7 +6,7 @@ export const updateSearchResults = (query: string) => {
   return async (dispatch: Dispatch) => {
     const result = await autoCompleteService.getInstant(query);
 
-    const searchResult = await result.data;
+    const searchResult = result.data;
 
     dispatch({
       type: autoCompleteActionTypes.UPDATE_SEARCH_RESULTS,
@@ -23,7 +23,7 @@ export const showSuggestedFoods = (mealType: number) => {
   return async (dispatch: Dispatch) => {
     const result = await autoCompleteService.getSuggestedFoods(mealType);
 
-    const response = await result.data;
+    const response = result.data;
 
     const suggestedFoods = response.foods;
 
