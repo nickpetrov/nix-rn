@@ -80,6 +80,8 @@ export interface BasketFoodProps {
   upc: null;
   tags: Array<TagProp>;
   photo: PhotoProps;
+  uuid?: number | null;
+  public_id?: number | null;
 }
 
 export interface BasketState {

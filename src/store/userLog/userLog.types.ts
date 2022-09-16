@@ -21,6 +21,14 @@ export enum userLogActionTypes {
   UPDATE_USER_EXERCISES_LOG = 'UPDATE_USER_EXERCISES_LOG',
 }
 
+export interface loggingOptionsProps {
+  aggregate: string;
+  single: boolean;
+  meal_type: number;
+  serving_qty: number;
+  consumed_at: string;
+}
+
 export interface ExerciseProps {
   compendium_code: number;
   duration_min: number;

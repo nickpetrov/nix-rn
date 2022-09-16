@@ -34,7 +34,8 @@ import * as userLogActions from 'store/userLog/userLog.actions';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {BasketFoodProps} from 'store/basket/basket.types';
+import {BasketFoodProps, NutrientProps} from 'store/basket/basket.types';
+import {loggingOptionsProps} from 'store/userLog/userLog.types';
 
 // constants
 import {Colors} from 'constants/Colors';
@@ -46,14 +47,6 @@ interface BasketScreenProps {
   navigation: NativeStackNavigationProp<any>;
 }
 
-interface loggingOptionsProps {
-  aggregate: string;
-  single: boolean;
-  meal_type: number;
-  serving_qty: number;
-  consumed_at: string;
-}
-
 export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
   const {foods, isSingleFood, servings, recipeName, consumed_at, meal_type} =
     useSelector(state => state.basket);
@@ -63,7 +56,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
   let totalFat = 0;
   let totalCarb = 0;
 
-  foods.map((food: any) => {
+  foods.map((food: BasketFoodProps) => {
     food = {
       ...food,
       ...NixHelpers.convertFullNutrientsToNfAttributes(food.full_nutrients),
@@ -71,8 +64,9 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
 
     totalCalories +=
       food.nf_calories ||
-      food?.full_nutrients?.filter((item: any) => item.attr_id === 208)[0]
-        .value;
+      food?.full_nutrients?.filter(
+        (item: NutrientProps) => item.attr_id === 208,
+      )[0].value;
     totalProtein += food.nf_protein;
     totalFat += food.nf_total_fat;
     totalCarb += food.nf_total_carbohydrate;
@@ -103,7 +97,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
     if (isSingleFood) {
       if (servings > 1) {
         const mult = 1 / parseFloat(servings);
-        adjustedFoods = foods.map((foodObj: any) => {
+        adjustedFoods = foods.map((foodObj: BasketFoodProps) => {
           foodObj.meal_type = meal_type;
           return multiply(foodObj, mult, foodObj.serving_qty * mult);
         });

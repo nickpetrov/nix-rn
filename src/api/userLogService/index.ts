@@ -1,4 +1,10 @@
 import apiClient from 'api';
+import {BasketFoodProps} from 'store/basket/basket.types';
+import {
+  ExerciseProps,
+  loggingOptionsProps,
+  WeightProps,
+} from 'store/userLog/userLog.types';
 
 const userLogService = {
   async getTotals({
@@ -65,12 +71,12 @@ const userLogService = {
       },
     });
   },
-  async addWeightlog(weights: any) {
+  async addWeightlog(weights: Array<WeightProps>) {
     return await apiClient.post('weight/log', {
       weights,
     });
   },
-  async updateWeightlog(weights: any) {
+  async updateWeightlog(weights: Array<WeightProps>) {
     return await apiClient.put('weight/log', {
       weights,
     });
@@ -101,17 +107,20 @@ const userLogService = {
       query,
     });
   },
-  async addExerciseLog(exercises: any) {
+  async addExerciseLog(exercises: Array<ExerciseProps>) {
     return await apiClient.post('exercise/log', {
       exercises,
     });
   },
-  async updateExerciseLog(exercises: any) {
+  async updateExerciseLog(exercises: Array<ExerciseProps>) {
     return await apiClient.put('exercise/log', {
       exercises,
     });
   },
-  async addFoodToLog(foods: any, loggingOptions: any) {
+  async addFoodToLog(
+    foods: Array<BasketFoodProps>,
+    loggingOptions: Partial<loggingOptionsProps>,
+  ) {
     return await apiClient.post('log', {
       foods,
       ...loggingOptions,

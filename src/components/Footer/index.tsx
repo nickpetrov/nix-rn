@@ -2,11 +2,10 @@
 import React from 'react';
 
 // components
-import {View, SafeAreaView} from 'react-native';
+import {View, SafeAreaView, Image} from 'react-native';
 import FooterItem from './FooterItem';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-// import ImageSVG from 'expo-svg-uri';
+import {SvgUri} from 'react-native-svg';
 
 // styles
 import {styles} from './Footer.styles';
@@ -17,9 +16,13 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 // constants
 import {Routes} from 'navigation/Routes';
 
+const {uri} = Image.resolveAssetSource(require('assets/recommended.svg'));
+
 interface FooterProps {
   hide: boolean;
-  style?: any;
+  style?: {
+    [key: string]: string | number;
+  };
   navigation: NativeStackNavigationProp<any>;
 }
 
@@ -64,13 +67,13 @@ const Footer: React.FC<FooterProps> = props => {
         <FooterItem
           title="Suggested"
           onPress={() => props.navigation.navigate(Routes.Suggested)}>
-          {/* <ImageSVG
-            source={require('assets/recommended.svg')}
-            width="50"
+          <SvgUri
+            uri={uri}
+            width="20"
             height="28"
             viewBox="0 0 10 16"
             preserveAspectRatio="none"
-          /> */}
+          />
         </FooterItem>
         <FooterItem
           title="Preferences"

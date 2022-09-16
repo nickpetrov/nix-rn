@@ -12,7 +12,9 @@ import {styles} from './VoiceInput.styles';
 interface VoiceRecognitionControlsProps {
   onPress: () => void;
   iconName: string;
-  style?: any;
+  style?: {
+    [key: string]: string | number;
+  };
 }
 const VoiceRecognitionControls: React.FC<
   VoiceRecognitionControlsProps
@@ -31,7 +33,9 @@ const VoiceRecognitionControls: React.FC<
 };
 
 interface VoiceInputProps {
-  style: any;
+  style: {
+    [key: string]: string | number;
+  };
   value: string;
   onChangeText: (v: string) => void;
   placeholder: string;

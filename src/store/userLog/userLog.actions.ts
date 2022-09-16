@@ -8,9 +8,15 @@ import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import userLogService from 'api/userLogService';
 
 // types
-import {userLogActionTypes} from './userLog.types';
+import {
+  ExerciseProps,
+  loggingOptionsProps,
+  userLogActionTypes,
+  WeightProps,
+} from './userLog.types';
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
+import {BasketFoodProps} from 'store/basket/basket.types';
 
 export const getDayTotals = (
   beginDate: string,
@@ -99,7 +105,7 @@ export const getUserWeightlog = (
   };
 };
 
-export const addWeightlog = (weights: any) => {
+export const addWeightlog = (weights: Array<WeightProps>) => {
   return async (dispatch: Dispatch) => {
     const response = await userLogService.addWeightlog(weights);
 
@@ -114,7 +120,7 @@ export const addWeightlog = (weights: any) => {
   };
 };
 
-export const updateWeightlog = (weights: any) => {
+export const updateWeightlog = (weights: Array<WeightProps>) => {
   return async (dispatch: Dispatch) => {
     const response = await userLogService.updateWeightlog(weights);
 
@@ -190,7 +196,7 @@ export const addExerciseToLog = (query: string) => {
   };
 };
 
-export const updateExerciseToLog = (query: string, exercise: any) => {
+export const updateExerciseToLog = (query: string, exercise: ExerciseProps) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
     const selectedDate = useState().userLog.selectedDate;
 
@@ -223,7 +229,10 @@ export const updateExerciseToLog = (query: string, exercise: any) => {
   };
 };
 
-export const addFoodToLog = (foodArray: any, loggingOptions: any) => {
+export const addFoodToLog = (
+  foodArray: Array<BasketFoodProps>,
+  loggingOptions: Partial<loggingOptionsProps>,
+) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
     // logging options:
     // "aggregate": "string",
@@ -243,7 +252,7 @@ export const addFoodToLog = (foodArray: any, loggingOptions: any) => {
 
     // if (loggingOptions.sing)
 
-    foodArray.map((food: any) => {
+    foodArray.map((food: BasketFoodProps) => {
       food.consumed_at =
         moment(loggingOptions.consumed_at).format('YYYY-MM-DDTHH:mm:ss') +
         moment.tz(timezone).format('Z');
@@ -269,7 +278,7 @@ export const addFoodToLog = (foodArray: any, loggingOptions: any) => {
   };
 };
 
-export const DeleteFoodFromLog = (foodIds: Array<any>) => {
+export const DeleteFoodFromLog = (foodIds: Array<{id: number}>) => {
   return async (dispatch: Dispatch) => {
     const response = await userLogService.deleteFoodFromLog(foodIds);
 
@@ -284,7 +293,7 @@ export const DeleteFoodFromLog = (foodIds: Array<any>) => {
   };
 };
 
-export const setDayNotes = (targetDate: any, newNotes: any) => {
+export const setDayNotes = (targetDate: string, newNotes: string) => {
   return async (dispatch: Dispatch) => {
     const data = {
       dates: [

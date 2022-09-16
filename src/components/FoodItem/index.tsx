@@ -13,7 +13,11 @@ import {multiply} from 'helpers/multiply';
 import {styles} from './FoodItem.styles';
 
 // types
-import {BasketFoodProps} from 'store/basket/basket.types';
+import {
+  BasketFoodProps,
+  MeasureProps,
+  NutrientProps,
+} from 'store/basket/basket.types';
 
 interface FoodItemProps {
   foodObj: BasketFoodProps;
@@ -66,7 +70,7 @@ const FoodItem: React.FC<FoodItemProps> = ({
     }
   }, [food, itemIndex, itemChangeCallback]);
 
-  const measures = alt_measures.map((item: any) => {
+  const measures = alt_measures.map((item: MeasureProps) => {
     return {
       label: item.measure,
       value: item.measure,
@@ -75,10 +79,10 @@ const FoodItem: React.FC<FoodItemProps> = ({
 
   const measureChange = (newMeasureName: string) => {
     const prevMeasure = alt_measures.filter(
-      (item: any) => item.measure === servingUnit,
+      (item: MeasureProps) => item.measure === servingUnit,
     );
     const newMeasure = alt_measures.filter(
-      (item: any) => item.measure === newMeasureName,
+      (item: MeasureProps) => item.measure === newMeasureName,
     );
     setServingUnit(newMeasure[0].measure);
     serving_weight_grams = newMeasure[0].serving_weight;
@@ -137,7 +141,7 @@ const FoodItem: React.FC<FoodItemProps> = ({
                 style={{width: '100%', minWidth: '100%'}}
                 selectedValue={servingUnit}
                 onValueChange={measureChange}>
-                {measures.map((item: any) => (
+                {measures.map((item: {label: string; value: string}) => (
                   <Picker.Item
                     key={item.value}
                     label={item.label}
@@ -157,7 +161,7 @@ const FoodItem: React.FC<FoodItemProps> = ({
             {nfCalories
               ? nfCalories.toFixed(0)
               : full_nutrients
-                  .filter((item: any) => item.attr_id === 208)[0]
+                  .filter((item: NutrientProps) => item.attr_id === 208)[0]
                   .value.toFixed(0)}
           </Text>
           <Text>cal</Text>

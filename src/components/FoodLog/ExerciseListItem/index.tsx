@@ -4,12 +4,15 @@ import React from 'react';
 // components
 import {Text, TouchableOpacity, View} from 'react-native';
 
+// types
+import {ExerciseProps} from 'store/userLog/userLog.types';
+
 // styles
 import {styles} from './ExerciseListItem.styles';
 
 interface ExerciseListItemProps {
   onPress: () => void;
-  exercise: any;
+  exercise: ExerciseProps;
 }
 
 const ExerciseListItem: React.FC<ExerciseListItemProps> = ({

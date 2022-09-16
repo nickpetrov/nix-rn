@@ -10,8 +10,12 @@ import {styles} from './FooterItem.styles';
 interface FooterItemProps {
   onPress: () => void;
   children: React.ReactNode;
-  titleStyle?: any;
-  style?: any;
+  titleStyle?: {
+    [key: string]: string | number;
+  };
+  style?: {
+    [key: string]: string | number;
+  };
   title: string;
 }
 

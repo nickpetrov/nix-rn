@@ -160,7 +160,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
               source={require('assets/images/icon.png')}
               resizeMode="contain"
             />
-            {/* <SvgUri width='100%' source={require('../assets/images/logo2.svg')} resizeMode='contain' /> */}
           </View>
           <Text style={styles.title}>Track</Text>
           <Text style={styles.subtitle}>Food Tracker by Nutritionix</Text>
@@ -173,7 +172,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           <Text style={{...styles.noteText, ...styles.fbDisclamer}}>
             The app does not post to Facebook
           </Text>
-          {Platform.OS == 'ios' ? (
+          {Platform.OS === 'ios' ? (
             <AppleButton
               buttonStyle={AppleButton.Style.BLACK}
               buttonType={AppleButton.Type.SIGN_IN}

@@ -11,7 +11,9 @@ interface RadioButtonProps {
   onPress: () => void;
   selected: boolean;
   text: string;
-  style?: any;
+  style?: {
+    [key: string]: string | number;
+  };
 }
 
 const RadioButton: React.FC<RadioButtonProps> = props => {

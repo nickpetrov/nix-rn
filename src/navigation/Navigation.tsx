@@ -1,7 +1,10 @@
 // utils
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import {
+  createDrawerNavigator,
+  DrawerNavigationProp,
+} from '@react-navigation/drawer';
 
 // components
 import {SideMenu} from './components/SideMenu';
@@ -43,6 +46,7 @@ import {
 // constants
 import {Routes} from './Routes';
 import {Colors} from 'constants';
+import {ParamListBase} from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -98,7 +102,11 @@ const PreferencesNavigation = () => {
   );
 };
 
-const LoggedInNavigationOptions = ({navigation}: any) => ({
+const LoggedInNavigationOptions = ({
+  navigation,
+}: {
+  navigation: DrawerNavigationProp<ParamListBase>;
+}) => ({
   headerTintColor: '#fff',
   headerStyle: {
     backgroundColor: Colors.Primary,
@@ -252,7 +260,7 @@ const LoginNavigation = () => {
 export const Navigation = () => {
   return (
     <Stack.Navigator
-    //   screenOptions={{...TransitionPresets.FadeFromBottomAndroid}}>
+    // screenOptions={{ ...TransitionPresets.FadeFromBottomAndroid }}
     >
       <Stack.Screen
         name={Routes.Startup}

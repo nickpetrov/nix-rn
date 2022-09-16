@@ -13,8 +13,10 @@ import {
   Share,
   Linking,
   Alert,
+  Image,
+  ScrollView,
 } from 'react-native';
-// import {SvgUri} from 'react-native-svg';
+import {SvgUri} from 'react-native-svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixButton} from 'components/NixButton';
 
@@ -32,6 +34,8 @@ import {styles} from './SideMenu.styles';
 
 // types
 import {DrawerNavigationProp} from '@react-navigation/drawer';
+
+const {uri} = Image.resolveAssetSource(require('assets/images/logo2.svg'));
 
 export const SideMenu: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
@@ -202,11 +206,8 @@ export const SideMenu: React.FC = () => {
   }, []);
 
   return (
-    <View style={{flex: 1}}>
-      {/* TODO - add icons to menu items */}
-      <SafeAreaView
-        // forceInset={{top: 'always', hotizontal: 'never'}}
-        style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
+      <ScrollView style={{flex: 1, paddingVertical: 20}}>
         {/* Need to manually add items to the sidedrawer */}
         {menuItems.map((item, index) => (
           <TouchableWithoutFeedback
@@ -270,19 +271,20 @@ export const SideMenu: React.FC = () => {
             onPress={() => openFbHandler()}
           />
           <TouchableWithoutFeedback
+            style={{marginTop: 10}}
             onPress={() => openWebUrlHandler('https://www.nutritionix.com')}>
             <View>
-              {/* <SvgUri
-                uri={require('assets/images/logo2.svg')}
+              <SvgUri
+                uri={uri}
                 width="100%"
-                height="100"
+                height="50"
                 viewBox="0 0 1000 219"
                 preserveAspectRatio="none"
-              /> */}
+              />
             </View>
           </TouchableWithoutFeedback>
         </View>
-      </SafeAreaView>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };

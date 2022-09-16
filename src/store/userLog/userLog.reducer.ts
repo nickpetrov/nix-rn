@@ -4,7 +4,12 @@ import {AnyAction} from 'redux';
 
 // types
 import {authActionTypes} from 'store/auth/auth.types';
-import {userLogActionTypes, UserLogState} from './userLog.types';
+import {
+  ExerciseProps,
+  userLogActionTypes,
+  UserLogState,
+  WeightProps,
+} from './userLog.types';
 
 const initialState: UserLogState = {
   foods: [],
@@ -23,7 +28,7 @@ export default (state: UserLogState = initialState, action: AnyAction) => {
     case userLogActionTypes.ADD_WEIGHT_LOG:
       return {...state, weights: state.weights.concat(action.weights)};
     case userLogActionTypes.UPDATE_WEIGHT_LOG:
-      const newWeights = state.weights.map((item: any) => {
+      const newWeights = state.weights.map((item: WeightProps) => {
         if (item.id === action.weights[0].id) {
           return action.weights[0];
         } else {
@@ -36,7 +41,7 @@ export default (state: UserLogState = initialState, action: AnyAction) => {
     case userLogActionTypes.ADD_USER_EXERCISES_LOG:
       return {...state, exercises: state.exercises.concat(action.exercises)};
     case userLogActionTypes.UPDATE_USER_EXERCISES_LOG:
-      const newExercises = state.exercises.map((item: any) => {
+      const newExercises = state.exercises.map((item: ExerciseProps) => {
         if (item.id === action.exercises[0].id) {
           console.log(action.exercises[0]);
           return action.exercises[0];
