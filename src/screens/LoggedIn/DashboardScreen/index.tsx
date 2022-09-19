@@ -17,6 +17,7 @@ import Footer from 'components/Footer';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
+import useLocalNotification from 'hooks/useLocalNotification';
 
 // actinos
 import {changeSelectedDay} from 'store/userLog/userLog.actions';
@@ -24,15 +25,13 @@ import {changeSelectedDay} from 'store/userLog/userLog.actions';
 // constant
 import {Routes} from 'navigation/Routes';
 
-// helpers
-import {scheduleNotifications} from 'helpers/notificationsHelper';
-
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp} from '@react-navigation/native';
 
 // styles
 import {styles} from './DashboardScreen.styles';
+import PushNotification from 'react-native-push-notification';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<any>;
@@ -45,9 +44,23 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 }) => {
   const dispatch = useDispatch();
   const userData = useSelector(state => state.auth.userData);
+  useLocalNotification({
+    weekday: userData.weekday_reminders_enabled,
+    weekend: userData.weekend_reminders_enabled,
+  });
   const {selectedDate} = useSelector(state => state.userLog);
   const [showPhotoUploadMessage, setShowPhotoUploadMessage] = useState(false);
   const infoMessage = route.params?.infoMessage;
+
+  useEffect(() => {
+    PushNotification.localNotificationSchedule({
+      channelId: 'reminders',
+      title: 'Test',
+      message:
+        'Your food log looks a bit empty. Tap here to log what you ate today.',
+      date: new Date(Date.now() + 10 * 1000),
+    });
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -68,14 +81,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       ),
     });
   }, [navigation]);
-
-  useEffect(() => {
-    //TODO - move notificationss init to Context.
-    scheduleNotifications(
-      userData.weekday_reminders_enabled,
-      userData.weekend_reminders_enabled,
-    );
-  }, [userData]);
 
   useEffect(() => {
     if (infoMessage === 'success') {
