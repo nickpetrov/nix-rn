@@ -56,10 +56,10 @@ const userLogService = {
     offset,
     timezone,
   }: {
-    beginDate: string;
-    endDate: string;
-    offset: number | undefined;
-    timezone: string;
+    beginDate?: string;
+    endDate?: string;
+    offset?: number | undefined;
+    timezone?: string;
   }) {
     return await apiClient.get('weight/log', {
       params: {

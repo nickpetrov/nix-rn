@@ -10,12 +10,14 @@ import authReducer from './auth/auth.reducer';
 import autoCompleteReducer from './autoComplete/autoComplete.reducer';
 import basketReducer from './basket/basket.reducer';
 import userLogReducer from './userLog/userLog.reducer';
+import statsReducer from './stats/stats.reducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   autoComplete: autoCompleteReducer,
   basket: basketReducer,
   userLog: userLogReducer,
+  stats: statsReducer,
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));
