@@ -16,11 +16,15 @@ import {getDayTotals} from 'store/stats/stats.actions';
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {TotalProps} from 'store/userLog/userLog.types';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
+
+// constants
+import {Routes} from 'navigation/Routes';
 
 interface NixDietGraphProps {
   initialDisplayDate: number;
   title: string;
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Stats>;
   target: number;
   nutrientId?: number;
 }

@@ -18,12 +18,17 @@ interface NixButtonProps {
     | 'energized'
     | 'royal'
     | 'dark'
-    | 'default';
+    | 'default'
+    | 'outline'
+    | 'gray';
   disabled?: boolean;
   onTap?: () => void;
   onPress?: () => void;
   title?: string;
   iconName?: string;
+  buttonTextStyles?: {
+    [key: string]: string | number;
+  };
 }
 
 export const NixButton: React.FC<NixButtonProps> = ({
@@ -77,6 +82,15 @@ export const NixButton: React.FC<NixButtonProps> = ({
       buttonTypeStyles = styles.dark;
       buttonTypeTextStyles = styles.darkText;
       break;
+    }
+    case 'outline': {
+      buttonTypeStyles = styles.outline;
+      buttonTypeTextStyles = styles.outlineText;
+      break;
+    }
+    case 'gray': {
+      buttonTypeStyles = styles.gray;
+      buttonTypeTextStyles = styles.grayText;
     }
     default: {
       buttonTypeStyles = {

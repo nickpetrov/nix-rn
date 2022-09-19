@@ -26,6 +26,7 @@ import * as autocompleteActions from 'store/autoComplete/autoComplete.actions';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AutoCompleteFoodProps} from 'store/autoComplete/autoComplete.types';
 import {RouteProp} from '@react-navigation/native';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -34,8 +35,11 @@ import {Routes} from 'navigation/Routes';
 import {styles} from './AutocompleteScreen.styles';
 
 interface AutocompleteScreenProps {
-  navigation: NativeStackNavigationProp<any>;
-  route: RouteProp<any>;
+  navigation: NativeStackNavigationProp<
+    StackNavigatorParamList,
+    Routes.Autocomplete
+  >;
+  route: RouteProp<StackNavigatorParamList, Routes.Autocomplete>;
 }
 
 export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({

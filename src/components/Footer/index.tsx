@@ -12,6 +12,7 @@ import {styles} from './Footer.styles';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -23,7 +24,10 @@ interface FooterProps {
   style?: {
     [key: string]: string | number;
   };
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NativeStackNavigationProp<
+    StackNavigatorParamList,
+    Routes.Dashboard | Routes.Stats
+  >;
 }
 
 const Footer: React.FC<FooterProps> = props => {

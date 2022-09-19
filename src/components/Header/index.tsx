@@ -20,9 +20,13 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 // constants
 import {Routes} from 'navigation/Routes';
 import {useRoute} from '@react-navigation/native';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 interface HeaderProps {
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NativeStackNavigationProp<
+    StackNavigatorParamList,
+    Routes.Autocomplete | Routes.Dashboard | Routes.Basket
+  >;
   hideScannerButton?: boolean;
 }
 

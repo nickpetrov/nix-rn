@@ -278,13 +278,11 @@ export const addFoodToLog = (
   };
 };
 
-export const DeleteFoodFromLog = (foodIds: Array<{id: number}>) => {
+export const DeleteFoodFromLog = (foodIds: Array<{id: string}>) => {
   return async (dispatch: Dispatch) => {
     const response = await userLogService.deleteFoodFromLog(foodIds);
 
-    const result = response.data;
-
-    if (result.id) {
+    if (response.status === 200) {
       dispatch({
         type: userLogActionTypes.DELETE_FOOD_FROM_LOG,
         foodIds: foodIds.map(item => item.id),

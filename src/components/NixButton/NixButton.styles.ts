@@ -73,4 +73,19 @@ export const styles = StyleSheet.create({
   darkText: {
     color: '#fff',
   },
+  outline: {
+    backgroundColor: 'rgba(0,0,0,0)',
+    borderWidth: 1,
+    borderColor: '#444',
+    borderRadius: 5,
+  },
+  outlineText: {
+    color: '#444',
+  },
+  gray: {
+    backgroundColor: '#ccc',
+  },
+  grayText: {
+    color: '#444',
+  },
 });

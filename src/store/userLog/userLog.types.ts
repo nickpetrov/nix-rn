@@ -105,6 +105,10 @@ export interface FoodProps {
   source: number;
   tags: Array<TagProp>;
   upc: null;
+  net_carbs: number;
+  vitamin_d: number;
+  caffeine: number;
+  notes: string;
 }
 
 export interface UserLogState {

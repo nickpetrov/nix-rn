@@ -126,7 +126,7 @@ const userLogService = {
       ...loggingOptions,
     });
   },
-  async deleteFoodFromLog(foodIds: Array<{id: number}>) {
+  async deleteFoodFromLog(foodIds: Array<{id: string}>) {
     return await apiClient.delete('log', {
       data: {
         foods: foodIds,

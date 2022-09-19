@@ -35,16 +35,18 @@ import * as userLogActions from 'store/userLog/userLog.actions';
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {BasketFoodProps, NutrientProps} from 'store/basket/basket.types';
-import {loggingOptionsProps} from 'store/userLog/userLog.types';
+import {FoodProps, loggingOptionsProps} from 'store/userLog/userLog.types';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
+import {Routes} from 'navigation/Routes';
 import {Colors} from 'constants/Colors';
 
 // styles
 import {styles} from './BasketScreen.styles';
 
 interface BasketScreenProps {
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Basket>;
 }
 
 export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
@@ -119,7 +121,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
     dispatch(userLogActions.addFoodToLog(adjustedFoods, loggingOptions)).then(
       () => {
         dispatch(basketActions.reset());
-        navigation.navigate('Dashboard');
+        navigation.navigate(Routes.Dashboard);
       },
     );
   };
@@ -150,8 +152,10 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
   };
 
   const changeFoodAtBasket = useCallback(
-    (foodObj: BasketFoodProps, index: number) => {
-      dispatch(basketActions.updateFoodAtBasket(foodObj, index));
+    (foodObj: BasketFoodProps | FoodProps, index: number) => {
+      dispatch(
+        basketActions.updateFoodAtBasket(foodObj as BasketFoodProps, index),
+      );
     },
     [dispatch],
   );

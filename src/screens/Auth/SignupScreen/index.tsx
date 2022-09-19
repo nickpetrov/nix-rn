@@ -18,9 +18,13 @@ import {styles} from './SignupScreen.styles';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
+
+// constants
+import {Routes} from 'navigation/Routes';
 
 interface SignupScreenProps {
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Signup>;
 }
 
 export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {

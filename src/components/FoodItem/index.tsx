@@ -18,11 +18,15 @@ import {
   MeasureProps,
   NutrientProps,
 } from 'store/basket/basket.types';
+import {FoodProps} from 'store/userLog/userLog.types';
 
 interface FoodItemProps {
-  foodObj: BasketFoodProps;
-  itemChangeCallback?: (foodObj: BasketFoodProps, index: number) => void;
-  itemIndex: number;
+  foodObj: BasketFoodProps | FoodProps;
+  itemChangeCallback?: (
+    foodObj: BasketFoodProps | FoodProps,
+    index: number,
+  ) => void;
+  itemIndex?: number;
   onTap?: () => void;
 }
 

@@ -13,12 +13,18 @@ import {styles} from './MealListItem.styles';
 
 // constants
 import {Routes} from 'navigation/Routes';
+
+// types
 import {FoodProps, mealNameProps} from 'store/userLog/userLog.types';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 interface MealListItemProps {
   foodObj: FoodProps;
   mealName?: mealNameProps;
-  navigation?: NativeStackNavigationProp<any>;
+  navigation?: NativeStackNavigationProp<
+    StackNavigatorParamList,
+    Routes.Autocomplete | Routes.Dashboard
+  >;
   onTap?: () => void;
 }
 

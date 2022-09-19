@@ -11,6 +11,7 @@ import autoCompleteReducer from './autoComplete/autoComplete.reducer';
 import basketReducer from './basket/basket.reducer';
 import userLogReducer from './userLog/userLog.reducer';
 import statsReducer from './stats/stats.reducer';
+import foodsReducer from './foods/foods.reducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   basket: basketReducer,
   userLog: userLogReducer,
   stats: statsReducer,
+  foods: foodsReducer,
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));

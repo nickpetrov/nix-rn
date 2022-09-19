@@ -30,8 +30,11 @@ import {Routes} from 'navigation/Routes';
 //styles
 import {styles} from './LoginScreen.styles';
 
+// types
+import {StackNavigatorParamList} from 'navigation/navigation.types';
+
 interface LoginScreenProps {
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Login>;
 }
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {

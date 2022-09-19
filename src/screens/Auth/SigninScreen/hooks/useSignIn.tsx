@@ -12,7 +12,12 @@ import {signin} from 'store/auth/auth.actions';
 // constants
 import {Routes} from 'navigation/Routes';
 
-export const useSignIn = (navigation: NativeStackNavigationProp<any>) => {
+// types
+import {StackNavigatorParamList} from 'navigation/navigation.types';
+
+export const useSignIn = (
+  navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Signin>,
+) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [errorTextServer, setErrorTextServer] = useState('');

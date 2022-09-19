@@ -25,9 +25,13 @@ import {styles} from './SigninScreen.styles';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
+
+// constants
+import {Routes} from 'navigation/Routes';
 
 interface SigninScreenProps {
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Signin>;
 }
 
 export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {

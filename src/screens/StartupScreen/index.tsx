@@ -17,10 +17,16 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 // actions
 import {getUserDataFromAPI, setUserJwt} from 'store/auth/auth.actions';
 import {mergeBasket} from 'store/basket/basket.actions';
+
+// types
 import {BasketState} from 'store/basket/basket.types';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 interface StartupScreenProps {
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NativeStackNavigationProp<
+    StackNavigatorParamList,
+    Routes.Startup
+  >;
 }
 
 export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {

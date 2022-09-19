@@ -17,12 +17,14 @@ import {useSelector} from 'hooks/useRedux';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './StatsScreen.styles';
 
 interface StatsScreenProps {
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Stats>;
 }
 
 export const StatsScreen: React.FC<StatsScreenProps> = ({navigation}) => {

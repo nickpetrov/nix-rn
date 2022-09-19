@@ -33,11 +33,12 @@ import {styles} from '../../SignupScreen.styles';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {CountryCodes} from './types';
 import {NutritionType} from 'api/baseService/types';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 type Props = {
   showErrorMessage: (error: string) => void;
   errorTextServer: string;
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Signup>;
 };
 
 const StepTwoForm: React.FC<Props> = ({

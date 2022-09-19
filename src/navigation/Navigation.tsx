@@ -46,10 +46,16 @@ import {
 // constants
 import {Routes} from './Routes';
 import {Colors} from 'constants';
-import {ParamListBase} from '@react-navigation/native';
 
-const Stack = createNativeStackNavigator();
-const Drawer = createDrawerNavigator();
+// types
+import {ParamListBase} from '@react-navigation/native';
+import {
+  DrawerNavigatorParamList,
+  StackNavigatorParamList,
+} from './navigation.types';
+
+const Stack = createNativeStackNavigator<StackNavigatorParamList>();
+const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
 
 const ConnectedAppsNavigation = () => {
   return (

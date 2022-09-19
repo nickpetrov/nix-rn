@@ -11,8 +11,13 @@ import {useDispatch} from 'hooks/useRedux';
 
 // actions
 import {changeSelectedDay} from 'store/userLog/userLog.actions';
+
+// types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {Routes} from '../../navigation/Routes';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
+
+// constants
+import {Routes} from 'navigation/Routes';
 
 interface HeatMapProps {
   colors?: Array<string>;
@@ -23,7 +28,7 @@ interface HeatMapProps {
   values: Array<number>;
   targets: Array<number>;
   selectedMonth: string;
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Stats>;
 }
 
 const HeatMap: React.FC<HeatMapProps> = props => {

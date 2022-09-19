@@ -31,10 +31,14 @@ import {RouteProp} from '@react-navigation/native';
 
 // styles
 import {styles} from './DashboardScreen.styles';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 interface DashboardScreenProps {
-  navigation: NativeStackNavigationProp<any>;
-  route: RouteProp<any>;
+  navigation: NativeStackNavigationProp<
+    StackNavigatorParamList,
+    Routes.Dashboard
+  >;
+  route: RouteProp<StackNavigatorParamList, Routes.Dashboard>;
 }
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({
