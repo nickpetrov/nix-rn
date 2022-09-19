@@ -31,7 +31,6 @@ import {RouteProp} from '@react-navigation/native';
 
 // styles
 import {styles} from './DashboardScreen.styles';
-import PushNotification from 'react-native-push-notification';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<any>;
@@ -51,16 +50,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const {selectedDate} = useSelector(state => state.userLog);
   const [showPhotoUploadMessage, setShowPhotoUploadMessage] = useState(false);
   const infoMessage = route.params?.infoMessage;
-
-  useEffect(() => {
-    PushNotification.localNotificationSchedule({
-      channelId: 'reminders',
-      title: 'Test',
-      message:
-        'Your food log looks a bit empty. Tap here to log what you ate today.',
-      date: new Date(Date.now() + 10 * 1000),
-    });
-  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
