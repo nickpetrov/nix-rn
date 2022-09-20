@@ -6,6 +6,7 @@ const initialState: FoodsState = {
   foodInfo: null,
   foodFindByQRcode: null,
   custom_foods: [],
+  suggested_foods: [],
 };
 
 export default (state: FoodsState = initialState, action: AnyAction) => {
@@ -19,6 +20,8 @@ export default (state: FoodsState = initialState, action: AnyAction) => {
       return {...state, foodFindByQRcode: null};
     case foodsActionTypes.GET_ALL_CUSTOM_FOOD:
       return {...state, custom_foods: action.custom_foods};
+    case foodsActionTypes.GET_ALL_SUGGESTED_FOOD:
+      return {...state, suggested_foods: action.suggested_foods};
     case foodsActionTypes.CLEAR:
       return initialState;
     default:

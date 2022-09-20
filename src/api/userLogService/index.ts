@@ -71,6 +71,14 @@ const userLogService = {
       },
     });
   },
+  async getSuggestedFood() {
+    return await apiClient.get('recommended_products.json.gz', {
+      baseURL: 'https://nix-export.s3.amazonaws.com/',
+      headers: {
+        'x-3scale-bypass': 'c49e69471a7b51beb2bb0e452ef53867385f7a5a',
+      },
+    });
+  },
   async addWeightlog(weights: Array<WeightProps>) {
     return await apiClient.post('weight/log', {
       weights,

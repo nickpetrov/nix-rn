@@ -75,3 +75,20 @@ export const getAllCustomFoods = () => {
     }
   };
 };
+
+export const getSuggestedFoods = () => {
+  return async (dispatch: Dispatch) => {
+    const response = await userLogService.getSuggestedFood();
+
+    const result = response.data;
+    if (__DEV__) {
+      console.log('all suggested foods', result.products);
+    }
+    if (result.products) {
+      dispatch({
+        type: foodsActionTypes.GET_ALL_SUGGESTED_FOOD,
+        suggested_foods: result.products,
+      });
+    }
+  };
+};
