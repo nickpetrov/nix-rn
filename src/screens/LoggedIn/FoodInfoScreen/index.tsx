@@ -1,5 +1,5 @@
 // utils
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 
 // components
 import {
@@ -53,7 +53,6 @@ export const FoodInfoScreen: React.FC<FoodInfoScreenProps> = props => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [pieChartData, setPieChartData] = useState<pieChartDataProps>();
   const dispatch = useDispatch();
-  const svg = useRef();
 
   useEffect(() => {
     setFoodObj(props.route.params?.foodObj);
@@ -218,7 +217,6 @@ export const FoodInfoScreen: React.FC<FoodInfoScreenProps> = props => {
                 logo={require('assets/icon.png')}
                 logoSize={5}
                 value={`https://nutritionix.app.link/q3?ufl=${foodObj.id}&s=${foodObj.share_key}`}
-                getRef={svg}
               />
             </View>
             <Text>

@@ -39,7 +39,10 @@ apiClient.interceptors.response.use(
     return response;
   },
   async function (error) {
-    return Promise.reject(error.response);
+    if (__DEV__) {
+      console.log('API Response error:', error);
+    }
+    return error.response;
   },
 );
 

@@ -44,7 +44,7 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Help]: undefined;
   [Routes.Suggested]: undefined;
   [Routes.Totals]: undefined;
-  [Routes.PhotoUpload]: undefined;
+  [Routes.PhotoUpload]: {barcode: string};
   [Routes.Stats]: undefined;
 }
 

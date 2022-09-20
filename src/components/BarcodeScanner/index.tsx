@@ -1,22 +1,34 @@
 // utils
 import React from 'react';
 
+// constants
+import {Routes} from 'navigation/Routes';
+
 // components
 import {View, TouchableOpacity, Keyboard} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-// hooks
-// import {useDispatch} from 'hooks';
-
 // styles
 import {styles} from './BarcodeScanner.styles';
 
-export const BarcodeScanner = (props: any) => {
-  // const dispatch = useDispatch();
+// types
+import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
+interface BarcodeScannerProps {
+  navigation: NativeStackNavigationProp<
+    StackNavigatorParamList,
+    Routes.Autocomplete | Routes.Dashboard | Routes.Basket
+  >;
+  style: {
+    [key: string]: string | number;
+  };
+}
+
+export const BarcodeScanner: React.FC<BarcodeScannerProps> = props => {
   const initBarcodeScanner = () => {
     if (props.navigation) {
-      props.navigation.navigate('BarcodeScanner');
+      props.navigation.navigate(Routes.BarcodeScanner);
     }
     Keyboard.dismiss();
   };
