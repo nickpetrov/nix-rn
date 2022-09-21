@@ -49,8 +49,8 @@ const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
 
   const sendNaturalQuery = async () => {
     dispatch(basketActions.addFoodToBasket(naturalQuery)).then(foodsToAdd => {
-      dispatch(basketActions.changeMealType(foodsToAdd.foods[0].meal_type));
-      dispatch(basketActions.changeConsumedAt(foodsToAdd.foods[0].consumed_at));
+      dispatch(basketActions.changeMealType(foodsToAdd[0].meal_type));
+      dispatch(basketActions.changeConsumedAt(foodsToAdd[0].consumed_at));
       navigation.replace(Routes.Basket);
     });
   };

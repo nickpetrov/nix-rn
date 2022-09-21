@@ -1,4 +1,8 @@
 import apiClient from 'api';
+import {
+  RestaurantsProps,
+  RestaurantsWithCalcProps,
+} from 'store/foods/foods.types';
 import {FoodProps} from 'store/userLog/userLog.types';
 
 // types
@@ -31,34 +35,17 @@ const baseService = {
     });
   },
   async getBrandRestorants() {
-    return await apiClient.get('brands-restaurant.json.gz', {
+    return await apiClient.get<RestaurantsProps>('brands-restaurant.json.gz', {
       baseURL: 'https://nix-export.s3.amazonaws.com/',
     });
   },
   async getRestorantsWithCalc() {
-    return await apiClient.get('restaurant-calculators.json.gz', {
-      baseURL: 'https://d1gvlspmcma3iu.cloudfront.net/',
-    });
-  },
-  async getRestorantsFoodsFromOldApi(brand_id: number) {
-    return await apiClient.get('search', {
-      baseURL: 'https://api.nutritionix.com/v1_1/',
-      data: {
-        offset: 0,
-        limit: 20,
-        sort: {
-          field: 'item_name.sortable_na',
-          order: 'asc',
-        },
-        filters: {
-          brand_id: brand_id,
-        },
-        query: '*',
-        fields: ['*'],
-        appId: '906641bd',
-        appKey: '59bcfe12c0e9965162798a31ff38ec1f',
+    return await apiClient.get<RestaurantsWithCalcProps>(
+      'restaurant-calculators.json.gz',
+      {
+        baseURL: 'https://d1gvlspmcma3iu.cloudfront.net/',
       },
-    });
+    );
   },
 };
 

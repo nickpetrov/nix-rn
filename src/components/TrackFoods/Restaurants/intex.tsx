@@ -11,6 +11,7 @@ import {FlatList} from 'react-native-gesture-handler';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
+import {useDebounce} from 'use-debounce';
 
 // actions
 import {getRestorants, getRestorantsWithCalc} from 'store/foods/foods.actions';
@@ -22,25 +23,35 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 // constants
 import {Routes} from 'navigation/Routes';
 import {styles} from './Restaurants.styles';
+import {
+  RestaurantsProps,
+  RestaurantsWithCalcProps,
+} from 'store/foods/foods.types';
 
-interface RestaurantsProps {
+interface RestaurantsComponentProps {
   navigation: NativeStackNavigationProp<
     StackNavigatorParamList,
     Routes.TrackFoods
   >;
 }
 
-const Restaurants: React.FC<RestaurantsProps> = ({navigation}) => {
+const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
   const dispatch = useDispatch();
   const {restaurants, restaurantsWithCalc} = useSelector(state => state.foods);
   const [restaurantQuery, setRestaurantQuery] = useState('');
-  const [restaurantsList, setRestaurantsList] = useState([]);
-  const [filteredRestaurantsList, setFilteredRestaurantsList] = useState([]);
+  const [value] = useDebounce(restaurantQuery, 1000);
+  const [restaurantsList, setRestaurantsList] = useState<
+    Array<RestaurantsProps | RestaurantsWithCalcProps>
+  >([]);
+  const [filteredRestaurantsList, setFilteredRestaurantsList] = useState<
+    Array<RestaurantsProps>
+  >([]);
 
   const [restaurantSearcher, setRestaurantSearcher] =
-    useState<Searcher<never, FullOptions<never>>>();
+    useState<Searcher<RestaurantsProps, FullOptions<RestaurantsProps>>>();
 
-  const [selectedRestaurant, setSelectedRestaurant] = useState();
+  const [selectedRestaurant, setSelectedRestaurant] =
+    useState<RestaurantsProps>();
 
   useEffect(() => {
     batch(() => {
@@ -50,8 +61,8 @@ const Restaurants: React.FC<RestaurantsProps> = ({navigation}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    setRestaurantsList(
-      restaurantsList.concat(restaurants).sort((a, b) => {
+    setRestaurantsList(prev => {
+      const newArr = prev.concat(restaurants).sort(a => {
         let textA = a.name
           ? a.name.toUpperCase()
           : a.proper_brand_name.toUpperCase();
@@ -59,13 +70,14 @@ const Restaurants: React.FC<RestaurantsProps> = ({navigation}) => {
           ? a.name.toUpperCase()
           : a.proper_brand_name.toUpperCase();
         return textA < textB ? -1 : textA > textB ? 1 : 0;
-      }),
-    );
+      });
+      return newArr;
+    });
   }, [restaurants]);
 
   useEffect(() => {
-    setRestaurantsList(
-      restaurantsList.concat(restaurantsWithCalc).sort((a, b) => {
+    setRestaurantsList(prev => {
+      const newArr = prev.concat(restaurantsWithCalc).sort(a => {
         let textA = a.name
           ? a.name.toUpperCase()
           : a.proper_brand_name.toUpperCase();
@@ -73,29 +85,31 @@ const Restaurants: React.FC<RestaurantsProps> = ({navigation}) => {
           ? a.name.toUpperCase()
           : a.proper_brand_name.toUpperCase();
         return textA < textB ? -1 : textA > textB ? 1 : 0;
-      }),
-    );
+      });
+      return newArr;
+    });
   }, [restaurantsWithCalc]);
 
   useEffect(() => {
     const filteredList =
-      restaurantSearcher && restaurantsList.length && restaurantQuery.length
-        ? restaurantSearcher.search(restaurantQuery)
+      restaurantSearcher && restaurantsList.length && value.length
+        ? restaurantSearcher.search(value)
         : restaurantsList;
     setFilteredRestaurantsList(filteredList);
-  }, [restaurantQuery]);
+  }, [value, restaurantSearcher, restaurantsList]);
 
   useEffect(() => {
     setFilteredRestaurantsList(restaurantsList);
     setRestaurantSearcher(
       new Searcher(restaurantsList, {
-        ignoreCase: false,
-        keySelector: obj => obj.proper_brand_name && obj.name,
+        keySelector: obj => obj?.proper_brand_name || obj?.name,
       }),
     );
   }, [restaurantsList]);
 
-  const showRestaurant = restaurant => {
+  const showRestaurant = (
+    restaurant: RestaurantsProps | RestaurantsWithCalcProps,
+  ) => {
     setSelectedRestaurant(restaurant);
   };
 
@@ -115,7 +129,8 @@ const Restaurants: React.FC<RestaurantsProps> = ({navigation}) => {
             <View>
               <FlatList
                 data={filteredRestaurantsList}
-                keyExtractor={item => item.id}
+                extraData={value}
+                keyExtractor={item => item.id || item.brand_id}
                 renderItem={({item}) => (
                   <RestaurantItem
                     isWithCalc={!!item.brand_id}

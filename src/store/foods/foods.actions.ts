@@ -3,7 +3,6 @@ import {Dispatch} from 'redux';
 import {foodsActionTypes} from './foods.types';
 import {RootState} from '../index';
 import baseService from 'api/baseService';
-import nixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import autoCompleteService, {
   InstantQueryDataProps,
 } from 'api/autoCompleteService';
@@ -174,25 +173,6 @@ export const getRestorantsFoods = (data: InstantQueryDataProps) => {
       dispatch({
         type: foodsActionTypes.GET_RESTORANTS_FOODS,
         restaurantFoods: result.branded,
-      });
-    }
-  };
-};
-export const getRestorantsFoodsFromOldApi = (brand_id: number) => {
-  return async (dispatch: Dispatch) => {
-    const response = await baseService.getRestorantsFoodsFromOldApi(brand_id);
-
-    const foodsList = response.data;
-    const remappedList = foodsList.hits.map((item: any) => {
-      return nixHelpers.convertV1ItemToTrackFood(item.fields);
-    });
-    if (__DEV__) {
-      console.log('restaurants foods from old api', remappedList);
-    }
-    if (remappedList && remappedList.length) {
-      dispatch({
-        type: foodsActionTypes.GET_RESTORANTS_FOODS,
-        restaurantFoods: remappedList,
       });
     }
   };

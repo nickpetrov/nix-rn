@@ -9,6 +9,7 @@ import FoodItem from '../Grocery/FoodItem';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
+import {useDebounce} from 'use-debounce';
 
 // actions
 import * as basketActions from 'store/basket/basket.actions';
@@ -36,37 +37,21 @@ const History: React.FC<HistoryProps> = ({navigation}) => {
   const dispatch = useDispatch();
   const historyFoods = useSelector(state => state.foods.historyFoods);
   const [query, setQuery] = useState('');
-  const [loadInProgress, setLoadInProgress] = useState(false);
+  const [value] = useDebounce(query, 1000);
 
   useEffect(() => {
-    if (!loadInProgress) {
-      setLoadInProgress(true);
+    if (value.length > 1) {
       dispatch(
         getHistoryFoods({
-          query,
+          query: value,
           common: false,
           self: true,
           branded: false,
           detailed: true,
         }),
-      ).then(() => setLoadInProgress(false));
+      );
     }
-  }, [dispatch, query, loadInProgress]);
-
-  useEffect(() => {
-    if (!loadInProgress) {
-      setLoadInProgress(true);
-      dispatch(
-        getHistoryFoods({
-          query,
-          common: false,
-          self: true,
-          branded: false,
-          detailed: true,
-        }),
-      ).then(() => setLoadInProgress(false));
-    }
-  }, [query, dispatch, loadInProgress]);
+  }, [value, dispatch]);
 
   const handleEndOfScroll = () => {
     // Alert.alert(

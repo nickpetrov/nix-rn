@@ -9,6 +9,7 @@ import FoodItem from './FoodItem';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
+import {useDebounce} from 'use-debounce';
 
 // actions
 import * as basketActions from 'store/basket/basket.actions';
@@ -36,39 +37,35 @@ const Grocery: React.FC<GroceryProps> = ({navigation}) => {
   const dispatch = useDispatch();
   const groceries = useSelector(state => state.foods.groceries);
   const [query, setQuery] = useState('');
-  const [loadInProgress, setLoadInProgress] = useState(false);
+  const [value] = useDebounce(query, 1000);
 
   useEffect(() => {
-    if (!loadInProgress) {
-      setLoadInProgress(true);
+    dispatch(
+      getGroceries({
+        query: 'app',
+        common: false,
+        self: false,
+        branded: true,
+        branded_type: 2,
+        detailed: true,
+      }),
+    );
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (value.length > 1) {
       dispatch(
         getGroceries({
-          query: 'app',
+          query: value,
           common: false,
           self: false,
           branded: true,
           branded_type: 2,
           detailed: true,
         }),
-      ).then(() => setLoadInProgress(false));
+      );
     }
-  }, [dispatch, loadInProgress]);
-
-  useEffect(() => {
-    if (!loadInProgress && query.length > 1) {
-      setLoadInProgress(true);
-      dispatch(
-        getGroceries({
-          query,
-          common: false,
-          self: false,
-          branded: true,
-          branded_type: 2,
-          detailed: true,
-        }),
-      ).then(() => setLoadInProgress(false));
-    }
-  }, [query, dispatch, loadInProgress]);
+  }, [value, dispatch]);
 
   const handleEndOfScroll = () => {
     Alert.alert('Attention', 'Start typing query to search grocery foods');

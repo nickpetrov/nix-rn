@@ -17,6 +17,7 @@ import {WebView} from 'react-native-webview';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
+import {useDebounce} from 'use-debounce';
 
 // helpers
 import nixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
@@ -25,7 +26,7 @@ import nixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import * as basketActions from 'store/basket/basket.actions';
 import {
   getRestorantsFoods,
-  getRestorantsFoodsFromOldApi,
+  // getRestorantsFoodsFromOldApi,
 } from 'store/foods/foods.actions';
 
 // types
@@ -53,18 +54,28 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = props => {
   const calcUrl = props.restaurant.mobile_calculator_url || '';
   const restaurantFoods = useSelector(state => state.foods.restaurantFoods);
   const [query, setQuery] = useState('');
+  const [value] = useDebounce(query, 1000);
   const [showCalculator, setShowCalculator] = useState(false);
   const brandName = props.restaurant.name || props.restaurant.proper_brand_name;
 
   useEffect(() => {
-    dispatch(getRestorantsFoodsFromOldApi(brand_id));
+    dispatch(
+      getRestorantsFoods({
+        query: '',
+        brand_ids: [brand_id],
+        self: false,
+        common: false,
+        detailed: true,
+        branded_type: 1,
+      }),
+    );
   }, [dispatch, brand_id]);
 
   useEffect(() => {
-    if (query.length > 1) {
+    if (value.length > 1) {
       dispatch(
         getRestorantsFoods({
-          query: query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'),
+          query: value,
           brand_ids: [brand_id],
           self: false,
           common: false,
@@ -73,7 +84,7 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = props => {
         }),
       );
     }
-  }, [query, dispatch, brand_id]);
+  }, [dispatch, value, brand_id]);
 
   const addFoodToBasket = (food: BasketFoodProps) => {
     let aggregatedFood = food;

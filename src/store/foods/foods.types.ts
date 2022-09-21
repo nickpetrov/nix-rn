@@ -29,6 +29,21 @@ export interface SuggestedFoodProps {
   url: string;
 }
 
+export interface RestaurantsProps {
+  id: string;
+  logo: string;
+  name: string;
+  proper_brand_name: string;
+  brand_id: string;
+  brand_logo: string;
+}
+
+export interface RestaurantsWithCalcProps extends RestaurantsProps {
+  brand_keywords: string;
+  desktop_calculator_url: string;
+  mobile_calculator_url: string;
+}
+
 export interface FoodsState {
   foodInfo: FoodProps | null;
   foodFindByQRcode: FoodProps | null;
@@ -36,7 +51,7 @@ export interface FoodsState {
   suggested_foods: Array<SuggestedFoodProps>;
   groceries: Array<FoodProps>;
   historyFoods: Array<FoodProps>;
-  restaurants: Array<any>;
-  restaurantsWithCalc: Array<any>;
+  restaurants: Array<RestaurantsProps>;
+  restaurantsWithCalc: Array<RestaurantsWithCalcProps>;
   restaurantFoods: Array<FoodProps>;
 }
