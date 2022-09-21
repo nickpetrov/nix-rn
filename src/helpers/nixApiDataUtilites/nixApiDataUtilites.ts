@@ -49,7 +49,7 @@ function optimisticallyMergeArrays(comparator: any, ...cols: any) {
  * @returns {object} Track API food object
  */
 
-function convertV1ItemToTrackFood(v1Item: any, defaultObj: any) {
+function convertV1ItemToTrackFood(v1Item: any, defaultObj?: any) {
   v1Item = typeof v1Item === 'object' && v1Item !== null ? v1Item : {};
   defaultObj =
     typeof defaultObj === 'object' && defaultObj !== null ? defaultObj : {};

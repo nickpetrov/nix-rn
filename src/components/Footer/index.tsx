@@ -26,7 +26,7 @@ interface FooterProps {
   };
   navigation: NativeStackNavigationProp<
     StackNavigatorParamList,
-    Routes.Dashboard | Routes.Stats | Routes.Suggested
+    Routes.Dashboard | Routes.Stats | Routes.Suggested | Routes.TrackFoods
   >;
 }
 

@@ -39,7 +39,12 @@ export const addFoodToBasket = (query: string) => {
 
     saveBasketToStorage({foods: result.foods});
     dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: result.foods});
+    return result.foods;
   };
+};
+
+export const addExistFoodToBasket = (food: BasketFoodProps) => {
+  return {type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]};
 };
 
 export const changeLoggingType = (isSingleFood: boolean) => {

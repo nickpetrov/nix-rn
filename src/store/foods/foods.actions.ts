@@ -3,6 +3,10 @@ import {Dispatch} from 'redux';
 import {foodsActionTypes} from './foods.types';
 import {RootState} from '../index';
 import baseService from 'api/baseService';
+import nixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+import autoCompleteService, {
+  InstantQueryDataProps,
+} from 'api/autoCompleteService';
 
 export const getFoodInfo = (beginDate: string, endDate: string) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
@@ -78,7 +82,7 @@ export const getAllCustomFoods = () => {
 
 export const getSuggestedFoods = () => {
   return async (dispatch: Dispatch) => {
-    const response = await userLogService.getSuggestedFood();
+    const response = await baseService.getSuggestedFood();
 
     const result = response.data;
     if (__DEV__) {
@@ -88,6 +92,107 @@ export const getSuggestedFoods = () => {
       dispatch({
         type: foodsActionTypes.GET_ALL_SUGGESTED_FOOD,
         suggested_foods: result.products,
+      });
+    }
+  };
+};
+
+export const getGroceries = (data: InstantQueryDataProps) => {
+  return async (dispatch: Dispatch) => {
+    const response = await autoCompleteService.getTrackInstant(data);
+
+    const result = response.data;
+    if (__DEV__) {
+      console.log('groceries', result.branded);
+    }
+    if (result.branded) {
+      dispatch({
+        type: foodsActionTypes.GET_GROCERIES,
+        groceries: result.branded,
+      });
+    }
+  };
+};
+export const getHistoryFoods = (data: InstantQueryDataProps) => {
+  return async (dispatch: Dispatch) => {
+    const response = await autoCompleteService.getTrackInstant(data);
+
+    const result = response.data;
+    if (__DEV__) {
+      console.log('historyFoods', result.self);
+    }
+    if (result.self) {
+      dispatch({
+        type: foodsActionTypes.GET_HISTORY_FOODS,
+        historyFoods: result.self,
+      });
+    }
+  };
+};
+export const getRestorants = () => {
+  return async (dispatch: Dispatch) => {
+    const response = await baseService.getBrandRestorants();
+
+    const result = response.data;
+    if (__DEV__) {
+      console.log('restaurants', result);
+    }
+    if (result) {
+      dispatch({
+        type: foodsActionTypes.GET_RESTORANTS,
+        restaurants: result,
+      });
+    }
+  };
+};
+
+export const getRestorantsWithCalc = () => {
+  return async (dispatch: Dispatch) => {
+    const response = await baseService.getRestorantsWithCalc();
+
+    const result = response.data;
+    if (__DEV__) {
+      console.log('restaurants with calc', result);
+    }
+    if (result) {
+      dispatch({
+        type: foodsActionTypes.GET_RESTORANTS_WITH_CALC,
+        restaurantsWithCalc: result,
+      });
+    }
+  };
+};
+export const getRestorantsFoods = (data: InstantQueryDataProps) => {
+  return async (dispatch: Dispatch) => {
+    const response = await autoCompleteService.getTrackInstant(data);
+
+    const result = response.data;
+    if (__DEV__) {
+      console.log('restaurants foods', result.branded);
+    }
+    if (result.branded && result.branded.length) {
+      dispatch({
+        type: foodsActionTypes.GET_RESTORANTS_FOODS,
+        restaurantFoods: result.branded,
+      });
+    }
+  };
+};
+export const getRestorantsFoodsFromOldApi = (brand_id: number) => {
+  return async (dispatch: Dispatch) => {
+    const response = await baseService.getRestorantsFoodsFromOldApi(brand_id);
+
+    const foodsList = response.data;
+    const remappedList = foodsList.hits.map((item: any) => {
+      return nixHelpers.convertV1ItemToTrackFood(item.fields);
+    });
+    if (__DEV__) {
+      console.log('restaurants foods from old api', remappedList);
+    }
+    if (remappedList && remappedList.length) {
+      dispatch({
+        type: foodsActionTypes.GET_RESTORANTS_FOODS,
+        restaurantFoods: remappedList,
       });
     }
   };

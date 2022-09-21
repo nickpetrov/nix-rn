@@ -4,9 +4,18 @@ import {AnyAction} from 'redux';
 
 const initialState: FoodsState = {
   foodInfo: null,
+  //QRcodeScreen
   foodFindByQRcode: null,
+  //CustomFoodScreen
   custom_foods: [],
+  //SuggestedScreen
   suggested_foods: [],
+  //TrackScreen
+  groceries: [],
+  historyFoods: [],
+  restaurants: [],
+  restaurantsWithCalc: [],
+  restaurantFoods: [],
 };
 
 export default (state: FoodsState = initialState, action: AnyAction) => {
@@ -22,6 +31,16 @@ export default (state: FoodsState = initialState, action: AnyAction) => {
       return {...state, custom_foods: action.custom_foods};
     case foodsActionTypes.GET_ALL_SUGGESTED_FOOD:
       return {...state, suggested_foods: action.suggested_foods};
+    case foodsActionTypes.GET_GROCERIES:
+      return {...state, groceries: action.groceries};
+    case foodsActionTypes.GET_HISTORY_FOODS:
+      return {...state, historyFoods: action.historyFoods};
+    case foodsActionTypes.GET_RESTORANTS:
+      return {...state, restaurants: action.restaurants};
+    case foodsActionTypes.GET_RESTORANTS_WITH_CALC:
+      return {...state, restaurantsWithCalc: action.restaurantsWithCalc};
+    case foodsActionTypes.GET_RESTORANTS_FOODS:
+      return {...state, restaurantFoods: action.restaurantFoods};
     case foodsActionTypes.CLEAR:
       return initialState;
     default:

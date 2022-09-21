@@ -98,7 +98,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
       if (route.params?.mealType) {
         dispatch(basketActions.changeMealType(route.params.mealType));
       }
-      navigation.replace('Basket');
+      navigation.replace(Routes.Basket);
     });
   };
 

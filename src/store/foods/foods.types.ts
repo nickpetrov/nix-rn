@@ -4,8 +4,13 @@ export enum foodsActionTypes {
   GET_FOOD_INFO = 'GET_FOOD_INFO',
   GET_ALL_CUSTOM_FOOD = 'GET_ALL_CUSTOM_FOOD',
   GET_ALL_SUGGESTED_FOOD = 'GET_ALL_SUGGESTED_FOOD',
+  GET_GROCERIES = 'GET_GROCERIES',
+  GET_HISTORY_FOODS = 'GET_HISTORY_FOODS',
   GET_FOOD_BY_QR_CODE = 'GET_FOOD_BY_QR_CODE',
   CLEAR_SCANED_FOOD = 'CLEAR_SCANED_FOOD',
+  GET_RESTORANTS = 'GET_RESTORANTS',
+  GET_RESTORANTS_FOODS = 'GET_RESTORANTS_FOODS',
+  GET_RESTORANTS_WITH_CALC = 'GET_RESTORANTS_WITH_CALC',
   CLEAR = 'CLEAR',
 }
 
@@ -29,4 +34,9 @@ export interface FoodsState {
   foodFindByQRcode: FoodProps | null;
   custom_foods: Array<FoodProps>;
   suggested_foods: Array<SuggestedFoodProps>;
+  groceries: Array<FoodProps>;
+  historyFoods: Array<FoodProps>;
+  restaurants: Array<any>;
+  restaurantsWithCalc: Array<any>;
+  restaurantFoods: Array<FoodProps>;
 }
