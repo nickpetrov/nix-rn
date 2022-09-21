@@ -14,7 +14,7 @@ import {styles} from './FoodLabel.styles';
 import {FoodProps} from 'store/userLog/userLog.types';
 
 interface FoodLabelProps {
-  data: FoodProps;
+  data: FoodProps | Array<FoodProps>;
 }
 
 interface RowOrColProps {
@@ -66,7 +66,7 @@ const FoodLabel: React.FC<FoodLabelProps> = props => {
     if (typeof dataObj !== 'undefined') {
       // check if data passed is a single food item or array of foods.
       if (Object.prototype.toString.call(dataObj) === '[object Object]') {
-        dataArray.push(dataObj);
+        dataArray.push(dataObj as FoodProps);
       } else {
         dataArray = dataArray.concat(dataObj);
       }

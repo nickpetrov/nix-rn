@@ -11,11 +11,11 @@ import {styles} from './ConsolidatedSearchResults.styles';
 
 // types
 import {AutoCompleteState} from 'store/autoComplete/autoComplete.types';
-import {AutoCompleteFoodProps} from 'store/autoComplete/autoComplete.types';
+import {FoodProps} from 'store/userLog/userLog.types';
 
 interface ConsolidatedSearchResultsProps {
   foods: AutoCompleteState;
-  onTap: (food: AutoCompleteFoodProps) => void;
+  onTap: (food: FoodProps) => void;
 }
 
 const ConsolidatedSearchResults: React.FC<

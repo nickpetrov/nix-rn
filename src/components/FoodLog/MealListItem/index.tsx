@@ -23,7 +23,7 @@ interface MealListItemProps {
   mealName?: mealNameProps;
   navigation?: NativeStackNavigationProp<
     StackNavigatorParamList,
-    Routes.Autocomplete | Routes.Dashboard
+    Routes.Autocomplete | Routes.Dashboard | Routes.Totals
   >;
   onTap?: () => void;
 }

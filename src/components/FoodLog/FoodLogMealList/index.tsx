@@ -1,6 +1,6 @@
 // utils
 import React, {useState, useEffect} from 'react';
-import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import moment from 'moment-timezone';
 
 // components
@@ -27,6 +27,7 @@ import {
   FoodProps,
 } from 'store/userLog/userLog.types';
 import {User} from 'store/auth/auth.types';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 interface FoodLogMealListProps {
   mealName: mealNameProps;
@@ -39,7 +40,13 @@ interface FoodLogMealListProps {
 }
 
 const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<
+        StackNavigatorParamList,
+        Routes.Totals | Routes.Dashboard | Routes.Autocomplete
+      >
+    >();
   const {
     mealFoodsList,
     mealName,
@@ -224,12 +231,14 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
                   alignItems: 'center',
                 },
               }}
-              onPress={() =>
-                navigation.navigate(Routes.Totals, {
-                  foods: mealFoodsList,
-                  type: mealName,
-                })
-              }>
+              onPress={() => {
+                if (mealFoodsList?.length) {
+                  navigation.navigate(Routes.Totals, {
+                    foods: mealFoodsList,
+                    type: mealName,
+                  });
+                }
+              }}>
               <FontAwesome name="info-circle" color="#999" size={19} />
               <Text style={styles.mealTotalCalories}>
                 {totalMealCalories.toFixed(0)}

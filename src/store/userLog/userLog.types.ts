@@ -109,6 +109,14 @@ export interface FoodProps {
   vitamin_d: number;
   caffeine: number;
   notes: string;
+  locale: string;
+  region: number;
+  brand_name_item_name?: string;
+  brand_type?: number;
+  uuid?: string;
+  common_type?: string | null;
+  tag_id?: string;
+  tag_name?: string;
 }
 
 export interface UserLogState {

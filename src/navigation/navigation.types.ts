@@ -43,7 +43,10 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.DailyGoals]: undefined;
   [Routes.Help]: undefined;
   [Routes.Suggested]: undefined;
-  [Routes.Totals]: undefined;
+  [Routes.Totals]: {
+    foods: Array<FoodProps>;
+    type: string;
+  };
   [Routes.PhotoUpload]: {barcode: string};
   [Routes.Stats]: undefined;
 }

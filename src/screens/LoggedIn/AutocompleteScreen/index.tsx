@@ -24,7 +24,7 @@ import * as autocompleteActions from 'store/autoComplete/autoComplete.actions';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AutoCompleteFoodProps} from 'store/autoComplete/autoComplete.types';
+import {FoodProps} from 'store/userLog/userLog.types';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 
@@ -91,7 +91,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
     }
   };
 
-  const addItemToBasket = async (item: AutoCompleteFoodProps) => {
+  const addItemToBasket = async (item: FoodProps) => {
     dispatch(basketActions.addFoodToBasket(item.food_name)).then(() => {
       dispatch(basketActions.changeConsumedAt(selectedDate));
 
