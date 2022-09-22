@@ -106,7 +106,7 @@ export const signup = (data: SignUpRequest) => {
   };
 };
 
-export const updateUserData = (newUserObj: User) => {
+export const updateUserData = (newUserObj: Partial<User>) => {
   const request = {...newUserObj};
   return async (dispatch: Dispatch) => {
     const response = await userService.updateUserData(request);

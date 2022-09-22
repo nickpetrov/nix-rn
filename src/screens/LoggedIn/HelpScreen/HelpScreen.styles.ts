@@ -21,8 +21,8 @@ export const styles = StyleSheet.create({
   },
   close: {
     position: 'absolute',
-    right: 105,
-    top: 8,
+    right: 10,
+    top: 10,
     zIndex: 10,
     backgroundColor: '#fff',
     borderRadius: 50,

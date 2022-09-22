@@ -19,10 +19,10 @@ export type User = {
   id: string;
   first_name: string;
   last_name: string;
-  daily_kcal: number;
-  daily_carbs_pct: number;
-  daily_fat_pct: number;
-  daily_protein_pct: number;
+  daily_kcal: string | null;
+  daily_carbs_pct: string | null;
+  daily_fat_pct: string | null;
+  daily_protein_pct: string | null;
   username: string | null;
   ref: null;
   birth_year: number;
