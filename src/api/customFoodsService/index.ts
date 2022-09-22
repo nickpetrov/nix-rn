@@ -1,5 +1,5 @@
 import apiClient from 'api';
-import {FoodProps} from 'store/userLog/userLog.types';
+import {UpdateCustomFoodProps} from 'store/customFoods/customFoods.types';
 
 const customFoodsService = {
   async getCustomFoods(limit: number, offset: number) {
@@ -13,10 +13,13 @@ const customFoodsService = {
       },
     });
   },
-  async updateCustomFoods(recipe: FoodProps) {
-    return await apiClient.put(`recipe/${recipe.id ? recipe.id : ''}`, {
-      recipe,
-    });
+  async updateOrCreateCustomFoods(custom_food: UpdateCustomFoodProps) {
+    return await apiClient[custom_food.id ? 'put' : 'post'](
+      `custom_foods/${custom_food.id || ''}`,
+      {
+        custom_food,
+      },
+    );
   },
 };
 

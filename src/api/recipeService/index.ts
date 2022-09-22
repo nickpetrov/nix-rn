@@ -14,7 +14,7 @@ const recipesService = {
     });
   },
   async updateRecipe(recipe: UpdateRecipeProps) {
-    return await apiClient.put(`recipe/${recipe.id ? recipe.id : ''}`, {
+    return await apiClient.put(`recipe/${recipe.id || ''}`, {
       recipe,
     });
   },

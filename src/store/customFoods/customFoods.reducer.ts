@@ -11,6 +11,15 @@ export default (state: CustomFoodsState = initialState, action: AnyAction) => {
     case customFoodsActionTypes.GET_ALL_CUSTOM_FOOD:
       const stateWithTotals = {...state, foods: action.foods};
       return stateWithTotals;
+    case customFoodsActionTypes.UPDATE_OR_CREATE_CUSTOM_FOOD:
+      const newFoods = [...state.foods];
+      const foodIndex = newFoods.findIndex(item => item.id === action.food.id);
+      if (foodIndex !== -1) {
+        newFoods[foodIndex] = action.food;
+      } else {
+        newFoods.push(action.food);
+      }
+      return {...state, foods: newFoods};
     case customFoodsActionTypes.CLEAR:
       return initialState;
     default:

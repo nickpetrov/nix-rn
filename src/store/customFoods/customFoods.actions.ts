@@ -1,5 +1,8 @@
 import {Dispatch} from 'redux';
-import {customFoodsActionTypes} from './customFoods.types';
+import {
+  customFoodsActionTypes,
+  UpdateCustomFoodProps,
+} from './customFoods.types';
 import customFoodsService from 'api/customFoodsService';
 
 export const getCustomFoods = () => {
@@ -18,5 +21,23 @@ export const getCustomFoods = () => {
         foods: result.custom_foods,
       });
     }
+  };
+};
+
+export const updateOrCreateCustomFood = (food: UpdateCustomFoodProps) => {
+  return async (dispatch: Dispatch) => {
+    const response = await customFoodsService.updateOrCreateCustomFoods(food);
+
+    const result = response.data;
+    if (__DEV__) {
+      console.log('update or create custom food', result);
+    }
+    if (result.food_name) {
+      dispatch({
+        type: customFoodsActionTypes.UPDATE_OR_CREATE_CUSTOM_FOOD,
+        food: result,
+      });
+    }
+    return result;
   };
 };
