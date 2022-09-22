@@ -103,6 +103,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
     setRestaurantSearcher(
       new Searcher(restaurantsList, {
         keySelector: obj => obj?.proper_brand_name || obj?.name,
+        threshold: 1,
       }),
     );
   }, [restaurantsList]);

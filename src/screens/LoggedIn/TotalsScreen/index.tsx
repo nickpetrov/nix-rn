@@ -277,7 +277,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
             </View>
           ) : null}
 
-          {type == 'daily' ? (
+          {type === 'daily' ? (
             <>
               <View
                 style={{

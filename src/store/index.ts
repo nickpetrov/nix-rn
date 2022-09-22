@@ -12,6 +12,7 @@ import basketReducer from './basket/basket.reducer';
 import userLogReducer from './userLog/userLog.reducer';
 import statsReducer from './stats/stats.reducer';
 import foodsReducer from './foods/foods.reducer';
+import recipesReducer from './recipes/recipes.reducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   userLog: userLogReducer,
   stats: statsReducer,
   foods: foodsReducer,
+  recipes: recipesReducer,
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));

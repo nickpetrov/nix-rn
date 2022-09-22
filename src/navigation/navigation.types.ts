@@ -1,6 +1,7 @@
 import {ParamListBase} from '@react-navigation/native';
 import {Routes} from 'navigation/Routes';
 import {FoodProps} from 'store/userLog/userLog.types';
+import {RecipeProps} from '../store/recipes/recipes.types';
 
 export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Login]: undefined;
@@ -38,7 +39,9 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.CustomFoods]: undefined;
   [Routes.CustomFoodEdit]: undefined;
   [Routes.Recipes]: undefined;
-  [Routes.RecipeDetails]: undefined;
+  [Routes.RecipeDetails]: {
+    recipe: RecipeProps | null;
+  };
   [Routes.Preferences]: undefined;
   [Routes.DailyGoals]: undefined;
   [Routes.Help]: undefined;
