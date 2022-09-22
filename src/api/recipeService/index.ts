@@ -1,5 +1,5 @@
 import apiClient from 'api';
-import {RecipeProps, UpdateRecipeProps} from 'store/recipes/recipes.types';
+import {UpdateRecipeProps} from 'store/recipes/recipes.types';
 
 const recipesService = {
   async getRecipes(limit: number, offset: number) {
@@ -13,13 +13,8 @@ const recipesService = {
       },
     });
   },
-  async createRecipe(recipe: UpdateRecipeProps) {
-    return await apiClient.post('recipe', {
-      recipe,
-    });
-  },
   async updateRecipe(recipe: UpdateRecipeProps) {
-    return await apiClient.put(`recipe/${recipe.id}`, {
+    return await apiClient.put(`recipe/${recipe.id ? recipe.id : ''}`, {
       recipe,
     });
   },

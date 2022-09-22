@@ -37,7 +37,9 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.TrackFoods]: undefined;
   [Routes.BarcodeScanner]: undefined;
   [Routes.CustomFoods]: undefined;
-  [Routes.CustomFoodEdit]: undefined;
+  [Routes.CustomFoodEdit]: {
+    food: FoodProps | null;
+  };
   [Routes.Recipes]: undefined;
   [Routes.RecipeDetails]: {
     recipe: RecipeProps | null;
