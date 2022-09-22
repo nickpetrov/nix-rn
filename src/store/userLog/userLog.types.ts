@@ -1,9 +1,4 @@
-import {
-  mealTypes,
-  MeasureProps,
-  NutrientProps,
-  TagProp,
-} from 'store/basket/basket.types';
+import {mealTypes} from 'store/basket/basket.types';
 import {PhotoProps} from '../autoComplete/autoComplete.types';
 
 export enum userLogActionTypes {
@@ -69,6 +64,26 @@ export interface TotalProps {
   weights_logged: number;
 }
 
+export interface MeasureProps {
+  measure: string;
+  qty: number;
+  seq: number;
+  serving_weight: number;
+}
+
+export interface NutrientProps {
+  attr_id: number;
+  value: number;
+}
+
+export interface TagProp {
+  food_group: number;
+  item: string;
+  measure: MeasureProps | null;
+  quantity: string;
+  tag_id: number;
+}
+
 export interface FoodProps {
   alt_measures: Array<MeasureProps>;
   brand_name: string | null;
@@ -117,6 +132,10 @@ export interface FoodProps {
   common_type?: string | null;
   tag_id?: string;
   tag_name?: string;
+  brick_code?: string;
+  class_code?: string;
+  sub_recipe?: string;
+  public_id?: number | null;
 }
 
 export interface UserLogState {

@@ -1,7 +1,7 @@
 import apiClient from 'api';
-import {BasketFoodProps} from 'store/basket/basket.types';
 import {
   ExerciseProps,
+  FoodProps,
   loggingOptionsProps,
   WeightProps,
 } from 'store/userLog/userLog.types';
@@ -118,7 +118,7 @@ const userLogService = {
     });
   },
   async addFoodToLog(
-    foods: Array<BasketFoodProps>,
+    foods: Array<FoodProps>,
     loggingOptions: Partial<loggingOptionsProps>,
   ) {
     return await apiClient.post('log', {

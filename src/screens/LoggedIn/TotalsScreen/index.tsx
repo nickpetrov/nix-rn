@@ -8,8 +8,6 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
   TextInput,
-  Platform,
-  KeyboardAvoidingView,
 } from 'react-native';
 import FoodLabel from 'components/FoodLabel';
 import NutritionPieChart, {
@@ -17,6 +15,7 @@ import NutritionPieChart, {
 } from 'components/NutritionPieChart';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixButton} from 'components/NixButton';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
@@ -219,8 +218,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
 
   return (
     <SafeAreaView>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <KeyboardAwareScrollView>
         <View style={styles.container}>
           <Text>Meal totals</Text>
 
@@ -355,7 +353,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
             management.
           </Text>
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };

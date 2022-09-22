@@ -13,19 +13,12 @@ import {multiply} from 'helpers/multiply';
 import {styles} from './FoodItem.styles';
 
 // types
-import {
-  BasketFoodProps,
-  MeasureProps,
-  NutrientProps,
-} from 'store/basket/basket.types';
+import {MeasureProps, NutrientProps} from 'store/userLog/userLog.types';
 import {FoodProps} from 'store/userLog/userLog.types';
 
 interface FoodItemProps {
-  foodObj: BasketFoodProps | FoodProps;
-  itemChangeCallback?: (
-    foodObj: BasketFoodProps | FoodProps,
-    index: number,
-  ) => void;
+  foodObj: FoodProps;
+  itemChangeCallback?: (foodObj: FoodProps, index: number) => void;
   itemIndex?: number;
   onTap?: () => void;
 }
@@ -90,7 +83,8 @@ const FoodItem: React.FC<FoodItemProps> = ({
     );
     setServingUnit(newMeasure[0].measure);
     serving_weight_grams = newMeasure[0].serving_weight;
-    const multiplyer = serving_weight_grams / prevMeasure[0].serving_weight;
+    const multiplyer =
+      serving_weight_grams / (prevMeasure[0]?.serving_weight || 1);
     const newFoodObj = multiply(
       {...food, serving_unit: newMeasureName},
       multiplyer,

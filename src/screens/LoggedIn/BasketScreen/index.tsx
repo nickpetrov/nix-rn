@@ -13,8 +13,6 @@ import {
   Text,
   View,
   SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
   Button,
   Switch,
   ScrollView,
@@ -24,6 +22,7 @@ import Totals from 'components/Totals';
 import {FloatingLabelInput} from 'react-native-floating-label-input';
 import FoodItem from 'components/FoodItem';
 import WhenSection from 'components/WhenSection';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -34,8 +33,11 @@ import * as userLogActions from 'store/userLog/userLog.actions';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {BasketFoodProps, NutrientProps} from 'store/basket/basket.types';
-import {FoodProps, loggingOptionsProps} from 'store/userLog/userLog.types';
+import {
+  FoodProps,
+  loggingOptionsProps,
+  NutrientProps,
+} from 'store/userLog/userLog.types';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
@@ -58,7 +60,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
   let totalFat = 0;
   let totalCarb = 0;
 
-  foods.map((food: BasketFoodProps) => {
+  foods.map((food: FoodProps) => {
     food = {
       ...food,
       ...NixHelpers.convertFullNutrientsToNfAttributes(food.full_nutrients),
@@ -99,7 +101,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
     if (isSingleFood) {
       if (servings > 1) {
         const mult = 1 / parseFloat(servings);
-        adjustedFoods = foods.map((foodObj: BasketFoodProps) => {
+        adjustedFoods = foods.map((foodObj: FoodProps) => {
           foodObj.meal_type = meal_type;
           return multiply(foodObj, mult, foodObj.serving_qty * mult);
         });
@@ -152,15 +154,13 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
   };
 
   const changeFoodAtBasket = useCallback(
-    (foodObj: BasketFoodProps | FoodProps, index: number) => {
-      dispatch(
-        basketActions.updateFoodAtBasket(foodObj as BasketFoodProps, index),
-      );
+    (foodObj: FoodProps, index: number) => {
+      dispatch(basketActions.updateFoodAtBasket(foodObj, index));
     },
     [dispatch],
   );
 
-  const foodsList = foods.map((food: BasketFoodProps, index: number) => {
+  const foodsList = foods.map((food: FoodProps, index: number) => {
     return (
       <FoodItem
         key={food.food_name + food.consumed_at}
@@ -179,10 +179,9 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={80}
-        style={{flex: 1, width: '100%', backgroundColor: '#fff'}}>
+      <KeyboardAwareScrollView
+        style={{flex: 1, width: '100%', height: '100%'}}
+        alwaysBounceVertical={false}>
         <ScrollView>
           {foodsList}
 
@@ -299,7 +298,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
             </View>
           )}
         </ScrollView>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };

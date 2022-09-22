@@ -19,9 +19,9 @@ import {getHistoryFoods} from 'store/foods/foods.actions';
 import {styles} from './History.styles';
 
 // types
-import {BasketFoodProps} from 'store/basket/basket.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {FoodProps} from 'store/userLog/userLog.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -62,7 +62,7 @@ const History: React.FC<HistoryProps> = ({navigation}) => {
     //   });
   };
 
-  const addFoodToBasket = (food: BasketFoodProps) => {
+  const addFoodToBasket = (food: FoodProps) => {
     let aggregatedFood = food;
 
     batch(() => {

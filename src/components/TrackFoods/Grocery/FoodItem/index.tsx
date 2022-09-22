@@ -6,7 +6,7 @@ import {View, Text, TouchableWithoutFeedback, Image} from 'react-native';
 // import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 // types
-import {NutrientProps} from 'store/basket/basket.types';
+import {NutrientProps} from 'store/userLog/userLog.types';
 
 // styles
 import {styles} from './FoodItem.styles';

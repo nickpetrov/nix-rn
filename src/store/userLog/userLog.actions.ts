@@ -10,13 +10,13 @@ import userLogService from 'api/userLogService';
 // types
 import {
   ExerciseProps,
+  FoodProps,
   loggingOptionsProps,
   userLogActionTypes,
   WeightProps,
 } from './userLog.types';
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
-import {BasketFoodProps} from 'store/basket/basket.types';
 
 export const getDayTotals = (
   beginDate: string,
@@ -230,7 +230,7 @@ export const updateExerciseToLog = (query: string, exercise: ExerciseProps) => {
 };
 
 export const addFoodToLog = (
-  foodArray: Array<BasketFoodProps>,
+  foodArray: Array<FoodProps>,
   loggingOptions: Partial<loggingOptionsProps>,
 ) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
@@ -252,7 +252,7 @@ export const addFoodToLog = (
 
     // if (loggingOptions.sing)
 
-    foodArray.map((food: BasketFoodProps) => {
+    foodArray.map((food: FoodProps) => {
       food.consumed_at =
         moment(loggingOptions.consumed_at).format('YYYY-MM-DDTHH:mm:ss') +
         moment.tz(timezone).format('Z');

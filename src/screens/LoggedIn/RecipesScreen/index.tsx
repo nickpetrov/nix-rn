@@ -53,7 +53,9 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({navigation}) => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
-          onPress={() => navigation.navigate('RecipeDetails', {recipe: null})}>
+          onPress={() =>
+            navigation.navigate(Routes.RecipeDetails, {recipe: null})
+          }>
           <FontAwesome5 size={26} color={'white'} name="plus" />
         </TouchableOpacity>
       ),

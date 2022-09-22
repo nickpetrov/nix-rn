@@ -1,6 +1,6 @@
 import recipesService from 'api/recipeService';
 import {Dispatch} from 'redux';
-import {recipesActionTypes} from './recipes.types';
+import {recipesActionTypes, UpdateRecipeProps} from './recipes.types';
 
 export const getRecipes = () => {
   return async (dispatch: Dispatch) => {
@@ -20,4 +20,32 @@ export const getRecipes = () => {
       return result.recipes;
     }
   };
+};
+
+export const updateOrCreateRecipe = (recipe: UpdateRecipeProps) => {
+  return async (dispatch: Dispatch) => {
+    const response = await recipesService.updateRecipe(recipe);
+
+    const result = response.data;
+    if (__DEV__) {
+      console.log('update or create recipes', result);
+    }
+    if (result.name) {
+      dispatch({
+        type: recipesActionTypes.UPDATE_OR_CREATE_RECIPE,
+        recipe: result,
+      });
+    }
+    return result;
+  };
+};
+
+export const getIngridientsForUpdate = async (query: string) => {
+  const response = await recipesService.getIngridients(query);
+
+  const result = response.data;
+  if (__DEV__) {
+    console.log('get ingridients for update', result);
+  }
+  return result;
 };

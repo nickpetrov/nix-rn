@@ -1,10 +1,9 @@
 import {PhotoProps} from 'store/autoComplete/autoComplete.types';
-import {NutrientProps} from 'store/basket/basket.types';
-import {FoodProps} from 'store/userLog/userLog.types';
+import {FoodProps, NutrientProps} from 'store/userLog/userLog.types';
 
 export enum recipesActionTypes {
   GET_RECIPES = 'GET_RECIPES',
-  UPDATE_RECIPE = 'UPDATE_RECIPE',
+  UPDATE_OR_CREATE_RECIPE = 'UPDATE_OR_CREATE_RECIPE',
   CLEAR = 'CLEAR',
 }
 
@@ -13,7 +12,6 @@ export interface RecipeProps {
   created_at: string;
   directions: string | null;
   full_nutrients: Array<NutrientProps>;
-
   id: string;
   ingredients: Array<FoodProps>;
   is_public: number;
@@ -29,6 +27,22 @@ export interface RecipeProps {
   updated_at: string;
   user_id: string;
 }
+
+export type UpdateRecipeProps = Omit<
+  RecipeProps,
+  | 'id'
+  | 'updated_at'
+  | 'created_at'
+  | 'full_nutrients'
+  | 'is_public'
+  | 'photo'
+  | 'public_id'
+  | 'sections'
+  | 'serving_weight_grams'
+  | 'source'
+  | 'user_id'
+> &
+  Partial<RecipeProps>;
 
 export interface RecipesState {
   recipes: Array<RecipeProps>;

@@ -32,7 +32,7 @@ import {
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {BasketFoodProps} from 'store/basket/basket.types';
+import {FoodProps} from 'store/userLog/userLog.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -86,7 +86,7 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = props => {
     }
   }, [dispatch, value, brand_id]);
 
-  const addFoodToBasket = (food: BasketFoodProps) => {
+  const addFoodToBasket = (food: FoodProps) => {
     let aggregatedFood = food;
 
     batch(() => {

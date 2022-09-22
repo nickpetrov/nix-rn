@@ -24,7 +24,7 @@ import {Routes} from 'navigation/Routes';
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {BasketFoodProps} from 'store/basket/basket.types';
+import {FoodProps} from 'store/userLog/userLog.types';
 
 interface GroceryProps {
   navigation: NativeStackNavigationProp<
@@ -71,7 +71,7 @@ const Grocery: React.FC<GroceryProps> = ({navigation}) => {
     Alert.alert('Attention', 'Start typing query to search grocery foods');
   };
 
-  const addFoodToBasket = (food: BasketFoodProps) => {
+  const addFoodToBasket = (food: FoodProps) => {
     let aggregatedFood = food;
 
     batch(() => {

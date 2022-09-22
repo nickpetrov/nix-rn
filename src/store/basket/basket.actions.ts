@@ -4,8 +4,9 @@ import basketService from 'api/basketService';
 
 // types
 import {Dispatch} from 'redux';
-import {basketActionTypes, BasketFoodProps, BasketState} from './basket.types';
+import {basketActionTypes, BasketState} from './basket.types';
 import {RootState} from '../index';
+import {FoodProps} from 'store/userLog/userLog.types';
 
 const saveBasketToStorage = (basket: Partial<BasketState>) => {
   AsyncStorage.getItem('basket').then(data => {
@@ -43,7 +44,7 @@ export const addFoodToBasket = (query: string) => {
   };
 };
 
-export const addExistFoodToBasket = (food: BasketFoodProps) => {
+export const addExistFoodToBasket = (food: FoodProps) => {
   return {type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]};
 };
 
@@ -81,7 +82,7 @@ export const mergeBasket = (basket: BasketState) => {
   return {type: basketActionTypes.MERGE_BASKET, basket};
 };
 
-export const updateFoodAtBasket = (foodObj: BasketFoodProps, index: number) => {
+export const updateFoodAtBasket = (foodObj: FoodProps, index: number) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
     const oldFoods = useState().basket.foods;
     const newFoods = [...oldFoods];
