@@ -14,3 +14,4 @@ export * from './StatsScreen';
 export * from './SuggestedScreen';
 export * from './TotalsScreen';
 export * from './TrackFoodsScreen';
+export * from './CameraScreen';

@@ -29,6 +29,7 @@ import {
   TotalsScreen,
   HelpScreen,
   StatsScreen,
+  CameraScreen,
 } from 'screens/LoggedIn';
 import {StartupScreen} from 'screens/StartupScreen';
 import {
@@ -53,7 +54,6 @@ import {
   DrawerNavigatorParamList,
   StackNavigatorParamList,
 } from './navigation.types';
-import {CameraScreen} from 'screens/LoggedIn/CameraScreen';
 
 const Stack = createNativeStackNavigator<StackNavigatorParamList>();
 const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
