@@ -75,6 +75,7 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
     navigation.navigate(Routes.PhotoUpload, {
       picture: takenPicture,
       barcode: route.params?.barcode,
+      picType: route.params?.picType,
     });
   };
 

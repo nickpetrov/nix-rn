@@ -53,9 +53,13 @@ export interface StackNavigatorParamList extends ParamListBase {
     foods: Array<FoodProps>;
     type: string;
   };
-  [Routes.PhotoUpload]: {barcode: string; picture?: PictureProps | null};
+  [Routes.PhotoUpload]: {
+    barcode: string;
+    picture?: PictureProps | null;
+    picType?: number;
+  };
   [Routes.Stats]: undefined;
-  [Routes.Camera]: {barcode: string};
+  [Routes.Camera]: {barcode: string; picType: number};
 }
 
 export interface DrawerNavigatorParamList extends ParamListBase {

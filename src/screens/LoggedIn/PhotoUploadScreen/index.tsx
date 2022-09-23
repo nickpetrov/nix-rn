@@ -146,29 +146,37 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     }
   };
 
-  const recievePicture = useCallback(
-    (picture: any) => {
-      console.log(pictureType);
-      if (pictureType === 1) {
-        setFrontPackagePicture({...picture});
-      } else if (pictureType === 2) {
-        setNutritionPackagePicture({...picture});
-      } else {
-        console.log('wrong picture type:', pictureType);
-      }
-    },
-    [pictureType],
-  );
+  const recievePicture = useCallback((picture: any, picType: number) => {
+    console.log(picType);
+    if (picType === 1) {
+      setFrontPackagePicture({...picture});
+    } else if (picType === 2) {
+      setNutritionPackagePicture({...picture});
+    } else {
+      console.log('wrong picture type:', picType);
+    }
+  }, []);
 
   useEffect(() => {
     if (route.params?.picture) {
-      recievePicture(route.params?.picture);
+      recievePicture(
+        route.params?.picture,
+        route.params?.picType || pictureType,
+      );
     }
-  }, [route.params?.picture, recievePicture]);
+  }, [
+    route.params?.picture,
+    route.params?.picType,
+    recievePicture,
+    pictureType,
+  ]);
 
-  const showCameraPopupHandler = (picType: any) => {
+  const showCameraPopupHandler = (picType: number) => {
     setPictureType(picType);
-    navigation.navigate(Routes.Camera, {barcode: route.params?.barcode});
+    navigation.navigate(Routes.Camera, {
+      barcode: route.params?.barcode,
+      picType,
+    });
   };
 
   return (
