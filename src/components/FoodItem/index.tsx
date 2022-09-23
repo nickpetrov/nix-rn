@@ -146,8 +146,6 @@ const FoodItem: React.FC<FoodItemProps> = ({
                     value={item.value}
                   />
                 ))}
-
-                <Picker.Item label="JavaScript" value="js" />
               </Picker>
             </View>
           </View>

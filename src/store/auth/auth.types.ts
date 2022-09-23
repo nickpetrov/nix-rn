@@ -19,10 +19,10 @@ export type User = {
   id: string;
   first_name: string;
   last_name: string;
-  daily_kcal: string | null;
-  daily_carbs_pct: string | null;
-  daily_fat_pct: string | null;
-  daily_protein_pct: string | null;
+  daily_kcal: number | null;
+  daily_carbs_pct: number | null;
+  daily_fat_pct: number | null;
+  daily_protein_pct: number | null;
   username: string | null;
   ref: null;
   birth_year: number;
@@ -42,7 +42,7 @@ export type User = {
   grocery_agent: number;
   height_cm: number;
   weight_kg: number;
-  country_code: null;
+  country_code: string | null;
   measure_system: number;
   exercise_level: number;
   show_meal_type: number;
@@ -51,7 +51,7 @@ export type User = {
   weekday_reminders_enabled: number;
   weekend_reminders_enabled: number;
   premium_user: number;
-  nutrition_topics: [];
+  nutrition_topics: number[];
   remote_ids: {};
 };
 
