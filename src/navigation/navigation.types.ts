@@ -1,5 +1,6 @@
 import {ParamListBase} from '@react-navigation/native';
 import {Routes} from 'navigation/Routes';
+import {PictureProps} from 'screens/LoggedIn';
 import {FoodProps} from 'store/userLog/userLog.types';
 import {RecipeProps} from '../store/recipes/recipes.types';
 
@@ -52,8 +53,9 @@ export interface StackNavigatorParamList extends ParamListBase {
     foods: Array<FoodProps>;
     type: string;
   };
-  [Routes.PhotoUpload]: {barcode: string};
+  [Routes.PhotoUpload]: {barcode: string; picture?: PictureProps | null};
   [Routes.Stats]: undefined;
+  [Routes.Camera]: {barcode: string};
 }
 
 export interface DrawerNavigatorParamList extends ParamListBase {

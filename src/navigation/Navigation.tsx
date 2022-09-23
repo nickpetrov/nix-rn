@@ -53,6 +53,7 @@ import {
   DrawerNavigatorParamList,
   StackNavigatorParamList,
 } from './navigation.types';
+import {CameraScreen} from 'screens/LoggedIn/CameraScreen';
 
 const Stack = createNativeStackNavigator<StackNavigatorParamList>();
 const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
@@ -193,6 +194,14 @@ const LoggedInNavigation = () => {
         component={TotalsScreen}
         options={{
           headerTitle: 'Totals',
+        }}
+      />
+      <Stack.Screen
+        name={Routes.Camera}
+        component={CameraScreen}
+        options={{
+          headerShown: false,
+          presentation: 'modal',
         }}
       />
       <Stack.Screen

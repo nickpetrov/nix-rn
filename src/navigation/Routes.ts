@@ -33,4 +33,5 @@ export enum Routes {
   Startup = 'Startup',
   LoggedIn = 'LoggedIn',
   LoginScreens = 'LoginScreens',
+  Camera = 'Camera',
 }

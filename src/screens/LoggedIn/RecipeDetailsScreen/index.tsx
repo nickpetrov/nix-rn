@@ -5,14 +5,12 @@ import React, {useState, useEffect, useCallback, useLayoutEffect} from 'react';
 import {useDispatch} from 'hooks/useRedux';
 
 // components
+import {View, Text, TouchableWithoutFeedback} from 'react-native';
 import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
   ScrollView,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
+} from 'react-native-gesture-handler';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FoodItem from 'components/FoodItem';

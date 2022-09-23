@@ -8,10 +8,9 @@ import {
   Text,
   TouchableWithoutFeedback,
   Image,
-  FlatList,
-  TextInput,
   TouchableOpacity,
 } from 'react-native';
+import {FlatList, TextInput} from 'react-native-gesture-handler';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 // actions

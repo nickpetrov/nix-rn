@@ -6,15 +6,12 @@ import {FullOptions, Searcher} from 'fast-fuzzy';
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // components
+import {View, Text, TouchableWithoutFeedback, Image} from 'react-native';
 import {
-  View,
-  Text,
   FlatList,
   TextInput,
-  TouchableWithoutFeedback,
-  Image,
   TouchableOpacity,
-} from 'react-native';
+} from 'react-native-gesture-handler';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 // actions

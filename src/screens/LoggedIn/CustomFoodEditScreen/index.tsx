@@ -5,13 +5,8 @@ import React, {useCallback, useState, useEffect, useLayoutEffect} from 'react';
 import {useDispatch} from 'hooks/useRedux';
 
 // components
-import {
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
+import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NixButton} from 'components/NixButton';
 import CustomFoodField from 'components/CustomFoodField';

@@ -3,7 +3,8 @@ import React, {useState} from 'react';
 import moment from 'moment-timezone';
 
 // components
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import DatePicker from 'react-native-date-picker';
 
 // helpers
