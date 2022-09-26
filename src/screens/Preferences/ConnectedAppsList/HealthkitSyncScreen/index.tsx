@@ -39,9 +39,9 @@ export const HealthkitSyncScreen: React.FC = () => {
     //   // $cordovaSQLite
     //   //   .execute(window.db, 'DROP TABLE hkdata');
     // } else {
-    if (option == 'nutrition') {
+    if (option === 'nutrition') {
       /* Permission options */
-    } else if (option == 'weight') {
+    } else if (option === 'weight') {
       permissions = {
         permissions: {
           read: [
@@ -52,7 +52,7 @@ export const HealthkitSyncScreen: React.FC = () => {
           ] as HealthPermission[],
         },
       };
-    } else if (option == 'exercise') {
+    } else if (option === 'exercise') {
     }
 
     AppleHealthKit.initHealthKit(permissions, error => {
