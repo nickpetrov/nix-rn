@@ -32,4 +32,8 @@ export const styles = StyleSheet.create({
   footerText: {
     fontWeight: 'bold',
   },
+  webView: {
+    width: '100%',
+    flex: 1,
+  },
 });
