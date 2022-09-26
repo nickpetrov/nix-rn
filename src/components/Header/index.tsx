@@ -1,5 +1,5 @@
 // utils
-import React from 'react';
+import React, {useRef} from 'react';
 
 // components
 import {View, TextInput} from 'react-native';
@@ -33,15 +33,11 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = props => {
   const dispatch = useDispatch();
   const route = useRoute();
+  const inputRef = useRef<TextInput>(null);
 
   const showAutocomplete = () => {
     if (props.navigation && route.name !== Routes.Autocomplete) {
-      props.navigation.navigate(Routes.LoggedIn, {
-        screen: Routes.Home,
-        params: {
-          screen: Routes.Autocomplete,
-        },
-      });
+      props.navigation.navigate(Routes.Autocomplete);
     }
   };
 
@@ -53,9 +49,15 @@ export const Header: React.FC<HeaderProps> = props => {
     <View style={styles.header}>
       <View style={styles.autocompleteWrapper}>
         <TextInput
+          ref={inputRef}
           style={styles.autocomplete}
           placeholder="Search foods to log"
           // onBlur={() => Keyboard.dismiss()}
+          onLayout={() => {
+            if (route.name === Routes.Autocomplete) {
+              inputRef.current?.focus();
+            }
+          }}
           onFocus={showAutocomplete}
           onChangeText={searchAutocomplete}
         />

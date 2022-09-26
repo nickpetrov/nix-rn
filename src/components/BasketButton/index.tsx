@@ -5,7 +5,7 @@ import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 
 // hooks
-// import {useSelector} from 'hooks/useRedux';
+import {useSelector} from 'hooks/useRedux';
 
 // styles
 import {styles} from './BasketButton.styles';
@@ -18,8 +18,7 @@ interface BasketButtonProps {
 }
 
 const BasketButton: React.FC<BasketButtonProps> = props => {
-  // const foods = useSelector(state => state.basket.foods);
-  const foods = [];
+  const foods = useSelector(state => state.basket.foods);
   return (
     <TouchableOpacity onPress={props.onPress} style={styles.container}>
       <View style={styles.root}>

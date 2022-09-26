@@ -50,7 +50,7 @@ const Footer: React.FC<FooterProps> = props => {
         <FooterItem
           title="Stats"
           onPress={() => {
-            props.navigation.replace(Routes.Stats);
+            props.navigation.navigate(Routes.Stats);
           }}>
           <FontAwesome name="bar-chart" color="#fff" size={30} />
         </FooterItem>

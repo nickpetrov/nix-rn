@@ -69,6 +69,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       headerRight: () => (
         <BasketButton
           icon="shopping-basket"
+          withCount
           onPress={() => navigation.navigate(Routes.Basket)}
         />
       ),

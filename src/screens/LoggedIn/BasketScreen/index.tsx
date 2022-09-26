@@ -71,14 +71,13 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
       food?.full_nutrients?.filter(
         (item: NutrientProps) => item.attr_id === 208,
       )[0].value;
-    totalProtein += food.nf_protein;
-    totalFat += food.nf_total_fat;
-    totalCarb += food.nf_total_carbohydrate;
+    totalProtein += food.nf_protein || 0;
+    totalFat += food.nf_total_fat || 0;
+    totalCarb += food.nf_total_carbohydrate || 0;
   });
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: undefined,
       headerTitle: (props: {
         children: string;
         tintColor?: string | undefined;
@@ -163,7 +162,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
   const foodsList = foods.map((food: FoodProps, index: number) => {
     return (
       <FoodItem
-        key={food.food_name + food.consumed_at}
+        key={food.food_name + food.id + food.consumed_at + index}
         itemIndex={index}
         foodObj={food}
         itemChangeCallback={changeFoodAtBasket}

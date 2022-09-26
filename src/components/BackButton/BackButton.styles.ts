@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
   },
   iconStyle: {
     width: 25,
-    fontSize: 25,
+    fontSize: 35,
     color: '#fff',
     alignItems: 'center',
     justifyContent: 'center',

@@ -54,6 +54,7 @@ import {
   DrawerNavigatorParamList,
   StackNavigatorParamList,
 } from './navigation.types';
+import BackButton from 'components/BackButton';
 
 const Stack = createNativeStackNavigator<StackNavigatorParamList>();
 const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
@@ -75,13 +76,29 @@ const ConnectedAppsNavigation = () => {
   );
 };
 
+const LoggedInNavigationOptions = ({
+  navigation,
+}: {
+  navigation: DrawerNavigationProp<ParamListBase>;
+}) => ({
+  headerTintColor: '#fff',
+  headerStyle: {
+    backgroundColor: Colors.Primary,
+  },
+  headerLeft: () => <BackButton navigation={navigation} />,
+});
+
 const PreferencesNavigation = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator
+      screenOptions={LoggedInNavigationOptions}
+      initialRouteName={Routes.Menu}>
       <Stack.Screen
         name={Routes.Menu}
         component={PreferencesMenuScreen}
-        options={{headerTitle: 'Preferences'}}
+        options={{
+          headerTitle: 'Preferences',
+        }}
       />
       <Stack.Screen name={Routes.Profile} component={ProfileScreen} />
       <Stack.Screen
@@ -109,25 +126,35 @@ const PreferencesNavigation = () => {
   );
 };
 
-const LoggedInNavigationOptions = ({
+const LoggedInNavigation = ({
   navigation,
 }: {
   navigation: DrawerNavigationProp<ParamListBase>;
-}) => ({
-  headerTintColor: '#fff',
-  headerStyle: {
-    backgroundColor: Colors.Primary,
-  },
-  headerLeft: () => <DrawerButton navigation={navigation} />,
-});
-
-const LoggedInNavigation = () => {
+}) => {
   return (
     <Stack.Navigator screenOptions={LoggedInNavigationOptions}>
-      <Stack.Screen name={Routes.Dashboard} component={DashboardScreen} />
-      <Stack.Screen name={Routes.Basket} component={BasketScreen} />
+      <Stack.Screen
+        name={Routes.Dashboard}
+        component={DashboardScreen}
+        options={{
+          headerLeft: () => <DrawerButton navigation={navigation} />,
+        }}
+      />
+      <Stack.Screen
+        name={Routes.Basket}
+        component={BasketScreen}
+        options={{
+          headerBackVisible: false,
+        }}
+      />
       <Stack.Screen name={Routes.FoodInfo} component={FoodInfoScreen} />
-      <Stack.Screen name={Routes.Autocomplete} component={AutocompleteScreen} />
+      <Stack.Screen
+        name={Routes.Autocomplete}
+        component={AutocompleteScreen}
+        options={{
+          headerBackVisible: false,
+        }}
+      />
       <Stack.Screen name={Routes.TrackFoods} component={TrackFoodsScreen} />
       <Stack.Screen
         name={Routes.BarcodeScanner}
@@ -165,7 +192,7 @@ const LoggedInNavigation = () => {
         name={Routes.Preferences}
         component={PreferencesNavigation}
         options={{
-          headerTitle: 'Preferences',
+          headerShown: false,
         }}
       />
       <Stack.Screen

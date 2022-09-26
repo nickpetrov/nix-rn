@@ -66,18 +66,18 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: undefined,
       headerTitle: (props: {
         children: string;
         tintColor?: string | undefined;
       }) => (
         <View style={{width: Dimensions.get('window').width - 110}}>
-          <Header {...props} navigation={navigation} />
+          <Header {...props} hideScannerButton navigation={navigation} />
         </View>
       ),
       headerRight: () => (
         <BasketButton
           icon="shopping-basket"
+          withCount
           onPress={() => navigation.navigate(Routes.Basket)}
         />
       ),
