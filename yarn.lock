@@ -6652,6 +6652,13 @@ react-native-gradle-plugin@^0.70.2:
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.2.tgz#b5130f2c196e27c4c5912706503d69b8790f1937"
   integrity sha512-k7d+CVh0fs/VntA2WaKD58cFB2rtiSLBHYlciH18ncaT4N/B3A4qOGv9pSCEHfQikELm6vAf98KMbE3c8KnH1A==
 
+react-native-health@^1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/react-native-health/-/react-native-health-1.13.0.tgz#61f73eb828aa70e107493d01d16e410587c188cf"
+  integrity sha512-ozHemi5Amr4cjfojKa9FVVAyEJk8a9nzPP70GR59JYxcpRivv/tpqhvt8BzH/NCL9Whpvv6kiWNcIBOFd2spgA==
+  dependencies:
+    "@expo/config-plugins" "^2.0.0"
+
 react-native-in-app-review@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/react-native-in-app-review/-/react-native-in-app-review-4.1.1.tgz#d7ad1b82be6e3cfebf5fa43dbcd79f5a4b5bc367"

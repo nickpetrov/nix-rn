@@ -35,6 +35,7 @@
     "react-native-fbsdk-next": "^10.1.0",
     "react-native-floating-label-input": "^1.4.2",
     "react-native-gesture-handler": "^2.6.0",
+    "react-native-health": "^1.13.0",
     "react-native-in-app-review": "^4.1.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-push-notification": "^8.1.1",
