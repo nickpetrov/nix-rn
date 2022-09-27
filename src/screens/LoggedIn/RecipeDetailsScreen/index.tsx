@@ -16,6 +16,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FoodItem from 'components/FoodItem';
 import {NixButton} from 'components/NixButton';
 import ErrorModal from 'components/ErrorModal';
+import {NavigationHeader} from 'components/NavigationHeader';
 
 // actions
 import {
@@ -184,12 +185,21 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: route.params?.recipe ? 'Edit Recipe' : 'Create New Recipe',
-      headerRight: () => (
-        <TouchableOpacity onPress={() => saveRecipe()}>
-          <Text style={styles.saveBtn}>Save</Text>
-          {/* <FontAwesome5 size={26} color={'white'} name="save" /> */}
-        </TouchableOpacity>
+      header: (props: any) => (
+        <NavigationHeader
+          {...props}
+          headerTitle={
+            route.params?.recipe ? 'Edit Recipe' : 'Create New Recipe'
+          }
+          headerRight={
+            <TouchableOpacity
+              style={{marginRight: 10}}
+              onPress={() => saveRecipe()}>
+              <Text style={styles.saveBtn}>Save</Text>
+              {/* <FontAwesome5 size={26} color={'white'} name="save" /> */}
+            </TouchableOpacity>
+          }
+        />
       ),
     });
   }, [navigation, route, saveRecipe]);

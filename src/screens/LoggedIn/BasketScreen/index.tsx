@@ -7,9 +7,7 @@ import NixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 
 // components
 import BasketButton from 'components/BasketButton';
-import {Header} from 'components/Header';
 import {
-  Dimensions,
   Text,
   View,
   SafeAreaView,
@@ -23,6 +21,7 @@ import {FloatingLabelInput} from 'react-native-floating-label-input';
 import FoodItem from 'components/FoodItem';
 import WhenSection from 'components/WhenSection';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {NavigationHeader} from 'components/NavigationHeader';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -78,16 +77,13 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: (props: {
-        children: string;
-        tintColor?: string | undefined;
-      }) => (
-        <View style={{width: Dimensions.get('window').width - 110}}>
-          <Header {...props} navigation={navigation} />
-        </View>
-      ),
-      headerRight: () => (
-        <BasketButton icon="times" onPress={() => navigation.goBack()} />
+      header: (props: any) => (
+        <NavigationHeader
+          {...props}
+          headerRight={
+            <BasketButton icon="times" onPress={() => navigation.goBack()} />
+          }
+        />
       ),
     });
   }, [navigation]);

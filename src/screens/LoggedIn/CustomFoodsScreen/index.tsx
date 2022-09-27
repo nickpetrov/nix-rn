@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {FlatList, TextInput} from 'react-native-gesture-handler';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {NavigationHeader} from 'components/NavigationHeader';
 
 // actions
 import {getCustomFoods} from 'store/customFoods/customFoods.actions';
@@ -49,13 +50,19 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate(Routes.CustomFoodEdit, {food: null})
-          }>
-          <FontAwesome5 size={26} color={'white'} name="plus" />
-        </TouchableOpacity>
+      header: (props: any) => (
+        <NavigationHeader
+          {...props}
+          headerRight={
+            <TouchableOpacity
+              style={{marginRight: 10}}
+              onPress={() =>
+                navigation.navigate(Routes.CustomFoodEdit, {food: null})
+              }>
+              <FontAwesome5 size={26} color={'white'} name="plus" />
+            </TouchableOpacity>
+          }
+        />
       ),
     });
   }, [navigation]);

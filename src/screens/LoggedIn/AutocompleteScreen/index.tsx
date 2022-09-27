@@ -3,17 +3,11 @@ import React, {useEffect, useRef, useState} from 'react';
 import moment from 'moment-timezone';
 
 // components
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableWithoutFeedback,
-  Dimensions,
-} from 'react-native';
+import {View, Text, FlatList, TouchableWithoutFeedback} from 'react-native';
 import BasketButton from 'components/BasketButton';
 import MealListItem from 'components/FoodLog//MealListItem';
 import ConsolidatedSearchResults from 'components/ConsolidatedSearchResults';
-import {Header} from 'components/Header';
+import {NavigationHeader} from 'components/NavigationHeader';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
@@ -66,19 +60,16 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: (props: {
-        children: string;
-        tintColor?: string | undefined;
-      }) => (
-        <View style={{width: Dimensions.get('window').width - 110}}>
-          <Header {...props} hideScannerButton navigation={navigation} />
-        </View>
-      ),
-      headerRight: () => (
-        <BasketButton
-          icon="shopping-basket"
-          withCount
-          onPress={() => navigation.navigate(Routes.Basket)}
+      header: (props: any) => (
+        <NavigationHeader
+          {...props}
+          headerRight={
+            <BasketButton
+              icon="shopping-basket"
+              withCount
+              onPress={() => navigation.navigate(Routes.Basket)}
+            />
+          }
         />
       ),
     });

@@ -3,17 +3,12 @@ import React, {useState, useEffect, useLayoutEffect} from 'react';
 import moment from 'moment-timezone';
 
 // components
-import {
-  Dimensions,
-  Text,
-  View,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from 'react-native';
+import {Text, View, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import BasketButton from 'components/BasketButton';
-import {Header} from 'components/Header';
 import FoodLog from 'components/FoodLog';
 import Footer from 'components/Footer';
+import {NavigationHeader} from 'components/NavigationHeader';
+import DrawerButton from 'components/DrawerButton';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -57,20 +52,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerBackButtonMenuEnabled: false,
-      headerTitle: (props: {
-        children: string;
-        tintColor?: string | undefined;
-      }) => (
-        <View style={{width: Dimensions.get('window').width - 110}}>
-          <Header {...props} navigation={navigation} />
-        </View>
-      ),
-      headerRight: () => (
-        <BasketButton
-          icon="shopping-basket"
-          withCount
-          onPress={() => navigation.navigate(Routes.Basket)}
+      header: (props: any) => (
+        <NavigationHeader
+          {...props}
+          headerRight={
+            <BasketButton
+              icon="shopping-basket"
+              withCount
+              onPress={() => navigation.navigate(Routes.Basket)}
+            />
+          }
+          headerLeft={<DrawerButton navigation={props.navigation} />}
         />
       ),
     });

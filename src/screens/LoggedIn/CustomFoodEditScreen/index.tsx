@@ -10,6 +10,7 @@ import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NixButton} from 'components/NixButton';
 import CustomFoodField from 'components/CustomFoodField';
+import {NavigationHeader} from 'components/NavigationHeader';
 
 // actions
 import {updateOrCreateCustomFood} from 'store/customFoods/customFoods.actions';
@@ -125,14 +126,21 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: route.params?.food
-        ? 'Edit Custom Food'
-        : 'Create Custom Food',
-      headerRight: () => (
-        <TouchableOpacity onPress={() => saveCustomFood()}>
-          <Text style={styles.saveBtn}>Save</Text>
-          {/* <FontAwesome5 size={26} color={'white'} name="save" /> */}
-        </TouchableOpacity>
+      header: (props: any) => (
+        <NavigationHeader
+          {...props}
+          headerTitle={
+            route.params?.food ? 'Edit Custom Food' : 'Create Custom Food'
+          }
+          headerRight={
+            <TouchableOpacity
+              style={{marginRight: 10}}
+              onPress={() => saveCustomFood()}>
+              <Text style={styles.saveBtn}>Save</Text>
+              {/* <FontAwesome5 size={26} color={'white'} name="save" /> */}
+            </TouchableOpacity>
+          }
+        />
       ),
     });
   }, [navigation, route, saveCustomFood]);

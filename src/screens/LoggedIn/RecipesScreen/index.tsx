@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
 } from 'react-native-gesture-handler';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {NavigationHeader} from 'components/NavigationHeader';
 
 // actions
 import {getRecipes} from 'store/recipes/recipes.actions';
@@ -48,13 +49,19 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({navigation}) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate(Routes.RecipeDetails, {recipe: null})
-          }>
-          <FontAwesome5 size={26} color={'white'} name="plus" />
-        </TouchableOpacity>
+      header: (props: any) => (
+        <NavigationHeader
+          {...props}
+          headerRight={
+            <TouchableOpacity
+              style={{marginRight: 10}}
+              onPress={() =>
+                navigation.navigate(Routes.RecipeDetails, {recipe: null})
+              }>
+              <FontAwesome5 size={26} color={'white'} name="plus" />
+            </TouchableOpacity>
+          }
+        />
       ),
     });
   }, [navigation]);

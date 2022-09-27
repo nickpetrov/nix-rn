@@ -4,6 +4,8 @@ export const styles = StyleSheet.create({
   root: {
     flex: 1,
     position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   container: {
     width: 55,

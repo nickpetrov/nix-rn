@@ -46,7 +46,6 @@ import {
 
 // constants
 import {Routes} from './Routes';
-import {Colors} from 'constants';
 
 // types
 import {ParamListBase} from '@react-navigation/native';
@@ -54,7 +53,7 @@ import {
   DrawerNavigatorParamList,
   StackNavigatorParamList,
 } from './navigation.types';
-import BackButton from 'components/BackButton';
+import {NavigationHeader} from 'components/NavigationHeader';
 
 const Stack = createNativeStackNavigator<StackNavigatorParamList>();
 const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
@@ -76,17 +75,8 @@ const ConnectedAppsNavigation = () => {
   );
 };
 
-const LoggedInNavigationOptions = ({
-  navigation,
-}: {
-  navigation: DrawerNavigationProp<ParamListBase>;
-}) => ({
-  headerTintColor: '#fff',
-  headerStyle: {
-    backgroundColor: Colors.Primary,
-    justifyContent: 'space-between',
-  },
-  headerLeft: () => <BackButton navigation={navigation} />,
+const LoggedInNavigationOptions = () => ({
+  header: (props: any) => <NavigationHeader {...props} />,
 });
 
 const PreferencesNavigation = () => {
