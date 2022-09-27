@@ -52,7 +52,6 @@ const FoodLog: React.FC = () => {
   const [sortedFoods, setSortedFoods] = useState<Array<SortedFoodProps>>(
     foodLogHelpers.sortFoodsByMeal(foods, selectedDate),
   );
-
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
   const [lastScrollPosition, setLastScrollPosition] = useState(0);
   const [positionFromEnd, setPositionFromEnd] = useState(1);
@@ -121,7 +120,7 @@ const FoodLog: React.FC = () => {
           }
         }
       });
-      if (isSnackPresent) {
+      if (!isSnackPresent) {
         const newSortedFood = prev.filter((meal: SortedFoodProps) => {
           return (
             meal.mealName !== 'AM Snack' &&
