@@ -105,7 +105,7 @@ export const getUserWeightlog = (
   };
 };
 
-export const addWeightlog = (weights: Array<WeightProps>) => {
+export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
   return async (dispatch: Dispatch) => {
     const response = await userLogService.addWeightlog(weights);
 

@@ -7,6 +7,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   contentWrapper: {
     width: '100%',
     alignItems: 'center',

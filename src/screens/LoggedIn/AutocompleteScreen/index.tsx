@@ -107,13 +107,12 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   };
 
   return (
-    <View style={{backgroundColor: '#fff'}}>
+    <View style={styles.root}>
       {autocompleteFoods.self.length ||
       autocompleteFoods.common.length ||
       autocompleteFoods.branded.length ? (
         <View>
-          <View
-            style={{flexDirection: 'row', flexWrap: 'nowrap', marginTop: 3}}>
+          <View style={styles.main}>
             <TouchableWithoutFeedback onPress={() => changeActiveTab('all')}>
               <View
                 style={{
@@ -187,7 +186,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
         </View>
       ) : autocompleteFoods.suggested.length ? (
         <View>
-          <Text style={{textAlign: 'center', padding: 16, fontSize: 16}}>
+          <Text style={styles.footerText}>
             Foods Eaten Around {suggestedTime}
           </Text>
           <FlatList
@@ -202,7 +201,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
           />
         </View>
       ) : (
-        <Text style={{textAlign: 'center'}}>
+        <Text style={styles.note}>
           no foods found yet. Please check your search query.
         </Text>
       )}

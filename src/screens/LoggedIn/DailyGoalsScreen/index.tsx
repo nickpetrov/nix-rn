@@ -94,8 +94,8 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1, backgroundColor: '#fff'}}>
+    <SafeAreaView style={styles.root}>
+      <View style={styles.container}>
         <Formik
           initialValues={{
             daily_kcal: userData.daily_kcal ? userData.daily_kcal + '' : '',
@@ -114,18 +114,13 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
           validationSchema={goalsValidation}>
           {({handleSubmit, isValid, dirty}) => (
             <>
-              <View style={{flexDirection: 'row'}}>
-                <View
-                  style={{
-                    width: '50%',
-                    alignItems: 'flex-end',
-                    justifyContent: 'center',
-                  }}>
-                  <Text style={{textAlign: 'right', fontSize: 16}}>
+              <View style={styles.row}>
+                <View style={styles.labelContainer}>
+                  <Text style={[styles.textAlignRight, styles.fz16]}>
                     Daily Calorie Limit:
                   </Text>
                 </View>
-                <View style={{width: '50%'}}>
+                <View style={styles.w50}>
                   <Field
                     component={NixInput}
                     name="daily_kcal"
@@ -135,11 +130,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                       <FontAwesome
                         name={'fire'}
                         size={30}
-                        style={{
-                          marginRight: 15,
-                          marginBottom: 2,
-                          color: '#666',
-                        }}
+                        style={styles.icon}
                       />
                     }
                     autoCapitalize="none"
@@ -147,21 +138,16 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                   />
                 </View>
               </View>
-              <View style={{flexDirection: 'row'}}>
-                <View
-                  style={{
-                    width: '50%',
-                    alignItems: 'flex-end',
-                    justifyContent: 'center',
-                  }}>
-                  <Text style={{textAlign: 'right', fontSize: 13}}>
+              <View style={styles.row}>
+                <View style={styles.labelContainer}>
+                  <Text style={[styles.textAlignRight, styles.fz13]}>
                     Calories from
                   </Text>
-                  <Text style={{textAlign: 'right', fontSize: 20}}>
+                  <Text style={[styles.textAlignRight, styles.fz20]}>
                     Protein:
                   </Text>
                 </View>
-                <View style={{width: '50%'}}>
+                <View style={styles.w50}>
                   <Field
                     component={NixInput}
                     name="daily_protein_pct"
@@ -171,11 +157,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                       <FontAwesome
                         name={'percent'}
                         size={20}
-                        style={{
-                          marginRight: 15,
-                          marginBottom: 2,
-                          color: '#666',
-                        }}
+                        style={styles.icon}
                       />
                     }
                     autoCapitalize="none"
@@ -183,21 +165,16 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                   />
                 </View>
               </View>
-              <View style={{flexDirection: 'row'}}>
-                <View
-                  style={{
-                    width: '50%',
-                    alignItems: 'flex-end',
-                    justifyContent: 'center',
-                  }}>
-                  <Text style={{textAlign: 'right', fontSize: 13}}>
+              <View style={styles.row}>
+                <View style={styles.labelContainer}>
+                  <Text style={[styles.textAlignRight, styles.fz13]}>
                     Calories from
                   </Text>
-                  <Text style={{textAlign: 'right', fontSize: 20}}>
+                  <Text style={[styles.textAlignRight, styles.fz20]}>
                     Carbohydrates:
                   </Text>
                 </View>
-                <View style={{width: '50%'}}>
+                <View style={styles.w50}>
                   <Field
                     component={NixInput}
                     name="daily_carbs_pct"
@@ -207,11 +184,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                       <FontAwesome
                         name={'percent'}
                         size={20}
-                        style={{
-                          marginRight: 15,
-                          marginBottom: 2,
-                          color: '#666',
-                        }}
+                        style={styles.icon}
                       />
                     }
                     autoCapitalize="none"
@@ -219,19 +192,14 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                   />
                 </View>
               </View>
-              <View style={{flexDirection: 'row'}}>
-                <View
-                  style={{
-                    width: '50%',
-                    alignItems: 'flex-end',
-                    justifyContent: 'center',
-                  }}>
-                  <Text style={{textAlign: 'right', fontSize: 13}}>
+              <View style={styles.row}>
+                <View style={styles.labelContainer}>
+                  <Text style={[styles.textAlignRight, styles.fz13]}>
                     Calories from
                   </Text>
-                  <Text style={{textAlign: 'right', fontSize: 20}}>Fat:</Text>
+                  <Text style={[styles.textAlignRight, styles.fz20]}>Fat:</Text>
                 </View>
-                <View style={{width: '50%'}}>
+                <View style={styles.w50}>
                   <Field
                     component={NixInput}
                     name="daily_fat_pct"
@@ -241,11 +209,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                       <FontAwesome
                         name={'percent'}
                         size={20}
-                        style={{
-                          marginRight: 15,
-                          marginBottom: 2,
-                          color: '#666',
-                        }}
+                        style={styles.icon}
                       />
                     }
                     autoCapitalize="none"
@@ -253,7 +217,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                   />
                 </View>
               </View>
-              <View style={{marginBottom: 50, marginHorizontal: 8}}>
+              <View style={styles.footer}>
                 <NixButton
                   title="Update"
                   onPress={handleSubmit}

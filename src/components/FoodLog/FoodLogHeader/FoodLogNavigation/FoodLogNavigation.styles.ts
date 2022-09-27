@@ -57,4 +57,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  flex1: {
+    flex: 1,
+  },
 });

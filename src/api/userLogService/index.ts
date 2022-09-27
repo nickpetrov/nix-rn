@@ -71,7 +71,7 @@ const userLogService = {
       },
     });
   },
-  async addWeightlog(weights: Array<WeightProps>) {
+  async addWeightlog(weights: Array<Partial<WeightProps>>) {
     return await apiClient.post('weight/log', {
       weights,
     });

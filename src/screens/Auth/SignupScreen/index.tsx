@@ -52,10 +52,8 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
     <SafeAreaView style={styles.loginWrapper}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flex: 1, width: '100%'}}>
-        <ScrollView
-          style={{flex: 1, width: '100%', height: '100%'}}
-          alwaysBounceVertical={false}>
+        style={styles.keyboardView}>
+        <ScrollView style={styles.scrollView} alwaysBounceVertical={false}>
           <View style={styles.contentWrapper}>
             <View style={styles.logo}>
               <Image

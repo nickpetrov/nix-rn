@@ -130,9 +130,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
         : 'Create Custom Food',
       headerRight: () => (
         <TouchableOpacity onPress={() => saveCustomFood()}>
-          <Text style={{fontSize: 18, fontWeight: '600', color: '#fff'}}>
-            Save
-          </Text>
+          <Text style={styles.saveBtn}>Save</Text>
           {/* <FontAwesome5 size={26} color={'white'} name="save" /> */}
         </TouchableOpacity>
       ),
@@ -144,8 +142,8 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
   };
 
   return (
-    <KeyboardAwareScrollView style={{flex: 1, backgroundColor: '#fff'}}>
-      <ScrollView style={{flex: 1, padding: 10}}>
+    <KeyboardAwareScrollView style={styles.root}>
+      <ScrollView style={styles.scrollView}>
         <View>
           <Text>Food Name:</Text>
           <TextInput
@@ -158,7 +156,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
 
         <View>
           <Text>Serving Info</Text>
-          <View style={{flexDirection: 'row'}}>
+          <View style={styles.row}>
             <TextInput
               style={styles.input}
               value={(foodObj.serving_qty || '') + '' || '1'}
@@ -299,11 +297,11 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           onFieldChange={updateCustomField}
         />
 
-        <View style={{flexDirection: 'row', marginHorizontal: 10}}>
-          <View style={{flex: 1, marginRight: 5}}>
+        <View style={styles.footer}>
+          <View style={[styles.flex1, styles.mr5]}>
             <NixButton title="Copy" type="primary" onPress={handleCopy} />
           </View>
-          <View style={{flex: 1, marginLeft: 5}}>
+          <View style={[styles.flex1, styles.ml5]}>
             <NixButton title="Log this food" type="calm" />
           </View>
         </View>

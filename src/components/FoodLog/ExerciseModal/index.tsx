@@ -68,7 +68,7 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
       }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flex: 1, width: '100%'}}>
+        style={styles.root}>
         <View style={styles.excerciseModal}>
           <View style={styles.excerciseContainer}>
             <View style={styles.excerciseModalHeader}>
@@ -89,10 +89,10 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 <Text>Recent Exercises:</Text>
               </View>
               <View style={styles.excerciseModalButtons}>
-                <View style={{flex: 1, marginRight: 8}}>
+                <View style={[styles.btnContainer, styles.mr8]}>
                   <NixButton title="Save" type="primary" onPress={handleSave} />
                 </View>
-                <View style={{flex: 1}}>
+                <View style={styles.btnContainer}>
                   <NixButton
                     title="Cancel"
                     onPress={() => {

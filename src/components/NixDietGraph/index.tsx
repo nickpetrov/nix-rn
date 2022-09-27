@@ -5,7 +5,7 @@ import moment from 'moment-timezone';
 // components
 import {View, Text} from 'react-native';
 import {NixButton} from 'components/NixButton';
-import HeatMap from './HeatMap';
+import HeatMap from './components/HeatMap';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
@@ -20,6 +20,9 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
+
+// styles
+import {styles} from './NixDietGraph.styles';
 
 interface NixDietGraphProps {
   initialDisplayDate: number;
@@ -161,19 +164,19 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
 
   return (
     <View>
-      <View style={{alignItems: 'center', marginVertical: 10}}>
-        <Text style={{fontSize: 18}}>{title}</Text>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>{title}</Text>
       </View>
       <View>
-        <View style={{width: 90, flexDirection: 'row', alignSelf: 'center'}}>
-          <View style={{flex: 1, marginRight: 3}}>
+        <View style={styles.btnsContainer}>
+          <View style={[styles.btn, styles.mr3]}>
             <NixButton
               iconName="chevron-left"
               type="calm"
               onPress={() => setMonthOffset(prevState => prevState - 1)}
             />
           </View>
-          <View style={{flex: 1, marginLeft: 3}}>
+          <View style={[styles.btn, styles.ml3]}>
             <NixButton
               iconName="chevron-right"
               type="calm"
@@ -181,14 +184,8 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
             />
           </View>
         </View>
-        <View style={{alignItems: 'center', justifyContent: 'center'}}>
-          <Text
-            style={{
-              color: '#666',
-              fontSize: 20,
-              fontWeight: '500',
-              marginVertical: 10,
-            }}>
+        <View style={styles.main}>
+          <Text style={styles.text}>
             {selectedMonth}, {moment(startDate).format('YYYY')}
           </Text>
           <HeatMap
@@ -200,33 +197,29 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
             navigation={props.navigation}
           />
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <Text style={{fontSize: 16, textAlign: 'center'}}>
+        <View style={styles.footer}>
+          <View style={[styles.flex1, styles.alignCenter]}>
+            <Text style={styles.footerCenteredText}>
               Total Days{'\n'}Tracked
             </Text>
-            <Text style={{marginVertical: 10, textAlign: 'center'}}>
+            <Text style={[styles.textAlignCenter, styles.marginV10]}>
               {trackedDays} Days
             </Text>
           </View>
-          <View style={{flex: 1}}>
-            <Text style={{fontSize: 16, textAlign: 'center'}}>
-              Days{'\n'}Missed
-            </Text>
-            <Text style={{marginVertical: 10, textAlign: 'center'}}>
+          <View style={styles.flex1}>
+            <Text style={styles.footerCenteredText}>Days{'\n'}Missed</Text>
+            <Text style={[styles.textAlignCenter, styles.marginV10]}>
               {+daysInMonth - trackedDays} Days
             </Text>
           </View>
-          <View style={{flex: 1}}>
-            <Text style={{fontSize: 16, textAlign: 'center'}}>
-              % Days{'\n'}of Green
-            </Text>
-            <Text style={{marginVertical: 10, textAlign: 'center'}}>
+          <View style={styles.flex1}>
+            <Text style={styles.footerCenteredText}>% Days{'\n'}of Green</Text>
+            <Text style={[styles.textAlignCenter, styles.marginV10]}>
               {trackedDays && greenDays ? (greenDays / trackedDays) * 100 : 0}%
             </Text>
           </View>
         </View>
-        <Text style={{textAlign: 'center', marginVertical: 10, color: '#666'}}>
+        <Text style={styles.footerNote}>
           Tap on any date on the calendar to review or add foods.
         </Text>
       </View>

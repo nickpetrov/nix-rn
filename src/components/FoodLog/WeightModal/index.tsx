@@ -55,17 +55,18 @@ const WeightModal: React.FC<WeightModalProps> = ({
       measureSystem === 1 ? value : Math.round(parseFloat(value) / 2.20462);
     if (currentValue > 0) {
       if (weight?.id) {
-        dispatch(updateWeightlog([{...weight, kg: currentValue}])).then(() =>
+        dispatch(updateWeightlog([{...weight, kg: +currentValue}])).then(() =>
           setVisible(null),
         );
       } else {
         dispatch(
           addWeightlog([
             {
-              kg: currentValue,
+              kg: +currentValue,
               timestamp: moment(selectedDate)
                 .hours(moment().hours())
-                .minutes(moment().minutes()),
+                .minutes(moment().minutes())
+                .format(),
             },
           ]),
         ).then(() => setVisible(null));
@@ -92,7 +93,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
       onDismiss={() => setVisible(null)}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flex: 1, width: '100%'}}>
+        style={styles.root}>
         <View style={styles.weightModal}>
           <View style={styles.weightContainer}>
             <View style={styles.weightModalHeader}>
@@ -105,21 +106,15 @@ const WeightModal: React.FC<WeightModalProps> = ({
                 onChangeText={(val: string) => setValue(val)}
                 keyboardType="numeric"
               />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingTop: 5,
-                  paddingBottom: 5,
-                }}>
-                <View style={{flex: 1}}>
+              <View style={styles.units}>
+                <View style={styles.flex1}>
                   <Text>Units:</Text>
                 </View>
                 <RadioButton
-                  selected={measureSystem == 1}
+                  selected={measureSystem === 1}
                   onPress={() => {
                     setMeasureSystem((prev: number) => {
-                      if (prev != 1 && value) {
+                      if (prev !== 1 && value) {
                         const lbFromKg = Math.round(
                           parseFloat(value) / 2.20462,
                         );
@@ -160,10 +155,10 @@ const WeightModal: React.FC<WeightModalProps> = ({
                 </Text>
               </View>
               <View style={styles.weightModalButtons}>
-                <View style={{flex: 1, marginRight: 8}}>
+                <View style={[styles.flex1, styles.mr8]}>
                   <NixButton title="Save" type="primary" onPress={handleSave} />
                 </View>
-                <View style={{flex: 1}}>
+                <View style={styles.flex1}>
                   <NixButton title="Cancel" onPress={() => setVisible(null)} />
                 </View>
               </View>

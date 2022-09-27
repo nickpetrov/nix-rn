@@ -123,7 +123,7 @@ const FoodItem: React.FC<FoodItemProps> = ({
             resizeMode="contain"
           />
         )}
-        <View style={{flex: 1}}>
+        <View style={styles.main}>
           <View style={styles.servingWrapper}>
             <TextInput
               style={styles.qty_input}
@@ -134,9 +134,9 @@ const FoodItem: React.FC<FoodItemProps> = ({
               returnKeyType="done"
               onChangeText={onQtyChange}
             />
-            <View style={{flexGrow: 5}}>
+            <View style={styles.pickerContainer}>
               <Picker
-                style={{width: '100%', minWidth: '100%'}}
+                style={styles.picker}
                 selectedValue={servingUnit}
                 onValueChange={measureChange}>
                 {measures.map((item: {label: string; value: string}) => (
@@ -151,7 +151,7 @@ const FoodItem: React.FC<FoodItemProps> = ({
           </View>
           <Text style={styles.foodName}>{food_name}</Text>
         </View>
-        <View style={{alignItems: 'flex-end', width: 80}}>
+        <View style={styles.footer}>
           <Text style={styles.caloriesValue}>
             {' '}
             {nfCalories

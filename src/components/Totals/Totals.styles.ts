@@ -2,6 +2,9 @@ import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  root: {
+    backgroundColor: '#eee',
+  },
   overviewWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',

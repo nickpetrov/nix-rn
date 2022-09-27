@@ -38,6 +38,9 @@ import {RouteProp} from '@react-navigation/native';
 import {FoodProps} from 'store/userLog/userLog.types';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 
+// styles
+import {styles} from './FoodInfoScreen.styles';
+
 interface FoodInfoScreenProps {
   navigation: NativeStackNavigationProp<
     StackNavigatorParamList,
@@ -116,7 +119,7 @@ export const FoodInfoScreen: React.FC<FoodInfoScreenProps> = props => {
   };
 
   return (
-    <SafeAreaView style={{backgroundColor: '#fff'}}>
+    <SafeAreaView style={styles.root}>
       {foodObj ? (
         <ScrollView>
           <FoodItem
@@ -131,15 +134,15 @@ export const FoodInfoScreen: React.FC<FoodInfoScreenProps> = props => {
           />
           {/* TODO Photo */}
 
-          <View style={{padding: 10, flexDirection: 'row', flex: 1}}>
-            <View style={{flex: 1, marginRight: 10}}>
+          <View style={[styles.flex1, styles.p10, styles.row]}>
+            <View style={[styles.flex1, styles.mr10]}>
               <NixButton
                 title="Copy"
                 type="outline"
                 onPress={() => addItemToBasket()}
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={styles.flex1}>
               <NixButton
                 title="Delete"
                 type="outline"
@@ -147,44 +150,38 @@ export const FoodInfoScreen: React.FC<FoodInfoScreenProps> = props => {
               />
             </View>
           </View>
-          <View style={{padding: 10}}>
+          <View style={styles.p10}>
             <FoodLabel data={foodObj} />
           </View>
-          <View style={{paddingHorizontal: 10, paddingBottom: 10}}>
-            <Text style={{fontSize: 12}}>
+          <View style={styles.listContainer}>
+            <Text style={styles.text}>
               Net Carbs**: {(foodObj.net_carbs || 0).toFixed(1)} g
             </Text>
-            <Text style={{fontSize: 12}}>
+            <Text style={styles.text}>
               Vitamin D** : {(foodObj.vitamin_d || 0).toFixed(1)} IU
             </Text>
-            <Text style={{fontSize: 12}}>
+            <Text style={styles.text}>
               Phosphorus** : {(foodObj.nf_p || 0).toFixed(1)} mg
             </Text>
-            <Text style={{fontSize: 12}}>
+            <Text style={styles.text}>
               Potassium** : {(foodObj.nf_potassium || 0).toFixed(1)} mg
             </Text>
-            <Text style={{fontSize: 12}}>
+            <Text style={styles.text}>
               Caffeine** : {(foodObj.caffeine || 0).toFixed(1)} mg
             </Text>
           </View>
 
           {pieChartData && (
-            <View style={{marginVertical: 10}}>
+            <View style={styles.pieContainer}>
               <NutritionPieChart data={pieChartData} />
             </View>
           )}
 
           <View>
             <TouchableWithoutFeedback onPress={() => setShowNotes(!showNotes)}>
-              <View
-                style={{padding: 10, borderTopWidth: 1, borderBottomWidth: 1}}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}>
-                  <Text style={{fontSize: 16}}>Notes</Text>
+              <View style={styles.borderContainer}>
+                <View style={styles.notesContainer}>
+                  <Text style={styles.fz16}>Notes</Text>
                   <FontAwesome name="angle-down" size={23} />
                 </View>
                 {showNotes ? (
@@ -192,26 +189,19 @@ export const FoodInfoScreen: React.FC<FoodInfoScreenProps> = props => {
                     multiline={true}
                     numberOfLines={5}
                     value={foodObj.notes}
-                    style={{
-                      marginTop: 10,
-                      borderWidth: 1,
-                      padding: 8,
-                      minHeight: 200,
-                    }}
+                    style={styles.input}
                   />
                 ) : null}
               </View>
             </TouchableWithoutFeedback>
           </View>
 
-          <View style={{padding: 10}}>
-            <View style={{alignItems: 'center'}}>
-              <Text style={{fontWeight: 'bold', fontSize: 20}}>
-                Share this food
-              </Text>
+          <View style={styles.p10}>
+            <View style={styles.alignItemsCenter}>
+              <Text style={styles.share}>Share this food</Text>
               {/* TODO - Share icon to other options here*/}
             </View>
-            <View style={{alignItems: 'center', margin: 10}}>
+            <View style={[styles.alignItemsCenter, styles.mr10]}>
               <QRCode
                 size={270}
                 logo={require('assets/icon.png')}
@@ -225,7 +215,7 @@ export const FoodInfoScreen: React.FC<FoodInfoScreenProps> = props => {
               share icon to share this meal via SMS or email.
             </Text>
           </View>
-          <Text style={{padding: 10}}>
+          <Text style={styles.p10}>
             ** Please note that our restaurant and branded grocery food database
             does not have these attributes available, and if your food log
             contains restaurant or branded grocery foods, these totals may be

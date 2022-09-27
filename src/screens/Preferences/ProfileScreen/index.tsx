@@ -206,8 +206,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   };
 
   return (
-    <KeyboardAwareScrollView style={{flex: 1, backgroundColor: '#fff'}}>
-      <View style={{flex: 1}}>
+    <KeyboardAwareScrollView style={styles.scrollView}>
+      <View style={styles.root}>
         <ScrollView>
           <Formik
             initialValues={FormikInitValues}
@@ -227,11 +227,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       <FontAwesome
                         name={'user'}
                         size={30}
-                        style={{
-                          marginRight: 15,
-                          marginBottom: 2,
-                          color: '#666',
-                        }}
+                        style={styles.field}
                       />
                     }
                     autoCapitalize="none"
@@ -245,29 +241,14 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       <FontAwesome
                         name={'user'}
                         size={30}
-                        style={{
-                          marginRight: 15,
-                          marginBottom: 2,
-                          color: '#666',
-                        }}
+                        style={styles.field}
                       />
                     }
                     autoCapitalize="none"
                   />
-                  <View
-                    style={{
-                      paddingHorizontal: 5,
-                      borderColor: '#666',
-                      borderWidth: 2,
-                      borderRadius: 10,
-                      marginHorizontal: 10,
-                      marginBottom: 10,
-                    }}>
+                  <View style={[styles.pickerContainer, styles.mb10]}>
                     <Picker
-                      style={{
-                        width: '100%',
-                        minWidth: '100%',
-                      }}
+                      style={styles.picker}
                       itemStyle={{}}
                       selectedValue={timezone}
                       onValueChange={newVal => {
@@ -285,20 +266,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       )}
                     </Picker>
                   </View>
-                  <View
-                    style={{
-                      paddingHorizontal: 5,
-                      borderColor: '#666',
-                      borderWidth: 2,
-                      borderRadius: 10,
-                      marginHorizontal: 10,
-                    }}>
+                  <View style={styles.pickerContainer}>
                     <Picker
-                      style={{
-                        width: '100%',
-                        minWidth: '100%',
-                        paddingHorizontal: 12,
-                      }}
+                      style={styles.picker}
                       selectedValue={measureSystem}
                       onValueChange={newVal => {
                         setFieldValue('measure_system', newVal);
@@ -333,11 +303,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                           <FontAwesome5
                             name={'weight-hanging'}
                             size={30}
-                            style={{
-                              marginRight: 15,
-                              marginBottom: 2,
-                              color: '#666',
-                            }}
+                            style={styles.field}
                           />
                         }
                         rightComponent={<Text>kg</Text>}
@@ -353,11 +319,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                           <FontAwesome5
                             name={'ruler-vertical'}
                             size={30}
-                            style={{
-                              marginRight: 15,
-                              marginBottom: 2,
-                              color: '#666',
-                            }}
+                            style={styles.field}
                           />
                         }
                         autoCapitalize="none"
@@ -376,11 +338,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                           <FontAwesome5
                             name={'weight-hanging'}
                             size={30}
-                            style={{
-                              marginRight: 15,
-                              marginBottom: 2,
-                              color: '#666',
-                            }}
+                            style={styles.field}
                           />
                         }
                         rightComponent={<Text>lbs</Text>}
@@ -396,11 +354,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                           <FontAwesome5
                             name={'ruler-vertical'}
                             size={30}
-                            style={{
-                              marginRight: 15,
-                              marginBottom: 2,
-                              color: '#666',
-                            }}
+                            style={styles.field}
                           />
                         }
                         rightComponent={<Text>ft</Text>}
@@ -416,11 +370,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                           <FontAwesome5
                             name={'ruler-vertical'}
                             size={30}
-                            style={{
-                              marginRight: 15,
-                              marginBottom: 2,
-                              color: '#666',
-                            }}
+                            style={styles.field}
                           />
                         }
                         rightComponent={<Text>in</Text>}
@@ -438,11 +388,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       <FontAwesome
                         name={'calendar'}
                         size={30}
-                        style={{
-                          marginRight: 15,
-                          marginBottom: 2,
-                          color: '#666',
-                        }}
+                        style={styles.field}
                       />
                     }
                     autoCapitalize="none"
@@ -451,22 +397,16 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       setFieldValue('birth_year', moment().year() - newVal);
                     }}
                   />
-                  <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1, marginHorizontal: 8}}>
+                  <View style={styles.footer}>
+                    <View style={styles.btnContainer}>
                       <NixButton title="Reset Password" />
                     </View>
-                    <View style={{flex: 1, marginHorizontal: 8}}>
+                    <View style={styles.btnContainer}>
                       <NixButton title="Change email" />
                     </View>
                   </View>
-                  <View style={{marginBottom: 50}}>
-                    <View
-                      style={{
-                        flex: 1,
-                        marginHorizontal: 8,
-                        position: 'absolute',
-                        width: '50%',
-                      }}>
+                  <View style={styles.submitContainer}>
+                    <View style={styles.submitBtn}>
                       <NixButton
                         title="Sumbit"
                         onPress={handleSubmit}

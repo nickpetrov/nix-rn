@@ -33,4 +33,16 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
   },
+  footer: {
+    flexDirection: 'row',
+  },
+  btnContainer: {
+    flex: 1,
+  },
+  btnText: {
+    fontSize: 18,
+  },
+  mr10: {
+    marginRight: 10,
+  },
 });
