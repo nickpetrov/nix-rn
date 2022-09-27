@@ -7,7 +7,7 @@ import AppleHealthKit, {
   HealthPermission,
   HealthKitPermissions,
 } from 'react-native-health';
-import {Picker} from '@react-native-picker/picker';
+import ModalSelector from 'react-native-modal-selector';
 
 // hooks
 // import {useSelector} from 'hooks/useRedux';
@@ -130,117 +130,100 @@ export const HealthkitSyncScreen: React.FC = () => {
       </View>
 
       <View>
-        <View style={styles.pickerContainer}>
-          <Text style={styles.label}>Nutrition:</Text>
-          <Picker
-            style={styles.picker}
-            selectedValue={syncOptions.nutrition}
-            onValueChange={(newVal: string) => {
-              setSyncOptions(prev => ({...prev, nutrition: newVal}));
-              adjustSync('nutrition');
-            }}>
-            {[
-              {
-                label: 'Push',
-                value: 'push',
-                key: 'push',
-              },
-              {
-                label: 'Off',
-                value: 'off',
-                key: 'off',
-              },
-            ].map((item: {label: string; value: string}) => (
-              <Picker.Item
-                key={item.value}
-                label={item.label}
-                value={item.value}
-              />
-            ))}
-          </Picker>
-        </View>
-
-        <View style={styles.pickerContainer}>
-          <Text style={styles.label}>Weight:</Text>
-          <Picker
-            style={styles.picker}
-            selectedValue={
-              syncOptions.weight === 'push'
-                ? 'Push'
-                : syncOptions.weight === 'pull'
-                ? 'Pull'
-                : 'Off'
-            }
-            onValueChange={(newVal: string) => {
-              setSyncOptions(prev => ({...prev, weight: newVal}));
-              adjustSync('weight');
-            }}>
-            {[
-              {
-                label: 'Push',
-                value: 'push',
-                key: 'push',
-              },
-              {
-                label: 'Pull',
-                value: 'pull',
-                key: 'pull',
-              },
-              {
-                label: 'Off',
-                value: 'off',
-                key: 'off',
-              },
-            ].map((item: {label: string; value: string}) => (
-              <Picker.Item
-                key={item.value}
-                label={item.label}
-                value={item.value}
-              />
-            ))}
-          </Picker>
-        </View>
-
-        <View style={styles.pickerContainer}>
-          <Text style={styles.label}>Exercise Calories:</Text>
-          <Picker
-            style={styles.picker}
-            selectedValue={
-              syncOptions.exercise === 'push'
-                ? 'Push'
-                : syncOptions.exercise === 'pull'
-                ? 'Pull'
-                : 'Off'
-            }
-            onValueChange={(newVal: string) => {
-              setSyncOptions(prev => ({...prev, exercise: newVal}));
-              adjustSync('exercise');
-            }}>
-            {[
-              {
-                label: 'Push',
-                value: 'push',
-                key: 'push',
-              },
-              {
-                label: 'Pull',
-                value: 'pull',
-                key: 'pull',
-              },
-              {
-                label: 'Off',
-                value: 'off',
-                key: 'off',
-              },
-            ].map((item: {label: string; value: string}) => (
-              <Picker.Item
-                key={item.value}
-                label={item.label}
-                value={item.value}
-              />
-            ))}
-          </Picker>
-        </View>
+        <ModalSelector
+          data={[
+            {
+              label: 'Push',
+              value: 'push',
+              key: 'push',
+            },
+            {
+              label: 'Off',
+              value: 'off',
+              key: 'off',
+            },
+          ]}
+          initValue={syncOptions.nutrition}
+          onChange={option => {
+            setSyncOptions(prev => ({...prev, nutrition: option.value}));
+            adjustSync('nutrition');
+          }}
+          listType="FLATLIST"
+          keyExtractor={(item: {label: string; value: string}) => item.value}>
+          <View style={styles.pickerContainer}>
+            <Text style={styles.label}>Nutrition:</Text>
+            <Text>
+              {syncOptions.nutrition.charAt(0).toUpperCase() +
+                syncOptions.nutrition.slice(1)}
+            </Text>
+          </View>
+        </ModalSelector>
+        <ModalSelector
+          data={[
+            {
+              label: 'Push',
+              value: 'push',
+              key: 'push',
+            },
+            {
+              label: 'Pull',
+              value: 'pull',
+              key: 'pull',
+            },
+            {
+              label: 'Off',
+              value: 'off',
+              key: 'off',
+            },
+          ]}
+          initValue={syncOptions.weight}
+          onChange={option => {
+            setSyncOptions(prev => ({...prev, weight: option.value}));
+            adjustSync('weight');
+          }}
+          listType="FLATLIST"
+          keyExtractor={(item: {label: string; value: string}) => item.value}>
+          <View style={styles.pickerContainer}>
+            <Text style={styles.label}>Weight:</Text>
+            <Text>
+              {syncOptions.weight.charAt(0).toUpperCase() +
+                syncOptions.weight.slice(1)}
+            </Text>
+          </View>
+        </ModalSelector>
+        <ModalSelector
+          data={[
+            {
+              label: 'Push',
+              value: 'push',
+              key: 'push',
+            },
+            {
+              label: 'Pull',
+              value: 'pull',
+              key: 'pull',
+            },
+            {
+              label: 'Off',
+              value: 'off',
+              key: 'off',
+            },
+          ]}
+          initValue={syncOptions.exercise}
+          onChange={option => {
+            setSyncOptions(prev => ({...prev, exercise: option.value}));
+            adjustSync('exercise');
+          }}
+          listType="FLATLIST"
+          keyExtractor={(item: {label: string; value: string}) => item.value}>
+          <View style={styles.pickerContainer}>
+            <Text style={styles.label}>Exercise Calories:</Text>
+            <Text>
+              {syncOptions.exercise.charAt(0).toUpperCase() +
+                syncOptions.exercise.slice(1)}
+            </Text>
+          </View>
+        </ModalSelector>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>About Push &amp; Pull</Text>

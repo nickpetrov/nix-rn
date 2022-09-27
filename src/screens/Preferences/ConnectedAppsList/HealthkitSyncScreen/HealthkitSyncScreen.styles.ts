@@ -16,6 +16,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     borderWidth: 1,
     borderColor: '#666',
+    padding: 5,
     margin: 10,
     borderRadius: 10,
   },
@@ -23,7 +24,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   label: {
-    flex: 1,
+    marginHorizontal: 10,
   },
   footer: {
     padding: 10,

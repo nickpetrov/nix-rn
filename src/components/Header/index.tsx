@@ -2,7 +2,7 @@
 import React, {useRef} from 'react';
 
 // components
-import {View, TextInput} from 'react-native';
+import {View, TextInput, Platform} from 'react-native';
 import {BarcodeScanner} from 'components/BarcodeScanner';
 
 // hooks
@@ -54,7 +54,10 @@ export const Header: React.FC<HeaderProps> = props => {
           placeholder="Search foods to log"
           // onBlur={() => Keyboard.dismiss()}
           onLayout={() => {
-            if (route.name === Routes.Autocomplete) {
+            if (
+              route.name === Routes.Autocomplete &&
+              Platform.OS === 'android'
+            ) {
               inputRef.current?.focus();
             }
           }}

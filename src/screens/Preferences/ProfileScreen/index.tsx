@@ -11,7 +11,6 @@ import {Formik, Field, FormikProps} from 'formik';
 import {NixInput} from 'components/NixInput';
 import {NixButton} from 'components/NixButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Picker} from '@react-native-picker/picker';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -32,6 +31,7 @@ import {styles} from './ProfileScreen.styles';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {User} from 'store/auth/auth.types';
+import ModalSelector from 'react-native-modal-selector';
 
 interface ProfileScreenProps {
   navigation: NativeStackNavigationProp<
@@ -215,7 +215,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             onSubmit={values => submitHandler(values)}
             validationSchema={preferencesValidationSchema}
             validateOnMount>
-            {({handleSubmit, setFieldValue, isValid, dirty}) => {
+            {({handleSubmit, setFieldValue, values, isValid, dirty}) => {
               return (
                 <>
                   <Field
@@ -246,52 +246,70 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                     }
                     autoCapitalize="none"
                   />
-                  <View style={[styles.pickerContainer, styles.mb10]}>
-                    <Picker
-                      style={styles.picker}
-                      itemStyle={{}}
-                      selectedValue={timezone}
-                      onValueChange={newVal => {
-                        setFieldValue('timezone', newVal);
-                        setTimezone(newVal);
-                      }}>
-                      {timezoneList.map(
-                        (item: {label: string; value: string}) => (
-                          <Picker.Item
-                            key={item.value}
-                            label={item.label}
-                            value={item.value}
-                          />
-                        ),
-                      )}
-                    </Picker>
-                  </View>
-                  <View style={styles.pickerContainer}>
-                    <Picker
-                      style={styles.picker}
-                      selectedValue={measureSystem}
-                      onValueChange={newVal => {
-                        setFieldValue('measure_system', newVal);
-                        setMeasureSystem(newVal);
-                      }}>
-                      {[
-                        {
-                          label: 'Metric',
-                          value: 1,
-                        },
-                        {
-                          label: 'Imperial',
-                          value: 0,
-                        },
-                      ].map((item: {label: string; value: number}) => (
-                        <Picker.Item
-                          key={item.value}
-                          label={item.label}
-                          value={item.value}
+                  <ModalSelector
+                    data={timezoneList}
+                    initValue={timezone}
+                    onChange={option => {
+                      setFieldValue('timezone', option.value);
+                      setTimezone(option.value);
+                    }}
+                    listType="FLATLIST"
+                    keyExtractor={(item: {label: string; value: string}) =>
+                      item.value
+                    }>
+                    <Field
+                      component={NixInput}
+                      name="timezone"
+                      label="Tome Zone"
+                      style={styles.input}
+                      leftComponent={
+                        <FontAwesome
+                          name={'clock-o'}
+                          size={30}
+                          style={styles.field}
                         />
-                      ))}
-                    </Picker>
-                  </View>
+                      }
+                      disabled
+                    />
+                  </ModalSelector>
+                  <ModalSelector
+                    data={[
+                      {
+                        label: 'Metric',
+                        value: 1,
+                      },
+                      {
+                        label: 'Imperial',
+                        value: 0,
+                      },
+                    ]}
+                    initValue={measureSystem + ''}
+                    onChange={option => {
+                      setFieldValue('measure_system', option.value);
+                      setMeasureSystem(option.value);
+                    }}
+                    listType="FLATLIST"
+                    keyExtractor={(item: {label: string; value: number}) =>
+                      String(item.value)
+                    }>
+                    <Field
+                      component={NixInput}
+                      value={
+                        values.measure_system === 1 ? 'Metric' : 'Imperial'
+                      }
+                      name="measure_system"
+                      label="Measure system"
+                      style={styles.input}
+                      leftComponent={
+                        <FontAwesome
+                          name={'ruler-vertical'}
+                          size={30}
+                          style={styles.field}
+                        />
+                      }
+                      disabled
+                    />
+                  </ModalSelector>
                   {measureSystem === 1 ? (
                     <>
                       <Field

@@ -4,13 +4,14 @@ import React, {useEffect, useState} from 'react';
 // components
 import {View, Text, TouchableOpacity, Image} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
-import {Picker} from '@react-native-picker/picker';
+import ModalSelector from 'react-native-modal-selector';
 
 // helpers
 import {multiply} from 'helpers/multiply';
 
 // styles
 import {styles} from './FoodItem.styles';
+import {Colors} from '../../constants/Colors';
 
 // types
 import {MeasureProps, NutrientProps} from 'store/userLog/userLog.types';
@@ -135,18 +136,28 @@ const FoodItem: React.FC<FoodItemProps> = ({
               onChangeText={onQtyChange}
             />
             <View style={styles.pickerContainer}>
-              <Picker
+              <ModalSelector
                 style={styles.picker}
-                selectedValue={servingUnit}
-                onValueChange={measureChange}>
-                {measures.map((item: {label: string; value: string}) => (
-                  <Picker.Item
-                    key={item.value}
-                    label={item.label}
-                    value={item.value}
-                  />
-                ))}
-              </Picker>
+                initValueTextStyle={{
+                  fontSize: 16,
+                  color: '#000',
+                }}
+                optionTextStyle={{
+                  fontSize: 16,
+                  color: '#000',
+                }}
+                selectedItemTextStyle={{
+                  fontSize: 16,
+                  color: Colors.Info,
+                  fontWeight: '500',
+                }}
+                data={measures}
+                initValue={servingUnit}
+                onChange={option => measureChange(option.value)}
+                keyExtractor={(item: {label: string; value: string}) =>
+                  item.value
+                }
+              />
             </View>
           </View>
           <Text style={styles.foodName}>{food_name}</Text>

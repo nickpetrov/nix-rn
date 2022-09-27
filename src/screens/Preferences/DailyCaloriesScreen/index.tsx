@@ -17,8 +17,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {NixInput} from 'components/NixInput';
 import {NixButton} from 'components/NixButton';
-import {Picker} from '@react-native-picker/picker';
 import {WebView} from 'react-native-webview';
+import ModalSelector from 'react-native-modal-selector';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -163,81 +163,100 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
             validateOnMount>
             {({handleSubmit, setFieldValue, isValid, values, dirty}) => (
               <>
-                <View
-                  style={{
-                    paddingHorizontal: 5,
-                    borderColor: '#666',
-                    borderWidth: 2,
-                    borderRadius: 10,
-                    marginHorizontal: 10,
-                    marginBottom: 10,
-                  }}>
-                  <Picker
+                <ModalSelector
+                  data={[
+                    {
+                      label: 'Metric',
+                      value: 1,
+                    },
+                    {
+                      label: 'Imperial',
+                      value: 0,
+                    },
+                  ]}
+                  initValue={measureSystem + ''}
+                  onChange={option => {
+                    setFieldValue('measure_system', option.value);
+                    setMeasureSystem(option.value);
+                  }}
+                  listType="FLATLIST"
+                  keyExtractor={(item: {label: string; value: number}) =>
+                    String(item.value)
+                  }>
+                  <Field
+                    component={NixInput}
+                    value={values.measure_system === 1 ? 'Metric' : 'Imperial'}
+                    name="measure_system"
+                    label="Measure system"
                     style={{
-                      width: '100%',
-                      minWidth: '100%',
+                      paddingHorizontal: 5,
+                      borderColor: '#666',
+                      borderWidth: 2,
+                      borderRadius: 10,
+                      marginHorizontal: 10,
+                      marginBottom: 10,
                     }}
-                    selectedValue={measureSystem}
-                    onValueChange={newVal => {
-                      setFieldValue('measure_system', newVal);
-                      setMeasureSystem(newVal);
-                    }}>
-                    {[
-                      {
-                        label: 'Metric',
-                        value: 1,
-                      },
-                      {
-                        label: 'Imperial',
-                        value: 0,
-                      },
-                    ].map((item: {label: string; value: number}) => (
-                      <Picker.Item
-                        key={item.value}
-                        label={item.label}
-                        value={item.value}
+                    leftComponent={
+                      <FontAwesome5
+                        name={'ruler-vertical'}
+                        size={30}
+                        style={{
+                          marginRight: 15,
+                          marginBottom: 2,
+                          color: '#666',
+                        }}
                       />
-                    ))}
-                  </Picker>
-                </View>
+                    }
+                    disabled
+                  />
+                </ModalSelector>
 
-                <View
-                  style={{
-                    paddingHorizontal: 5,
-                    borderColor: '#666',
-                    borderWidth: 2,
-                    borderRadius: 10,
-                    marginHorizontal: 10,
-                    marginBottom: 10,
-                  }}>
-                  <Picker
+                <ModalSelector
+                  data={[
+                    {
+                      label: 'Male',
+                      value: 'male',
+                    },
+                    {
+                      label: 'Female',
+                      value: 'female',
+                    },
+                  ]}
+                  initValue={gender}
+                  onChange={option => {
+                    setFieldValue('gender', option.value);
+                    setGender(option.value);
+                  }}
+                  listType="FLATLIST"
+                  keyExtractor={(item: {label: string; value: string}) =>
+                    item.value
+                  }>
+                  <Field
+                    component={NixInput}
+                    name="gender"
+                    label="Gender"
                     style={{
-                      width: '100%',
-                      minWidth: '100%',
+                      paddingHorizontal: 5,
+                      borderColor: '#666',
+                      borderWidth: 2,
+                      borderRadius: 10,
+                      marginHorizontal: 10,
+                      marginBottom: 10,
                     }}
-                    selectedValue={gender}
-                    onValueChange={newVal => {
-                      setFieldValue('gender', newVal);
-                      setGender(newVal);
-                    }}>
-                    {[
-                      {
-                        label: 'Male',
-                        value: 'male',
-                      },
-                      {
-                        label: 'Female',
-                        value: 'female',
-                      },
-                    ].map((item: {label: string; value: string}) => (
-                      <Picker.Item
-                        key={item.value}
-                        label={item.label}
-                        value={item.value}
+                    leftComponent={
+                      <FontAwesome
+                        name={'user'}
+                        size={30}
+                        style={{
+                          marginRight: 15,
+                          marginBottom: 2,
+                          color: '#666',
+                        }}
                       />
-                    ))}
-                  </Picker>
-                </View>
+                    }
+                    disabled
+                  />
+                </ModalSelector>
                 {measureSystem === 1 ? (
                   <>
                     <Field

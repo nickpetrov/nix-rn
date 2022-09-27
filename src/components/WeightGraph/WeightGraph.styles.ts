@@ -15,6 +15,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     borderColor: '#ccc',
     borderWidth: 1,

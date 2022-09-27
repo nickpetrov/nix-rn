@@ -17,13 +17,14 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#666',
     margin: 10,
+    padding: 5,
     borderRadius: 10,
   },
   picker: {
     flex: 1,
   },
   label: {
-    flex: 1,
+    marginHorizontal: 10,
   },
   footer: {
     padding: 10,

@@ -7,7 +7,7 @@ import WebView, {
   WebViewMessageEvent,
   WebViewNavigation,
 } from 'react-native-webview';
-import {Picker} from '@react-native-picker/picker';
+import ModalSelector from 'react-native-modal-selector';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -75,38 +75,34 @@ export const FitbitSyncScreen: React.FC = () => {
       {!showFitbitAuth ? (
         <View>
           <Text style={styles.label}>Nutrition:</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              style={styles.picker}
-              selectedValue={nutritionValue === 'push' ? 'push' : 'off'}
-              onValueChange={newVal => {
-                setNutritionValue(newVal);
-                if (newVal === 'push') {
-                  initFitbitSync();
-                } else {
-                  turnOffFitbitSync();
-                }
-              }}>
-              {[
-                {
-                  label: 'Push',
-                  value: 'push',
-                  key: 'push',
-                },
-                {
-                  label: 'Off',
-                  value: 'off',
-                  key: 'off',
-                },
-              ].map((item: {label: string; value: string}) => (
-                <Picker.Item
-                  key={item.value}
-                  label={item.label}
-                  value={item.value}
-                />
-              ))}
-            </Picker>
-          </View>
+          <ModalSelector
+            data={[
+              {
+                label: 'Push',
+                value: 'push',
+                key: 'push',
+              },
+              {
+                label: 'Off',
+                value: 'off',
+                key: 'off',
+              },
+            ]}
+            initValue={nutritionValue === 'push' ? 'push' : 'off'}
+            onChange={option => {
+              setNutritionValue(option.value);
+              if (option.value === 'push') {
+                initFitbitSync();
+              } else {
+                turnOffFitbitSync();
+              }
+            }}
+            listType="FLATLIST"
+            keyExtractor={(item: {label: string; value: string}) => item.value}>
+            <View style={styles.pickerContainer}>
+              <Text>{nutritionValue === 'push' ? 'Push' : 'Off'}</Text>
+            </View>
+          </ModalSelector>
           <View style={styles.footer}>
             <Text style={styles.footerText}>About Push &amp; Pull</Text>
             <Text style={styles.footerText}>How does Push work?</Text>

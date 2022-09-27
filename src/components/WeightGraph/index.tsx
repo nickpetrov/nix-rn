@@ -5,7 +5,6 @@ import moment from 'moment-timezone';
 // components
 import {Text, View, TouchableOpacity, Dimensions} from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import {Picker} from '@react-native-picker/picker';
 import {LineChart} from 'react-native-chart-kit';
 
 // helpers
@@ -23,6 +22,8 @@ import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
 import {getStatsWeight} from 'store/stats/stats.actions';
+import ModalSelector from 'react-native-modal-selector';
+import {Colors} from '../../constants/Colors';
 
 export const WeightGraph: React.FC = () => {
   const dispatch = useDispatch();
@@ -77,15 +78,31 @@ export const WeightGraph: React.FC = () => {
       <View style={styles.section}>
         <Text>Interval</Text>
         <Text>
-          <Picker style={styles.picker} onValueChange={resetDatesByInterval}>
-            {pickerOptions.map((item: {label: string; value: string}) => (
-              <Picker.Item
-                key={item.value}
-                label={item.label}
-                value={item.value}
-              />
-            ))}
-          </Picker>
+          <ModalSelector
+            selectStyle={{
+              borderWidth: 0,
+            }}
+            initValueTextStyle={{
+              fontSize: 16,
+              color: '#000',
+            }}
+            optionTextStyle={{
+              fontSize: 16,
+              color: '#000',
+            }}
+            selectedItemTextStyle={{
+              fontSize: 16,
+              color: Colors.Info,
+              fontWeight: '500',
+            }}
+            data={pickerOptions}
+            initValue={pickerOptions[0].label}
+            onChange={option => {
+              resetDatesByInterval(option.value);
+            }}
+            listType="FLATLIST"
+            keyExtractor={(item: {label: string; value: string}) => item.value}
+          />
         </Text>
       </View>
       {pickers.map(pickerType => (
