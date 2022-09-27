@@ -84,6 +84,7 @@ const LoggedInNavigationOptions = ({
   headerTintColor: '#fff',
   headerStyle: {
     backgroundColor: Colors.Primary,
+    justifyContent: 'space-between',
   },
   headerLeft: () => <BackButton navigation={navigation} />,
 });

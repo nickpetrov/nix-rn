@@ -6,7 +6,8 @@ export const styles = StyleSheet.create({
     position: 'relative',
   },
   container: {
-    padding: 10,
+    width: 55,
+    paddingLeft: 20,
   },
   badge: {
     width: 20,

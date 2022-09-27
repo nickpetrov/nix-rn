@@ -3,12 +3,13 @@ import {StyleSheet} from 'react-native';
 export const styles = StyleSheet.create({
   header: {
     height: 40,
-    width: '100%',
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     flexDirection: 'row',
     alignSelf: 'center',
     backgroundColor: 'transparent',
+    right: 10,
   },
   autocompleteWrapper: {
     flexDirection: 'row',
@@ -17,8 +18,9 @@ export const styles = StyleSheet.create({
   },
   autocomplete: {
     backgroundColor: '#ffffff',
-    width: '95%',
     padding: 5,
+    flex: 1,
+    maxWidth: '95%',
     borderRadius: 4,
     height: 30,
   },
