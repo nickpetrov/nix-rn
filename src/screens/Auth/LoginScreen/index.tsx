@@ -153,9 +153,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.loginWrapper}>
-      <ScrollView
-        style={{flex: 1, width: '100%', height: '100%'}}
-        alwaysBounceVertical={false}>
+      <ScrollView style={styles.scrollView} alwaysBounceVertical={false}>
         <View style={styles.contentWrapper}>
           <View style={styles.logo}>
             <Image

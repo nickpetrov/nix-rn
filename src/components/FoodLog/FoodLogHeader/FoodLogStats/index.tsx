@@ -77,7 +77,7 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = props => {
         <View
           style={
             props.scrollDirection === 'down'
-              ? {display: 'none'}
+              ? styles.hide
               : styles.caloriesProgress
           }>
           <View style={styles.caloriesProgressLabel}>
@@ -104,7 +104,7 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = props => {
                 ...progressBarCurrent,
                 ...{backgroundColor: progressBarColor},
               }}>
-              <View style={styles.progressBarColorShadow}></View>
+              <View style={styles.progressBarColorShadow} />
             </View>
           </View>
         </View>

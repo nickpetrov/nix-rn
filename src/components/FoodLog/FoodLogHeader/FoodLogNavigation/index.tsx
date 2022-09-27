@@ -76,7 +76,7 @@ const FoodLogNavigation: React.FC<FoodLogNavigationProps> = props => {
           <FontAwesome name="angle-left" size={34} color="#fff" />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={goToToday} style={{flex: 1}}>
+      <TouchableOpacity onPress={goToToday} style={styles.flex1}>
         <View style={styles.navTitleWrapper}>
           {goToTodayCounter > 0 ? (
             <View style={styles.gotoTodayDisclaimerWrapper}>

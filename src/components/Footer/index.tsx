@@ -38,7 +38,7 @@ const Footer: React.FC<FooterProps> = props => {
   }
 
   return (
-    <SafeAreaView style={[{backgroundColor: '#444'}, props.style]}>
+    <SafeAreaView style={[styles.root, props.style]}>
       <View style={{...styles.footer, ...hideFooterStyle}}>
         <FooterItem
           title="Dashboard"

@@ -159,10 +159,10 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
 
         if (
           food.nf_total_carbohydrate !== 0 &&
-          food.nf_total_carbohydrate - food.nf_dietary_fiber <= 0
+          (food.nf_total_carbohydrate || 0) - (food.nf_dietary_fiber || 0) <= 0
         ) {
           newTotal.net_carbs +=
-            food.nf_total_carbohydrate - food.nf_dietary_fiber;
+            (food.nf_total_carbohydrate || 0) - (food.nf_dietary_fiber || 0);
         }
       });
       for (const key in newTotal) {
@@ -236,7 +236,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
             <View style={styles.hideContainer}>
               <TouchableWithoutFeedback
                 onPress={() => setShowMoreNutrients(!showMoreNutrients)}
-                style={{flex: 1}}>
+                style={styles.flex1}>
                 <View style={styles.hideContent}>
                   <Text>
                     {showMoreNutrients ? 'Hide' : 'View'} more micronutrients{' '}
@@ -248,7 +248,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
                 </View>
               </TouchableWithoutFeedback>
               {showMoreNutrients ? (
-                <View style={{paddingHorizontal: 10, paddingBottom: 10}}>
+                <View style={styles.vitaminContainer}>
                   <Text>Vitamin D**: {total.vitamin_d || 0} IU</Text>
                   <Text>Vitamin E**: {total.vitamin_e || 0} IU</Text>
                   <Text>Vitamin K**: {total.vitamin_k || 0} µg</Text>
@@ -270,36 +270,23 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
           </View>
 
           {foods.length && pieChartData ? (
-            <View style={{marginBottom: 10}}>
+            <View style={styles.mb10}>
               <NutritionPieChart data={pieChartData} />
             </View>
           ) : null}
 
           {type === 'daily' ? (
             <>
-              <View
-                style={{
-                  borderWidth: 1,
-                  padding: 10,
-                  borderRadius: 10,
-                  marginBottom: 10,
-                }}>
+              <View style={styles.dailyContainer}>
                 <Text>Daily Calorie Limit</Text>
-                <View
-                  style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
+                <View style={styles.row}>
                   <TextInput
                     value={dailyKcal + ''}
                     onChangeText={text => setDailyKcal(parseInt(text))}
                     keyboardType="number-pad"
-                    style={{
-                      borderWidth: 1,
-                      padding: 9,
-                      flex: 1,
-                      marginTop: 8,
-                      marginRight: 8,
-                    }}
+                    style={styles.dailyInput}
                   />
-                  <View style={{flex: 1}}>
+                  <View style={styles.flex1}>
                     <NixButton
                       type="primary"
                       disabled={userData.daily_kcal == dailyKcal ? true : false}
@@ -310,27 +297,16 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
                 </View>
               </View>
 
-              <View style={{marginBottom: 10}}>
-                <Text style={{marginBottom: 8}}>Notes for this day:</Text>
+              <View style={styles.mb10}>
+                <Text style={styles.mb8}>Notes for this day:</Text>
                 <TextInput
                   multiline
                   numberOfLines={5}
-                  style={{
-                    height: 180,
-                    borderWidth: 1,
-                    borderRadius: 10,
-                    padding: 10,
-                  }}
+                  style={styles.noteInput}
                   value={dayNote}
                   onChangeText={text => setDayNote(text)}
                 />
-                <View
-                  style={{
-                    position: 'absolute',
-                    right: 10,
-                    bottom: 10,
-                    width: 100,
-                  }}>
+                <View style={styles.btnContainer}>
                   <NixButton
                     type="primary"
                     disabled={

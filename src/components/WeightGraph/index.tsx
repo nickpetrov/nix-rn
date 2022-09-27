@@ -77,9 +77,7 @@ export const WeightGraph: React.FC = () => {
       <View style={styles.section}>
         <Text>Interval</Text>
         <Text>
-          <Picker
-            style={{width: '100%', minWidth: '100%'}}
-            onValueChange={resetDatesByInterval}>
+          <Picker style={styles.picker} onValueChange={resetDatesByInterval}>
             {pickerOptions.map((item: {label: string; value: string}) => (
               <Picker.Item
                 key={item.value}
@@ -143,15 +141,11 @@ export const WeightGraph: React.FC = () => {
               },
             }}
             bezier
-            style={{
-              marginVertical: 8,
-              borderRadius: 16,
-              marginLeft: -10,
-            }}
+            style={styles.lineChart}
           />
         ) : (
-          <View style={{justifyContent: 'center', flex: 1, paddingBottom: 10}}>
-            <Text style={{textAlign: 'center'}}>
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>
               No data has been tracked for this period
             </Text>
           </View>

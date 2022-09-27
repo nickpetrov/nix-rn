@@ -54,4 +54,7 @@ export const styles = StyleSheet.create({
     marginLeft: 5,
     textAlign: 'right',
   },
+  flex1: {
+    flex: 1,
+  },
 });

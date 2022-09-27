@@ -1,6 +1,10 @@
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    width: '100%',
+  },
   weightModal: {
     flex: 1,
     justifyContent: 'center',
@@ -34,5 +38,17 @@ export const styles = StyleSheet.create({
   },
   weightModalButtons: {
     flexDirection: 'row',
+  },
+  units: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  flex1: {
+    flex: 1,
+  },
+  mr8: {
+    marginRight: 8,
   },
 });

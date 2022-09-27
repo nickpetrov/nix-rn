@@ -20,6 +20,10 @@ export const styles = StyleSheet.create({
     fontSize: 26,
     marginRight: 10,
   },
+  titleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   title: {
     textAlign: 'center',
     color: '#444',
@@ -87,5 +91,11 @@ export const styles = StyleSheet.create({
   },
   grayText: {
     color: '#444',
+  },
+  defaultTextStyles: {
+    color: '#444',
+  },
+  defaultBtnBgColor: {
+    backgroundColor: '#f8f8f8',
   },
 });

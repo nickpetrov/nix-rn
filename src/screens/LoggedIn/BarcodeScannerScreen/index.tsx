@@ -109,17 +109,19 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
       return unsubscribe;
     }, [navigation]);
 
-    if (device == null || !hasPermission) return <ActivityIndicator />;
+    if (device == null || !hasPermission) {
+      return <ActivityIndicator />;
+    }
 
     return (
-      <View style={{display: 'flex', flexGrow: 1, backgroundColor: '#fff'}}>
+      <View style={styles.root}>
         {scanStatus === 'success' && foodFindByQRcode && (
           <View>
             <MealListItem foodObj={foodFindByQRcode} />
           </View>
         )}
         {scanStatus && (
-          <View style={{padding: 5}}>
+          <View style={styles.btnContainer}>
             <NixButton
               type="royal"
               title="Try Again"
@@ -128,7 +130,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
           </View>
         )}
         {scanStatus === 'success' && (
-          <View style={{padding: 5}}>
+          <View style={styles.btnContainer}>
             <NixButton
               type="primary"
               title="Correct"
@@ -139,17 +141,15 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
         {!foodFindByQRcode && !scanStatus && (
           <>
             <Camera
-              style={{display: 'flex', flexGrow: 1}}
+              style={styles.camera}
               device={device}
               isActive={isActive}
               frameProcessor={frameProcessor}
               frameProcessorFps={5}
             />
             <View style={styles.qrCodeContainer}>
-              <View style={{backgroundColor: '#fff'}}>
-                <Text style={{paddingVertical: 5, paddingHorizontal: 8}}>
-                  Please scan a barcode
-                </Text>
+              <View style={styles.qrCodeTitleContainer}>
+                <Text style={styles.qrCodeTitle}>Please scan a barcode</Text>
               </View>
               <Svg height="100%" width="100%">
                 <Defs>

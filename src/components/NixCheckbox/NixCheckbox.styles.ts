@@ -15,4 +15,7 @@ export const styles = StyleSheet.create({
     marginVertical: 10,
     width: '100%',
   },
+  pr20: {
+    paddingRight: 20,
+  },
 });

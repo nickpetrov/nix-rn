@@ -171,21 +171,15 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
   });
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
+    <SafeAreaView style={styles.root}>
       <KeyboardAwareScrollView
-        style={{flex: 1, width: '100%', height: '100%'}}
+        style={styles.keyboardView}
         alwaysBounceVertical={false}>
         <ScrollView>
           {foodsList}
 
           {foods.length ? (
-            <View style={{backgroundColor: ''}}>
+            <View style={styles.main}>
               <Totals
                 totalCalories={totalCalories}
                 protein={totalProtein}
@@ -195,15 +189,8 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
               <View>
                 {foods.length > 1 ? (
                   <View>
-                    <Text style={{textAlign: 'center', marginVertical: 10}}>
-                      Appear on food log as:
-                    </Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
+                    <Text style={styles.title}>Appear on food log as:</Text>
+                    <View style={styles.content}>
                       <Text
                         style={{
                           width: '40%',
@@ -212,12 +199,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
                         }}>
                         Multiple foods
                       </Text>
-                      <View
-                        style={{
-                          width: '20%',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
+                      <View style={styles.switchContainer}>
                         <Switch
                           trackColor={{true: Colors.Primary}}
                           ios_backgroundColor="#3e3e3e"
@@ -269,7 +251,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
                   onMealTypeChange={onMealTypeChange}
                 />
               </View>
-              <View style={{marginBottom: 20}}>
+              <View style={styles.mb20}>
                 <NixButton
                   title="Log Foods"
                   onPress={logFoods}
@@ -286,10 +268,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
             </View>
           ) : (
             <View>
-              <Text
-                style={{padding: 10, textAlign: 'center', marginBottom: 20}}>
-                Your Basket is Empty.
-              </Text>
+              <Text style={styles.emptyText}>Your Basket is Empty.</Text>
               <Button
                 onPress={() => navigation.goBack()}
                 title="Back to Food Log"

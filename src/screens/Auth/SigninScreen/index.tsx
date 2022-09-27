@@ -47,10 +47,8 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
     <SafeAreaView style={styles.loginWrapper}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flex: 1, width: '100%'}}>
-        <ScrollView
-          style={{flex: 1, width: '100%', height: '100%'}}
-          alwaysBounceVertical={false}>
+        style={styles.keyboardView}>
+        <ScrollView style={styles.scrollView} alwaysBounceVertical={false}>
           <View style={styles.contentWrapper}>
             <View style={styles.logo}>
               <Image
@@ -76,11 +74,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                       <FontAwesome
                         name={'envelope-o'}
                         size={30}
-                        style={{
-                          marginRight: 15,
-                          marginBottom: 2,
-                          color: '#666',
-                        }}
+                        style={styles.emailField}
                       />
                     }
                     autoCapitalize="none"
@@ -94,12 +88,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                       <FontAwesome
                         name={'lock'}
                         size={30}
-                        style={{
-                          marginRight: 17,
-                          marginBottom: 2,
-                          marginLeft: 6,
-                          color: '#666',
-                        }}
+                        style={styles.passField}
                       />
                     }
                     autoCapitalize="none"
@@ -108,7 +97,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                     customHidePasswordComponent={<Text>Hide</Text>}
                   />
                   {!isLoading ? (
-                    <View style={{width: '100%'}}>
+                    <View style={styles.btns}>
                       <NixButton
                         title="Login"
                         onPress={handleSubmit}

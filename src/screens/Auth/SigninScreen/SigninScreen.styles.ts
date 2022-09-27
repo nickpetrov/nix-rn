@@ -7,6 +7,15 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  keyboardView: {
+    flex: 1,
+    width: '100%',
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   contentWrapper: {
     width: '100%',
     alignItems: 'center',
@@ -34,5 +43,19 @@ export const styles = StyleSheet.create({
   validationError: {
     color: 'red',
     marginVertical: 15,
+  },
+  emailField: {
+    marginRight: 15,
+    marginBottom: 2,
+    color: '#666',
+  },
+  passField: {
+    marginRight: 17,
+    marginBottom: 2,
+    marginLeft: 6,
+    color: '#666',
+  },
+  btns: {
+    width: '100%',
   },
 });

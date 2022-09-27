@@ -115,9 +115,9 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#fff'}}>
+    <View style={styles.root}>
       {!selectedRestaurant ? (
-        <View style={{padding: 8}}>
+        <View style={styles.container}>
           <>
             <View>
               <TextInput

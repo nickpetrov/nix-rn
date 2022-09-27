@@ -63,7 +63,7 @@ export const HelpScreen: React.FC<HelpScreenProps> = () => {
           </View>
         </View>
       ) : (
-        <View style={{flex: 1}}>
+        <View style={styles.footer}>
           <TouchableWithoutFeedback onPress={() => setWebViewUri('')}>
             <View style={styles.close}>
               <Text>X</Text>
@@ -71,7 +71,7 @@ export const HelpScreen: React.FC<HelpScreenProps> = () => {
           </TouchableWithoutFeedback>
           <WebView
             // onMessage={data => handleMessageFromWebView(data)}
-            style={{width: '100%'}}
+            style={styles.webView}
             source={{uri: webViewUri}}
           />
         </View>

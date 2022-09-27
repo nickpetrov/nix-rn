@@ -47,4 +47,18 @@ export const styles = StyleSheet.create({
   foodName: {
     textTransform: 'capitalize',
   },
+  main: {
+    flex: 1,
+  },
+  pickerContainer: {
+    flexGrow: 5,
+  },
+  picker: {
+    width: '100%',
+    minWidth: '100%',
+  },
+  footer: {
+    alignItems: 'flex-end',
+    width: 80,
+  },
 });

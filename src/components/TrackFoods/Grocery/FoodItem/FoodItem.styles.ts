@@ -20,4 +20,11 @@ export const styles = StyleSheet.create({
     height: 40,
     marginRight: 8,
   },
+  imageContainer: {
+    marginRight: 8,
+  },
+  textContainer: {
+    flexGrow: 10,
+    maxWidth: '75%',
+  },
 });

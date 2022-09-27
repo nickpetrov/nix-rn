@@ -36,6 +36,9 @@ import {RouteProp} from '@react-navigation/native';
 import {UpdateRecipeProps} from 'store/recipes/recipes.types';
 import {FoodProps} from 'store/userLog/userLog.types';
 
+// styles
+import {styles} from './RecipeDetailsScreen.styles';
+
 interface RecipeDetailsScreenProps {
   navigation: NativeStackNavigationProp<
     StackNavigatorParamList,
@@ -184,9 +187,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       headerTitle: route.params?.recipe ? 'Edit Recipe' : 'Create New Recipe',
       headerRight: () => (
         <TouchableOpacity onPress={() => saveRecipe()}>
-          <Text style={{fontSize: 18, fontWeight: '600', color: '#fff'}}>
-            Save
-          </Text>
+          <Text style={styles.saveBtn}>Save</Text>
           {/* <FontAwesome5 size={26} color={'white'} name="save" /> */}
         </TouchableOpacity>
       ),
@@ -194,129 +195,65 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
   }, [navigation, route, saveRecipe]);
 
   return (
-    <KeyboardAwareScrollView style={{flex: 1}}>
-      <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
-        <Text style={{margin: 10, marginBottom: 0}}>Recipe Name:</Text>
+    <KeyboardAwareScrollView style={styles.root}>
+      <ScrollView style={styles.scrollView}>
+        <Text style={styles.label}>Recipe Name:</Text>
         <TextInput
           value={recipe.name}
           onChangeText={text => updateTextField('name', text)}
-          style={{
-            paddingHorizontal: 10,
-            paddingVertical: 8,
-            margin: 10,
-            borderWidth: 1,
-            borderColor: '#bebebe',
-          }}
+          style={[styles.input, styles.m10]}
         />
 
-        <View style={{flexDirection: 'row', margin: 10, alignItems: 'center'}}>
+        <View style={styles.recipeContainer}>
           <Text>Recipe Makes:</Text>
           <TextInput
             value={(recipe.serving_qty || '') + ''}
             onChangeText={text => updateNumberField('serving_qty', text)}
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 8,
-              borderWidth: 1,
-              borderColor: '#bebebe',
-              width: 60,
-              marginHorizontal: 8,
-            }}
+            style={[styles.input, styles.w60, styles.mh8]}
             keyboardType="numeric"
           />
           <TextInput
             value={recipe.serving_unit}
             onChangeText={text => updateTextField('serving_unit', text)}
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 8,
-              borderWidth: 1,
-              borderColor: '#bebebe',
-              flex: 1,
-              marginLeft: 8,
-            }}
+            style={[styles.input, styles.flex1, styles.ml8]}
           />
         </View>
 
-        <View style={{flexDirection: 'row', margin: 10}}>
-          <View style={{flex: 1, alignItems: 'stretch'}}>
+        <View style={[styles.row, styles.m10]}>
+          <View style={[styles.flex1, styles.alignItemsStretch]}>
             <TextInput
               value={(recipe.prep_time_min || '') + ''}
               onChangeText={text => updateNumberField('prep_time_min', text)}
               placeholder="0 min"
               keyboardType="numeric"
-              style={{
-                paddingHorizontal: 10,
-                paddingVertical: 8,
-                textAlign: 'center',
-                borderTopLeftRadius: 8,
-                borderTopRightRadius: 8,
-                backgroundColor: '#eee',
-              }}
+              style={styles.numericInput}
             />
-            <View
-              style={{
-                backgroundColor: '#ccc',
-                borderBottomLeftRadius: 8,
-                borderBottomRightRadius: 8,
-                padding: 4,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={{fontSize: 11}}>Preparation</Text>
+            <View style={styles.prepContainer}>
+              <Text style={styles.fz11}>Preparation</Text>
             </View>
           </View>
-          <View style={{flex: 1, alignItems: 'stretch', marginLeft: 8}}>
+          <View style={[styles.flex1, styles.alignItemsStretch, styles.ml8]}>
             <TextInput
               value={(recipe.cook_time_min || '') + ''}
               onChangeText={text => updateNumberField('cook_time_min', text)}
               placeholder="0 min"
               keyboardType="numeric"
-              style={{
-                paddingHorizontal: 10,
-                paddingVertical: 8,
-                textAlign: 'center',
-                borderTopLeftRadius: 8,
-                borderTopRightRadius: 8,
-                backgroundColor: '#eee',
-              }}
+              style={styles.numericInput}
             />
-            <View
-              style={{
-                backgroundColor: '#ccc',
-                borderBottomLeftRadius: 8,
-                borderBottomRightRadius: 8,
-                padding: 4,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={{fontSize: 11}}>Cooking</Text>
+            <View style={styles.prepContainer}>
+              <Text style={styles.fz11}>Cooking</Text>
             </View>
           </View>
         </View>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            margin: 10,
-          }}>
+        <View style={styles.totalContainer}>
           <FontAwesome5 name="clock" size={20} />
-          <Text style={{fontSize: 18, marginHorizontal: 8}}>
+          <Text style={[styles.fz18, styles.mh8]}>
             Total: {(recipe.prep_time_min || 0) + (recipe.cook_time_min || 0)}{' '}
             min
           </Text>
         </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingHorizontal: 10,
-            paddingVertical: 8,
-            backgroundColor: '#ddd',
-          }}>
+        <View style={styles.ingridientsContainer}>
           <Text>Ingredients:</Text>
           <Text>Calories Per Serving: {caloriesPerServing}</Text>
         </View>
@@ -332,26 +269,16 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             );
           })}
           <TouchableWithoutFeedback
-            style={{flex: 1}}
+            style={styles.flex1}
             onPress={() => handleShowAddIngredientsInput()}>
             {!showNewIngredientsInput ? (
-              <View
-                style={{
-                  marginBottom: 20,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                  backgroundColor: '#fff',
-                  borderBottomWidth: 1,
-                  borderBottomColor: '#bebebe',
-                }}>
+              <View style={styles.ingrBtnContainer}>
                 <FontAwesome5 name="plus-circle" size={20} />
-                <Text style={{marginLeft: 10}}>Add Ingredients</Text>
+                <Text style={styles.ml10}>Add Ingredients</Text>
               </View>
             ) : (
-              <View style={{margin: 10}}>
-                <Text style={{marginBottom: 10}}>
+              <View style={styles.m10}>
+                <Text style={styles.mb10}>
                   Type Ingredients in the field below and hit 'Add' button
                 </Text>
                 <TextInput
@@ -384,16 +311,8 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         </View>
 
         <View>
-          <Text
-            style={{
-              alignItems: 'center',
-              paddingHorizontal: 10,
-              paddingVertical: 8,
-              backgroundColor: '#ddd',
-            }}>
-            Directions
-          </Text>
-          <View style={{margin: 10}}>
+          <Text style={styles.directionText}>Directions</Text>
+          <View style={styles.m10}>
             <TextInput
               value={recipe.directions || ''}
               onChangeText={text => updateTextField('directions', text)}
@@ -407,7 +326,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           </View>
         </View>
 
-        <View style={{flexDirection: 'row', marginHorizontal: 10}}>
+        <View style={styles.footer}>
           <View style={{flex: 1, marginRight: 5}}>
             <NixButton title="Copy" type="primary" />
           </View>

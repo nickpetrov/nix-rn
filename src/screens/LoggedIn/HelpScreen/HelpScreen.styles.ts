@@ -33,4 +33,10 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#bbb',
   },
+  footer: {
+    flex: 1,
+  },
+  webView: {
+    width: '100%',
+  },
 });

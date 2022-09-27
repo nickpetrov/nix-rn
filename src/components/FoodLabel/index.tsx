@@ -136,185 +136,179 @@ const FoodLabel: React.FC<FoodLabelProps> = props => {
   return (
     <View style={styles.wrapper}>
       <Text style={styles.title}>Nutrition Facts</Text>
-      <Row style={{borderTopWidth: 10, borderBottomWidth: 5}}>
+      <Row style={styles.topRow}>
         <Col>
-          <Text style={{fontWeight: 'bold', fontSize: 12}}>Calories </Text>
-          <Text style={{fontSize: 12}}>
-            {Math.round(labelData.totalCalories)}
-          </Text>
+          <Text style={styles.textBold}>Calories </Text>
+          <Text style={styles.text}>{Math.round(labelData.totalCalories)}</Text>
         </Col>
-        <Col style={{flexDirection: 'row'}}>
-          <Text style={{fontSize: 12}}>Calories from Fat </Text>
-          <Text style={{fontSize: 12}}>
-            {roundToOne(labelData.totalFat * 9)}
-          </Text>
+        <Col style={styles.flexDirectionRow}>
+          <Text style={styles.text}>Calories from Fat </Text>
+          <Text style={styles.text}>{roundToOne(labelData.totalFat * 9)}</Text>
         </Col>
       </Row>
       <Row>
-        <Col></Col>
+        <Col />
         <Col>
-          <Text style={{fontWeight: 'bold', fontSize: 12}}>% Daily Value*</Text>
+          <Text style={styles.textBold}>% Daily Value*</Text>
         </Col>
       </Row>
       <Row>
         <Col>
-          <Text style={{fontWeight: 'bold', fontSize: 12}}>Total Fat </Text>
-          <Text style={{fontSize: 12}}>{roundToOne(labelData.totalFat)} g</Text>
+          <Text style={styles.textBold}>Total Fat </Text>
+          <Text style={styles.text}>{roundToOne(labelData.totalFat)} g</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.totalFat / 65) * 100)} %
           </Text>
         </Col>
       </Row>
-      <Row style={{marginLeft: 10}}>
+      <Row style={styles.ml10}>
         <Col>
-          <Text style={{fontSize: 12}}>Saturated Fat </Text>
-          <Text style={{fontSize: 12}}>{labelData.saturatedFat} g</Text>
+          <Text style={styles.text}>Saturated Fat </Text>
+          <Text style={styles.text}>{labelData.saturatedFat} g</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.saturatedFat / 20) * 100)} %
           </Text>
         </Col>
       </Row>
-      <Row style={{marginLeft: 10}}>
+      <Row style={styles.ml10}>
         <Col>
-          <Text style={{fontSize: 12, fontStyle: 'italic'}}>Trans Fat </Text>
-          <Text style={{fontSize: 12}}>{labelData.transFat} g</Text>
+          <Text style={styles.textItalic}>Trans Fat </Text>
+          <Text style={styles.text}>{labelData.transFat} g</Text>
         </Col>
-        <Col></Col>
+        <Col />
       </Row>
-      <Row style={{marginLeft: 10}}>
+      <Row style={styles.ml10}>
         <Col>
-          <Text style={{fontSize: 12}}>Polyunsaturated Fat </Text>
-          <Text style={{fontSize: 12}}>{labelData.polyunsaturatedFat} g</Text>
+          <Text style={styles.text}>Polyunsaturated Fat </Text>
+          <Text style={styles.text}>{labelData.polyunsaturatedFat} g</Text>
         </Col>
-        <Col></Col>
+        <Col />
       </Row>
-      <Row style={{marginLeft: 10}}>
+      <Row style={styles.ml10}>
         <Col>
-          <Text style={{fontSize: 12}}>Monounsaturated Fat </Text>
-          <Text style={{fontSize: 12}}>{labelData.monosaturatedFat} g</Text>
+          <Text style={styles.text}>Monounsaturated Fat </Text>
+          <Text style={styles.text}>{labelData.monosaturatedFat} g</Text>
         </Col>
-        <Col></Col>
+        <Col />
       </Row>
       <Row>
         <Col>
-          <Text style={{fontWeight: 'bold', fontSize: 12}}>Cholesterol </Text>
-          <Text style={{fontSize: 12}}>{labelData.cholesterol} mg</Text>
+          <Text style={styles.textBold}>Cholesterol </Text>
+          <Text style={styles.text}>{labelData.cholesterol} mg</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.cholesterol / 200) * 100)} %
           </Text>
         </Col>
       </Row>
       <Row>
         <Col>
-          <Text style={{fontWeight: 'bold', fontSize: 12}}>Sodium </Text>
-          <Text style={{fontSize: 12}}>{labelData.sodium} mg</Text>
+          <Text style={styles.textBold}>Sodium </Text>
+          <Text style={styles.text}>{labelData.sodium} mg</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.sodium / 2400) * 100)} %
           </Text>
         </Col>
       </Row>
       <Row>
         <Col>
-          <Text style={{fontWeight: 'bold', fontSize: 12}}>Potassium </Text>
-          <Text style={{fontSize: 12}}>{labelData.potassium} mg</Text>
+          <Text style={styles.textBold}>Potassium </Text>
+          <Text style={styles.text}>{labelData.potassium} mg</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.potassium / 3500) * 100)} %
           </Text>
         </Col>
       </Row>
       <Row>
         <Col>
-          <Text style={{fontWeight: 'bold', fontSize: 12}}>
-            Total Carbohydrates{' '}
-          </Text>
-          <Text style={{fontSize: 12}}>{labelData.totalCarbohydrates} g</Text>
+          <Text style={styles.textBold}>Total Carbohydrates </Text>
+          <Text style={styles.text}>{labelData.totalCarbohydrates} g</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.totalCarbohydrates / 300) * 100)} %
           </Text>
         </Col>
       </Row>
-      <Row style={{marginLeft: 10}}>
+      <Row style={styles.ml10}>
         <Col>
-          <Text style={{fontSize: 12}}>Dietary Fiber </Text>
-          <Text style={{fontSize: 12}}>{labelData.dietaryFiber} g</Text>
+          <Text style={styles.text}>Dietary Fiber </Text>
+          <Text style={styles.text}>{labelData.dietaryFiber} g</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.dietaryFiber / 25) * 100)} %
           </Text>
         </Col>
       </Row>
-      <Row style={{marginLeft: 10}}>
+      <Row style={styles.ml10}>
         <Col>
-          <Text style={{fontSize: 12}}>Sugars </Text>
-          <Text style={{fontSize: 12}}>{labelData.sugars} g</Text>
+          <Text style={styles.text}>Sugars </Text>
+          <Text style={styles.text}>{labelData.sugars} g</Text>
         </Col>
-        <Col></Col>
+        <Col />
       </Row>
-      <Row style={{borderBottomWidth: 10}}>
+      <Row style={styles.borderBotW}>
         <Col>
-          <Text style={{fontWeight: 'bold', fontSize: 12}}>Protein </Text>
-          <Text style={{fontSize: 12}}>{labelData.protein} g</Text>
+          <Text style={styles.textBold}>Protein </Text>
+          <Text style={styles.text}>{labelData.protein} g</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.protein / 50) * 100)} %
           </Text>
         </Col>
       </Row>
       <Row>
         <Col>
-          <Text style={{fontSize: 12}}>Vitamin A</Text>
+          <Text style={styles.text}>Vitamin A</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.vitaminA / 5000) * 100)} %
           </Text>
         </Col>
       </Row>
       <Row>
         <Col>
-          <Text style={{fontSize: 12}}>Vitamin C</Text>
+          <Text style={styles.text}>Vitamin C</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.vitaminC / 60) * 100)} %
           </Text>
         </Col>
       </Row>
       <Row>
         <Col>
-          <Text style={{fontSize: 12}}>Calcium</Text>
+          <Text style={styles.text}>Calcium</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.calcium / 1300) * 100)} %
           </Text>
         </Col>
       </Row>
       <Row>
         <Col>
-          <Text style={{fontSize: 12}}>Iron</Text>
+          <Text style={styles.text}>Iron</Text>
         </Col>
         <Col>
-          <Text style={{fontSize: 12}}>
+          <Text style={styles.text}>
             {roundToOne((labelData.iron / 18) * 100)} %
           </Text>
         </Col>
       </Row>
-      <Text style={{fontSize: 12, paddingTop: 5, color: '#666'}}>
+      <Text style={styles.info}>
         * Percent Daily Values are based on a 2000 calorie diet.
       </Text>
     </View>

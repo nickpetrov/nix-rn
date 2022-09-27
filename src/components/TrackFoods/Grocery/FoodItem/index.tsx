@@ -20,7 +20,7 @@ const FoodItem: React.FC<FoodItemProps> = ({onPress, foodObj}) => {
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <View style={styles.root}>
-        <View style={{marginRight: 8}}>
+        <View style={styles.imageContainer}>
           {/* <FontAwesome name="plus-circle" size={30} color="#666" /> */}
           {foodObj.photo ? (
             <Image
@@ -36,7 +36,7 @@ const FoodItem: React.FC<FoodItemProps> = ({onPress, foodObj}) => {
             />
           )}
         </View>
-        <View style={{flexGrow: 10, maxWidth: '75%'}}>
+        <View style={styles.textContainer}>
           <Text numberOfLines={1} ellipsizeMode="tail">
             {foodObj.food_name}
           </Text>
@@ -45,7 +45,7 @@ const FoodItem: React.FC<FoodItemProps> = ({onPress, foodObj}) => {
           <Text style={styles.caloriesValue}>
             {foodObj.full_nutrients
               ? foodObj.full_nutrients
-                  .filter((item: NutrientProps) => item.attr_id == 208)[0]
+                  .filter((item: NutrientProps) => item.attr_id === 208)[0]
                   .value.toFixed(0)
               : foodObj.nf_calories}
           </Text>

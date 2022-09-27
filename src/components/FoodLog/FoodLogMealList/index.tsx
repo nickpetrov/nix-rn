@@ -72,20 +72,17 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
     setMealFoods(<EmptyListItem text={noLoggedDataText} />);
     if (mealName === 'Weigh-in' && weights) {
       return setMealFoods(() => (
-        <View
-          style={{
-            flex: 1,
-          }}>
+        <View style={styles.flex1}>
           {weights.length > 0 ? (
             weights.map((item: WeightProps) => {
               return (
                 <TouchableOpacity
-                  style={{flex: 1}}
+                  style={styles.flex1}
                   onPress={() => setWeightModal(item)}
                   key={item.id}>
                   <EmptyListItem
                     text={`${moment(item.timestamp).format('h:mm a')}   ${
-                      userData.measure_system == 1
+                      userData.measure_system === 1
                         ? `${item.kg} kg`
                         : `${Math.round(
                             parseFloat(String(item.kg)) * 2.20462,
@@ -104,10 +101,7 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
     }
     if (mealName === 'Excercise' && exercises) {
       return setMealFoods(() => (
-        <View
-          style={{
-            flex: 1,
-          }}>
+        <View style={styles.flex1}>
           {exercises.length > 0 ? (
             exercises.map((item: ExerciseProps) => {
               return (
@@ -135,7 +129,7 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
               return null;
             }
             setTotalMealCalories(
-              prevCalories => prevCalories + food.nf_calories,
+              prevCalories => prevCalories + (food.nf_calories || 0),
             );
             return (
               <MealListItem

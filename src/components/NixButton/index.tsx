@@ -91,12 +91,11 @@ export const NixButton: React.FC<NixButtonProps> = ({
     case 'gray': {
       buttonTypeStyles = styles.gray;
       buttonTypeTextStyles = styles.grayText;
+      break;
     }
     default: {
-      buttonTypeStyles = {
-        backgroundColor: '#f8f8f8',
-      };
-      buttonTypeTextStyles = {color: '#444'};
+      buttonTypeStyles = styles.defaultBtnBgColor;
+      buttonTypeTextStyles = styles.defaultTextStyles;
     }
   }
 
@@ -114,7 +113,7 @@ export const NixButton: React.FC<NixButtonProps> = ({
             style={{...styles.icon, ...buttonTypeTextStyles}}
           />
         ) : null}
-        <View style={{flex: 1, justifyContent: 'center'}}>
+        <View style={styles.titleContainer}>
           <Text style={{...styles.title, ...buttonTypeTextStyles}}>
             {title}
           </Text>

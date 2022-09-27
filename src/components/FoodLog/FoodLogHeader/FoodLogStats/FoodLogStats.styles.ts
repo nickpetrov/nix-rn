@@ -64,4 +64,7 @@ export const styles = StyleSheet.create({
     fontSize: 11,
     color: '#002e5c',
   },
+  hide: {
+    display: 'none',
+  },
 });

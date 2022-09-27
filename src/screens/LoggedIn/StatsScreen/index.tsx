@@ -39,7 +39,7 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({navigation}) => {
       }}>
       <>
         <ScrollView style={styles.layout}>
-          <View style={{flex: 1}}>
+          <View style={styles.flex1}>
             <NixDietGraph
               title="Food Logging Calendar"
               target={userData.daily_kcal}

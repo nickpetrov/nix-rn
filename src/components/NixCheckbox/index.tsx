@@ -30,7 +30,7 @@ const NixCheckbox: React.FC<NixCheckboxProps> = props => {
 
   return (
     <>
-      <View style={{...styles.inputWrapper, paddingRight: 20}}>
+      <View style={{...styles.inputWrapper, ...styles.pr20}}>
         <BouncyCheckbox
           size={25}
           fillColor={Colors.Primary}

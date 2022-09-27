@@ -24,4 +24,21 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     textTransform: 'capitalize',
   },
+  picker: {
+    width: '100%',
+    minWidth: '100%',
+  },
+  lineChart: {
+    marginVertical: 8,
+    borderRadius: 16,
+    marginLeft: -10,
+  },
+  footer: {
+    justifyContent: 'center',
+    flex: 1,
+    paddingBottom: 10,
+  },
+  footerText: {
+    textAlign: 'center',
+  },
 });

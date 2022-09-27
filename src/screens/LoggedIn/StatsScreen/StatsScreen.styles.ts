@@ -9,4 +9,7 @@ export const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  flex1: {
+    flex: 1,
+  },
 });

@@ -18,7 +18,7 @@ const Totals: React.FC<TotalsProps> = props => {
   const {totalCalories, protein, carbohydrates, fat} = props;
 
   return (
-    <TouchableHighlight style={{backgroundColor: '#eee'}}>
+    <TouchableHighlight style={styles.root}>
       <View>
         <View style={styles.overviewWrapper}>
           <Text style={styles.overviewLabel}>Total Calories</Text>

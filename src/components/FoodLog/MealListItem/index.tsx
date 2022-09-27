@@ -48,7 +48,7 @@ const MealListItem: React.FC<MealListItemProps> = props => {
           source={{uri: foodObj.photo.thumb}}
           resizeMode="contain"
         />
-        <View style={{flex: 1}}>
+        <View style={styles.flex1}>
           <Text style={styles.foodName}>{foodObj.food_name}</Text>
           <Text>
             {foodObj.serving_qty} {foodObj.serving_unit}

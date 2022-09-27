@@ -29,18 +29,18 @@ const DeleteModal: React.FC<DeleteModalProps> = props => {
         <View style={styles.modalView}>
           {props.title && <Text style={styles.modalTitle}>{props.title}</Text>}
           {props.text && <Text style={styles.modalText}>{props.text}</Text>}
-          <View style={{flexDirection: 'row'}}>
-            <View style={{flex: 1, marginRight: 10}}>
+          <View style={styles.footer}>
+            <View style={[styles.btnContainer, styles.mr10]}>
               <NixButton
-                buttonTextStyles={{fontSize: 18}}
+                buttonTextStyles={styles.btnText}
                 title="Cancel"
                 type="gray"
                 onPress={() => props.setModalVisible(false)}
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={styles.btnContainer}>
               <NixButton
-                buttonTextStyles={{fontSize: 18}}
+                buttonTextStyles={styles.btnText}
                 title="Yes"
                 type="primary"
                 onPress={() => props.delete()}

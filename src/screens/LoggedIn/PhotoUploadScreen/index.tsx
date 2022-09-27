@@ -181,16 +181,16 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
 
   return (
     <ScrollView>
-      <View style={{display: 'flex', flexGrow: 1, padding: 10}}>
-        <View style={{marginBottom: 20}}>
+      <View style={styles.container}>
+        <View style={styles.mb20}>
           <Text>
             Congratulations! You found a product we do not yet have in the
             Nutritionix database. Can you help us by taking 2 photos of the
             product?
           </Text>
         </View>
-        <View style={{marginBottom: 5}}>
-          <Text style={{marginBottom: 10}}>1. Front Package Photo:</Text>
+        <View style={styles.mb5}>
+          <Text style={styles.mb10}>1. Front Package Photo:</Text>
           {!frontPackagePicture?.path ? (
             <View>
               <NixButton
@@ -206,7 +206,7 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
                 style={styles.previewImage}
                 source={{uri: frontPackagePicture.path}}
               />
-              <View style={{width: '50%'}}>
+              <View style={styles.w50}>
                 <NixButton
                   onPress={() => showCameraPopupHandler(1)}
                   title="Retake"
@@ -216,8 +216,8 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
             </View>
           )}
         </View>
-        <View style={{marginBottom: 10}}>
-          <Text style={{marginBottom: 10}}>2. Nutrition Label Photo:</Text>
+        <View style={styles.mb10}>
+          <Text style={styles.mb10}>2. Nutrition Label Photo:</Text>
           {!nutritionPackagePicture?.path ? (
             <NixButton
               onPress={() => showCameraPopupHandler(2)}
@@ -231,7 +231,7 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
                 style={styles.previewImage}
                 source={{uri: nutritionPackagePicture.path}}
               />
-              <View style={{width: '50%'}}>
+              <View style={styles.w50}>
                 <NixButton
                   onPress={() => showCameraPopupHandler(2)}
                   title="Retake"
@@ -241,10 +241,10 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
             </View>
           )}
         </View>
-        <View style={{marginBottom: 10}}>
+        <View style={styles.mb10}>
           <Text>Barcode Scanned: {barcode}</Text>
         </View>
-        <View style={{marginBottom: 10}}>
+        <View style={styles.mb10}>
           <Text>
             By submitting photos, you accept the Nutritionix Privacy Policy
           </Text>
