@@ -2,7 +2,7 @@
 import React, {useRef} from 'react';
 
 // components
-import {View, Text, TextInput, Platform} from 'react-native';
+import {View, Text, TextInput} from 'react-native';
 import {BarcodeScanner} from 'components/BarcodeScanner';
 import {getHeaderTitle} from '@react-navigation/elements';
 import BackButton from 'components/BackButton';
@@ -49,6 +49,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   const showAutocomplete = () => {
     if (navigation && route.name !== Routes.Autocomplete) {
       navigation.navigate(Routes.Autocomplete);
+      inputRef.current?.blur()
     }
   };
 
@@ -70,8 +71,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
             // onBlur={() => Keyboard.dismiss()}
             onLayout={() => {
               if (
-                route.name === Routes.Autocomplete &&
-                Platform.OS === 'android'
+                route.name === Routes.Autocomplete
               ) {
                 inputRef.current?.focus();
               }
