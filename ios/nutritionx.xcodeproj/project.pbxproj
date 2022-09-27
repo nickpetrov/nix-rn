@@ -10,6 +10,7 @@
 		00E356F31AD99517003FC87E /* nutritionxTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* nutritionxTests.m */; };
 		0C80B921A6F3F58F76C31292 /* libPods-nutritionx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-nutritionx.a */; };
 		0FABB10028D4F384004F02DD /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FABB0FF28D4F384004F02DD /* hermes.xcframework */; };
+		0FC7F4D028E217C9008B25BB /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 0FC7F4CF28E217C9008B25BB /* main.jsbundle */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -33,6 +34,7 @@
 		00E356F21AD99517003FC87E /* nutritionxTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = nutritionxTests.m; sourceTree = "<group>"; };
 		0F176BF128D863A700DB2AB6 /* nutritionx.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = nutritionx.entitlements; path = nutritionx/nutritionx.entitlements; sourceTree = "<group>"; };
 		0FABB0FF28D4F384004F02DD /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
+		0FC7F4CF28E217C9008B25BB /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* nutritionx.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nutritionx.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = nutritionx/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = nutritionx/AppDelegate.mm; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				0FC7F4CF28E217C9008B25BB /* main.jsbundle */,
 				13B07FAE1A68108700A75B9A /* nutritionx */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* nutritionxTests */,
@@ -248,6 +251,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0FC7F4D028E217C9008B25BB /* main.jsbundle in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
@@ -493,6 +497,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = nutritionx/nutritionx.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 37ULW87657;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = nutritionx/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -520,6 +525,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = nutritionx/nutritionx.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 37ULW87657;
 				INFOPLIST_FILE = nutritionx/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
