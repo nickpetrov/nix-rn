@@ -135,7 +135,7 @@ const FoodLog: React.FC = () => {
         return prev;
       }
     });
-  }, [sortedFoods]);
+  }, []);
 
   useEffect(() => {
     setSortedFoods((prev: Array<SortedFoodProps>) => {
