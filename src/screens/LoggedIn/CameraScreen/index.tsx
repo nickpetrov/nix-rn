@@ -2,7 +2,14 @@
 import React, {useRef, useState, useEffect, useCallback} from 'react';
 
 // components
-import {View, ScrollView, Button, ActivityIndicator} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Button,
+  ActivityIndicator,
+  Image,
+  Platform,
+} from 'react-native';
 import {
   useCameraDevices,
   Camera,
@@ -49,7 +56,7 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
         enableAutoRedEyeReduction: true,
       });
       console.log('photo', photo);
-      if (photo) {
+      if (photo?.path) {
         setTakenPicture(photo);
       }
     } catch (e) {
@@ -99,14 +106,27 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
           >
             <Text style={styles.textStyle}>Hide Modal</Text>
           </Pressable> */}
-        <Camera
-          style={styles.camera}
-          ref={camera}
-          onError={onError}
-          photo={true}
-          device={device}
-          isActive={isActive}
-        />
+        {takenPicture ? (
+          <Image
+            style={styles.image}
+            source={{
+              uri:
+                Platform.OS === 'ios'
+                  ? takenPicture?.path
+                  : `file://${takenPicture?.path}`,
+            }}
+            resizeMode="contain"
+          />
+        ) : (
+          <Camera
+            style={styles.camera}
+            ref={camera}
+            onError={onError}
+            photo={true}
+            device={device}
+            isActive={isActive}
+          />
+        )}
         <View>
           {takenPicture?.path ? (
             <View>

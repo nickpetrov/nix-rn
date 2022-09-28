@@ -2,7 +2,7 @@
 import React, {useState, useEffect, useCallback} from 'react';
 
 // components
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, Platform} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {NixButton} from 'components/NixButton';
 
@@ -95,11 +95,19 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     const filename1 = `${barcode}-1-TRACK${userData.id}-${timestamp}.jpg`;
     const filename2 = `${barcode}-2-TRACK${userData.id}-${timestamp}.jpg`;
 
-    const blob1 = await fetch(frontPackagePicture?.path || '').then(res => {
+    const blob1 = await fetch(
+      (Platform.OS === 'ios'
+        ? frontPackagePicture?.path
+        : `file://${frontPackagePicture?.path}`) || '',
+    ).then(res => {
       console.log(res);
       return res.blob();
     });
-    const blob2 = await fetch(nutritionPackagePicture?.path || '').then(res => {
+    const blob2 = await fetch(
+      (Platform.OS === 'ios'
+        ? nutritionPackagePicture?.path
+        : `file://${nutritionPackagePicture?.path}`) || '',
+    ).then(res => {
       console.log(res);
       return res.blob();
     });
@@ -204,7 +212,12 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
               <Image
                 resizeMode="contain"
                 style={styles.previewImage}
-                source={{uri: frontPackagePicture.path}}
+                source={{
+                  uri:
+                    Platform.OS === 'ios'
+                      ? frontPackagePicture?.path
+                      : `file://${frontPackagePicture?.path}`,
+                }}
               />
               <View style={styles.w50}>
                 <NixButton
@@ -229,7 +242,12 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
               <Image
                 resizeMode="contain"
                 style={styles.previewImage}
-                source={{uri: nutritionPackagePicture.path}}
+                source={{
+                  uri:
+                    Platform.OS === 'ios'
+                      ? nutritionPackagePicture?.path
+                      : `file://${nutritionPackagePicture?.path}`,
+                }}
               />
               <View style={styles.w50}>
                 <NixButton
@@ -253,7 +271,7 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
           {!uploadInProgress1 && !uploadInProgress2 ? (
             <NixButton
               disabled={
-                !nutritionPackagePicture?.path && !frontPackagePicture?.path
+                !nutritionPackagePicture?.path || !frontPackagePicture?.path
               }
               onPress={uploadPhotos}
               title="Submit photos to Nutritionix"

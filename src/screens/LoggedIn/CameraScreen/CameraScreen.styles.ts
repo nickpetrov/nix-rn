@@ -17,4 +17,8 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 100,
   },
+  image: {
+    width: '100%',
+    height: 300,
+  },
 });
