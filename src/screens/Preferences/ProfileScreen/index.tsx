@@ -301,7 +301,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       label="Measure system"
                       style={styles.input}
                       leftComponent={
-                        <FontAwesome
+                        <FontAwesome5
                           name={'ruler-vertical'}
                           size={30}
                           style={styles.field}
