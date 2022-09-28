@@ -30,7 +30,11 @@ import getAttrValueById from 'helpers/getAttrValueById';
 // types
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {FoodProps, TotalProps} from 'store/userLog/userLog.types';
+import {
+  FoodProps,
+  SortedFoodProps,
+  TotalProps,
+} from 'store/userLog/userLog.types';
 import {User} from 'store/auth/auth.types';
 
 // constants
@@ -53,40 +57,6 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
   const [showMoreNutrients, setShowMoreNutrients] = useState(false);
   const [dailyKcal, setDailyKcal] = useState(userData.daily_kcal);
   const [dayNote, setDayNote] = useState(totals.length ? totals[0].note : '');
-
-  const dispatch = useDispatch();
-  const [foodsArray, setFoodsArray] = useState<Array<FoodProps>>([]);
-
-  useEffect(() => {
-    let newFoodsArray: Array<FoodProps> = [];
-
-    if (type?.length) {
-      newFoodsArray = foods;
-    }
-    /*
-    need investigation for what it needed
-    else {
-      foods.map(day => {
-        if (!!day.foods && day.foods.length) {
-          newFoodsArray = newFoodsArray.concat(day.foods);
-        }
-      });
-    }*/
-    setFoodsArray(newFoodsArray);
-  }, [foods, type]);
-
-  useEffect(() => {
-    if (totals.length) {
-      const selectedDayTotals = totals.filter(
-        (item: TotalProps) => item.date === selectedDate,
-      )[0];
-      if (selectedDayTotals) {
-        setDailyKcal(selectedDayTotals.daily_kcal_limit);
-        setDayNote(selectedDayTotals.notes);
-      }
-    }
-  }, [selectedDate, totals]);
-
   const [total, setTotal] = useState<Record<string, any>>({
     item_name: 'Total',
     brand_name: 'Nutritionix',
@@ -124,6 +94,36 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
     magnesium: 0,
     net_carbs: 0,
   });
+
+  const dispatch = useDispatch();
+  const [foodsArray, setFoodsArray] = useState<Array<FoodProps>>([]);
+
+  useEffect(() => {
+    let newFoodsArray: Array<FoodProps> = [];
+
+    if (type?.length && type !== 'daily') {
+      newFoodsArray = (foods as FoodProps[]) || [];
+    } else if (type?.length) {
+      (foods as SortedFoodProps[])?.map(day => {
+        if (day?.foods?.length) {
+          newFoodsArray = newFoodsArray.concat(day.foods);
+        }
+      });
+    }
+    setFoodsArray(newFoodsArray);
+  }, [foods, type]);
+
+  useEffect(() => {
+    if (totals.length) {
+      const selectedDayTotals = totals.filter(
+        (item: TotalProps) => item.date === selectedDate,
+      )[0];
+      if (selectedDayTotals) {
+        setDailyKcal(selectedDayTotals.daily_kcal_limit);
+        setDayNote(selectedDayTotals.notes);
+      }
+    }
+  }, [selectedDate, totals]);
 
   useEffect(() => {
     setTotal(prev => {
@@ -224,7 +224,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
 
           <View style={styles.mb10}>
             {/* before was data={foodsArray}, but it's not working this way */}
-            <FoodLabel data={foods} />
+            <FoodLabel data={foodsArray} />
           </View>
 
           <View style={styles.mb10}>
@@ -269,7 +269,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
             </View>
           </View>
 
-          {foods.length && pieChartData ? (
+          {foodsArray.length && pieChartData ? (
             <View style={styles.mb10}>
               <NutritionPieChart data={pieChartData} />
             </View>

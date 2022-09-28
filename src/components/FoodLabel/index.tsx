@@ -34,8 +34,8 @@ const Col = (props: RowOrColProps) => {
   );
 };
 
-const FoodLabel: React.FC<FoodLabelProps> = props => {
-  const [dataObj, setDataObj] = useState(props.data);
+const FoodLabel: React.FC<FoodLabelProps> = ({data}) => {
+  const [dataObj, setDataObj] = useState(data);
 
   const [labelData, setLabelData] = useState({
     totalCalories: 0,
@@ -58,69 +58,65 @@ const FoodLabel: React.FC<FoodLabelProps> = props => {
   });
 
   useEffect(() => {
-    setDataObj(props.data);
-  }, [props]);
+    setDataObj(data);
+  }, [data]);
 
   useEffect(() => {
     let dataArray: Array<FoodProps> = [];
     if (typeof dataObj !== 'undefined') {
       // check if data passed is a single food item or array of foods.
-      if (Object.prototype.toString.call(dataObj) === '[object Object]') {
-        dataArray.push(dataObj as FoodProps);
-      } else {
+      if (Array.isArray(dataObj)) {
         dataArray = dataArray.concat(dataObj);
+      } else {
+        dataArray.push(dataObj as FoodProps);
       }
 
-      dataArray.map(item => {
-        setLabelData(prevLabelData => {
-          prevLabelData.totalCalories +=
+      setLabelData(prevLabelData => {
+        const newLabel = {...prevLabelData};
+        dataArray.forEach(item => {
+          newLabel.totalCalories +=
             item.nf_calories || getAttrValueById(item.full_nutrients, 208) || 0;
-          prevLabelData.totalFat +=
+          newLabel.totalFat +=
             item.nf_total_fat ||
             getAttrValueById(item.full_nutrients, 204) ||
             0;
-          prevLabelData.saturatedFat +=
+          newLabel.saturatedFat +=
             item.nf_saturated_fat ||
             getAttrValueById(item.full_nutrients, 606) ||
             0;
-          prevLabelData.transFat +=
-            getAttrValueById(item.full_nutrients, 605) || 0;
-          prevLabelData.polyunsaturatedFat +=
+          newLabel.transFat += getAttrValueById(item.full_nutrients, 605) || 0;
+          newLabel.polyunsaturatedFat +=
             getAttrValueById(item.full_nutrients, 646) || 0;
-          prevLabelData.monosaturatedFat +=
+          newLabel.monosaturatedFat +=
             getAttrValueById(item.full_nutrients, 645) || 0;
-          prevLabelData.cholesterol +=
+          newLabel.cholesterol +=
             item.nf_cholesterol ||
             getAttrValueById(item.full_nutrients, 601) ||
             0;
-          prevLabelData.sodium +=
+          newLabel.sodium +=
             item.nf_sodium || getAttrValueById(item.full_nutrients, 307) || 0;
-          prevLabelData.potassium +=
+          newLabel.potassium +=
             item.nf_potassium ||
             getAttrValueById(item.full_nutrients, 306) ||
             0;
-          prevLabelData.totalCarbohydrates +=
+          newLabel.totalCarbohydrates +=
             item.nf_total_carbohydrate ||
             getAttrValueById(item.full_nutrients, 205) ||
             0;
-          prevLabelData.dietaryFiber +=
+          newLabel.dietaryFiber +=
             item.nf_dietary_fiber ||
             getAttrValueById(item.full_nutrients, 291) ||
             0;
-          prevLabelData.sugars +=
+          newLabel.sugars +=
             item.nf_sugars || getAttrValueById(item.full_nutrients, 269) || 0;
-          prevLabelData.protein +=
+          newLabel.protein +=
             item.nf_protein || getAttrValueById(item.full_nutrients, 203) || 0;
-          prevLabelData.vitaminA +=
-            getAttrValueById(item.full_nutrients, 318) || 0;
-          prevLabelData.vitaminC +=
-            getAttrValueById(item.full_nutrients, 401) || 0;
-          prevLabelData.calcium +=
-            getAttrValueById(item.full_nutrients, 301) || 0;
-          prevLabelData.iron += getAttrValueById(item.full_nutrients, 303) || 0;
-
-          return prevLabelData;
+          newLabel.vitaminA += getAttrValueById(item.full_nutrients, 318) || 0;
+          newLabel.vitaminC += getAttrValueById(item.full_nutrients, 401) || 0;
+          newLabel.calcium += getAttrValueById(item.full_nutrients, 301) || 0;
+          newLabel.iron += getAttrValueById(item.full_nutrients, 303) || 0;
         });
+        return newLabel;
       });
     }
   }, [dataObj]);
