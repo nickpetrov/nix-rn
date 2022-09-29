@@ -9,7 +9,6 @@ export const styles = StyleSheet.create({
     borderColor: 'red',
   },
   inputWrapper: {
-    paddingHorizontal: 10,
     marginVertical: 10,
     width: '100%',
   },

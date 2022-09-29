@@ -7,13 +7,8 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   keyboardView: {
-    flex: 1,
+    flexGrow: 1,
     width: '100%',
-  },
-  scrollView: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
   },
   contentWrapper: {
     width: '100%',

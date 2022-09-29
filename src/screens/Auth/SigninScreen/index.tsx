@@ -1,5 +1,5 @@
 // utils
-import React from 'react';
+import React, {useState, useLayoutEffect} from 'react';
 
 // components
 import {
@@ -8,14 +8,14 @@ import {
   ActivityIndicator,
   Image,
   SafeAreaView,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
+  TouchableOpacity,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Formik, Field} from 'formik';
 import {NixButton} from 'components/NixButton';
 import {NixInput} from 'components/NixInput';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {WebView} from 'react-native-webview';
 
 // hooks
 import {useSignIn} from './hooks/useSignIn';
@@ -35,6 +35,7 @@ interface SigninScreenProps {
 }
 
 export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
+  const [showWebView, setShowWebView] = useState(false);
   const {
     isLoading,
     errorTextServer,
@@ -43,12 +44,19 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
     createAccountHandler,
   } = useSignIn(navigation);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: showWebView ? false : true,
+    });
+  }, [navigation, showWebView]);
+
   return (
-    <SafeAreaView style={styles.loginWrapper}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}>
-        <ScrollView style={styles.scrollView} alwaysBounceVertical={false}>
+    <KeyboardAwareScrollView
+      enableOnAndroid={true}
+      enableAutomaticScroll={true}
+      style={styles.keyboardView}>
+      <SafeAreaView style={styles.loginWrapper}>
+        {!showWebView ? (
           <View style={styles.contentWrapper}>
             <View style={styles.logo}>
               <Image
@@ -96,6 +104,11 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                     customShowPasswordComponent={<Text>Show</Text>}
                     customHidePasswordComponent={<Text>Hide</Text>}
                   />
+                  <TouchableOpacity
+                    style={styles.forgotContainer}
+                    onPress={() => setShowWebView(true)}>
+                    <Text style={styles.forgotText}>Forgot Password?</Text>
+                  </TouchableOpacity>
                   {!isLoading ? (
                     <View style={styles.btns}>
                       <NixButton
@@ -122,8 +135,17 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
               )}
             </Formik>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        ) : (
+          <View style={styles.webViewContainer}>
+            <WebView
+              style={styles.webView}
+              source={{
+                uri: 'https://www.nutritionix.com/account/forgot-password',
+              }}
+            />
+          </View>
+        )}
+      </SafeAreaView>
+    </KeyboardAwareScrollView>
   );
 };

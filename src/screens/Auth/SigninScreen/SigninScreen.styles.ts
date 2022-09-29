@@ -1,18 +1,14 @@
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  keyboardView: {
+    flexGrow: 1,
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+  },
   loginWrapper: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  keyboardView: {
-    flex: 1,
-    width: '100%',
-  },
-  scrollView: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
   },
   contentWrapper: {
     width: '100%',
@@ -22,7 +18,7 @@ export const styles = StyleSheet.create({
   },
   logo: {
     width: '60%',
-    height: 200,
+    height: 100,
   },
   logoImage: {
     width: '100%',
@@ -54,6 +50,24 @@ export const styles = StyleSheet.create({
     color: '#666',
   },
   btns: {
+    width: '100%',
+  },
+  forgotContainer: {
+    flex: 1,
+    width: '100%',
+    marginVertical: 5,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  forgotText: {
+    fontSize: 14,
+    textAlign: 'right',
+  },
+  webViewContainer: {
+    flex: 1,
+  },
+  webView: {
+    flex: 1,
     width: '100%',
   },
 });

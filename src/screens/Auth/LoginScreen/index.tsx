@@ -164,6 +164,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           </View>
           <Text style={styles.title}>Track</Text>
           <Text style={styles.subtitle}>Food Tracker by Nutritionix</Text>
+          {Platform.OS === 'ios' ? (
+            <AppleButton
+              buttonStyle={AppleButton.Style.BLACK}
+              buttonType={AppleButton.Type.SIGN_IN}
+              style={styles.appleButton}
+              onPress={appleLoginHandler}
+            />
+          ) : null}
           <NixButton
             title="Sign in with Facebook"
             type="facebook"
@@ -173,14 +181,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           <Text style={{...styles.noteText, ...styles.fbDisclamer}}>
             The app does not post to Facebook
           </Text>
-          {Platform.OS === 'ios' ? (
-            <AppleButton
-              buttonStyle={AppleButton.Style.BLACK}
-              buttonType={AppleButton.Type.SIGN_IN}
-              style={styles.appleButton}
-              onPress={appleLoginHandler}
-            />
-          ) : null}
           <NixButton
             title="Login via Email"
             onTap={() => navigation.navigate(Routes.Signin)}
