@@ -80,10 +80,17 @@ const StepTwoForm: React.FC<Props> = ({
     username: string;
     country_code: string;
     nutrition_topics: Array<number>;
+    country: string;
   }) => {
     if (isLoading) return;
     setIsLoading(true);
-    dispatch(updateUserData(form))
+    dispatch(
+      updateUserData({
+        username: form.username,
+        country_code: form.country_code,
+        nutrition_topics: form.nutrition_topics,
+      }),
+    )
       .then(user => {
         setIsLoading(false);
         console.log(user);
@@ -98,6 +105,7 @@ const StepTwoForm: React.FC<Props> = ({
         });
       })
       .catch(err => {
+        console.log(err);
         console.log(err.message);
         setIsLoading(false);
         showErrorMessage('server error');

@@ -1,8 +1,8 @@
 // utils
-import React, {useState} from 'react';
+import React from 'react';
 
 // components
-import {View, TextInputProps} from 'react-native';
+import {View, Text, TextInputProps} from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 // styles
@@ -19,37 +19,33 @@ type NixCheckboxProps = TextInputProps &
 
 const NixCheckbox: React.FC<NixCheckboxProps> = props => {
   const {
-    field: {name, value, onBlur},
-    form: {setFieldTouched, setFieldValue},
+    field: {name, value},
+    form: {errors, touched, setFieldValue},
     ...inputProps
   } = props;
 
-  const [isChecked, setIsChecked] = useState(value);
-
-  // const hasError = !!errors[name] && !!touched[name];
+  const hasError = !!errors[name] && !!touched[name];
 
   return (
     <>
       <View style={{...styles.inputWrapper, ...styles.pr20}}>
+        {/* @ts-ignore */}
         <BouncyCheckbox
+          {...inputProps}
           size={25}
           fillColor={Colors.Primary}
           unfillColor="#FFFFFF"
-          isChecked={isChecked}
-          onPress={() => {
-            setFieldValue(name, !isChecked);
-            setFieldTouched(name);
-            setIsChecked(!isChecked);
+          isChecked={value}
+          onPress={checked => {
+            setFieldValue(name, checked, true);
+            // setFieldTouched(name);
           }}
-          {...inputProps}
-          onBlur={e => onBlur(e)}
-          onFocus={() => {}}
           style={[styles.checkbox, props.style]}
         />
       </View>
-      {/* {hasError && (
-        <Text style={styles.errorText}>{errors[name] as React.ReactNode}</Text>
-      )} */}
+      {hasError && (
+        <Text style={styles.errorText}>{errors[name] as string}</Text>
+      )}
     </>
   );
 };

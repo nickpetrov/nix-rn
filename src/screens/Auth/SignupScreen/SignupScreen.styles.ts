@@ -4,8 +4,6 @@ export const styles = StyleSheet.create({
   loginWrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   keyboardView: {
     flex: 1,
