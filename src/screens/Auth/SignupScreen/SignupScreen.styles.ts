@@ -4,10 +4,10 @@ import {StyleSheet} from 'react-native';
 export const styles = StyleSheet.create({
   loginWrapper: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   keyboardView: {
     flexGrow: 1,
+    backgroundColor: '#fff',
     width: '100%',
   },
   contentWrapper: {
