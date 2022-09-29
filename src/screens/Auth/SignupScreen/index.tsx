@@ -1,5 +1,5 @@
 // utils
-import React, {useState, useRef} from 'react';
+import React, {useState} from 'react';
 
 // components
 import {View, Image, SafeAreaView} from 'react-native';
@@ -24,7 +24,6 @@ interface SignupScreenProps {
 export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
   const [errorTextServer, setErrorTextServer] = useState('');
   const [isStep2, setIsStep2] = useState(false);
-  const currentInputScroll = useRef(null);
 
   const showErrorMessage = (errorType: string) => {
     switch (errorType) {
@@ -48,7 +47,6 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
       enableOnAndroid={true}
       enableAutomaticScroll={true}
       extraHeight={200}
-      innerRef={(ref: any) => (currentInputScroll.current = ref)}
       style={styles.keyboardView}>
       <SafeAreaView style={styles.loginWrapper}>
         <View style={styles.contentWrapper}>
