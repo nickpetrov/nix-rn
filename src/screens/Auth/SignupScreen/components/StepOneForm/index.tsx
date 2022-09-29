@@ -4,7 +4,7 @@ import moment from 'moment-timezone';
 
 // components
 import {Field, Formik} from 'formik';
-import {ActivityIndicator, Text, View} from 'react-native';
+import {ActivityIndicator, Text, View, Linking} from 'react-native';
 
 // validation
 import signupValidationSchema from './validation';
@@ -158,7 +158,30 @@ const StepOneForm: React.FC<Props> = ({
             <Field
               component={NixCheckbox}
               name="isAgreedTerms"
-              text="I agree to Nutritionix Track Terms of Service and Privacy Policy"
+              textComponent={
+                <View style={{paddingHorizontal: 18}}>
+                  <Text style={{fontSize: 16, color: '#757575'}}>
+                    I agree to Nutritionix Track{' '}
+                    <Text
+                      style={styles.link}
+                      onPress={() =>
+                        Linking.openURL(
+                          'https://www.iubenda.com/privacy-policy/7754814',
+                        )
+                      }>
+                      Terms of Service
+                    </Text>{' '}
+                    and{' '}
+                    <Text
+                      style={styles.link}
+                      onPress={() =>
+                        Linking.openURL('https://www.nutritionix.com/privacy')
+                      }>
+                      Privacy Policy
+                    </Text>
+                  </Text>
+                </View>
+              }
               size={25}
               fillColor={Colors.Primary}
               unfillColor="#FFFFFF"

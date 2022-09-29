@@ -1,3 +1,4 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -48,5 +49,8 @@ export const styles = StyleSheet.create({
   validationError: {
     color: 'red',
     marginVertical: 15,
+  },
+  link: {
+    color: Colors.Info,
   },
 });
