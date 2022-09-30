@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import moment from 'moment-timezone';
 
 // components
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, TouchableHighlight} from 'react-native';
 import MealListItem from '../MealListItem';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,7 +19,10 @@ import SwipeView from 'components/SwipeView';
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
-import {DeleteFoodFromLog} from 'store/userLog/userLog.actions';
+import {
+  DeleteFoodFromLog,
+  deleteWeightFromLog,
+} from 'store/userLog/userLog.actions';
 import * as basketActions from 'store/basket/basket.actions';
 
 // styles
@@ -77,9 +80,16 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
     <EmptyListItem text={noLoggedDataText} />
   ));
 
-  const deleteFromLog = useCallback(
+  const handleDeleteFoodFromLog = useCallback(
     (id: string) => {
-      dispatch(DeleteFoodFromLog([{id: id || '-1'}])).then(() => {
+      dispatch(DeleteFoodFromLog([{id: id || '-1'}]));
+    },
+    [dispatch],
+  );
+
+  const handleDeleteWeightFromLog = useCallback(
+    (id: string) => {
+      dispatch(deleteWeightFromLog([{id: id || '-1'}])).then(() => {
         navigation.navigate(Routes.Dashboard);
       });
     },
@@ -110,21 +120,30 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
           {weights.length > 0 ? (
             weights.map((item: WeightProps) => {
               return (
-                <TouchableOpacity
-                  style={styles.flex1}
-                  onPress={() => setWeightModal(item)}
-                  key={item.id}>
-                  <EmptyListItem
-                    text={`${moment(item.timestamp).format('h:mm a')}   ${
-                      userData.measure_system === 1
-                        ? `${item.kg} kg`
-                        : `${Math.round(
-                            parseFloat(String(item.kg)) * 2.20462,
-                          )} lbs`
-                    }`}
-                    type="full"
-                  />
-                </TouchableOpacity>
+                <SwipeView
+                  listKey={item.id}
+                  key={item.id}
+                  buttons={[
+                    {
+                      type: 'delete',
+                      onPress: () => handleDeleteWeightFromLog(item.id),
+                    },
+                  ]}>
+                  <TouchableHighlight
+                    style={styles.flex1}
+                    onPress={() => setWeightModal(item)}>
+                    <EmptyListItem
+                      text={`${moment(item.timestamp).format('h:mm a')}   ${
+                        userData.measure_system === 1
+                          ? `${item.kg} kg`
+                          : `${Math.round(
+                              parseFloat(String(item.kg)) * 2.20462,
+                            )} lbs`
+                      }`}
+                      type="full"
+                    />
+                  </TouchableHighlight>
+                </SwipeView>
               );
             })
           ) : (
@@ -170,10 +189,13 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
                 listKey={food.id}
                 key={food.id}
                 buttons={[
-                  {type: 'delete', onPress: () => deleteFromLog(food.id)},
                   {
                     type: 'copy',
                     onPress: () => addItemToBasket(food.food_name),
+                  },
+                  {
+                    type: 'delete',
+                    onPress: () => handleDeleteFoodFromLog(food.id),
                   },
                 ]}>
                 <MealListItem
@@ -199,7 +221,8 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
     setWeightModal,
     userData.measure_system,
     addItemToBasket,
-    deleteFromLog,
+    handleDeleteFoodFromLog,
+    handleDeleteWeightFromLog,
   ]);
 
   const handleChooseCategory = (name: mealNameProps) => {

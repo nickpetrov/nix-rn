@@ -135,6 +135,19 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
   };
 };
 
+export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
+  return async (dispatch: Dispatch) => {
+    const response = await userLogService.deleteWeightFromLog(weights);
+
+    if (response.status === 200) {
+      dispatch({
+        type: userLogActionTypes.DELETE_WEIGHT_LOG,
+        weights: weights.map(item => item.id),
+      });
+    }
+  };
+};
+
 export const getUserExerciseslog = (
   beginDate: string,
   endDate: string,

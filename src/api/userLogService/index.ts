@@ -133,6 +133,13 @@ const userLogService = {
       },
     });
   },
+  async deleteWeightFromLog(weights: Array<{id: string}>) {
+    return await apiClient.delete('weight/log', {
+      data: {
+        weights,
+      },
+    });
+  },
 };
 
 export default userLogService;

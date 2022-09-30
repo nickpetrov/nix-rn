@@ -17,8 +17,8 @@ export const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
-  bgGreen: {
-    backgroundColor: 'green',
+  bgCopy: {
+    backgroundColor: 'orange',
   },
   bgRed: {
     backgroundColor: 'red',

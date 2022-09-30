@@ -27,7 +27,7 @@ const SwipeView: React.FC<SwipeViewProps> = ({buttons, listKey, children}) => {
           <TouchableOpacity
             key={item.type}
             onPress={item.onPress}
-            style={[styles.btn, styles.bgGreen]}>
+            style={[styles.btn, styles.bgCopy]}>
             <Text style={styles.btnText}>Copy</Text>
           </TouchableOpacity>
         );
