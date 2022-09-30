@@ -56,13 +56,15 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = props => {
     remaining_calories_text = 'Over';
   }
   useEffect(() => {
-    if (progressValue > 100) {
-      setProgressBarColor('#ef4e3a');
-    } else if (progressValue >= 85 && progressValue !== 100) {
-      setProgressBarColor('#f0b840');
-    } else {
-      setProgressBarColor(Colors.Primary);
-    }
+    setProgressBarColor(() => {
+      if (progressValue > 100) {
+        return '#ef4e3a';
+      } else if (progressValue >= 85 && progressValue !== 100) {
+        return '#f0b840';
+      } else {
+        return Colors.Primary;
+      }
+    });
   }, [progressValue]);
 
   return (

@@ -2,7 +2,7 @@
 import React from 'react';
 
 // components
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import {View, Text, Image, TouchableHighlight} from 'react-native';
 
 // types
 import {mealTypes} from 'store/basket/basket.types';
@@ -31,7 +31,7 @@ interface MealListItemProps {
 const MealListItem: React.FC<MealListItemProps> = props => {
   const {foodObj, mealName} = props;
   return (
-    <TouchableOpacity
+    <TouchableHighlight
       onPress={() =>
         props.navigation
           ? props.navigation.navigate(Routes.FoodInfo, {
@@ -59,7 +59,7 @@ const MealListItem: React.FC<MealListItemProps> = props => {
           {foodObj?.nf_calories ? foodObj.nf_calories.toFixed(0) : ''}
         </Text>
       </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   );
 };
 

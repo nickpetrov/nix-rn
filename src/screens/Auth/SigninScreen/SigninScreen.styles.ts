@@ -65,9 +65,10 @@ export const styles = StyleSheet.create({
   },
   webViewContainer: {
     flex: 1,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
   },
   webView: {
     flex: 1,
-    width: '100%',
   },
 });

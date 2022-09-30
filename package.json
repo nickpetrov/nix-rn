@@ -47,6 +47,7 @@
     "react-native-sectioned-multi-select": "^0.9.1",
     "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "^13.2.0",
+    "react-native-swipe-list-view": "^3.2.9",
     "react-native-vector-icons": "^9.2.0",
     "react-native-vision-camera": "^2.14.1",
     "react-native-webview": "11.23.0",

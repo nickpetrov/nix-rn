@@ -1,5 +1,5 @@
 // utils
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import moment from 'moment-timezone';
 
@@ -13,6 +13,14 @@ import EmptyListItem from '../EmptyListItem';
 
 // constants
 import {Routes} from 'navigation/Routes';
+import SwipeView from 'components/SwipeView';
+
+// hooks
+import {useDispatch, useSelector} from 'hooks/useRedux';
+
+// actions
+import {DeleteFoodFromLog} from 'store/userLog/userLog.actions';
+import * as basketActions from 'store/basket/basket.actions';
 
 // styles
 import {styles} from './FoodLogMealList.styles';
@@ -40,6 +48,8 @@ interface FoodLogMealListProps {
 }
 
 const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
+  const dispatch = useDispatch();
+  const {selectedDate} = useSelector(state => state.userLog);
   const navigation =
     useNavigation<
       NativeStackNavigationProp<
@@ -66,6 +76,30 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
   const [mealFoods, setMealFoods] = useState(() => (
     <EmptyListItem text={noLoggedDataText} />
   ));
+
+  const deleteFromLog = useCallback(
+    (id: string) => {
+      dispatch(DeleteFoodFromLog([{id: id || '-1'}])).then(() => {
+        navigation.navigate(Routes.Dashboard);
+      });
+    },
+    [navigation, dispatch],
+  );
+
+  const addItemToBasket = useCallback(
+    (foodName: string) => {
+      dispatch(basketActions.addFoodToBasket(foodName || '')).then(() => {
+        dispatch(basketActions.changeConsumedAt(selectedDate));
+        dispatch(
+          basketActions.changeMealType(
+            mealTypes[mealName as keyof typeof mealTypes],
+          ),
+        );
+        navigation.navigate(Routes.Basket);
+      });
+    },
+    [selectedDate, mealName, dispatch, navigation],
+  );
 
   useEffect(() => {
     setTotalMealCalories(0);
@@ -122,7 +156,7 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
       return setMealFoods(() => <EmptyListItem text="0 Liters" type="full" />);
     }
     if (!!mealFoodsList && mealFoodsList.length) {
-      setMealFoods(() => (
+      return setMealFoods(() => (
         <>
           {mealFoodsList.map((food: FoodProps) => {
             if (!food || !food.id) {
@@ -132,12 +166,23 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
               prevCalories => prevCalories + (food.nf_calories || 0),
             );
             return (
-              <MealListItem
+              <SwipeView
+                listKey={food.id}
                 key={food.id}
-                foodObj={food}
-                navigation={navigation}
-                mealName={mealName}
-              />
+                buttons={[
+                  {type: 'delete', onPress: () => deleteFromLog(food.id)},
+                  {
+                    type: 'copy',
+                    onPress: () => addItemToBasket(food.food_name),
+                  },
+                ]}>
+                <MealListItem
+                  key={food.id}
+                  foodObj={food}
+                  navigation={navigation}
+                  mealName={mealName}
+                />
+              </SwipeView>
             );
           })}
         </>
@@ -153,6 +198,8 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
     setExcerciseModal,
     setWeightModal,
     userData.measure_system,
+    addItemToBasket,
+    deleteFromLog,
   ]);
 
   const handleChooseCategory = (name: mealNameProps) => {
