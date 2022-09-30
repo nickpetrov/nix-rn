@@ -12,7 +12,7 @@ const initialState = {
 
 export default (state: BasketState = initialState, action: AnyAction) => {
   switch (action.type) {
-    case basketActionTypes.ADD_FOOD_TO_BASKET:
+    case basketActionTypes.ADD_FOOD_TO_BASKET: {
       let newFoods = [...state.foods];
       if (typeof action.foods == 'object') {
         newFoods = newFoods.concat(action.foods);
@@ -20,6 +20,7 @@ export default (state: BasketState = initialState, action: AnyAction) => {
         newFoods.push(action.foods);
       }
       return {...state, foods: newFoods};
+    }
     case basketActionTypes.UPDATE_BASKET_FOODS:
       return {...state, foods: action.foods};
     case basketActionTypes.CHANGE_LOGGING_TYPE:
@@ -32,6 +33,15 @@ export default (state: BasketState = initialState, action: AnyAction) => {
       return {...state, consumed_at: action.consumed_at};
     case basketActionTypes.CHANGE_MEAL_TYPE:
       return {...state, meal_type: action.newMealType};
+    case basketActionTypes.DELETE_FOOD_FROM_BASKET: {
+      let newFoods = [...state.foods];
+      newFoods = newFoods.filter(item => item.basketId !== action.id);
+      if (newFoods.length > 0) {
+        return {...state, foods: newFoods};
+      } else {
+        return initialState;
+      }
+    }
     case basketActionTypes.MERGE_BASKET:
       let newFoodsAtBasket = [...state.foods];
       if (action.basket?.foods?.length) {

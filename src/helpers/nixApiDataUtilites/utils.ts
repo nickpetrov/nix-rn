@@ -41,7 +41,7 @@ function reduce(
     for (var i = 0; i < collection.length; i++) {
       iterator(collection[i], i);
     }
-  } else {
+  } else if (collection) {
     let keys = Object.keys(collection);
     for (var i = 0; i < keys.length; i++) {
       let val = collection[keys[i]];

@@ -138,6 +138,7 @@ export interface FoodProps {
   class_code?: string;
   sub_recipe?: string;
   public_id?: number | null;
+  basketId?: string;
 }
 
 export interface UserLogState {

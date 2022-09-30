@@ -46,6 +46,7 @@ const SwipeView: React.FC<SwipeViewProps> = ({buttons, listKey, children}) => {
   };
   return (
     <SwipeListView
+      useFlatList
       listKey={listKey}
       data={[{}]}
       renderItem={() => <>{children}</>}
@@ -59,6 +60,11 @@ const SwipeView: React.FC<SwipeViewProps> = ({buttons, listKey, children}) => {
           })}
         </View>
       )}
+      onRowOpen={(rowKey, rowMap) => {
+        setTimeout(() => {
+          rowMap[rowKey].closeRow();
+        }, 3000);
+      }}
       swipeToOpenPercent={30}
       rightOpenValue={-(buttons.length * 75)}
     />

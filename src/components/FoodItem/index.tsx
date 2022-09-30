@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 
 // components
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import {View, Text, TouchableHighlight, Image} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import ModalSelector from 'react-native-modal-selector';
 
@@ -109,7 +109,7 @@ const FoodItem: React.FC<FoodItemProps> = ({
   };
 
   return (
-    <TouchableOpacity onPress={onTap}>
+    <TouchableHighlight onPress={onTap}>
       <View style={styles.foodItem}>
         {food.photo ? (
           <Image
@@ -168,13 +168,13 @@ const FoodItem: React.FC<FoodItemProps> = ({
             {nfCalories
               ? nfCalories.toFixed(0)
               : full_nutrients
-                  .filter((item: NutrientProps) => item.attr_id === 208)[0]
+                  ?.filter((item: NutrientProps) => item.attr_id === 208)[0]
                   .value.toFixed(0)}
           </Text>
           <Text>cal</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   );
 };
 

@@ -7,14 +7,7 @@ import NixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 
 // components
 import BasketButton from 'components/BasketButton';
-import {
-  Text,
-  View,
-  SafeAreaView,
-  Button,
-  Switch,
-  ScrollView,
-} from 'react-native';
+import {Text, View, SafeAreaView, Button, Switch} from 'react-native';
 import {NixButton} from 'components/NixButton';
 import Totals from 'components/Totals';
 import {FloatingLabelInput} from 'react-native-floating-label-input';
@@ -22,6 +15,7 @@ import FoodItem from 'components/FoodItem';
 import WhenSection from 'components/WhenSection';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationHeader} from 'components/NavigationHeader';
+import SwipeView from 'components/SwipeView';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -92,7 +86,10 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
     let loggingOptions: Partial<loggingOptionsProps> = {};
 
     let adjustedFoods = foods;
-    console.log('adjustedFoods', adjustedFoods);
+
+    // delete temp basketId
+    delete adjustedFoods.basketId;
+
     if (isSingleFood) {
       if (servings > 1) {
         const mult = 1 / parseFloat(servings);
@@ -114,7 +111,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
 
     loggingOptions.meal_type = meal_type;
     loggingOptions.consumed_at = consumed_at;
-    console.log('adjustedFoods1', adjustedFoods);
+
     dispatch(userLogActions.addFoodToLog(adjustedFoods, loggingOptions)).then(
       () => {
         dispatch(basketActions.reset());
@@ -157,12 +154,27 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
 
   const foodsList = foods.map((food: FoodProps, index: number) => {
     return (
-      <FoodItem
-        key={food.food_name + food.id + food.consumed_at + index}
-        itemIndex={index}
-        foodObj={food}
-        itemChangeCallback={changeFoodAtBasket}
-      />
+      <SwipeView
+        listKey={food.basketId}
+        key={food.basketId}
+        buttons={[
+          {
+            type: 'delete',
+            onPress: () => {
+              console.log('delete food', food);
+              dispatch(
+                basketActions.deleteFoodFromBasket(food.basketId || '-1'),
+              );
+            },
+          },
+        ]}>
+        <FoodItem
+          key={food.basketId}
+          itemIndex={index}
+          foodObj={food}
+          itemChangeCallback={changeFoodAtBasket}
+        />
+      </SwipeView>
     );
   });
 
@@ -171,107 +183,101 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
       <KeyboardAwareScrollView
         style={styles.keyboardView}
         alwaysBounceVertical={false}>
-        <ScrollView>
-          {foodsList}
+        {foodsList}
 
-          {foods.length ? (
-            <View style={styles.main}>
-              <Totals
-                totalCalories={totalCalories}
-                protein={totalProtein}
-                carbohydrates={totalCarb}
-                fat={totalFat}
-              />
-              <View>
-                {foods.length > 1 ? (
-                  <View>
-                    <Text style={styles.title}>Appear on food log as:</Text>
-                    <View style={styles.content}>
-                      <Text
-                        style={{
-                          width: '40%',
-                          textAlign: 'center',
-                          opacity: isSingleFood ? 0.5 : 1,
-                        }}>
-                        Multiple foods
-                      </Text>
-                      <View style={styles.switchContainer}>
-                        <Switch
-                          trackColor={{true: Colors.Primary}}
-                          ios_backgroundColor="#3e3e3e"
-                          onValueChange={() => toggleSingleFood()}
-                          value={isSingleFood}
-                          style={{}}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          width: '40%',
-                          textAlign: 'center',
-                          opacity: !isSingleFood ? 0.5 : 1,
-                        }}>
-                        Single Food(Recipe)
-                      </Text>
-                    </View>
-                  </View>
-                ) : null}
-                {isSingleFood ? (
-                  <View>
-                    <FloatingLabelInput
-                      label="Meal Name"
-                      style={styles.input}
-                      value={recipeName}
-                      onChangeText={(value: string) =>
-                        handleSingleFoodNameChange(value)
-                      }
-                      autoCapitalize="none"
-                    />
-                    <FloatingLabelInput
-                      label="Servings"
-                      style={styles.input}
-                      value={servings}
-                      onChangeText={(value: string) =>
-                        handleSingleFoodServingsChange(value)
-                      }
-                      autoCapitalize="none"
-                      keyboardType="numeric"
-                    />
-                  </View>
-                ) : null}
-              </View>
-              <View>
-                <WhenSection
-                  consumed_at={consumed_at}
-                  meal_type={meal_type}
-                  onDateChange={onDateChange}
-                  onMealTypeChange={onMealTypeChange}
-                />
-              </View>
-              <View style={styles.mb20}>
-                <NixButton
-                  title="Log Foods"
-                  onPress={logFoods}
-                  type="primary"
-                />
-              </View>
-              <View>
-                <NixButton
-                  title="Clear Basket"
-                  onPress={clearBasket}
-                  type="assertive"
-                />
-              </View>
-            </View>
-          ) : (
+        {foods.length ? (
+          <View style={styles.main}>
+            <Totals
+              totalCalories={totalCalories}
+              protein={totalProtein}
+              carbohydrates={totalCarb}
+              fat={totalFat}
+            />
             <View>
-              <Text style={styles.emptyText}>Your Basket is Empty.</Text>
-              <Button
-                onPress={() => navigation.goBack()}
-                title="Back to Food Log"
+              {foods.length > 1 ? (
+                <View>
+                  <Text style={styles.title}>Appear on food log as:</Text>
+                  <View style={styles.content}>
+                    <Text
+                      style={{
+                        width: '40%',
+                        textAlign: 'center',
+                        opacity: isSingleFood ? 0.5 : 1,
+                      }}>
+                      Multiple foods
+                    </Text>
+                    <View style={styles.switchContainer}>
+                      <Switch
+                        trackColor={{true: Colors.Primary}}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={() => toggleSingleFood()}
+                        value={isSingleFood}
+                        style={{}}
+                      />
+                    </View>
+                    <Text
+                      style={{
+                        width: '40%',
+                        textAlign: 'center',
+                        opacity: !isSingleFood ? 0.5 : 1,
+                      }}>
+                      Single Food(Recipe)
+                    </Text>
+                  </View>
+                </View>
+              ) : null}
+              {isSingleFood ? (
+                <View>
+                  <FloatingLabelInput
+                    label="Meal Name"
+                    style={styles.input}
+                    value={recipeName}
+                    onChangeText={(value: string) =>
+                      handleSingleFoodNameChange(value)
+                    }
+                    autoCapitalize="none"
+                  />
+                  <FloatingLabelInput
+                    label="Servings"
+                    style={styles.input}
+                    value={servings}
+                    onChangeText={(value: string) =>
+                      handleSingleFoodServingsChange(value)
+                    }
+                    autoCapitalize="none"
+                    keyboardType="numeric"
+                  />
+                </View>
+              ) : null}
+            </View>
+            <View>
+              <WhenSection
+                consumed_at={consumed_at}
+                meal_type={meal_type}
+                onDateChange={onDateChange}
+                onMealTypeChange={onMealTypeChange}
               />
             </View>
-          )}
-        </ScrollView>
+            <View style={styles.mb20}>
+              <NixButton title="Log Foods" onPress={logFoods} type="primary" />
+            </View>
+            <View>
+              <NixButton
+                title="Clear Basket"
+                onPress={clearBasket}
+                type="assertive"
+              />
+            </View>
+          </View>
+        ) : (
+          <View>
+            <Text style={styles.emptyText}>Your Basket is Empty.</Text>
+            <Button
+              onPress={() => navigation.goBack()}
+              title="Back to Food Log"
+            />
+          </View>
+        )}
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );
