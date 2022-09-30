@@ -2,7 +2,7 @@
 import React from 'react';
 
 // components
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Text, TouchableHighlight, View, Image} from 'react-native';
 
 // types
 import {ExerciseProps} from 'store/userLog/userLog.types';
@@ -20,11 +20,20 @@ const ExerciseListItem: React.FC<ExerciseListItemProps> = ({
   exercise,
 }) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableHighlight style={styles.container} onPress={onPress}>
       <View style={styles.root}>
-        <Text>{`${exercise.duration_min} min ${exercise.name}`}</Text>
+        <View style={styles.left}>
+          <Image source={{uri: exercise.photo.thumb}} style={styles.image} />
+          <View style={styles.header}>
+            <Text>
+              {exercise.name.charAt(0).toUpperCase() + exercise.name.slice(1)}
+            </Text>
+            <Text style={styles.time}>{`${exercise.duration_min} min`}</Text>
+          </View>
+        </View>
+        <Text style={styles.calories}>-{exercise.nf_calories} Cal</Text>
       </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   );
 };
 

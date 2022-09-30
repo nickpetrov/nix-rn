@@ -20,6 +20,7 @@ import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
 import {
+  deleteExerciseFromLog,
   DeleteFoodFromLog,
   deleteWeightFromLog,
 } from 'store/userLog/userLog.actions';
@@ -89,11 +90,15 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
 
   const handleDeleteWeightFromLog = useCallback(
     (id: string) => {
-      dispatch(deleteWeightFromLog([{id: id || '-1'}])).then(() => {
-        navigation.navigate(Routes.Dashboard);
-      });
+      dispatch(deleteWeightFromLog([{id: id || '-1'}]));
     },
-    [navigation, dispatch],
+    [dispatch],
+  );
+  const handleDeleteExerciseFromLog = useCallback(
+    (id: string) => {
+      dispatch(deleteExerciseFromLog([{id: id || '-1'}]));
+    },
+    [dispatch],
   );
 
   const addItemToBasket = useCallback(
@@ -130,7 +135,7 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
                     },
                   ]}>
                   <TouchableHighlight
-                    style={styles.flex1}
+                    style={[styles.flex1]}
                     onPress={() => setWeightModal(item)}>
                     <EmptyListItem
                       text={`${moment(item.timestamp).format('h:mm a')}   ${
@@ -158,11 +163,21 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
           {exercises.length > 0 ? (
             exercises.map((item: ExerciseProps) => {
               return (
-                <ExerciseListItem
+                <SwipeView
+                  listKey={item.id}
                   key={item.id}
-                  exercise={item}
-                  onPress={() => setExcerciseModal(item)}
-                />
+                  buttons={[
+                    {
+                      type: 'delete',
+                      onPress: () => handleDeleteExerciseFromLog(item.id),
+                    },
+                  ]}>
+                  <ExerciseListItem
+                    key={item.id}
+                    exercise={item}
+                    onPress={() => setExcerciseModal(item)}
+                  />
+                </SwipeView>
               );
             })
           ) : (
@@ -223,6 +238,7 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
     addItemToBasket,
     handleDeleteFoodFromLog,
     handleDeleteWeightFromLog,
+    handleDeleteExerciseFromLog,
   ]);
 
   const handleChooseCategory = (name: mealNameProps) => {

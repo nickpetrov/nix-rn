@@ -50,11 +50,11 @@ const MealListItem: React.FC<MealListItemProps> = props => {
         />
         <View style={styles.flex1}>
           <Text style={styles.foodName}>{foodObj.food_name}</Text>
-          <Text>
+          <Text style={styles.qty}>
             {foodObj.serving_qty} {foodObj.serving_unit}
           </Text>
         </View>
-        <Text>
+        <Text style={styles.calories}>
           {' '}
           {foodObj?.nf_calories ? foodObj.nf_calories.toFixed(0) : ''}
         </Text>

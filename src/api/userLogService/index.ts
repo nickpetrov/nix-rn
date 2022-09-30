@@ -140,6 +140,13 @@ const userLogService = {
       },
     });
   },
+  async deleteExerciseFromLog(exercises: Array<{id: string}>) {
+    return await apiClient.delete('exercise/log', {
+      data: {
+        exercises,
+      },
+    });
+  },
 };
 
 export default userLogService;

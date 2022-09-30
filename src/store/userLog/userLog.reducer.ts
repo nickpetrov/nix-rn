@@ -41,7 +41,7 @@ export default (state: UserLogState = initialState, action: AnyAction) => {
       return {...state, exercises: action.exercises || []};
     case userLogActionTypes.ADD_USER_EXERCISES_LOG:
       return {...state, exercises: state.exercises.concat(action.exercises)};
-    case userLogActionTypes.UPDATE_USER_EXERCISES_LOG:
+    case userLogActionTypes.UPDATE_USER_EXERCISES_LOG: {
       const newExercises = state.exercises.map((item: ExerciseProps) => {
         if (item.id === action.exercises[0].id) {
           console.log(action.exercises[0]);
@@ -51,6 +51,7 @@ export default (state: UserLogState = initialState, action: AnyAction) => {
         }
       });
       return {...state, weights: newExercises};
+    }
     case userLogActionTypes.ADD_FOOD_TO_LOG:
       const foodToAdd = !action.foodObj.length
         ? [action.foodObj]
@@ -60,10 +61,17 @@ export default (state: UserLogState = initialState, action: AnyAction) => {
       let newFoods = [...state.foods];
       newFoods = newFoods.filter(item => !action.foodIds.includes(item.id));
       return {...state, foods: newFoods};
-    case userLogActionTypes.DELETE_WEIGHT_LOG: {
+    case userLogActionTypes.DELETE_WEIGHT_FROM_LOG: {
       let newWeights = [...state.weights];
       newWeights = newWeights.filter(item => !action.weights.includes(item.id));
       return {...state, weights: newWeights};
+    }
+    case userLogActionTypes.DELETE_EXERCISE_FROM_LOG: {
+      let newExercises = [...state.exercises];
+      newExercises = newExercises.filter(
+        item => !action.exercises.includes(item.id),
+      );
+      return {...state, exercises: newExercises};
     }
     case userLogActionTypes.GET_DAY_TOTALS:
       const stateWithTotals = {...state, totals: action.totals};

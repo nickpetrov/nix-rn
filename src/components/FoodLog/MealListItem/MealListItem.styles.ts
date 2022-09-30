@@ -1,3 +1,4 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -20,5 +21,12 @@ export const styles = StyleSheet.create({
   },
   flex1: {
     flex: 1,
+  },
+  qty: {
+    color: '#999',
+    fontSize: 10,
+  },
+  calories: {
+    color: Colors.Primary,
   },
 });

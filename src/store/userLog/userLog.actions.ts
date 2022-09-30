@@ -141,8 +141,20 @@ export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
 
     if (response.status === 200) {
       dispatch({
-        type: userLogActionTypes.DELETE_WEIGHT_LOG,
+        type: userLogActionTypes.DELETE_WEIGHT_FROM_LOG,
         weights: weights.map(item => item.id),
+      });
+    }
+  };
+};
+export const deleteExerciseFromLog = (exercises: Array<{id: string}>) => {
+  return async (dispatch: Dispatch) => {
+    const response = await userLogService.deleteExerciseFromLog(exercises);
+
+    if (response.status === 200) {
+      dispatch({
+        type: userLogActionTypes.DELETE_EXERCISE_FROM_LOG,
+        exercises: exercises.map(item => item.id),
       });
     }
   };
