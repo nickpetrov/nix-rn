@@ -87,9 +87,6 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
 
     let adjustedFoods = foods;
 
-    // delete temp basketId
-    delete adjustedFoods.basketId;
-
     if (isSingleFood) {
       if (servings > 1) {
         const mult = 1 / parseFloat(servings);
@@ -111,6 +108,11 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
 
     loggingOptions.meal_type = meal_type;
     loggingOptions.consumed_at = consumed_at;
+
+    // delete temp basketId
+    adjustedFoods.forEach((item: FoodProps) => {
+      delete item.basketId;
+    });
 
     dispatch(userLogActions.addFoodToLog(adjustedFoods, loggingOptions)).then(
       () => {
