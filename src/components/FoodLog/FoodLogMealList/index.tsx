@@ -123,34 +123,32 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
       return setMealFoods(() => (
         <View style={styles.flex1}>
           {weights.length > 0 ? (
-            weights.map((item: WeightProps) => {
-              return (
-                <SwipeView
-                  listKey={item.id}
-                  key={item.id}
-                  buttons={[
-                    {
-                      type: 'delete',
-                      onPress: () => handleDeleteWeightFromLog(item.id),
-                    },
-                  ]}>
-                  <TouchableHighlight
-                    style={[styles.flex1]}
-                    onPress={() => setWeightModal(item)}>
-                    <EmptyListItem
-                      text={`${moment(item.timestamp).format('h:mm a')}   ${
-                        userData.measure_system === 1
-                          ? `${item.kg} kg`
-                          : `${Math.round(
-                              parseFloat(String(item.kg)) * 2.20462,
-                            )} lbs`
-                      }`}
-                      type="full"
-                    />
-                  </TouchableHighlight>
-                </SwipeView>
-              );
-            })
+            <SwipeView
+              data={weights}
+              buttons={[
+                {
+                  type: 'delete',
+                  keyId: 'id',
+                  onPress: (id: string) => handleDeleteWeightFromLog(id),
+                },
+              ]}
+              renderItem={data => (
+                <TouchableHighlight
+                  style={[styles.flex1]}
+                  onPress={() => setWeightModal(data.item)}>
+                  <EmptyListItem
+                    text={`${moment(data.item.timestamp).format('h:mm a')}   ${
+                      userData.measure_system === 1
+                        ? `${data.item.kg} kg`
+                        : `${Math.round(
+                            parseFloat(String(data.item.kg)) * 2.20462,
+                          )} lbs`
+                    }`}
+                    type="full"
+                  />
+                </TouchableHighlight>
+              )}
+            />
           ) : (
             <EmptyListItem text={noLoggedDataText} type="full" />
           )}
@@ -161,25 +159,23 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
       return setMealFoods(() => (
         <View style={styles.flex1}>
           {exercises.length > 0 ? (
-            exercises.map((item: ExerciseProps) => {
-              return (
-                <SwipeView
-                  listKey={item.id}
-                  key={item.id}
-                  buttons={[
-                    {
-                      type: 'delete',
-                      onPress: () => handleDeleteExerciseFromLog(item.id),
-                    },
-                  ]}>
-                  <ExerciseListItem
-                    key={item.id}
-                    exercise={item}
-                    onPress={() => setExcerciseModal(item)}
-                  />
-                </SwipeView>
-              );
-            })
+            <SwipeView
+              data={exercises}
+              buttons={[
+                {
+                  type: 'delete',
+                  keyId: 'id',
+                  onPress: (id: string) => handleDeleteExerciseFromLog(id),
+                },
+              ]}
+              renderItem={data => (
+                <ExerciseListItem
+                  key={data.item.id}
+                  exercise={data.item}
+                  onPress={() => setExcerciseModal(data.item)}
+                />
+              )}
+            />
           ) : (
             <EmptyListItem text={noLoggedDataText} type="full" />
           )}
@@ -190,38 +186,36 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
       return setMealFoods(() => <EmptyListItem text="0 Liters" type="full" />);
     }
     if (!!mealFoodsList && mealFoodsList.length) {
+      mealFoodsList.forEach((food: FoodProps) => {
+        setTotalMealCalories(
+          prevCalories => prevCalories + (food.nf_calories || 0),
+        );
+      });
       return setMealFoods(() => (
         <>
-          {mealFoodsList.map((food: FoodProps) => {
-            if (!food || !food.id) {
-              return null;
-            }
-            setTotalMealCalories(
-              prevCalories => prevCalories + (food.nf_calories || 0),
-            );
-            return (
-              <SwipeView
-                listKey={food.id}
-                key={food.id}
-                buttons={[
-                  {
-                    type: 'copy',
-                    onPress: () => addItemToBasket(food.food_name),
-                  },
-                  {
-                    type: 'delete',
-                    onPress: () => handleDeleteFoodFromLog(food.id),
-                  },
-                ]}>
-                <MealListItem
-                  key={food.id}
-                  foodObj={food}
-                  navigation={navigation}
-                  mealName={mealName}
-                />
-              </SwipeView>
-            );
-          })}
+          <SwipeView
+            data={mealFoodsList}
+            buttons={[
+              {
+                type: 'copy',
+                keyId: 'food_name',
+                onPress: (name: string) => addItemToBasket(name),
+              },
+              {
+                type: 'delete',
+                keyId: 'id',
+                onPress: (id: string) => handleDeleteFoodFromLog(id),
+              },
+            ]}
+            renderItem={data => (
+              <MealListItem
+                key={data.item.id}
+                foodObj={data.item}
+                navigation={navigation}
+                mealName={mealName}
+              />
+            )}
+          />
         </>
       ));
     }

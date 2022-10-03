@@ -6,6 +6,9 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Settings} from 'react-native-fbsdk-next';
 import SplashScreen from 'react-native-splash-screen';
 
+//for work uuid
+import 'react-native-get-random-values';
+
 import {Navigation} from 'navigation';
 
 // store

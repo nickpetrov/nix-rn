@@ -154,37 +154,35 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
     [dispatch],
   );
 
-  const foodsList = foods.map((food: FoodProps, index: number) => {
-    return (
-      <SwipeView
-        listKey={food.basketId}
-        key={food.basketId}
-        buttons={[
-          {
-            type: 'delete',
-            onPress: () => {
-              console.log('delete food', food);
-              dispatch(
-                basketActions.deleteFoodFromBasket(food.basketId || '-1'),
-              );
-            },
+  const foodsList = (
+    <SwipeView
+      data={foods}
+      buttons={[
+        {
+          type: 'delete',
+          keyId: 'basketId',
+          onPress: (id: string) => {
+            dispatch(basketActions.deleteFoodFromBasket(id || '-1'));
           },
-        ]}>
+        },
+      ]}
+      renderItem={data => (
         <FoodItem
-          key={food.basketId}
-          itemIndex={index}
-          foodObj={food}
+          key={data.item.basketId}
+          itemIndex={data.index}
+          foodObj={data.item}
           itemChangeCallback={changeFoodAtBasket}
         />
-      </SwipeView>
-    );
-  });
+      )}
+    />
+  );
 
   return (
     <SafeAreaView style={styles.root}>
       <KeyboardAwareScrollView
         style={styles.keyboardView}
-        alwaysBounceVertical={false}>
+        enableOnAndroid={true}
+        enableAutomaticScroll={true}>
         {foodsList}
 
         {foods.length ? (
