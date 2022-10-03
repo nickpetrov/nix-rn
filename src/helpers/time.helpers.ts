@@ -1,12 +1,8 @@
 import moment from 'moment-timezone';
-
-let userTimezone = 'US/Eastern';
-
-export const setTimezone = (timezone: string) => {
-  userTimezone = timezone;
-};
+import {store} from 'store/index';
 
 export const today = () => {
+  const userTimezone = store.getState().auth.userData.timezone || 'US/Central';
   return moment().tz(userTimezone).format('YYYY-MM-DD');
 };
 
@@ -23,6 +19,7 @@ export const formatDate = (
   inputFormat: string | undefined,
   outputFormat: string,
 ) => {
+  const userTimezone = store.getState().auth.userData.timezone || 'US/Central';
   return moment(date, inputFormat).tz(userTimezone).format(outputFormat);
 };
 
@@ -32,6 +29,7 @@ export const diffInDays = (
   dateTwo: string,
   inputFormatTwo: string,
 ) => {
+  const userTimezone = store.getState().auth.userData.timezone || 'US/Central';
   return moment(dateOne, inputFormatOne)
     .tz(userTimezone)
     .diff(moment(dateTwo, inputFormatTwo).tz(userTimezone), 'day');
@@ -43,6 +41,7 @@ export const isSame = (
   dateTwo: string,
   inputFormatTwo: string,
 ) => {
+  const userTimezone = store.getState().auth.userData.timezone || 'US/Central';
   return moment(dateOne, inputFormatOne)
     .tz(userTimezone)
     .isSame(moment(dateTwo, inputFormatTwo).tz(userTimezone));

@@ -1,9 +1,6 @@
 // utils
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// helpers
-import * as timeHelper from 'helpers/time.helpers';
-
 //types
 import {AnyAction} from 'redux';
 import {authActionTypes, UserData} from './auth.types';
@@ -44,7 +41,7 @@ const initialState: AuthState = {
     enable_review_foods: null,
     is_activated: 0,
     created_at: '',
-    timezone: '',
+    timezone: 'US/Central',
     account_setup: '',
     default_nutrient: 208,
     default_nutrient_value: 0,
@@ -68,7 +65,6 @@ const initialState: AuthState = {
 export default (state: AuthState = initialState, action: AnyAction) => {
   switch (action.type) {
     case authActionTypes.UPDATE_USER_DATA:
-      timeHelper.setTimezone(action.newUserObj.timezone || 'US/Central');
       const stateWithNewUserData = {
         ...state,
         userData: {...state.userData, ...action.newUserObj},
