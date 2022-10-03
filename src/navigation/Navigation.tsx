@@ -15,6 +15,7 @@ import {LoginScreen, SigninScreen, SignupScreen} from 'screens/Auth';
 import {
   DashboardScreen,
   BasketScreen,
+  FoodEditScreen,
   FoodInfoScreen,
   TrackFoodsScreen,
   BarcodeScannerScreen,
@@ -138,6 +139,7 @@ const LoggedInNavigation = ({
           headerBackVisible: false,
         }}
       />
+      <Stack.Screen name={Routes.FoodEdit} component={FoodEditScreen} />
       <Stack.Screen name={Routes.FoodInfo} component={FoodInfoScreen} />
       <Stack.Screen
         name={Routes.Autocomplete}

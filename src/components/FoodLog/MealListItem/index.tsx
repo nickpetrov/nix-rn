@@ -34,7 +34,7 @@ const MealListItem: React.FC<MealListItemProps> = props => {
     <TouchableHighlight
       onPress={() =>
         props.navigation
-          ? props.navigation.navigate(Routes.FoodInfo, {
+          ? props.navigation.navigate(Routes.FoodEdit, {
               foodObj: foodObj,
               mealType: mealName
                 ? mealTypes[mealName as keyof typeof mealTypes]

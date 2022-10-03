@@ -3,6 +3,7 @@ import {Colors} from 'constants/Colors';
 
 export const styles = StyleSheet.create({
   foodItem: {
+    width: '100%',
     borderBottomColor: '#ddd',
     borderBottomWidth: 1,
     flexDirection: 'row',
@@ -48,17 +49,23 @@ export const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   main: {
-    flex: 1,
+    flex: 5,
+    marginRight: 10,
   },
   pickerContainer: {
-    flexGrow: 5,
+    flexGrow: 1,
   },
   picker: {
-    width: '100%',
-    minWidth: '100%',
+    flex: 1,
   },
   footer: {
-    alignItems: 'flex-end',
-    width: 80,
+    flex: 1,
+    flexGrow: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  calories: {
+    alignItems: 'center',
+    marginLeft: 10,
   },
 });

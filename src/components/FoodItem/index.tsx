@@ -1,13 +1,24 @@
 // utils
 import React, {useEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 
 // components
-import {View, Text, TouchableHighlight, Image} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableHighlight,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import ModalSelector from 'react-native-modal-selector';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 // helpers
 import {multiply} from 'helpers/multiply';
+
+// constants
+import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './FoodItem.styles';
@@ -16,6 +27,8 @@ import {Colors} from '../../constants/Colors';
 // types
 import {MeasureProps, NutrientProps} from 'store/userLog/userLog.types';
 import {FoodProps} from 'store/userLog/userLog.types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 interface FoodItemProps {
   foodObj: FoodProps;
@@ -30,6 +43,10 @@ const FoodItem: React.FC<FoodItemProps> = ({
   itemIndex,
   itemChangeCallback,
 }) => {
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<StackNavigatorParamList, Routes.FoodInfo>
+    >();
   const [food, setFoodObj] = useState(foodObj);
   let {
     alt_measures,
@@ -163,15 +180,25 @@ const FoodItem: React.FC<FoodItemProps> = ({
           <Text style={styles.foodName}>{food_name}</Text>
         </View>
         <View style={styles.footer}>
-          <Text style={styles.caloriesValue}>
-            {' '}
-            {nfCalories
-              ? nfCalories.toFixed(0)
-              : full_nutrients
-                  ?.filter((item: NutrientProps) => item.attr_id === 208)[0]
-                  .value.toFixed(0)}
-          </Text>
-          <Text>cal</Text>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate(Routes.FoodInfo, {
+                foodObj,
+              })
+            }>
+            <FontAwesome name="info-circle" color="#999" size={19} />
+          </TouchableOpacity>
+          <View style={styles.calories}>
+            <Text style={styles.caloriesValue}>
+              {' '}
+              {nfCalories
+                ? nfCalories.toFixed(0)
+                : full_nutrients
+                    ?.filter((item: NutrientProps) => item.attr_id === 208)[0]
+                    .value.toFixed(0)}
+            </Text>
+            <Text>cal</Text>
+          </View>
         </View>
       </View>
     </TouchableHighlight>

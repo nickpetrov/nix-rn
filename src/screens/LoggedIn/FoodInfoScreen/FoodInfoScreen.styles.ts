@@ -11,45 +11,26 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingBottom: 10,
   },
-  pieContainer: {
-    marginVertical: 10,
-  },
   p10: {
     padding: 10,
   },
-  mr10: {
-    marginRight: 10,
-  },
-  flex1: {
-    flex: 1,
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  input: {
+  btnContainer: {
     marginTop: 10,
-    borderWidth: 1,
-    padding: 8,
-    minHeight: 200,
-  },
-  alignItemsCenter: {
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  fz16: {
-    fontSize: 16,
-  },
-  notesContainer: {
+  photoBtn: {
+    paddingHorizontal: 10,
+    paddingTop: 15,
+    paddingBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
-  borderContainer: {
-    padding: 10,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
+  photoBtnText: {
+    paddingHorizontal: 5,
   },
-  share: {
-    fontWeight: 'bold',
-    fontSize: 20,
+  image: {
+    height: 300,
+    width: '100%',
   },
 });

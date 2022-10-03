@@ -4,6 +4,9 @@ import React, {useEffect, useState} from 'react';
 // components
 import {View, Text} from 'react-native';
 
+// hooks
+import {useSelector} from 'hooks/useRedux';
+
 // helpers
 import getAttrValueById from 'helpers/getAttrValueById';
 
@@ -35,6 +38,7 @@ const Col = (props: RowOrColProps) => {
 };
 
 const FoodLabel: React.FC<FoodLabelProps> = ({data}) => {
+  const daily_kcal = useSelector(state => state.auth.userData.daily_kcal);
   const [dataObj, setDataObj] = useState(data);
 
   const [labelData, setLabelData] = useState({
@@ -305,7 +309,7 @@ const FoodLabel: React.FC<FoodLabelProps> = ({data}) => {
         </Col>
       </Row>
       <Text style={styles.info}>
-        * Percent Daily Values are based on a 2000 calorie diet.
+        * Percent Daily Values are based on a {daily_kcal} calorie diet.
       </Text>
     </View>
   );

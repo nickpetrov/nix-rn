@@ -12,6 +12,7 @@ export enum Routes {
   Dashboard = 'Dashboard',
   Basket = 'Basket',
   FoodInfo = 'FoodInfo',
+  FoodEdit = 'FoodEdit',
   Autocomplete = 'Autocomplete',
   TrackFoods = 'TrackFoods',
   BarcodeScanner = 'BarcodeScanner',

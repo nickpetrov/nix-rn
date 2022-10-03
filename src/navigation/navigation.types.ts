@@ -26,9 +26,12 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.GroceryAgentSettings]: undefined;
   [Routes.DeveloperSettings]: undefined;
   [Routes.Basket]: undefined;
-  [Routes.FoodInfo]: {
+  [Routes.FoodEdit]: {
     foodObj: FoodProps;
     mealType?: number;
+  };
+  [Routes.FoodInfo]: {
+    foodObj: FoodProps;
   };
   [Routes.Autocomplete]:
     | {
