@@ -53,7 +53,6 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
               return;
             } else {
               const newBasket: BasketState = JSON.parse(basket);
-              console.log(newBasket);
               dispatch(mergeBasket(newBasket));
             }
           };

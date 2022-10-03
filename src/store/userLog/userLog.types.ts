@@ -13,6 +13,8 @@ export enum userLogActionTypes {
   GET_USER_WEIGHT_LOG = 'GET_USER_WEIGHT_LOG',
   ADD_WEIGHT_LOG = 'ADD_WEIGHT_LOG',
   UPDATE_WEIGHT_LOG = 'UPDATE_WEIGHT_LOG',
+  UPDATE_WATER_LOG = 'UPDATE_WATER_LOG',
+  DELETE_WATER_FROM_LOG = 'DELETE_WATER_FROM_LOG',
   GET_USER_EXERCISES_LOG = 'GET_USER_EXERCISES_LOG',
   ADD_USER_EXERCISES_LOG = 'ADD_USER_EXERCISES_LOG',
   UPDATE_USER_EXERCISES_LOG = 'UPDATE_USER_EXERCISES_LOG',
@@ -46,6 +48,11 @@ export interface WeightProps {
   timestamp: string;
 }
 
+export interface WaterLogProps {
+  date: string;
+  consumed: number;
+}
+
 export interface TotalProps {
   avg_weight_kg: number;
   daily_carbs_pct: number;
@@ -62,7 +69,7 @@ export interface TotalProps {
   total_fat: number;
   total_proteins: number;
   total_sodium: number;
-  water_consumed_liter: null;
+  water_consumed_liter: number | null;
   weights_logged: number;
 }
 
@@ -161,6 +168,6 @@ export interface SortedFoodProps {
   foods?: Array<FoodProps>;
   exercises?: Array<ExerciseProps>;
   weights?: Array<WeightProps>;
-  water?: Array<any>;
+  water?: Array<WaterLogProps>;
   consumed_at?: string;
 }

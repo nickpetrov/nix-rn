@@ -3,6 +3,7 @@ import {
   ExerciseProps,
   FoodProps,
   loggingOptionsProps,
+  WaterLogProps,
   WeightProps,
 } from 'store/userLog/userLog.types';
 
@@ -144,6 +145,23 @@ const userLogService = {
     return await apiClient.delete('exercise/log', {
       data: {
         exercises,
+      },
+    });
+  },
+  async addWaterLog(water: Array<WaterLogProps>) {
+    return await apiClient.post('water/log/add', {
+      logs: water,
+    });
+  },
+  async updateWaterLog(water: Array<WaterLogProps>) {
+    return await apiClient.put('water/log', {
+      logs: water,
+    });
+  },
+  async deleteWaterFromLog(water: Array<{date: string}>) {
+    return await apiClient.delete('water/log', {
+      data: {
+        logs: water,
       },
     });
   },

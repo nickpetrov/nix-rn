@@ -14,9 +14,9 @@ export const getDayTotals = (beginDate: string, endDate: string) => {
     });
 
     const totals = response.data;
-    if (__DEV__) {
-      console.log('totals', totals);
-    }
+    // if (__DEV__) {
+    //   console.log('totals', totals);
+    // }
     if (totals.dates) {
       dispatch({
         type: statsActionTypes.STATS_GET_DAY_TOTALS,
@@ -31,9 +31,9 @@ export const getStatsWeight = () => {
     const response = await userLogService.getUserWeightlog({});
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('weightsLog', result.weights);
-    }
+    // if (__DEV__) {
+    //   console.log('weightsLog', result.weights);
+    // }
     if (result.weights) {
       dispatch({
         type: statsActionTypes.STATS_GET_WEIGHTS,

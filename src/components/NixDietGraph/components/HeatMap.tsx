@@ -136,8 +136,6 @@ const HeatMap: React.FC<HeatMapProps> = props => {
       <G
         key={`${dayIndex}-${weekIndex}-${String(props.skipFromStart)}`}
         onPress={() => {
-          console.log('props.selectedMonth', props.selectedMonth);
-          console.log('props.skipFromStart', props.skipFromStart);
           const newDate = moment()
             .set('month', +moment().month(props.selectedMonth).format('M') - 1)
             .startOf('month')

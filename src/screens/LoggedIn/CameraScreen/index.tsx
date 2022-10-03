@@ -55,7 +55,6 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
         flash: 'on',
         enableAutoRedEyeReduction: true,
       });
-      console.log('photo', photo);
       if (photo?.path) {
         setTakenPicture(photo);
       }

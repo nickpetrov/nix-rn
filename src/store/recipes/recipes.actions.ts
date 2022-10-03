@@ -9,9 +9,9 @@ export const getRecipes = () => {
     const response = await recipesService.getRecipes(limit, offset);
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('recipes', result);
-    }
+    // if (__DEV__) {
+    //   console.log('recipes', result);
+    // }
     if (result.recipes) {
       dispatch({
         type: recipesActionTypes.GET_RECIPES,
@@ -27,9 +27,9 @@ export const updateOrCreateRecipe = (recipe: UpdateRecipeProps) => {
     const response = await recipesService.updateRecipe(recipe);
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('update or create recipes', result);
-    }
+    // if (__DEV__) {
+    //   console.log('update or create recipes', result);
+    // }
     if (result.name) {
       dispatch({
         type: recipesActionTypes.UPDATE_OR_CREATE_RECIPE,
@@ -44,8 +44,8 @@ export const getIngridientsForUpdate = async (query: string) => {
   const response = await recipesService.getIngridients(query);
 
   const result = response.data;
-  if (__DEV__) {
-    console.log('get ingridients for update', result);
-  }
+  // if (__DEV__) {
+  //   console.log('get ingridients for update', result);
+  // }
   return result;
 };

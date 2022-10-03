@@ -10,10 +10,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ExerciseListItem from '../ExerciseListItem';
 import EmptyListItem from '../EmptyListItem';
+import WaterListItem from '../WaterListItem';
+import SwipeView from 'components/SwipeView';
 
 // constants
 import {Routes} from 'navigation/Routes';
-import SwipeView from 'components/SwipeView';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -22,6 +23,7 @@ import {useDispatch, useSelector} from 'hooks/useRedux';
 import {
   deleteExerciseFromLog,
   DeleteFoodFromLog,
+  deleteWaterFromLog,
   deleteWeightFromLog,
 } from 'store/userLog/userLog.actions';
 import * as basketActions from 'store/basket/basket.actions';
@@ -48,7 +50,9 @@ interface FoodLogMealListProps {
   mealFoodsList?: Array<FoodProps>;
   setWeightModal: (w: WeightProps) => void;
   setExcerciseModal: (ex: ExerciseProps) => void;
+  setWaterModal: (v: boolean) => void;
   userData: User;
+  consumedWater: number;
 }
 
 const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
@@ -67,6 +71,8 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
     weights,
     setExcerciseModal,
     setWeightModal,
+    setWaterModal,
+    consumedWater,
     userData,
     exercises,
   } = props;
@@ -100,6 +106,9 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
     },
     [dispatch],
   );
+  const handleDeleteWaterLog = useCallback(() => {
+    dispatch(deleteWaterFromLog());
+  }, [dispatch]);
 
   const addItemToBasket = useCallback(
     (foodName: string) => {
@@ -124,6 +133,7 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
         <View style={styles.flex1}>
           {weights.length > 0 ? (
             <SwipeView
+              listKey="weigh-in"
               data={weights}
               buttons={[
                 {
@@ -160,6 +170,7 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
         <View style={styles.flex1}>
           {exercises.length > 0 ? (
             <SwipeView
+              listKey="exercises"
               data={exercises}
               buttons={[
                 {
@@ -182,8 +193,28 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
         </View>
       ));
     }
+    // WaterListItem
     if (mealName === 'Water') {
-      return setMealFoods(() => <EmptyListItem text="0 Liters" type="full" />);
+      return setMealFoods(() => (
+        <SwipeView
+          listKey="water"
+          data={[{consumed: consumedWater, id: consumedWater}]}
+          buttons={[
+            {
+              type: 'delete',
+              keyId: 'id',
+              onPress: () => handleDeleteWaterLog(),
+            },
+          ]}
+          renderItem={data => (
+            <WaterListItem
+              key={data.item.key}
+              onPress={() => setWaterModal(true)}
+              text={data.item.consumed}
+            />
+          )}
+        />
+      ));
     }
     if (!!mealFoodsList && mealFoodsList.length) {
       mealFoodsList.forEach((food: FoodProps) => {
@@ -194,6 +225,7 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
       return setMealFoods(() => (
         <>
           <SwipeView
+            listKey="food"
             data={mealFoodsList}
             buttons={[
               {
@@ -233,10 +265,12 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
     handleDeleteFoodFromLog,
     handleDeleteWeightFromLog,
     handleDeleteExerciseFromLog,
+    handleDeleteWaterLog,
+    consumedWater,
+    setWaterModal,
   ]);
 
   const handleChooseCategory = (name: mealNameProps) => {
-    console.log('mealType', name);
     switch (name) {
       case 'Breakfast':
         return navigation.navigate(Routes.Autocomplete, {
@@ -259,8 +293,7 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
       case 'Weigh-in':
         return setWeightModal({kg: 0} as WeightProps);
       case 'Water':
-        console.log('Water action');
-        return null;
+        return setWaterModal(true);
     }
   };
 

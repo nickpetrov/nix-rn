@@ -44,7 +44,6 @@ export default (state: UserLogState = initialState, action: AnyAction) => {
     case userLogActionTypes.UPDATE_USER_EXERCISES_LOG: {
       const newExercises = state.exercises.map((item: ExerciseProps) => {
         if (item.id === action.exercises[0].id) {
-          console.log(action.exercises[0]);
           return action.exercises[0];
         } else {
           return item;
@@ -85,6 +84,26 @@ export default (state: UserLogState = initialState, action: AnyAction) => {
         selectedDate: action.newDate,
       };
       return stateWithNewSelectedDate;
+    case userLogActionTypes.UPDATE_WATER_LOG: {
+      const newTotals = [...state.totals];
+      const changedDate = newTotals.find(
+        item => item.date === state.selectedDate,
+      );
+      if (changedDate) {
+        changedDate.water_consumed_liter = action.payload;
+      }
+      return {...state, totals: newTotals};
+    }
+    case userLogActionTypes.DELETE_WATER_FROM_LOG: {
+      const newTotals = [...state.totals];
+      const changedDate = newTotals.find(
+        item => item.date === state.selectedDate,
+      );
+      if (changedDate) {
+        changedDate.water_consumed_liter = null;
+      }
+      return {...state, totals: newTotals};
+    }
     case authActionTypes.LOGOUT:
       return initialState;
     default:

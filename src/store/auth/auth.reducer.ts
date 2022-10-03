@@ -68,7 +68,6 @@ const initialState: AuthState = {
 export default (state: AuthState = initialState, action: AnyAction) => {
   switch (action.type) {
     case authActionTypes.UPDATE_USER_DATA:
-      console.log(action.newUserObj.timezone);
       timeHelper.setTimezone(action.newUserObj.timezone || 'US/Central');
       const stateWithNewUserData = {
         ...state,

@@ -1,6 +1,7 @@
 // utils
 import React, {useEffect, useState, useCallback} from 'react';
 import moment from 'moment-timezone';
+import {batch} from 'react-redux';
 
 // helpers
 import * as timeHelper from 'helpers/time.helpers';
@@ -17,6 +18,7 @@ import FoodLogHeader from './FoodLogHeader';
 import FoodLogMealList from './FoodLogMealList';
 import ExerciseModal from './ExerciseModal';
 import WeightModal from './WeightModal';
+import WaterModal from './WaterModal';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
@@ -43,12 +45,16 @@ const FoodLog: React.FC = () => {
   const {foods, totals, selectedDate, weights, exercises} = useSelector(
     state => state.userLog,
   );
+  const consumedWater = totals.find(
+    (item: TotalProps) => item.date === selectedDate,
+  )?.water_consumed_liter;
   const userData = useSelector(state => state.auth.userData);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [excerciseModal, setExcerciseModal] = useState<ExerciseProps | null>(
     null,
   );
   const [weightModal, setWeightModal] = useState<WeightProps | null>(null);
+  const [watertModal, setWaterModal] = useState<boolean>(false);
   const [sortedFoods, setSortedFoods] = useState<Array<SortedFoodProps>>(
     foodLogHelpers.sortFoodsByMeal(foods, selectedDate),
   );
@@ -65,17 +71,21 @@ const FoodLog: React.FC = () => {
         -7,
       );
       const logEndDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', 7);
-      dispatch(userLogActions.getUserFoodlog(logBeginDate, logEndDate, 0));
-      dispatch(userLogActions.getUserWeightlog(logBeginDate, logEndDate, 0));
-      dispatch(userLogActions.getUserExerciseslog(logBeginDate, logEndDate, 0));
-      dispatch(
-        userLogActions.getDayTotals(
-          logBeginDate,
-          logEndDate,
-          userData.timezone,
-          dispatch,
-        ),
-      );
+      batch(() => {
+        dispatch(userLogActions.getUserFoodlog(logBeginDate, logEndDate, 0));
+        dispatch(userLogActions.getUserWeightlog(logBeginDate, logEndDate, 0));
+        dispatch(
+          userLogActions.getUserExerciseslog(logBeginDate, logEndDate, 0),
+        );
+        dispatch(
+          userLogActions.getDayTotals(
+            logBeginDate,
+            logEndDate,
+            userData.timezone,
+            dispatch,
+          ),
+        );
+      });
       setIsRefreshing(false);
     };
     refresh();
@@ -231,8 +241,10 @@ const FoodLog: React.FC = () => {
               weights={item.weights}
               exercises={item.exercises}
               mealFoodsList={item.foods}
+              consumedWater={consumedWater}
               setWeightModal={(w: WeightProps) => setWeightModal(w)}
               setExcerciseModal={(ex: ExerciseProps) => setExcerciseModal(ex)}
+              setWaterModal={setWaterModal}
               userData={userData}
             />
           )}
@@ -256,6 +268,11 @@ const FoodLog: React.FC = () => {
         weight={weightModal}
         visible={!!weightModal}
         setVisible={setWeightModal}
+        selectedDate={selectedDate}
+      />
+      <WaterModal
+        visible={watertModal}
+        setVisible={setWaterModal}
         selectedDate={selectedDate}
       />
     </View>

@@ -37,7 +37,6 @@ const WhenSection: React.FC<WhenSectionProps> = props => {
   };
 
   const onDateChange = (newDate: Date | 0 | -1) => {
-    console.log(newDate);
     if (newDate === 0) {
       props.onDateChange(timeHelper.today());
     } else if (newDate === -1) {

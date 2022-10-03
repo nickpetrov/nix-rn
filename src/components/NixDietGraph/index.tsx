@@ -51,7 +51,6 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
       .startOf('month')
       .format('d'),
   );
-  console.log(props.initialDisplayDate);
   const [daysInMonth, setDaysInMonth] = useState(
     moment(props.initialDisplayDate)
       .add(monthOffset, 'month')

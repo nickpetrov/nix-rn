@@ -17,6 +17,7 @@ import {
 } from './userLog.types';
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
+import {WaterLogProps} from './userLog.types';
 
 export const getDayTotals = (
   beginDate: string,
@@ -32,9 +33,9 @@ export const getDayTotals = (
     });
 
     const totals = response.data;
-    if (__DEV__) {
-      console.log('totals', totals);
-    }
+    // if (__DEV__) {
+    //   console.log('totals', totals);
+    // }
     if (totals.dates) {
       dispatch({
         type: userLogActionTypes.GET_DAY_TOTALS,
@@ -61,9 +62,9 @@ export const getUserFoodlog = (
     });
 
     const userFoodlog = response.data;
-    if (__DEV__) {
-      console.log('userFoodlog', userFoodlog.foods);
-    }
+    // if (__DEV__) {
+    //   console.log('userFoodlog', userFoodlog.foods);
+    // }
     if (userFoodlog.foods) {
       dispatch({
         type: userLogActionTypes.GET_USER_FOODLOG,
@@ -93,9 +94,9 @@ export const getUserWeightlog = (
     });
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('weightsLog', result.weights);
-    }
+    // if (__DEV__) {
+    //   console.log('weightsLog', result.weights);
+    // }
     if (result.weights) {
       dispatch({
         type: userLogActionTypes.GET_USER_WEIGHT_LOG,
@@ -177,9 +178,9 @@ export const getUserExerciseslog = (
     });
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('exercisesLog', result.exercises);
-    }
+    // if (__DEV__) {
+    //   console.log('exercisesLog', result.exercises);
+    // }
     if (result.exercises) {
       dispatch({
         type: userLogActionTypes.GET_USER_EXERCISES_LOG,
@@ -346,5 +347,50 @@ export const changeSelectedDay = (newDate: string) => {
       type: userLogActionTypes.CHANGE_SELECTED_DATE,
       newDate: newDate,
     });
+  };
+};
+
+export const addWaterlog = (water: Array<WaterLogProps>) => {
+  return async (dispatch: Dispatch) => {
+    const response = await userLogService.addWaterLog(water);
+
+    const result = response.data;
+
+    if (result.logs?.length) {
+      dispatch({
+        type: userLogActionTypes.UPDATE_WATER_LOG,
+        payload: result.logs[0].consumed,
+      });
+    }
+  };
+};
+
+export const updateWaterlog = (water: Array<WaterLogProps>) => {
+  return async (dispatch: Dispatch) => {
+    const response = await userLogService.updateWaterLog(water);
+
+    const result = response.data;
+
+    if (result.logs?.length) {
+      dispatch({
+        type: userLogActionTypes.UPDATE_WATER_LOG,
+        payload: result.logs[0].consumed,
+      });
+    }
+  };
+};
+
+export const deleteWaterFromLog = () => {
+  return async (dispatch: Dispatch, useState: () => RootState) => {
+    const selectedDate = useState().userLog.selectedDate;
+    const response = await userLogService.deleteWaterFromLog([
+      {date: selectedDate},
+    ]);
+
+    if (response.status === 200) {
+      dispatch({
+        type: userLogActionTypes.DELETE_WATER_FROM_LOG,
+      });
+    }
   };
 };

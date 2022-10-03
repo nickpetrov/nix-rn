@@ -42,7 +42,6 @@ export const addFoodToBasket = (query: string) => {
       ...item,
       basketId: uuidv4(),
     }));
-    console.log('add food to basket', foods);
     saveBasketToStorage({foods: foods});
     dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: foods});
     return foods;
@@ -87,8 +86,6 @@ export const deleteFoodFromBasket = (id: string) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
     const oldFoods = useState().basket.foods;
     let newFoods = [...oldFoods];
-    console.log(newFoods);
-    console.log(id);
     newFoods = newFoods.filter(item => item.id !== id);
     saveBasketToStorage({foods: newFoods});
     dispatch({type: basketActionTypes.DELETE_FOOD_FROM_BASKET, id});

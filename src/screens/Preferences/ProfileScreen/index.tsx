@@ -157,21 +157,17 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     if (diff.length) {
       newUserData.birth_year =
         moment().year() - parseInt(newUserData.age || '0');
-      console.log(newUserData.measure_system == 0);
-      console.log(newUserData.weight_lb);
       if (newUserData.measure_system == 0) {
         newUserData.weight_kg = parseFloat(
           String(
             (newUserData.weight_lb ? +newUserData.weight_lb : 1) / 2.20462,
           ),
         );
-        console.log(newUserData.weight_kg);
         newUserData.height_cm = Math.round(
           parseFloat(String(newUserData.height_ft)) * 30.48 +
             parseFloat(String(newUserData.height_in)) * 2.54,
         );
       }
-      console.log(newUserData.weight_kg);
       newUserData.weight_kg = parseFloat(String(newUserData.weight_kg));
 
       newUserData.height_cm = parseFloat(String(newUserData.height_cm));

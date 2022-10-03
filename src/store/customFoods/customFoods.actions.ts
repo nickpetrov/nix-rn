@@ -12,9 +12,9 @@ export const getCustomFoods = () => {
     const response = await customFoodsService.getCustomFoods(limit, offset);
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('custom foods', result.custom_foods);
-    }
+    // if (__DEV__) {
+    //   console.log('custom foods', result.custom_foods);
+    // }
     if (result.custom_foods && result.custom_foods.length) {
       dispatch({
         type: customFoodsActionTypes.GET_ALL_CUSTOM_FOOD,
@@ -29,9 +29,9 @@ export const updateOrCreateCustomFood = (food: UpdateCustomFoodProps) => {
     const response = await customFoodsService.updateOrCreateCustomFoods(food);
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('update or create custom food', result);
-    }
+    // if (__DEV__) {
+    //   console.log('update or create custom food', result);
+    // }
     if (result.food_name) {
       dispatch({
         type: customFoodsActionTypes.UPDATE_OR_CREATE_CUSTOM_FOOD,

@@ -4,8 +4,8 @@ import {Colors} from 'constants';
 export const styles = StyleSheet.create({
   nixButton: {
     backgroundColor: '#f8f8f8',
-    width: '100%',
-    marginTop: 8,
+    flex: 1,
+    height: 40,
     borderRadius: 5,
     overflow: 'hidden',
   },
@@ -87,7 +87,7 @@ export const styles = StyleSheet.create({
     color: '#444',
   },
   gray: {
-    backgroundColor: '#ccc',
+    backgroundColor: Colors.LightGray,
   },
   grayText: {
     color: '#444',

@@ -18,9 +18,9 @@ export const getFoodInfo = (beginDate: string, endDate: string) => {
     });
 
     const data = response.data;
-    if (__DEV__) {
-      console.log('foodInfo', data);
-    }
+    // if (__DEV__) {
+    //   console.log('foodInfo', data);
+    // }
     if (data) {
       dispatch({
         type: foodsActionTypes.GET_FOOD_INFO,
@@ -45,9 +45,9 @@ export const getFoodByQRcode = (searchValue: string) => {
     } else {
       const data = response.data;
 
-      if (__DEV__) {
-        console.log('foodInfo', data);
-      }
+      // if (__DEV__) {
+      //   console.log('foodInfo', data);
+      // }
       if (data.foods && data.foods[0]) {
         dispatch({
           type: foodsActionTypes.GET_FOOD_BY_QR_CODE,
@@ -67,9 +67,9 @@ export const getAllCustomFoods = () => {
     const response = await userLogService.getUserWeightlog({});
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('all custom foods', result.custom_foods);
-    }
+    // if (__DEV__) {
+    //   console.log('all custom foods', result.custom_foods);
+    // }
     if (result.custom_foods) {
       dispatch({
         type: foodsActionTypes.GET_ALL_CUSTOM_FOOD,
@@ -84,9 +84,9 @@ export const getSuggestedFoods = () => {
     const response = await baseService.getSuggestedFood();
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('all suggested foods', result.products);
-    }
+    // if (__DEV__) {
+    //   console.log('all suggested foods', result.products);
+    // }
     if (result.products) {
       dispatch({
         type: foodsActionTypes.GET_ALL_SUGGESTED_FOOD,
@@ -101,9 +101,9 @@ export const getGroceries = (data: InstantQueryDataProps) => {
     const response = await autoCompleteService.getTrackInstant(data);
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('groceries', result.branded);
-    }
+    // if (__DEV__) {
+    //   console.log('groceries', result.branded);
+    // }
     if (result.branded) {
       dispatch({
         type: foodsActionTypes.GET_GROCERIES,
@@ -117,9 +117,9 @@ export const getHistoryFoods = (data: InstantQueryDataProps) => {
     const response = await autoCompleteService.getTrackInstant(data);
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('historyFoods', result.self);
-    }
+    // if (__DEV__) {
+    //   console.log('historyFoods', result.self);
+    // }
     if (result.self) {
       dispatch({
         type: foodsActionTypes.GET_HISTORY_FOODS,
@@ -133,9 +133,9 @@ export const getRestorants = () => {
     const response = await baseService.getBrandRestorants();
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('restaurants', result);
-    }
+    // if (__DEV__) {
+    //   console.log('restaurants', result);
+    // }
     if (result) {
       dispatch({
         type: foodsActionTypes.GET_RESTORANTS,
@@ -150,9 +150,9 @@ export const getRestorantsWithCalc = () => {
     const response = await baseService.getRestorantsWithCalc();
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('restaurants with calc', result);
-    }
+    // if (__DEV__) {
+    //   console.log('restaurants with calc', result);
+    // }
     if (result) {
       dispatch({
         type: foodsActionTypes.GET_RESTORANTS_WITH_CALC,
@@ -166,9 +166,9 @@ export const getRestorantsFoods = (data: InstantQueryDataProps) => {
     const response = await autoCompleteService.getTrackInstant(data);
 
     const result = response.data;
-    if (__DEV__) {
-      console.log('restaurants foods', result.branded);
-    }
+    // if (__DEV__) {
+    //   console.log('restaurants foods', result.branded);
+    // }
     if (result.branded && result.branded.length) {
       dispatch({
         type: foodsActionTypes.GET_RESTORANTS_FOODS,
