@@ -49,6 +49,13 @@ const baseService = {
       },
     );
   },
+  async uploadImage(entity: string, id: string, data: File) {
+    return await apiClient.post(`upload/image/${entity}/${id}`, data, {
+      headers: {
+        'Content-Type': data.type,
+      },
+    });
+  },
 };
 
 export default baseService;

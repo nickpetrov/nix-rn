@@ -68,9 +68,27 @@ export const styles = StyleSheet.create({
   photoBtnText: {
     paddingHorizontal: 5,
   },
+  imageContainer: {
+    position: 'relative',
+    marginHorizontal: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
+    height: 400,
+  },
   image: {
-    height: 300,
+    height: '100%',
     width: '100%',
+  },
+  imageError: {
+    marginTop: 10,
+    marginHorizontal: 10,
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: 'rgb(242,222,222)',
+  },
+  imageErrorText: {
+    textAlign: 'center',
+    color: 'rgb(208,151,149)',
   },
   saveBtnContainer: {
     position: 'absolute',
@@ -87,5 +105,32 @@ export const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontWeight: '500',
+  },
+  uploadBtn: {
+    backgroundColor: Colors.Primary,
+    padding: 10,
+    height: 40,
+    borderRadius: 10,
+    position: 'absolute',
+    zIndex: 1,
+    top: 0,
+    left: 0,
+  },
+  uploadBtnText: {
+    color: '#fff',
+    textAlign: 'center',
+  },
+  deleteBtn: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    zIndex: 1,
+    padding: 10,
+    height: 40,
+    borderRadius: 10,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.Delete,
   },
 });

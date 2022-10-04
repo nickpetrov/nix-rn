@@ -1,11 +1,14 @@
 // utils
 import moment from 'moment-timezone';
+import {batch} from 'react-redux';
 
 //helpers
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
+import * as timeHelper from 'helpers/time.helpers';
 
 // services
 import userLogService from 'api/userLogService';
+import baseService from 'api/baseService';
 
 // types
 import {
@@ -18,8 +21,6 @@ import {
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
 import {WaterLogProps} from './userLog.types';
-import * as timeHelper from 'helpers/time.helpers';
-import {batch} from 'react-redux';
 
 export const getDayTotals = (
   beginDate: string,
@@ -433,10 +434,8 @@ export const deleteWaterFromLog = () => {
   };
 };
 
-export const RefreshLog = () => {
-  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
-    const selectedDate = useState().userLog.selectedDate;
-    const timezone = useState().auth.userData.timezone;
+export const refreshLog = (selectedDate: string, timezone: string) => {
+  return async (dispatch: Dispatch<any>) => {
     const logBeginDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', -7);
     const logEndDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', 7);
     batch(() => {
@@ -446,4 +445,17 @@ export const RefreshLog = () => {
       dispatch(getDayTotals(logBeginDate, logEndDate, timezone));
     });
   };
+};
+
+export const uploadImage = async (entity: string, id: string, data: File) => {
+  // with formData 500
+  // const formData = new FormData();
+  // formData.append('file', data);
+  const response = await baseService.uploadImage(entity, id, data);
+  console.log('response upload image', response);
+  if (response.status === 200) {
+    return response.data;
+  } else {
+    return {error: 'Image upload failed: Uploaded file type is not supported'};
+  }
 };

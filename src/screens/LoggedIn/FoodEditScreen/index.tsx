@@ -35,6 +35,7 @@ import * as basketActions from 'store/basket/basket.actions';
 import {
   DeleteFoodFromLog,
   updateFoodFromlog,
+  uploadImage,
 } from 'store/userLog/userLog.actions';
 
 // constants
@@ -68,8 +69,9 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
   const [showNotes, setShowNotes] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [pieChartData, setPieChartData] = useState<pieChartDataProps>();
-  const [image, setImage] = useState<Asset>();
+  const [image, setImage] = useState<Asset | null>(null);
   const [showSave, setShowSave] = useState<boolean>(false);
+  const [photoError, setPhotoError] = useState('');
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -147,23 +149,50 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
     setFoodObj((prev: FoodProps) => ({...prev, consumed_at: newDate}));
   };
 
-  const handleChangeFood = useCallback((food: FoodProps, index: number) => {
-    setFoodObj((prev: FoodProps) => ({
-      ...prev,
-      ...food,
-    }));
-  }, []);
+  const handleChangeFood = useCallback(
+    (food: Partial<FoodProps> | FoodProps) => {
+      setFoodObj((prev: FoodProps) => ({
+        ...prev,
+        ...food,
+      }));
+    },
+    [],
+  );
 
   const lauchImageFromGallery = () => {
+    setPhotoError('');
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
     };
+    setPhotoVisible(true);
     launchImageLibrary(options, response => {
       if (response) {
         if (response.assets?.length) {
           setImage(response.assets[0]);
+          console.log('choosen image', response.assets[0]);
         }
+      }
+    });
+  };
+
+  const handleUploadImage = () => {
+    uploadImage(
+      'foods',
+      moment(foodObj.consumed_at).format('YYYY-MM-DD'),
+      image,
+    ).then(result => {
+      if (result.error) {
+        setPhotoError(result.error);
+      } else {
+        console.log(result);
+        handleChangeFood({
+          photo: {
+            highres: result.full,
+            thumb: result.thumb,
+            is_user_uploaded: true,
+          },
+        });
       }
     });
   };
@@ -176,7 +205,7 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
 
   useEffect(() => {
     setShowSave(!equal(foodObj, props.route.params?.foodObj));
-  }, [equal, foodObj, props.route.params?.foodObj]);
+  }, [foodObj, props.route.params?.foodObj]);
 
   return (
     <SafeAreaView style={styles.root}>
@@ -231,11 +260,39 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
             </View>
           </TouchableWithoutFeedback>
           {photoVisible && (
-            <Image
-              style={styles.image}
-              source={{uri: image ? image.uri : foodObj.photo.highres || ''}}
-              resizeMode="contain"
-            />
+            <>
+              <View style={styles.imageContainer}>
+                {image && (
+                  <>
+                    <TouchableOpacity
+                      style={styles.uploadBtn}
+                      onPress={handleUploadImage}>
+                      <Text style={styles.uploadBtnText}>Upload</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.deleteBtn}
+                      onPress={() => {
+                        setImage(null);
+                        setPhotoError('');
+                      }}>
+                      <FontAwesome name="trash" color="#fff" size={15} />
+                    </TouchableOpacity>
+                  </>
+                )}
+                <Image
+                  style={styles.image}
+                  source={{
+                    uri: image ? image.uri : foodObj.photo.highres || '',
+                  }}
+                  resizeMode="contain"
+                />
+              </View>
+              {photoError && (
+                <View style={styles.imageError}>
+                  <Text style={styles.imageErrorText}>{photoError}</Text>
+                </View>
+              )}
+            </>
           )}
           <View style={[styles.flex1, styles.p10, styles.row]}>
             <View style={[styles.flex1, styles.mr10]}>

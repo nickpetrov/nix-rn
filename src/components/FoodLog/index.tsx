@@ -1,10 +1,8 @@
 // utils
 import React, {useEffect, useState, useCallback} from 'react';
 import moment from 'moment-timezone';
-import {batch} from 'react-redux';
 
 // helpers
-import * as timeHelper from 'helpers/time.helpers';
 import * as foodLogHelpers from 'helpers/foodLogHelpers';
 
 // components
@@ -64,7 +62,9 @@ const FoodLog: React.FC = () => {
 
   const refreshFoodLog = useCallback(() => {
     setIsRefreshing(true);
-    dispatch(userLogActions.RefreshLog()).then(() => setIsRefreshing(false));
+    dispatch(userLogActions.refreshLog(selectedDate, userData.timezone)).then(
+      () => setIsRefreshing(false),
+    );
   }, [dispatch, selectedDate, userData.timezone]);
 
   useEffect(() => {
