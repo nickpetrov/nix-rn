@@ -117,7 +117,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
     dispatch(userLogActions.addFoodToLog(adjustedFoods, loggingOptions)).then(
       () => {
         dispatch(basketActions.reset());
-        navigation.navigate(Routes.Dashboard);
+        navigation.replace(Routes.Dashboard);
       },
     );
   };
