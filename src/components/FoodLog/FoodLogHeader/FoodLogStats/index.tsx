@@ -43,7 +43,9 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = props => {
   let progressValue = caloriesIntake
     ? ((caloriesIntake - caloriesBurned) / caloriesLimit) * 100
     : 0;
-  let progressBarCurrent = {width: progressValue.toFixed(0) + '%'};
+  let progressBarCurrent = {
+    width: (progressValue > 0 ? progressValue.toFixed(0) : 0) + '%',
+  };
   let remaining_calories = +(
     caloriesLimit -
     caloriesIntake +
