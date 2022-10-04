@@ -64,31 +64,7 @@ const FoodLog: React.FC = () => {
 
   const refreshFoodLog = useCallback(() => {
     setIsRefreshing(true);
-    const refresh = async () => {
-      const logBeginDate = timeHelper.offsetDays(
-        selectedDate,
-        'YYYY-MM-DD',
-        -7,
-      );
-      const logEndDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', 7);
-      batch(() => {
-        dispatch(userLogActions.getUserFoodlog(logBeginDate, logEndDate, 0));
-        dispatch(userLogActions.getUserWeightlog(logBeginDate, logEndDate, 0));
-        dispatch(
-          userLogActions.getUserExerciseslog(logBeginDate, logEndDate, 0),
-        );
-        dispatch(
-          userLogActions.getDayTotals(
-            logBeginDate,
-            logEndDate,
-            userData.timezone,
-            dispatch,
-          ),
-        );
-      });
-      setIsRefreshing(false);
-    };
-    refresh();
+    dispatch(userLogActions.RefreshLog()).then(() => setIsRefreshing(false));
   }, [dispatch, selectedDate, userData.timezone]);
 
   useEffect(() => {

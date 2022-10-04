@@ -18,14 +18,15 @@ import {
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
 import {WaterLogProps} from './userLog.types';
+import * as timeHelper from 'helpers/time.helpers';
+import {batch} from 'react-redux';
 
 export const getDayTotals = (
   beginDate: string,
   endDate: string,
   timezone: string,
-  dispatch: Dispatch,
 ) => {
-  return async () => {
+  return async (dispatch: Dispatch) => {
     const response = await userLogService.getTotals({
       beginDate,
       endDate,
@@ -50,7 +51,7 @@ export const getUserFoodlog = (
   endDate: string,
   offset: number | undefined,
 ) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
 
     const timezone = useState().auth.userData.timezone;
@@ -73,7 +74,7 @@ export const getUserFoodlog = (
     }
     const beginDateSelected = useState().userLog.selectedDate;
 
-    getDayTotals(beginDateSelected, endDate, timezone, dispatch);
+    dispatch(getDayTotals(beginDateSelected, endDate, timezone));
   };
 };
 
@@ -407,5 +408,20 @@ export const deleteWaterFromLog = () => {
         type: userLogActionTypes.DELETE_WATER_FROM_LOG,
       });
     }
+  };
+};
+
+export const RefreshLog = () => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
+    const selectedDate = useState().userLog.selectedDate;
+    const timezone = useState().auth.userData.timezone;
+    const logBeginDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', -7);
+    const logEndDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', 7);
+    batch(() => {
+      dispatch(getUserFoodlog(logBeginDate, logEndDate, 0));
+      dispatch(getUserWeightlog(logBeginDate, logEndDate, 0));
+      dispatch(getUserExerciseslog(logBeginDate, logEndDate, 0));
+      dispatch(getDayTotals(logBeginDate, logEndDate, timezone));
+    });
   };
 };

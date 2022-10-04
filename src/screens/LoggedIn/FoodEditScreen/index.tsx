@@ -170,14 +170,14 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
 
   const handleSave = () => {
     dispatch(updateFoodFromlog([foodObj])).then(() => {
-      props.navigation.goBack();
+      props.navigation.replace(Routes.Dashboard);
     });
   };
 
   useEffect(() => {
     setShowSave(!equal(foodObj, props.route.params?.foodObj));
   }, [equal, foodObj, props.route.params?.foodObj]);
-  console.log('foodObj', foodObj);
+
   return (
     <SafeAreaView style={styles.root}>
       {foodObj ? (

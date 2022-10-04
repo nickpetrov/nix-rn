@@ -13,15 +13,17 @@ import {styles} from './ExerciseListItem.styles';
 interface ExerciseListItemProps {
   onPress: () => void;
   exercise: ExerciseProps;
+  last?: boolean;
 }
 
 const ExerciseListItem: React.FC<ExerciseListItemProps> = ({
   onPress,
   exercise,
+  last,
 }) => {
   return (
     <TouchableHighlight style={styles.container} onPress={onPress}>
-      <View style={styles.root}>
+      <View style={[styles.root, !last ? styles.borderBottom : {}]}>
         <View style={styles.left}>
           <Image source={{uri: exercise.photo.thumb}} style={styles.image} />
           <View style={styles.header}>
@@ -31,7 +33,9 @@ const ExerciseListItem: React.FC<ExerciseListItemProps> = ({
             <Text style={styles.time}>{`${exercise.duration_min} min`}</Text>
           </View>
         </View>
-        <Text style={styles.calories}>-{exercise.nf_calories} Cal</Text>
+        <Text style={styles.calories}>
+          -{exercise.nf_calories.toFixed(0)} Cal
+        </Text>
       </View>
     </TouchableHighlight>
   );

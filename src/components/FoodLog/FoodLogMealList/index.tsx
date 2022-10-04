@@ -181,6 +181,7 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
               ]}
               renderItem={data => (
                 <ExerciseListItem
+                  last={exercises?.length - 1 === data.index}
                   key={data.item.id}
                   exercise={data.item}
                   onPress={() => setExcerciseModal(data.item)}

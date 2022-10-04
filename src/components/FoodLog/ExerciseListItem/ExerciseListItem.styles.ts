@@ -9,11 +9,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 10,
-    borderBottomWidth: 1,
-    borderColor: '#444',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  borderBottom: {
+    borderBottomWidth: 1,
+    borderColor: Colors.LightGray,
   },
   left: {
     flexDirection: 'row',

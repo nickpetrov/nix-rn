@@ -12,6 +12,7 @@ import {useDispatch} from 'hooks/useRedux';
 // actions
 import {
   addExerciseToLog,
+  RefreshLog,
   updateExerciseToLog,
 } from 'store/userLog/userLog.actions';
 
@@ -39,13 +40,17 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
     if (excerciseDescription) {
       if (exercise?.id) {
         updateExerciseToLog;
-        dispatch(updateExerciseToLog(excerciseDescription, exercise)).then(() =>
-          setVisible(null),
+        dispatch(updateExerciseToLog(excerciseDescription, exercise)).then(
+          () => {
+            dispatch(RefreshLog());
+            setVisible(null);
+          },
         );
       } else {
-        dispatch(addExerciseToLog(excerciseDescription)).then(() =>
-          setVisible(null),
-        );
+        dispatch(addExerciseToLog(excerciseDescription)).then(() => {
+          dispatch(RefreshLog());
+          setVisible(null);
+        });
       }
     }
   };
