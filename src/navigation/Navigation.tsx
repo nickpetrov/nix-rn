@@ -139,8 +139,20 @@ const LoggedInNavigation = ({
           headerBackVisible: false,
         }}
       />
-      <Stack.Screen name={Routes.FoodEdit} component={FoodEditScreen} />
-      <Stack.Screen name={Routes.FoodInfo} component={FoodInfoScreen} />
+      <Stack.Screen
+        name={Routes.FoodEdit}
+        component={FoodEditScreen}
+        options={{
+          headerTitle: 'Edit Food',
+        }}
+      />
+      <Stack.Screen
+        name={Routes.FoodInfo}
+        component={FoodInfoScreen}
+        options={{
+          headerTitle: 'Food Info',
+        }}
+      />
       <Stack.Screen
         name={Routes.Autocomplete}
         component={AutocompleteScreen}

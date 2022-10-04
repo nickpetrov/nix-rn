@@ -54,11 +54,11 @@ export const styles = StyleSheet.create({
     fontSize: 12,
   },
   column: {
-    width: '100%',
+    // width: '100%',
     paddingTop: 10,
   },
   row: {
-    width: '100%',
+    // width: '100%',
     paddingTop: 10,
     flexDirection: 'row',
     alignItems: 'center',

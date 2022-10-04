@@ -4,6 +4,7 @@ import {PhotoProps} from '../autoComplete/autoComplete.types';
 export enum userLogActionTypes {
   GET_USER_FOODLOG = 'GET_USER_FOODLOG',
   ADD_FOOD_TO_LOG = 'ADD_FOOD_TO_LOG',
+  UPDATE_FOOD_FROM_LOG = 'UPDATE_FOOD_FROM_LOG',
   GET_DAY_TOTALS = 'GET_DAY_TOTALS',
   CHANGE_SELECTED_DATE = 'CHANGE_SELECTED_DATE',
   SET_DAY_NOTES = 'SET_DAY_TOTALS',

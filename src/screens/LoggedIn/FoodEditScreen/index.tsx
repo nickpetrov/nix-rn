@@ -1,5 +1,8 @@
 // utils
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
+import moment from 'moment-timezone';
+import {launchImageLibrary} from 'react-native-image-picker';
+import equal from 'deep-equal';
 
 // components
 import {
@@ -9,6 +12,8 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   TextInput,
+  Image,
+  TouchableOpacity,
 } from 'react-native';
 import FoodItem from 'components/FoodItem';
 import WhenSection from 'components/WhenSection';
@@ -27,7 +32,10 @@ import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
 import * as basketActions from 'store/basket/basket.actions';
-import {DeleteFoodFromLog} from 'store/userLog/userLog.actions';
+import {
+  DeleteFoodFromLog,
+  updateFoodFromlog,
+} from 'store/userLog/userLog.actions';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -37,6 +45,8 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp} from '@react-navigation/native';
 import {FoodProps} from 'store/userLog/userLog.types';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {mealTypes} from 'store/basket/basket.types';
+import {MediaType, Asset} from 'react-native-image-picker/lib/typescript/types';
 
 // styles
 import {styles} from './FoodEditScreen.styles';
@@ -50,11 +60,16 @@ interface FoodEditScreenProps {
 }
 
 export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
+  const [photoVisible, setPhotoVisible] = useState<boolean>(false);
   const {selectedDate} = useSelector(state => state.userLog);
-  const [foodObj, setFoodObj] = useState<FoodProps>();
+  const [foodObj, setFoodObj] = useState<FoodProps>(
+    props.route.params?.foodObj,
+  );
   const [showNotes, setShowNotes] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [pieChartData, setPieChartData] = useState<pieChartDataProps>();
+  const [image, setImage] = useState<Asset>();
+  const [showSave, setShowSave] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -118,6 +133,51 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
     );
   };
 
+  const onMealTypeChange = (newMealType: mealTypes) => {
+    setFoodObj((prev: FoodProps) => ({...prev, meal_type: newMealType}));
+  };
+
+  const handleNotesChange = (note: string) => {
+    setFoodObj((prev: FoodProps) => ({...prev, note: note ? note : null}));
+  };
+
+  const onDateChange = (date: string) => {
+    const newDate =
+      moment(date).format('YYYY-MM-DDTHH:mm:ss') + moment.tz().format('Z');
+    setFoodObj((prev: FoodProps) => ({...prev, consumed_at: newDate}));
+  };
+
+  const handleChangeFood = useCallback((food: FoodProps, index: number) => {
+    setFoodObj((prev: FoodProps) => ({
+      ...prev,
+      ...food,
+    }));
+  }, []);
+
+  const lauchImageFromGallery = () => {
+    const options = {
+      mediaType: 'photo' as MediaType,
+      noData: true,
+    };
+    launchImageLibrary(options, response => {
+      if (response) {
+        if (response.assets?.length) {
+          setImage(response.assets[0]);
+        }
+      }
+    });
+  };
+
+  const handleSave = () => {
+    dispatch(updateFoodFromlog([foodObj])).then(() => {
+      props.navigation.goBack();
+    });
+  };
+
+  useEffect(() => {
+    setShowSave(!equal(foodObj, props.route.params?.foodObj));
+  }, [equal, foodObj, props.route.params?.foodObj]);
+  console.log('foodObj', foodObj);
   return (
     <SafeAreaView style={styles.root}>
       {foodObj ? (
@@ -125,15 +185,58 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
           <FoodItem
             key={foodObj.food_name + foodObj.consumed_at}
             foodObj={foodObj}
+            itemChangeCallback={handleChangeFood}
           />
           <WhenSection
-            consumed_at={foodObj.consumed_at}
+            consumed_at={moment(foodObj.consumed_at).format('YYYY-MM-DD')}
             meal_type={foodObj.meal_type}
-            onDateChange={() => console.log(foodObj)}
-            onMealTypeChange={() => console.log(foodObj)}
+            onDateChange={onDateChange}
+            onMealTypeChange={onMealTypeChange}
           />
-          {/* TODO Photo */}
-
+          <TouchableWithoutFeedback onPress={() => setShowNotes(!showNotes)}>
+            <View style={styles.borderContainer}>
+              <View style={styles.notesContainer}>
+                <Text style={styles.fz16}>Notes</Text>
+                <FontAwesome name="angle-down" size={23} />
+              </View>
+              {showNotes ? (
+                <TextInput
+                  multiline={true}
+                  numberOfLines={5}
+                  value={foodObj.note || ''}
+                  onChangeText={handleNotesChange}
+                  style={styles.input}
+                />
+              ) : null}
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={() => setPhotoVisible(!photoVisible)}>
+            <View style={styles.photoBtnContainer}>
+              <View style={styles.photoBtn}>
+                <FontAwesome name="camera" color="#000" size={19} />
+                <Text style={styles.photoBtnText}>Photo</Text>
+                <FontAwesome
+                  name={photoVisible ? 'chevron-down' : 'chevron-right'}
+                  color="#000"
+                  size={15}
+                />
+              </View>
+              <TouchableWithoutFeedback onPress={lauchImageFromGallery}>
+                <View style={styles.photoBtn}>
+                  <FontAwesome name="plus" color="#000" size={19} />
+                  <Text style={styles.photoBtnText}>Add Photo</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+          {photoVisible && (
+            <Image
+              style={styles.image}
+              source={{uri: image ? image.uri : foodObj.photo.highres || ''}}
+              resizeMode="contain"
+            />
+          )}
           <View style={[styles.flex1, styles.p10, styles.row]}>
             <View style={[styles.flex1, styles.mr10]}>
               <NixButton
@@ -177,25 +280,6 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
             </View>
           )}
 
-          <View>
-            <TouchableWithoutFeedback onPress={() => setShowNotes(!showNotes)}>
-              <View style={styles.borderContainer}>
-                <View style={styles.notesContainer}>
-                  <Text style={styles.fz16}>Notes</Text>
-                  <FontAwesome name="angle-down" size={23} />
-                </View>
-                {showNotes ? (
-                  <TextInput
-                    multiline={true}
-                    numberOfLines={5}
-                    value={foodObj.notes}
-                    style={styles.input}
-                  />
-                ) : null}
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-
           <View style={styles.p10}>
             <View style={styles.alignItemsCenter}>
               <Text style={styles.share}>Share this food</Text>
@@ -231,6 +315,13 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
         setModalVisible={setShowDeleteModal}
         delete={deleteFromLog}
       />
+      {showSave && (
+        <View style={styles.saveBtnContainer}>
+          <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
+            <Text style={styles.saveBtnText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

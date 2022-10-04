@@ -127,6 +127,11 @@ const userLogService = {
       ...loggingOptions,
     });
   },
+  async updateFoodFromLog(foods: Array<FoodProps>) {
+    return await apiClient.put('log', {
+      foods,
+    });
+  },
   async deleteFoodFromLog(foodIds: Array<{id: string}>) {
     return await apiClient.delete('log', {
       data: {

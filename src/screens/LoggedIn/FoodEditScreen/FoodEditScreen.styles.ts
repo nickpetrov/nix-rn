@@ -1,3 +1,4 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -45,11 +46,46 @@ export const styles = StyleSheet.create({
   },
   borderContainer: {
     padding: 10,
-    borderTopWidth: 1,
+    // borderTopWidth: 1,
     borderBottomWidth: 1,
+    borderColor: '#bbb  ',
   },
   share: {
     fontWeight: 'bold',
     fontSize: 20,
+  },
+  photoBtnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  photoBtn: {
+    paddingHorizontal: 10,
+    paddingTop: 15,
+    paddingBottom: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  photoBtnText: {
+    paddingHorizontal: 5,
+  },
+  image: {
+    height: 300,
+    width: '100%',
+  },
+  saveBtnContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    width: 50,
+  },
+  saveBtn: {
+    backgroundColor: Colors.Primary,
+    padding: 8,
+    borderRadius: 20,
+  },
+  saveBtnText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: '500',
   },
 });

@@ -1,6 +1,7 @@
 // utils
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import equal from 'deep-equal';
 
 // components
 import {
@@ -35,6 +36,7 @@ interface FoodItemProps {
   itemChangeCallback?: (foodObj: FoodProps, index: number) => void;
   itemIndex?: number;
   onTap?: () => void;
+  withInfo?: boolean;
 }
 
 const FoodItem: React.FC<FoodItemProps> = ({
@@ -42,6 +44,7 @@ const FoodItem: React.FC<FoodItemProps> = ({
   onTap,
   itemIndex,
   itemChangeCallback,
+  withInfo,
 }) => {
   const navigation =
     useNavigation<
@@ -80,7 +83,7 @@ const FoodItem: React.FC<FoodItemProps> = ({
   }, [foodObj]);
 
   useEffect(() => {
-    if (itemChangeCallback) {
+    if (itemChangeCallback && !equal(foodObj, food)) {
       itemChangeCallback(food, itemIndex || 0);
     }
   }, [food, itemIndex, itemChangeCallback]);
@@ -179,16 +182,19 @@ const FoodItem: React.FC<FoodItemProps> = ({
           </View>
           <Text style={styles.foodName}>{food_name}</Text>
         </View>
-        <View style={styles.footer}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate(Routes.FoodInfo, {
-                foodObj,
-              })
-            }>
-            <FontAwesome name="info-circle" color="#999" size={19} />
-          </TouchableOpacity>
-          <View style={styles.calories}>
+        <View
+          style={[styles.footer, withInfo ? {flexGrow: 1} : {flexGrow: 0.6}]}>
+          {withInfo && (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate(Routes.FoodInfo, {
+                  foodObj,
+                })
+              }>
+              <FontAwesome name="info-circle" color="#999" size={19} />
+            </TouchableOpacity>
+          )}
+          <View style={[styles.calories, withInfo ? {marginLeft: 10} : {}]}>
             <Text style={styles.caloriesValue}>
               {' '}
               {nfCalories

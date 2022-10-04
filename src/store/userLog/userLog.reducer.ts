@@ -51,11 +51,22 @@ export default (state: UserLogState = initialState, action: AnyAction) => {
       });
       return {...state, weights: newExercises};
     }
-    case userLogActionTypes.ADD_FOOD_TO_LOG:
+    case userLogActionTypes.ADD_FOOD_TO_LOG: {
       const foodToAdd = !action.foodObj.length
         ? [action.foodObj]
         : action.foodObj;
       return {...state, foods: state.foods.concat(foodToAdd)};
+    }
+    case userLogActionTypes.UPDATE_FOOD_FROM_LOG: {
+      const newFoods = [...state.foods];
+      const changedFoodIndex = newFoods.findIndex(
+        item => item.id === action.payload.id,
+      );
+      if (changedFoodIndex !== -1) {
+        newFoods[changedFoodIndex] = action.payload;
+      }
+      return {...state, foods: newFoods};
+    }
     case userLogActionTypes.DELETE_FOOD_FROM_LOG:
       let newFoods = [...state.foods];
       newFoods = newFoods.filter(item => !action.foodIds.includes(item.id));

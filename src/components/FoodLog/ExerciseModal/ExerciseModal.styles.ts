@@ -33,6 +33,7 @@ export const styles = StyleSheet.create({
   },
   excerciseModalButtons: {
     flexDirection: 'row',
+    marginTop: 10,
   },
   btnContainer: {
     flex: 1,

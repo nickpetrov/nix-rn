@@ -304,6 +304,21 @@ export const addFoodToLog = (
   };
 };
 
+export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
+  return async (dispatch: Dispatch) => {
+    const response = await userLogService.updateFoodFromLog(foodArray);
+
+    const result = response.data;
+
+    if (result.foods?.length) {
+      dispatch({
+        type: userLogActionTypes.UPDATE_FOOD_FROM_LOG,
+        payload: result.foods[0],
+      });
+    }
+  };
+};
+
 export const DeleteFoodFromLog = (foodIds: Array<{id: string}>) => {
   return async (dispatch: Dispatch) => {
     const response = await userLogService.deleteFoodFromLog(foodIds);

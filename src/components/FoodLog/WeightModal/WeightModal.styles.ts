@@ -38,6 +38,7 @@ export const styles = StyleSheet.create({
   },
   weightModalButtons: {
     flexDirection: 'row',
+    marginTop: 10,
   },
   units: {
     flexDirection: 'row',

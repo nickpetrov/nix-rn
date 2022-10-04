@@ -172,6 +172,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
           itemIndex={data.index}
           foodObj={data.item}
           itemChangeCallback={changeFoodAtBasket}
+          withInfo
         />
       )}
     />

@@ -4,8 +4,7 @@ import {Colors} from 'constants';
 export const styles = StyleSheet.create({
   nixButton: {
     backgroundColor: '#f8f8f8',
-    flex: 1,
-    height: 40,
+    flexGrow: 1,
     borderRadius: 5,
     overflow: 'hidden',
   },

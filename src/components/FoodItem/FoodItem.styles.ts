@@ -60,12 +60,10 @@ export const styles = StyleSheet.create({
   },
   footer: {
     flex: 1,
-    flexGrow: 1,
     flexDirection: 'row',
     alignItems: 'center',
   },
   calories: {
     alignItems: 'center',
-    marginLeft: 10,
   },
 });
