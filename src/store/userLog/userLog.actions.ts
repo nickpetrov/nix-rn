@@ -46,6 +46,16 @@ export const getDayTotals = (
   };
 };
 
+export const refreshUserLogTotals = () => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
+    const selectedDate = useState().userLog.selectedDate;
+    const timezone = useState().auth.userData.timezone;
+    const logBeginDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', -7);
+    const logEndDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', 7);
+    dispatch(getDayTotals(logBeginDate, logEndDate, timezone));
+  };
+};
+
 export const getUserFoodlog = (
   beginDate: string,
   endDate: string,
@@ -108,7 +118,7 @@ export const getUserWeightlog = (
 };
 
 export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<any>) => {
     const response = await userLogService.addWeightlog(weights);
 
     const result = response.data;
@@ -118,12 +128,13 @@ export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
         type: userLogActionTypes.ADD_WEIGHT_LOG,
         weights: result.weights,
       });
+      dispatch(refreshUserLogTotals());
     }
   };
 };
 
 export const updateWeightlog = (weights: Array<WeightProps>) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<any>) => {
     const response = await userLogService.updateWeightlog(weights);
 
     const result = response.data;
@@ -133,12 +144,13 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
         type: userLogActionTypes.UPDATE_WEIGHT_LOG,
         weights: result.weights,
       });
+      dispatch(refreshUserLogTotals());
     }
   };
 };
 
 export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<any>) => {
     const response = await userLogService.deleteWeightFromLog(weights);
 
     if (response.status === 200) {
@@ -146,11 +158,12 @@ export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
         type: userLogActionTypes.DELETE_WEIGHT_FROM_LOG,
         weights: weights.map(item => item.id),
       });
+      dispatch(refreshUserLogTotals());
     }
   };
 };
 export const deleteExerciseFromLog = (exercises: Array<{id: string}>) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<any>) => {
     const response = await userLogService.deleteExerciseFromLog(exercises);
 
     if (response.status === 200) {
@@ -158,6 +171,7 @@ export const deleteExerciseFromLog = (exercises: Array<{id: string}>) => {
         type: userLogActionTypes.DELETE_EXERCISE_FROM_LOG,
         exercises: exercises.map(item => item.id),
       });
+      dispatch(refreshUserLogTotals());
     }
   };
 };
@@ -192,7 +206,7 @@ export const getUserExerciseslog = (
 };
 
 export const addExerciseToLog = (query: string) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     const selectedDate = useState().userLog.selectedDate;
 
     const checkResponse = await userLogService.getExerciseByQuery(query);
@@ -216,6 +230,7 @@ export const addExerciseToLog = (query: string) => {
           type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
           exercises: result.exercises,
         });
+        dispatch(refreshUserLogTotals());
       }
     } else {
       return {error: true};
@@ -224,7 +239,7 @@ export const addExerciseToLog = (query: string) => {
 };
 
 export const updateExerciseToLog = (query: string, exercise: ExerciseProps) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     const selectedDate = useState().userLog.selectedDate;
 
     const checkResponse = await userLogService.getExerciseByQuery(query);
@@ -249,6 +264,7 @@ export const updateExerciseToLog = (query: string, exercise: ExerciseProps) => {
           type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
           exercises: result.exercises,
         });
+        dispatch(refreshUserLogTotals());
       }
     } else {
       return {error: true};
@@ -260,7 +276,7 @@ export const addFoodToLog = (
   foodArray: Array<FoodProps>,
   loggingOptions: Partial<loggingOptionsProps>,
 ) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     // logging options:
     // "aggregate": "string",
     // "aggregate_photo": {},
@@ -301,12 +317,13 @@ export const addFoodToLog = (
         type: userLogActionTypes.ADD_FOOD_TO_LOG,
         foodObj: result.foods,
       });
+      dispatch(refreshUserLogTotals());
     }
   };
 };
 
 export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<any>) => {
     const response = await userLogService.updateFoodFromLog(foodArray);
 
     const result = response.data;
@@ -316,12 +333,13 @@ export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
         type: userLogActionTypes.UPDATE_FOOD_FROM_LOG,
         payload: result.foods[0],
       });
+      dispatch(refreshUserLogTotals());
     }
   };
 };
 
 export const DeleteFoodFromLog = (foodIds: Array<{id: string}>) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<any>) => {
     const response = await userLogService.deleteFoodFromLog(foodIds);
 
     if (response.status === 200) {
@@ -329,6 +347,7 @@ export const DeleteFoodFromLog = (foodIds: Array<{id: string}>) => {
         type: userLogActionTypes.DELETE_FOOD_FROM_LOG,
         foodIds: foodIds.map(item => item.id),
       });
+      dispatch(refreshUserLogTotals());
     }
   };
 };
@@ -367,7 +386,7 @@ export const changeSelectedDay = (newDate: string) => {
 };
 
 export const addWaterlog = (water: Array<WaterLogProps>) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<any>) => {
     const response = await userLogService.addWaterLog(water);
 
     const result = response.data;
@@ -377,12 +396,13 @@ export const addWaterlog = (water: Array<WaterLogProps>) => {
         type: userLogActionTypes.UPDATE_WATER_LOG,
         payload: result.logs[0].consumed,
       });
+      dispatch(refreshUserLogTotals());
     }
   };
 };
 
 export const updateWaterlog = (water: Array<WaterLogProps>) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<any>) => {
     const response = await userLogService.updateWaterLog(water);
 
     const result = response.data;
@@ -392,12 +412,13 @@ export const updateWaterlog = (water: Array<WaterLogProps>) => {
         type: userLogActionTypes.UPDATE_WATER_LOG,
         payload: result.logs[0].consumed,
       });
+      dispatch(refreshUserLogTotals());
     }
   };
 };
 
 export const deleteWaterFromLog = () => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     const selectedDate = useState().userLog.selectedDate;
     const response = await userLogService.deleteWaterFromLog([
       {date: selectedDate},
@@ -407,6 +428,7 @@ export const deleteWaterFromLog = () => {
       dispatch({
         type: userLogActionTypes.DELETE_WATER_FROM_LOG,
       });
+      dispatch(refreshUserLogTotals());
     }
   };
 };

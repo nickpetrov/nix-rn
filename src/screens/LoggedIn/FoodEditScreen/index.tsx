@@ -170,7 +170,7 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
 
   const handleSave = () => {
     dispatch(updateFoodFromlog([foodObj])).then(() => {
-      props.navigation.replace(Routes.Dashboard);
+      props.navigation.goBack();
     });
   };
 
