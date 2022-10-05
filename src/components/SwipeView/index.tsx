@@ -51,7 +51,7 @@ const SwipeView: React.FC<SwipeViewProps> = ({
         break;
     }
   };
-  console.log(data);
+
   return (
     <SwipeListView
       useFlatList

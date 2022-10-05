@@ -26,6 +26,9 @@ interface NixButtonProps {
   onPress?: () => void;
   title?: string;
   iconName?: string;
+  style?: {
+    [key: string]: string | number;
+  };
   buttonTextStyles?: {
     [key: string]: string | number;
   };
@@ -40,6 +43,7 @@ export const NixButton: React.FC<NixButtonProps> = ({
   title,
   iconName,
   width,
+  style,
 }) => {
   let buttonTypeStyles = {};
   let buttonTypeTextStyles = {};
@@ -111,6 +115,7 @@ export const NixButton: React.FC<NixButtonProps> = ({
         ...buttonTypeStyles,
         ...disabledStyles,
         ...widthStyles,
+        ...style,
       }}>
       <TouchableOpacity
         style={styles.contentWrapper}

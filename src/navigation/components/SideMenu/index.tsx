@@ -252,23 +252,27 @@ export const SideMenu: React.FC = () => {
               type="primary"
               title="Rate us on App Store"
               onPress={() => rateAppHandler()}
+              style={{marginTop: 10}}
             />
           ) : (
             <NixButton
               type="primary"
               title="Rate us on Google Play"
               onPress={() => rateAppHandler()}
+              style={{marginTop: 10}}
             />
           )}
           <NixButton
             type="primary"
             title="Send Track to a friend"
             onPress={() => shareAppHandler()}
+            style={{marginTop: 10}}
           />
           <NixButton
             type="primary"
             title="Like us on Facebook"
             onPress={() => openFbHandler()}
+            style={{marginTop: 10}}
           />
           <TouchableWithoutFeedback
             style={{marginTop: 10}}
