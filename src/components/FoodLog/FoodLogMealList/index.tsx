@@ -196,26 +196,30 @@ const FoodLogMealList: React.FC<FoodLogMealListProps> = props => {
     }
     // WaterListItem
     if (mealName === 'Water') {
-      return setMealFoods(() => (
-        <SwipeView
-          listKey="water"
-          data={[{consumed: consumedWater, id: consumedWater}]}
-          buttons={[
-            {
-              type: 'delete',
-              keyId: 'id',
-              onPress: () => handleDeleteWaterLog(),
-            },
-          ]}
-          renderItem={data => (
-            <WaterListItem
-              key={data.item.key}
-              onPress={() => setWaterModal(true)}
-              text={data.item.consumed}
-            />
-          )}
-        />
-      ));
+      return setMealFoods(() =>
+        consumedWater ? (
+          <SwipeView
+            listKey="water"
+            data={[{consumed: consumedWater, id: consumedWater}]}
+            buttons={[
+              {
+                type: 'delete',
+                keyId: 'id',
+                onPress: () => handleDeleteWaterLog(),
+              },
+            ]}
+            renderItem={data => (
+              <WaterListItem
+                key={data.item.date}
+                onPress={() => setWaterModal(true)}
+                text={data.item.consumed}
+              />
+            )}
+          />
+        ) : (
+          <EmptyListItem type="full" text={'0 L'} />
+        ),
+      );
     }
     if (!!mealFoodsList && mealFoodsList.length) {
       mealFoodsList.forEach((food: FoodProps) => {

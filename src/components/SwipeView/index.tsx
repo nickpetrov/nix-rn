@@ -51,11 +51,12 @@ const SwipeView: React.FC<SwipeViewProps> = ({
         break;
     }
   };
+  console.log(data);
   return (
     <SwipeListView
       useFlatList
       listKey={listKey}
-      keyExtractor={(n: any) => n.id || n.basketId}
+      keyExtractor={(n: any) => n.id || n.basketId || n.date}
       data={data}
       renderItem={renderItem}
       disableRightSwipe

@@ -208,6 +208,7 @@ const FoodLog: React.FC = () => {
       />
       <TouchableWithoutFeedback>
         <FlatList
+          listKey="rootList"
           data={sortedFoods}
           keyExtractor={item => item.mealName}
           renderItem={({item}) => (

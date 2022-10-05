@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     fontSize: 10,
   },
   waterItem: {
-    padding: 5,
+    padding: 1,
     fontSize: 14,
     color: '#444',
   },
