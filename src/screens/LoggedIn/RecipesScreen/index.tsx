@@ -95,12 +95,16 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({navigation}) => {
   };
 
   return (
-    <View>
+    <View style={styles.root}>
       <TextInput
+        placeholder="Search my recipes"
         style={styles.inputQuery}
         value={filterQuery}
         onChangeText={text => setFilterQuery(text)}
       />
+      <View style={styles.swipeContainer}>
+        <Text style={styles.swipeText}>swipe left to delete</Text>
+      </View>
       <FlatList
         data={filteredRecipes}
         keyExtractor={item => item.id}

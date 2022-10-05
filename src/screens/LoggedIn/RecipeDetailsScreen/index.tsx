@@ -13,7 +13,7 @@ import {
 } from 'react-native-gesture-handler';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import FoodItem from 'components/FoodItem';
+import FoodEditItem from 'components/FoodEditItem';
 import {NixButton} from 'components/NixButton';
 import ErrorModal from 'components/ErrorModal';
 import {NavigationHeader} from 'components/NavigationHeader';
@@ -270,7 +270,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         <View>
           {recipe.ingredients.map((ingredient, index) => {
             return (
-              <FoodItem
+              <FoodEditItem
                 key={ingredient.food_name + ingredient.consumed_at}
                 foodObj={ingredient}
                 itemIndex={index}

@@ -15,7 +15,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import FoodItem from 'components/FoodItem';
+import FoodEditItem from 'components/FoodEditItem';
 import WhenSection from 'components/WhenSection';
 import {NixButton} from 'components/NixButton';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -211,7 +211,7 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
     <SafeAreaView style={styles.root}>
       {foodObj ? (
         <ScrollView>
-          <FoodItem
+          <FoodEditItem
             key={foodObj.food_name + foodObj.consumed_at}
             foodObj={foodObj}
             itemChangeCallback={handleChangeFood}

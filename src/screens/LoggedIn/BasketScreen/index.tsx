@@ -11,7 +11,7 @@ import {Text, View, SafeAreaView, Button, Switch} from 'react-native';
 import {NixButton} from 'components/NixButton';
 import Totals from 'components/Totals';
 import {FloatingLabelInput} from 'react-native-floating-label-input';
-import FoodItem from 'components/FoodItem';
+import FoodEditItem from 'components/FoodEditItem';
 import WhenSection from 'components/WhenSection';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationHeader} from 'components/NavigationHeader';
@@ -167,7 +167,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
         },
       ]}
       renderItem={data => (
-        <FoodItem
+        <FoodEditItem
           key={data.item.basketId}
           itemIndex={data.index}
           foodObj={data.item}

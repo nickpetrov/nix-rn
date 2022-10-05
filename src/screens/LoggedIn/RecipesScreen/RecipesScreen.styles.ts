@@ -1,6 +1,23 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  root: {
+    backgroundColor: '#fff',
+  },
+  swipeContainer: {
+    padding: 3,
+    marginTop: 10,
+    borderTopColor: Colors.LightGray,
+    borderTopWidth: 1,
+    borderBottomColor: Colors.LightGray,
+    borderBottomWidth: 1,
+  },
+  swipeText: {
+    fontSize: 12,
+    color: '#999',
+    textAlign: 'center',
+  },
   recipeListItem: {
     flex: 1,
     flexDirection: 'row',
@@ -11,10 +28,12 @@ export const styles = StyleSheet.create({
     borderBottomColor: '#bebebe',
   },
   inputQuery: {
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#bebebe',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 5,
     margin: 8,
+    marginTop: 2,
+    backgroundColor: Colors.LightGray,
   },
   row: {
     flex: 1,
