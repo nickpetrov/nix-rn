@@ -32,7 +32,8 @@ interface NixButtonProps {
   buttonTextStyles?: {
     [key: string]: string | number;
   };
-  width?: number;
+  width?: number | string;
+  withMarginTop?: boolean;
 }
 
 export const NixButton: React.FC<NixButtonProps> = ({
@@ -44,6 +45,7 @@ export const NixButton: React.FC<NixButtonProps> = ({
   iconName,
   width,
   style,
+  withMarginTop,
 }) => {
   let buttonTypeStyles = {};
   let buttonTypeTextStyles = {};
@@ -110,13 +112,16 @@ export const NixButton: React.FC<NixButtonProps> = ({
 
   return (
     <View
-      style={{
-        ...styles.nixButton,
-        ...buttonTypeStyles,
-        ...disabledStyles,
-        ...widthStyles,
-        ...style,
-      }}>
+      style={[
+        {
+          ...styles.nixButton,
+          ...buttonTypeStyles,
+          ...disabledStyles,
+          ...widthStyles,
+          ...style,
+        },
+        withMarginTop ? styles.mt10 : {},
+      ]}>
       <TouchableOpacity
         style={styles.contentWrapper}
         onPress={onTap || onPress}

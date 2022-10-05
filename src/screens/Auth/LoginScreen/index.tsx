@@ -184,10 +184,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           <NixButton
             title="Login via Email"
             onTap={() => navigation.navigate(Routes.Signin)}
+            withMarginTop
           />
           <NixButton
             title="Create Account"
             onTap={() => navigation.navigate(Routes.Signup)}
+            withMarginTop
           />
           <View style={styles.disclaimerWrapper}>
             <Text style={styles.noteText}>Need help?</Text>

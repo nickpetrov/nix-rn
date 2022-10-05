@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
   nixButton: {
     backgroundColor: '#f8f8f8',
     flexGrow: 1,
+    alignSelf: 'stretch',
     borderRadius: 5,
     overflow: 'hidden',
   },
@@ -96,5 +97,8 @@ export const styles = StyleSheet.create({
   },
   defaultBtnBgColor: {
     backgroundColor: '#f8f8f8',
+  },
+  mt10: {
+    marginTop: 10,
   },
 });

@@ -128,11 +128,13 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                       onPress={handleSubmit}
                       type="primary"
                       disabled={!isValid}
+                      withMarginTop
                     />
                     <NixButton
                       title="Create Account"
                       onPress={createAccountHandler}
                       type="default"
+                      withMarginTop
                     />
                   </View>
                 ) : (
