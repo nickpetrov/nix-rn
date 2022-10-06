@@ -21,6 +21,28 @@ export enum userLogActionTypes {
   UPDATE_USER_EXERCISES_LOG = 'UPDATE_USER_EXERCISES_LOG',
 }
 
+export enum foodLogSections {
+  Breakfast = 'Breakfast',
+  AM_Snack = 'AM Snack',
+  Lunch = 'Lunch',
+  PM_Snack = 'PM Snack',
+  Dinner = 'Dinner',
+  Late_Snack = 'Late Snack',
+  Snack = 'Snack',
+  Exercise = 'Exercise',
+  Weigh_in = 'Weigh-in',
+  Water = 'Water',
+}
+
+export const mealById = Object.freeze({
+  1: foodLogSections.Breakfast,
+  2: foodLogSections.AM_Snack,
+  3: foodLogSections.Lunch,
+  4: foodLogSections.PM_Snack,
+  5: foodLogSections.Dinner,
+  6: foodLogSections.Late_Snack,
+});
+
 export interface loggingOptionsProps {
   aggregate: string;
   single: boolean;
@@ -159,10 +181,10 @@ export interface UserLogState {
 
 export type mealNameProps =
   | keyof typeof mealTypes
-  | 'Snack'
-  | 'Excercise'
-  | 'Weigh-in'
-  | 'Water';
+  | foodLogSections.Snack
+  | foodLogSections.Exercise
+  | foodLogSections.Weigh_in
+  | foodLogSections.Water;
 
 export interface SortedFoodProps {
   mealName: mealNameProps;

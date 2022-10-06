@@ -1,8 +1,8 @@
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
-  renderItems: {
-    flexDirection: 'row-reverse',
+  hiddenItems: {
+    flexDirection: 'row',
     height: '100%',
     backgroundColor: '#fff',
   },

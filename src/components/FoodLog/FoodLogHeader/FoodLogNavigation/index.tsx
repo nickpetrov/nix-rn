@@ -21,12 +21,12 @@ import {styles} from './FoodLogNavigation.styles';
 let goToTodayCounterTimeout: number;
 
 interface FoodLogNavigationProps {
-  scrollDirection: 'up' | 'down';
+  // scrollDirection: 'up' | 'down';
 }
 
-const FoodLogNavigation: React.FC<FoodLogNavigationProps> = props => {
+const FoodLogNavigation: React.FC<FoodLogNavigationProps> = () => {
   const dispatch = useDispatch();
-  const {scrollDirection} = props;
+  // const {scrollDirection} = props;
   const {selectedDate} = useSelector(state => state.userLog);
   const [goToTodayCounter, setGoToTodayCounter] = useState(0);
   const currDate = timeHelpers.formatDate(selectedDate, 'YYYY-MM-DD', 'MM/DD');
@@ -98,15 +98,15 @@ const FoodLogNavigation: React.FC<FoodLogNavigationProps> = props => {
     </View>
   );
 
-  if (scrollDirection === 'down') {
-    foodLogNav = (
-      <View style={styles.condensedFoodLogNav}>
-        <Text style={styles.dayLogNavigationText}>
-          <Text style={styles.dayLogNavHighlight}>{weekDay},</Text> {currDate}
-        </Text>
-      </View>
-    );
-  }
+  // if (scrollDirection === 'down') {
+  //   foodLogNav = (
+  //     <View style={styles.condensedFoodLogNav}>
+  //       <Text style={styles.dayLogNavigationText}>
+  //         <Text style={styles.dayLogNavHighlight}>{weekDay},</Text> {currDate}
+  //       </Text>
+  //     </View>
+  //   );
+  // }
 
   return foodLogNav;
 };

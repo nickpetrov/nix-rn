@@ -23,7 +23,7 @@ interface FoodLogStatsProps {
   protein: number;
   carbohydrates: number;
   fat: number;
-  scrollDirection: 'up' | 'down';
+  // scrollDirection: 'up' | 'down';
   foods: Array<SortedFoodProps>;
 }
 
@@ -80,9 +80,10 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = props => {
       <View>
         <View
           style={
-            props.scrollDirection === 'down'
-              ? styles.hide
-              : styles.caloriesProgress
+            // props.scrollDirection === 'down'
+            //   ? styles.hide
+            //   :
+            styles.caloriesProgress
           }>
           <View style={styles.caloriesProgressLabel}>
             <Text style={styles.caloriesProgressLabelText}>

@@ -33,7 +33,7 @@ import {useDispatch, useSelector} from 'hooks/useRedux';
 // actions
 import * as basketActions from 'store/basket/basket.actions';
 import {
-  DeleteFoodFromLog,
+  deleteFoodFromLog,
   updateFoodFromlog,
   uploadImage,
 } from 'store/userLog/userLog.actions';
@@ -116,7 +116,7 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
   }, [foodObj]);
 
   const deleteFromLog = () => {
-    dispatch(DeleteFoodFromLog([{id: foodObj?.id || '-1'}])).then(() => {
+    dispatch(deleteFoodFromLog([{id: foodObj?.id || '-1'}])).then(() => {
       setShowDeleteModal(false);
       props.navigation.navigate(Routes.Dashboard);
     });

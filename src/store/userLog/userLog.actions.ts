@@ -339,7 +339,7 @@ export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
   };
 };
 
-export const DeleteFoodFromLog = (foodIds: Array<{id: string}>) => {
+export const deleteFoodFromLog = (foodIds: Array<{id: string}>) => {
   return async (dispatch: Dispatch<any>) => {
     const response = await userLogService.deleteFoodFromLog(foodIds);
 

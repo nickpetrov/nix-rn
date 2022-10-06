@@ -19,15 +19,15 @@ interface FoodLogHeaderProps {
   protein: number;
   carbohydrates: number;
   fat: number;
-  scrollDirection: 'up' | 'down';
+  // scrollDirection: 'up' | 'down';
   foods: Array<SortedFoodProps>;
 }
 
 const FoodLogHeader: React.FC<FoodLogHeaderProps> = props => {
   return (
     <View style={styles.foodLogHeader}>
-      <FoodLogNavigation scrollDirection={props.scrollDirection} />
-      <FoodLogStats {...props} scrollDirection={props.scrollDirection} />
+      <FoodLogNavigation />
+      <FoodLogStats {...props} />
     </View>
   );
 };

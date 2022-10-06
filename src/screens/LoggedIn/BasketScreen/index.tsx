@@ -15,7 +15,8 @@ import FoodEditItem from 'components/FoodEditItem';
 import WhenSection from 'components/WhenSection';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationHeader} from 'components/NavigationHeader';
-import SwipeView from 'components/SwipeView';
+import {Swipeable} from 'react-native-gesture-handler';
+import SwipeHiddenButtons from 'components/SwipeHiddenButtons';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -47,6 +48,7 @@ interface BasketScreenProps {
 export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
   const {foods, isSingleFood, servings, recipeName, consumed_at, meal_type} =
     useSelector(state => state.basket);
+  let rowRefs = new Map();
   const dispatch = useDispatch();
   let totalCalories = 0;
   let totalProtein = 0;
@@ -154,29 +156,45 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
     [dispatch],
   );
 
-  const foodsList = (
-    <SwipeView
-      data={foods}
-      buttons={[
-        {
-          type: 'delete',
-          keyId: 'basketId',
-          onPress: (id: string) => {
-            dispatch(basketActions.deleteFoodFromBasket(id || '-1'));
-          },
-        },
-      ]}
-      renderItem={data => (
+  const foodsList = foods.map((item: FoodProps, index: number) => {
+    return (
+      <Swipeable
+        key={item.basketId}
+        containerStyle={styles.swipeItemContainer}
+        renderRightActions={() => (
+          <SwipeHiddenButtons
+            buttons={[
+              {
+                type: 'delete',
+                onPress: () => {
+                  dispatch(
+                    basketActions.deleteFoodFromBasket(item.basketId || '-1'),
+                  );
+                },
+              },
+            ]}
+          />
+        )}
+        ref={ref => {
+          if (ref && !rowRefs.get(item.basketId)) {
+            rowRefs.set(item.basketId, ref);
+          }
+        }}
+        onSwipeableWillOpen={() => {
+          [...rowRefs.entries()].forEach(([key, ref]) => {
+            if (key !== item.basketId && ref) ref.close();
+          });
+        }}>
         <FoodEditItem
-          key={data.item.basketId}
-          itemIndex={data.index}
-          foodObj={data.item}
+          key={item.basketId}
+          itemIndex={index}
+          foodObj={item}
           itemChangeCallback={changeFoodAtBasket}
           withInfo
         />
-      )}
-    />
-  );
+      </Swipeable>
+    );
+  });
 
   return (
     <SafeAreaView style={styles.root}>

@@ -38,4 +38,7 @@ export const styles = StyleSheet.create({
   mb20: {
     marginBottom: 20,
   },
+  swipeItemContainer: {
+    backgroundColor: '#fff',
+  },
 });

@@ -3,10 +3,9 @@ import {StyleSheet} from 'react-native';
 export const styles = StyleSheet.create({
   layout: {
     flex: 1,
-    height: '100%',
   },
-  content: {
-    flex: 1,
+  swipeItemContainer: {
+    backgroundColor: '#fff',
   },
   photoMessageContainer: {
     position: 'absolute',
@@ -36,5 +35,13 @@ export const styles = StyleSheet.create({
   },
   photoMessageText: {
     textAlign: 'center',
+  },
+  listFooterComponent: {
+    flexGrow: 1,
+  },
+  footerContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'flex-end',
   },
 });
