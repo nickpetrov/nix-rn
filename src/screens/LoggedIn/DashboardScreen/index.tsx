@@ -65,6 +65,7 @@ import {mealTypes} from 'store/basket/basket.types';
 
 // styles
 import {styles} from './DashboardScreen.styles';
+import {Colors} from 'constants/Colors';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -88,6 +89,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   );
   let rowRefs = new Map<string | mealTypes, Swipeable>();
   const userData = useSelector(state => state.auth.userData);
+  const uncompletedProfile =
+    !userData.weight_kg ||
+    !userData.height_cm ||
+    !userData.gender ||
+    !userData.birth_year;
   const consumedWater = totals.find(
     (item: TotalProps) => item.date === selectedDate,
   )?.water_consumed_liter;
@@ -390,6 +396,19 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     <Text style={styles.summaryText}>View Daily Summary</Text>
                   </View>
                 </TouchableHighlight>
+              )}
+              {section.key === foodLogSections.Exercise && uncompletedProfile && (
+                <View style={styles.summary}>
+                  <Text>
+                    Complete your profile{' '}
+                    <Text
+                      style={{color: Colors.Info}}
+                      onPress={() => navigation.navigate(Routes.Profile)}>
+                      here
+                    </Text>{' '}
+                    for more accurate exercise tracking
+                  </Text>
+                </View>
               )}
             </>
           );
