@@ -210,7 +210,18 @@ export const addExerciseToLog = (query: string) => {
   return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     const selectedDate = useState().userLog.selectedDate;
 
-    const checkResponse = await userLogService.getExerciseByQuery(query);
+    const userDate = useState().auth.userData;
+
+    const userAge = new Date().getFullYear() - userDate.birth_year;
+    const user_data = {
+      age: (userAge > 100 ? 30 : userAge) || null,
+      height_cm: userDate.height_cm || null,
+      weight_kg: userDate.weight_kg || null,
+      gender: userDate.gender || null,
+      query,
+    };
+
+    const checkResponse = await userLogService.getExerciseByQuery(user_data);
 
     const checkResult = checkResponse.data;
 
@@ -242,8 +253,18 @@ export const addExerciseToLog = (query: string) => {
 export const updateExerciseToLog = (query: string, exercise: ExerciseProps) => {
   return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     const selectedDate = useState().userLog.selectedDate;
+    const userDate = useState().auth.userData;
 
-    const checkResponse = await userLogService.getExerciseByQuery(query);
+    const userAge = new Date().getFullYear() - userDate.birth_year;
+    const user_data = {
+      age: (userAge > 100 ? 30 : userAge) || null,
+      height_cm: userDate.height_cm || null,
+      weight_kg: userDate.weight_kg || null,
+      gender: userDate.gender || null,
+      query,
+    };
+
+    const checkResponse = await userLogService.getExerciseByQuery(user_data);
 
     const checkResult = checkResponse.data;
 
@@ -260,7 +281,7 @@ export const updateExerciseToLog = (query: string, exercise: ExerciseProps) => {
 
       const result = response.data;
 
-      if (result.exercises) {
+      if (result.exercises.length) {
         dispatch({
           type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
           exercises: result.exercises,

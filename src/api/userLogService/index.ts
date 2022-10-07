@@ -103,10 +103,14 @@ const userLogService = {
       },
     });
   },
-  async getExerciseByQuery(query: string) {
-    return await apiClient.post('natural/exercise', {
-      query,
-    });
+  async getExerciseByQuery(user_data: {
+    age: number | null;
+    query: string;
+    height_cm: number | null;
+    weight_kg: number | null;
+    gender: string | null;
+  }) {
+    return await apiClient.post('natural/exercise', user_data);
   },
   async addExerciseLog(exercises: Array<ExerciseProps>) {
     return await apiClient.post('exercise/log', {

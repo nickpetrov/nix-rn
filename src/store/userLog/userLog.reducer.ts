@@ -49,7 +49,7 @@ export default (state: UserLogState = initialState, action: AnyAction) => {
           return item;
         }
       });
-      return {...state, weights: newExercises};
+      return {...state, exercises: newExercises};
     }
     case userLogActionTypes.ADD_FOOD_TO_LOG: {
       const foodToAdd = !action.foodObj.length

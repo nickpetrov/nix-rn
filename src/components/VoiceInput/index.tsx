@@ -123,10 +123,13 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
     // setPartialResults([]);
 
     try {
-      await Voice.start('en-US');
+      await Voice.start('en-US', {
+        RECOGNIZER_ENGINE: 'services',
+        EXTRA_PARTIAL_RESULTS: true,
+      });
     } catch (e) {
       //eslint-disable-next-line
-      console.error(e);
+      console.error('start voice', e);
     }
   };
 

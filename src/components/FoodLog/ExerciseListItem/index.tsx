@@ -34,7 +34,11 @@ const ExerciseListItem: React.FC<ExerciseListItemProps> = ({
             <Text>
               {exercise.name.charAt(0).toUpperCase() + exercise.name.slice(1)}
             </Text>
-            <Text style={styles.time}>{`${exercise.duration_min} min`}</Text>
+            <Text style={styles.time}>
+              {exercise.name !== 'HealthKit Exercise Total'
+                ? `${exercise.duration_min} min`
+                : 'Daily Total'}
+            </Text>
           </View>
         </View>
         <Text style={styles.calories}>
