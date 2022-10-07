@@ -1,6 +1,7 @@
 // utils
 import React, {useEffect, useState} from 'react';
 import moment from 'moment-timezone';
+import {useNavigation} from '@react-navigation/native';
 
 // components
 import {View, Text, TouchableOpacity} from 'react-native';
@@ -18,13 +19,26 @@ import * as timeHelpers from 'helpers/time.helpers';
 // styles
 import {styles} from './FoodLogNavigation.styles';
 
+// constants
+import {Routes} from 'navigation/Routes';
+
+// types
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {FoodProps} from 'store/userLog/userLog.types';
+
 let goToTodayCounterTimeout: number;
 
 interface FoodLogNavigationProps {
+  foods: Array<FoodProps>;
   // scrollDirection: 'up' | 'down';
 }
 
-const FoodLogNavigation: React.FC<FoodLogNavigationProps> = () => {
+const FoodLogNavigation: React.FC<FoodLogNavigationProps> = ({foods}) => {
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<StackNavigatorParamList, Routes.Dashboard>
+    >();
   const dispatch = useDispatch();
   // const {scrollDirection} = props;
   const {selectedDate} = useSelector(state => state.userLog);
@@ -56,8 +70,18 @@ const FoodLogNavigation: React.FC<FoodLogNavigationProps> = () => {
     }
   }, [goToTodayCounter, dispatch, weekDay]);
 
-  const goToToday = () => {
-    setGoToTodayCounter(goToTodayCounter + 1);
+  // const goToToday = () => {
+  //   setGoToTodayCounter(goToTodayCounter + 1);
+  // };
+
+  const goToTotal = () => {
+    navigation.navigate(Routes.Totals, {
+      type: 'daily',
+      foods: foods.filter(
+        (item: FoodProps) =>
+          moment(item.consumed_at).format('YYYY-MM-DD') === selectedDate,
+      ),
+    });
   };
 
   const changeDate = (offset: number) => {
@@ -76,7 +100,7 @@ const FoodLogNavigation: React.FC<FoodLogNavigationProps> = () => {
           <FontAwesome name="angle-left" size={34} color="#fff" />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={goToToday} style={styles.flex1}>
+      <TouchableOpacity onPress={goToTotal} style={styles.flex1}>
         <View style={styles.navTitleWrapper}>
           {goToTodayCounter > 0 ? (
             <View style={styles.gotoTodayDisclaimerWrapper}>

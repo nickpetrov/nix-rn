@@ -14,7 +14,7 @@ import {styles} from './FoodLogStats.styles';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {SortedFoodProps} from 'store/userLog/userLog.types';
+import {FoodProps} from 'store/userLog/userLog.types';
 
 interface FoodLogStatsProps {
   caloriesLimit: number;
@@ -24,7 +24,7 @@ interface FoodLogStatsProps {
   carbohydrates: number;
   fat: number;
   // scrollDirection: 'up' | 'down';
-  foods: Array<SortedFoodProps>;
+  foods: Array<FoodProps>;
 }
 
 const FoodLogStats: React.FC<FoodLogStatsProps> = props => {

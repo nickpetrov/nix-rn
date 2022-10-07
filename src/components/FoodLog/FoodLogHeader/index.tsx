@@ -10,7 +10,7 @@ import FoodLogStats from './FoodLogStats';
 import {styles} from './FoodLogHeader.styles';
 
 // types
-import {SortedFoodProps} from 'store/userLog/userLog.types';
+import {FoodProps} from 'store/userLog/userLog.types';
 
 interface FoodLogHeaderProps {
   caloriesLimit: number;
@@ -20,13 +20,13 @@ interface FoodLogHeaderProps {
   carbohydrates: number;
   fat: number;
   // scrollDirection: 'up' | 'down';
-  foods: Array<SortedFoodProps>;
+  foods: Array<FoodProps>;
 }
 
 const FoodLogHeader: React.FC<FoodLogHeaderProps> = props => {
   return (
     <View style={styles.foodLogHeader}>
-      <FoodLogNavigation />
+      <FoodLogNavigation foods={props.foods} />
       <FoodLogStats {...props} />
     </View>
   );

@@ -1,7 +1,7 @@
 import {ParamListBase} from '@react-navigation/native';
 import {Routes} from 'navigation/Routes';
 import {PictureProps} from 'screens/LoggedIn';
-import {FoodProps, SortedFoodProps} from 'store/userLog/userLog.types';
+import {FoodProps} from 'store/userLog/userLog.types';
 import {RecipeProps} from '../store/recipes/recipes.types';
 
 export interface StackNavigatorParamList extends ParamListBase {
@@ -54,7 +54,8 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Suggested]: undefined;
   [Routes.Totals]: {
     type: string;
-    foods: Array<FoodProps> | Array<SortedFoodProps>;
+    foods: Array<FoodProps> | Array<FoodProps>;
+    date?: string;
   };
   [Routes.PhotoUpload]: {
     barcode: string;

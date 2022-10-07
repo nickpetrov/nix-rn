@@ -185,12 +185,3 @@ export type mealNameProps =
   | foodLogSections.Exercise
   | foodLogSections.Weigh_in
   | foodLogSections.Water;
-
-export interface SortedFoodProps {
-  mealName: mealNameProps;
-  foods?: Array<FoodProps>;
-  exercises?: Array<ExerciseProps>;
-  weights?: Array<WeightProps>;
-  water?: Array<WaterLogProps>;
-  consumed_at?: string;
-}

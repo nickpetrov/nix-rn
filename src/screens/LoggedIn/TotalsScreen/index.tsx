@@ -30,11 +30,7 @@ import getAttrValueById from 'helpers/getAttrValueById';
 // types
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {
-  FoodProps,
-  SortedFoodProps,
-  TotalProps,
-} from 'store/userLog/userLog.types';
+import {FoodProps, TotalProps} from 'store/userLog/userLog.types';
 import {User} from 'store/auth/auth.types';
 
 // constants
@@ -101,15 +97,15 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
   useEffect(() => {
     let newFoodsArray: Array<FoodProps> = [];
 
-    if (type?.length && type !== 'daily') {
-      newFoodsArray = (foods as FoodProps[]) || [];
-    } else if (type?.length) {
-      (foods as SortedFoodProps[])?.map(day => {
-        if (day?.foods?.length) {
-          newFoodsArray = newFoodsArray.concat(day.foods);
-        }
-      });
-    }
+    newFoodsArray = foods || [];
+
+    // else if (type?.length) {
+    //   (foods as FoodProps[])?.map(day => {
+    //     if (day?.foods?.length) {
+    //       newFoodsArray = newFoodsArray.concat(day.foods);
+    //     }
+    //   });
+    // }
     setFoodsArray(newFoodsArray);
   }, [foods, type]);
 
