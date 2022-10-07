@@ -123,7 +123,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
         {scanStatus && (
           <View style={styles.btnContainer}>
             <NixButton
-              type="royal"
+              type="blue"
               title="Try Again"
               onPress={tryAgainHandler}
             />

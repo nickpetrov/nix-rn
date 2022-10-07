@@ -141,8 +141,8 @@ const WeightModal: React.FC<WeightModalProps> = ({
                   text="lbs"
                 />
               </View>
-              <View>
-                <Text>
+              <View style={styles.note}>
+                <Text style={styles.noteText}>
                   You can also manage your unit settings in{' '}
                   <Text
                     style={{color: Colors.Info}}
@@ -156,7 +156,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
               </View>
               <View style={styles.weightModalButtons}>
                 <View style={[styles.flex1, styles.mr8]}>
-                  <NixButton title="Save" type="primary" onPress={handleSave} />
+                  <NixButton title="Save" type="blue" onPress={handleSave} />
                 </View>
                 <View style={styles.flex1}>
                   <NixButton title="Cancel" onPress={() => setVisible(null)} />

@@ -52,4 +52,11 @@ export const styles = StyleSheet.create({
   mr8: {
     marginRight: 8,
   },
+  note: {
+    marginHorizontal: 20,
+  },
+  noteText: {
+    fontSize: 10,
+    textAlign: 'center',
+  },
 });

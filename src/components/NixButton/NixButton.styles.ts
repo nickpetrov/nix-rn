@@ -65,10 +65,10 @@ export const styles = StyleSheet.create({
   energizedText: {
     color: '#fff',
   },
-  royal: {
-    backgroundColor: '#886aea',
+  blue: {
+    backgroundColor: Colors.Blue,
   },
-  royalText: {
+  blueText: {
     color: '#fff',
   },
   dark: {

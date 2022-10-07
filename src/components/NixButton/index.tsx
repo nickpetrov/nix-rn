@@ -16,7 +16,7 @@ interface NixButtonProps {
     | 'primary'
     | 'calm'
     | 'energized'
-    | 'royal'
+    | 'blue'
     | 'dark'
     | 'default'
     | 'outline'
@@ -81,9 +81,9 @@ export const NixButton: React.FC<NixButtonProps> = ({
       buttonTypeTextStyles = styles.energizedText;
       break;
     }
-    case 'royal': {
-      buttonTypeStyles = styles.royal;
-      buttonTypeTextStyles = styles.royalText;
+    case 'blue': {
+      buttonTypeStyles = styles.blue;
+      buttonTypeTextStyles = styles.blueText;
       break;
     }
     case 'dark': {
