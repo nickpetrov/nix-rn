@@ -63,4 +63,15 @@ export const styles = StyleSheet.create({
   offlineText: {
     fontWeight: '600',
   },
+  summary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#fff',
+  },
+  summaryText: {
+    fontSize: 14,
+    marginLeft: 5,
+  },
 });

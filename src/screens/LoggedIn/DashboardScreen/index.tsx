@@ -10,7 +10,13 @@ import moment from 'moment-timezone';
 import {useNetInfo} from '@react-native-community/netinfo';
 
 // components
-import {Text, View, RefreshControl, SectionList} from 'react-native';
+import {
+  Text,
+  View,
+  RefreshControl,
+  SectionList,
+  TouchableHighlight,
+} from 'react-native';
 import BasketButton from 'components/BasketButton';
 import Footer from 'components/Footer';
 import {NavigationHeader} from 'components/NavigationHeader';
@@ -29,6 +35,7 @@ import SwipeFoodLogHiddenItems from 'components/FoodLog/SwipeFoodLogHiddenItems'
 import SwipeHiddenButtons from 'components/SwipeHiddenButtons';
 import DeleteModal from 'components/DeleteModal';
 import WeighInListItem from 'components/FoodLog/WeighInListItem';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -363,18 +370,29 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           );
         }}
         renderSectionFooter={({section}) => {
-          if (section.data.length === 0) {
-            return (
-              <EmptyListItem
-                type={
-                  section.key === foodLogSections.Water ? 'full' : undefined
-                }
-                text={getEmptySectionText(section.key || '')}
-              />
-            );
-          } else {
-            return null;
-          }
+          return (
+            <>
+              {section.data.length === 0 ? (
+                <EmptyListItem
+                  type={
+                    section.key === foodLogSections.Water ? 'full' : undefined
+                  }
+                  text={getEmptySectionText(section.key || '')}
+                />
+              ) : null}
+              {section.key === foodLogSections.Water && (
+                <TouchableHighlight
+                  onPress={() =>
+                    navigation.navigate(Routes.Totals, {foods, type: 'daily'})
+                  }>
+                  <View style={styles.summary}>
+                    <FontAwesome name="pie-chart" color="#666" size={18} />
+                    <Text style={styles.summaryText}>View Daily Summary</Text>
+                  </View>
+                </TouchableHighlight>
+              )}
+            </>
+          );
         }}
         renderItem={({item, index, section}: any) => {
           const VisibleComponent = () => {
