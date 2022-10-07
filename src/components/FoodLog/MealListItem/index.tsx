@@ -51,7 +51,9 @@ const MealListItem: React.FC<MealListItemProps> = props => {
         <View style={styles.flex1}>
           <Text style={styles.foodName}>{foodObj.food_name}</Text>
           <Text style={styles.qty}>
-            {foodObj.serving_qty} {foodObj.serving_unit}
+            {`${foodObj.brand_name ? `${foodObj.brand_name} ` : ''}${
+              foodObj.serving_qty
+            } ${foodObj.serving_unit}`}
           </Text>
         </View>
         <Text style={styles.calories}>
