@@ -8,6 +8,7 @@ import {Dispatch} from 'redux';
 import {basketActionTypes, BasketState} from './basket.types';
 import {RootState} from '../index';
 import {FoodProps} from 'store/userLog/userLog.types';
+import moment from 'moment-timezone';
 
 const saveBasketToStorage = (basket: Partial<BasketState>) => {
   AsyncStorage.getItem('basket').then(data => {
@@ -48,8 +49,18 @@ export const addFoodToBasket = (query: string) => {
   };
 };
 
-export const addExistFoodToBasket = (food: FoodProps) => {
-  return {type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]};
+export const addExistFoodToBasket = (foods: Array<FoodProps>) => {
+  return async (dispatch: Dispatch, useState: () => RootState) => {
+    const timezone = useState().auth.userData.timezone;
+    const newFoods = foods.map(item => ({
+      ...item,
+      consumed_at:
+        moment().format('YYYY-MM-DDTHH:mm:ss') +
+        moment.tz(timezone).format('Z'),
+      basketId: uuidv4(),
+    }));
+    dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: newFoods});
+  };
 };
 
 export const changeLoggingType = (isSingleFood: boolean) => {

@@ -68,7 +68,7 @@ const History: React.FC<HistoryProps> = ({navigation}) => {
     batch(() => {
       dispatch(basketActions.changeMealType(aggregatedFood.meal_type));
       dispatch(basketActions.changeConsumedAt(aggregatedFood.consumed_at));
-      dispatch(basketActions.addExistFoodToBasket(aggregatedFood));
+      dispatch(basketActions.addExistFoodToBasket([aggregatedFood]));
     });
     navigation.replace(Routes.Basket);
   };

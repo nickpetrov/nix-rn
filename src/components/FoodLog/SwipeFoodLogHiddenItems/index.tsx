@@ -32,7 +32,7 @@ import Swipeable from 'react-native-gesture-handler/lib/typescript/components/Sw
 interface SwipeFoodLogHiddenItemsProps {
   foodLogSection: foodLogSections;
   sectionItem: any;
-  rowRefs: Map<string, Swipeable>;
+  rowRefs: Map<string | mealTypes, Swipeable>;
 }
 
 const SwipeFoodLogHiddenItems: React.FC<SwipeFoodLogHiddenItemsProps> = ({

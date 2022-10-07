@@ -26,6 +26,7 @@ import WaterListItem from 'components/FoodLog/WaterListItem';
 import FoodLogSectionHeader from 'components/FoodLog/FoodLogSectionHeader';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import SwipeFoodLogHiddenItems from 'components/FoodLog/SwipeFoodLogHiddenItems';
+import SwipeHiddenButtons from 'components/SwipeHiddenButtons';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -33,6 +34,7 @@ import useLocalNotification from 'hooks/useLocalNotification';
 
 // actinos
 import * as userLogActions from 'store/userLog/userLog.actions';
+import {addExistFoodToBasket} from 'store/basket/basket.actions';
 
 // constant
 import {Routes} from 'navigation/Routes';
@@ -54,6 +56,7 @@ import {mealTypes} from 'store/basket/basket.types';
 
 // styles
 import {styles} from './DashboardScreen.styles';
+import DeleteModal from 'components/DeleteModal';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -69,10 +72,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 }) => {
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
+  const [deleteteModal, setDeleteteModal] = useState<
+    {items: Array<FoodProps>; mealName: keyof mealTypes} | false
+  >(false);
   const {foods, totals, selectedDate, weights, exercises} = useSelector(
     state => state.userLog,
   );
-  let rowRefs = new Map<string, Swipeable>();
+  let rowRefs = new Map<string | mealTypes, Swipeable>();
   const userData = useSelector(state => state.auth.userData);
   const consumedWater = totals.find(
     (item: TotalProps) => item.date === selectedDate,
@@ -291,7 +297,62 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             section.key !== foodLogSections.Water
               ? [...section.data]
               : undefined;
-          return (
+          return mealType ? (
+            <Swipeable
+              containerStyle={styles.swipeItemContainer}
+              renderRightActions={() =>
+                section.data.length ? (
+                  <SwipeHiddenButtons
+                    buttons={[
+                      {
+                        type: 'delete',
+                        onPress: () => {
+                          setDeleteteModal({
+                            items: section.data,
+                            mealName: section.key as keyof mealTypes,
+                          });
+                        },
+                      },
+                      {
+                        type: 'copy',
+                        onPress: () => {
+                          dispatch(addExistFoodToBasket(section.data)).then(
+                            () => {
+                              // close all swipes after copy
+                              [...rowRefs.values()].forEach(ref => {
+                                if (ref) {
+                                  ref.close();
+                                }
+                              });
+                              navigation.navigate(Routes.Basket);
+                            },
+                          );
+                        },
+                      },
+                    ]}
+                  />
+                ) : undefined
+              }
+              ref={ref => {
+                if (ref && !rowRefs.get(mealType)) {
+                  rowRefs.set(mealType, ref);
+                }
+              }}
+              onSwipeableWillOpen={() => {
+                [...rowRefs.entries()].forEach(([key, ref]) => {
+                  if (key !== mealType && ref) {
+                    ref.close();
+                  }
+                });
+              }}>
+              <FoodLogSectionHeader
+                title={section.key || ''}
+                mealType={mealType}
+                foods={foodList}
+                onPress={() => handleChooseCategory(section.key || '')}
+              />
+            </Swipeable>
+          ) : (
             <FoodLogSectionHeader
               title={section.key || ''}
               mealType={mealType}
@@ -379,7 +440,9 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               }}
               onSwipeableWillOpen={() => {
                 [...rowRefs.entries()].forEach(([key, ref]) => {
-                  if (key !== item.id && ref) ref.close();
+                  if (key !== item.id && ref) {
+                    ref.close();
+                  }
                 });
               }}>
               <VisibleComponent />
@@ -412,6 +475,24 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         visible={watertModal}
         setVisible={setWaterModal}
         selectedDate={selectedDate}
+      />
+      <DeleteModal
+        modalVisible={!!deleteteModal}
+        setModalVisible={(b: boolean) => setDeleteteModal(b as false)}
+        title="Delete Foods"
+        text={`Are you shure you want to delete all of your ${
+          deleteteModal ? deleteteModal.mealName.toLowerCase() : ''
+        } items?`}
+        delete={() =>
+          deleteteModal &&
+          dispatch(
+            userLogActions.deleteFoodFromLog(
+              deleteteModal.items.map((item: FoodProps) => ({
+                id: item.id,
+              })),
+            ),
+          )
+        }
       />
     </View>
   );

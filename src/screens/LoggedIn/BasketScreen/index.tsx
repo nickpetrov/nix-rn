@@ -54,11 +54,11 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
   let totalProtein = 0;
   let totalFat = 0;
   let totalCarb = 0;
-
+  console.log('basekt foods', foods);
   foods.map((food: FoodProps) => {
     food = {
       ...food,
-      ...NixHelpers.convertFullNutrientsToNfAttributes(food.full_nutrients),
+      ...NixHelpers.convertFullNutrientsToNfAttributes(food?.full_nutrients),
     };
 
     totalCalories +=

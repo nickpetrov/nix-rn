@@ -92,7 +92,7 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = props => {
     batch(() => {
       dispatch(basketActions.changeMealType(aggregatedFood.meal_type));
       dispatch(basketActions.changeConsumedAt(aggregatedFood.consumed_at));
-      dispatch(basketActions.addExistFoodToBasket(aggregatedFood));
+      dispatch(basketActions.addExistFoodToBasket([aggregatedFood]));
     });
     props.navigation.replace(Routes.Basket);
   };
@@ -105,7 +105,7 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = props => {
       }
 
       const food = nixHelpers.convertV1ItemToTrackFood(foodObj);
-      dispatch(basketActions.addExistFoodToBasket(food));
+      dispatch(basketActions.addExistFoodToBasket([food]));
     } catch (err) {
       console.log(err);
     }

@@ -8,7 +8,6 @@ export const styles = StyleSheet.create({
   },
   btn: {
     width: 75,
-    padding: 10,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',

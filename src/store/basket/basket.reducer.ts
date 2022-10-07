@@ -14,7 +14,7 @@ export default (state: BasketState = initialState, action: AnyAction) => {
   switch (action.type) {
     case basketActionTypes.ADD_FOOD_TO_BASKET: {
       let newFoods = [...state.foods];
-      if (typeof action.foods == 'object') {
+      if (Array.isArray(action.foods)) {
         newFoods = newFoods.concat(action.foods);
       } else {
         newFoods.push(action.foods);
