@@ -27,6 +27,8 @@ import FoodLogSectionHeader from 'components/FoodLog/FoodLogSectionHeader';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import SwipeFoodLogHiddenItems from 'components/FoodLog/SwipeFoodLogHiddenItems';
 import SwipeHiddenButtons from 'components/SwipeHiddenButtons';
+import DeleteModal from 'components/DeleteModal';
+import WeighInListItem from 'components/FoodLog/WeighInListItem';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -56,7 +58,6 @@ import {mealTypes} from 'store/basket/basket.types';
 
 // styles
 import {styles} from './DashboardScreen.styles';
-import DeleteModal from 'components/DeleteModal';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -400,15 +401,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               );
             } else if (section.key === foodLogSections.Weigh_in) {
               return (
-                <EmptyListItem
-                  text={`${moment(item.timestamp).format('h:mm a')}   ${
-                    userData.measure_system === 1
-                      ? `${item.kg} kg`
-                      : `${Math.round(
-                          parseFloat(String(item.kg)) * 2.20462,
-                        )} lbs`
-                  }`}
-                  type="full"
+                <WeighInListItem
+                  item={item}
+                  onPress={() => setWeightModal(item)}
+                  measure_system={userData.measure_system}
                 />
               );
             } else if (section.key === foodLogSections.Water) {

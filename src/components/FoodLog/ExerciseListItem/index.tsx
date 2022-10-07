@@ -9,6 +9,7 @@ import {ExerciseProps} from 'store/userLog/userLog.types';
 
 // styles
 import {styles} from './ExerciseListItem.styles';
+import {Colors} from 'constants/Colors';
 
 interface ExerciseListItemProps {
   onPress: () => void;
@@ -22,7 +23,10 @@ const ExerciseListItem: React.FC<ExerciseListItemProps> = ({
   last,
 }) => {
   return (
-    <TouchableHighlight style={styles.container} onPress={onPress}>
+    <TouchableHighlight
+      underlayColor={Colors.Highlight}
+      style={styles.container}
+      onPress={onPress}>
       <View style={[styles.root, !last ? styles.borderBottom : {}]}>
         <View style={styles.left}>
           <Image source={{uri: exercise.photo.thumb}} style={styles.image} />

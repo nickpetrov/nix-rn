@@ -6,4 +6,5 @@ export enum Colors {
   Gray = '#dfdfdf',
   Delete = 'red',
   Blue = '#6198f5',
+  Highlight = 'rgb(240, 240, 240)',
 }
