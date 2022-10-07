@@ -29,4 +29,14 @@ export const styles = StyleSheet.create({
   calories: {
     color: Colors.Primary,
   },
+  right: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 15,
+  },
+  chevron: {
+    marginLeft: 5,
+  },
 });

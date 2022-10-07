@@ -3,20 +3,21 @@ import React from 'react';
 
 // components
 import {View, Text, Image, TouchableHighlight} from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // types
 import {mealTypes} from 'store/basket/basket.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {FoodProps, mealNameProps} from 'store/userLog/userLog.types';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // styles
 import {styles} from './MealListItem.styles';
 
 // constants
 import {Routes} from 'navigation/Routes';
-
-// types
-import {FoodProps, mealNameProps} from 'store/userLog/userLog.types';
-import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {Colors} from 'constants/Colors';
 
 interface MealListItemProps {
   foodObj: FoodProps;
@@ -26,10 +27,11 @@ interface MealListItemProps {
     Routes.Autocomplete | Routes.Dashboard | Routes.Totals
   >;
   onTap?: () => void;
+  withArrow?: boolean;
 }
-
 const MealListItem: React.FC<MealListItemProps> = props => {
   const {foodObj, mealName} = props;
+
   return (
     <TouchableHighlight
       onPress={() =>
@@ -56,10 +58,27 @@ const MealListItem: React.FC<MealListItemProps> = props => {
             } ${foodObj.serving_unit}`}
           </Text>
         </View>
-        <Text style={styles.calories}>
-          {' '}
-          {foodObj?.nf_calories ? foodObj.nf_calories.toFixed(0) : ''}
-        </Text>
+        <View style={styles.right}>
+          {foodObj.photo.is_user_uploaded && (
+            <FontAwesome
+              style={styles.icon}
+              name="camera"
+              color={Colors.Blue}
+              size={20}
+            />
+          )}
+          <Text style={styles.calories}>
+            {foodObj?.nf_calories ? foodObj.nf_calories.toFixed(0) : ''}
+          </Text>
+          {props.withArrow && (
+            <Ionicons
+              style={styles.chevron}
+              name="chevron-forward"
+              color={Colors.Gray}
+              size={20}
+            />
+          )}
+        </View>
       </View>
     </TouchableHighlight>
   );

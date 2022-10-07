@@ -326,6 +326,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   foodObj={item}
                   navigation={navigation}
                   mealName={mealById[item.mealType as keyof typeof mealById]}
+                  withArrow
                 />
               );
             } else if (section.key === foodLogSections.Exercise) {

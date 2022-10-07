@@ -3,5 +3,7 @@ export enum Colors {
   Secondary = '',
   Info = '#08A9DB',
   LightGray = '#ececec',
+  Gray = '#dfdfdf',
   Delete = 'red',
+  Blue = '#6198f5',
 }
