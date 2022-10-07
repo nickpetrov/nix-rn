@@ -13,6 +13,7 @@
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^2.2.2",
     "@react-native-async-storage/async-storage": "^1.17.10",
+    "@react-native-community/netinfo": "^9.3.4",
     "@react-native-community/push-notification-ios": "^1.10.1",
     "@react-native-voice/voice": "^3.2.4",
     "@react-navigation/drawer": "^6.4.4",

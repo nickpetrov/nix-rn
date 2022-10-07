@@ -49,7 +49,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   const showAutocomplete = () => {
     if (navigation && route.name !== Routes.Autocomplete) {
       navigation.navigate(Routes.Autocomplete);
-      inputRef.current?.blur()
+      inputRef.current?.blur();
     }
   };
 
@@ -70,9 +70,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
             placeholder="Search foods to log"
             // onBlur={() => Keyboard.dismiss()}
             onLayout={() => {
-              if (
-                route.name === Routes.Autocomplete
-              ) {
+              if (route.name === Routes.Autocomplete) {
                 inputRef.current?.focus();
               }
             }}

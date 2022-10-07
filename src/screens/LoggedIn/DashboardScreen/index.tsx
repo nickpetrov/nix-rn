@@ -7,6 +7,7 @@ import React, {
   useMemo,
 } from 'react';
 import moment from 'moment-timezone';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 // components
 import {Text, View, RefreshControl, SectionList} from 'react-native';
@@ -66,6 +67,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   navigation,
   route,
 }) => {
+  const netInfo = useNetInfo();
   const dispatch = useDispatch();
   const {foods, totals, selectedDate, weights, exercises} = useSelector(
     state => state.userLog,
@@ -243,6 +245,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         keyExtractor={(item: any) => item.id}
         ListHeaderComponent={() => (
           <>
+            {!netInfo.isConnected && (
+              <View style={styles.offline}>
+                <View style={styles.offlineContainer}>
+                  <Text style={styles.offlineText}>Offline Mode</Text>
+                </View>
+              </View>
+            )}
             {showPhotoUploadMessage ? (
               <View style={styles.photoMessageContainer}>
                 <Text style={styles.photoMessageTitle}>Thank you!</Text>
