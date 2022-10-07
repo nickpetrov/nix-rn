@@ -74,7 +74,7 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = props => {
       onPress={() =>
         navigation.navigate(Routes.Totals, {
           type: 'daily',
-          foods: props.foods || [],
+          foods: props.foods,
         })
       }>
       <View>

@@ -270,7 +270,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               protein={selectedDay.totals.total_proteins || 0}
               carbohydrates={selectedDay.totals.total_carbs || 0}
               fat={selectedDay.totals.total_fat || 0}
-              foods={foods || []}
+              foods={foods.filter(
+                (item: FoodProps) =>
+                  moment(item.consumed_at).format('YYYY-MM-DD') ===
+                  selectedDate,
+              )}
             />
           </>
         )}

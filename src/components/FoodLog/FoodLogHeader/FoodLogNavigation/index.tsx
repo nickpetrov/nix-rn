@@ -77,10 +77,7 @@ const FoodLogNavigation: React.FC<FoodLogNavigationProps> = ({foods}) => {
   const goToTotal = () => {
     navigation.navigate(Routes.Totals, {
       type: 'daily',
-      foods: foods.filter(
-        (item: FoodProps) =>
-          moment(item.consumed_at).format('YYYY-MM-DD') === selectedDate,
-      ),
+      foods: foods,
     });
   };
 
