@@ -22,6 +22,8 @@ export const styles = StyleSheet.create({
     padding: 10,
   },
   waterModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     borderTopEndRadius: 10,
     borderTopLeftRadius: 10,
@@ -89,5 +91,8 @@ export const styles = StyleSheet.create({
   },
   footer: {
     height: 40,
+  },
+  icon: {
+    marginRight: 5,
   },
 });

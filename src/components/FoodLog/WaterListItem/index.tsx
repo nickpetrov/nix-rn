@@ -9,7 +9,8 @@ import {styles} from './WaterListItem.styles';
 import {Colors} from 'constants/Colors';
 
 export interface WaterListItemProps {
-  text: string;
+  consumed: number;
+  measure_system: number;
   onPress: () => void;
 }
 
@@ -19,7 +20,11 @@ const WaterListItem: React.FC<WaterListItemProps> = props => {
       underlayColor={Colors.Highlight}
       style={styles.root}
       onPress={props.onPress}>
-      <Text style={styles.text}>{props.text || 0} L</Text>
+      <Text style={styles.text}>
+        {props.measure_system === 1
+          ? `${props.consumed || 0} L`
+          : `${(props.consumed * 33.814).toFixed()} oz`}
+      </Text>
     </TouchableHighlight>
   );
 };

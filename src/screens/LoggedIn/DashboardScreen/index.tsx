@@ -219,7 +219,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     } else if (key === foodLogSections.Weigh_in) {
       noLoggedDataText = 'No weights logged yet.';
     } else if (key === foodLogSections.Water) {
-      noLoggedDataText = '0 L';
+      noLoggedDataText = userData.measure_system === 1 ? '0 L' : '0 oz';
     }
 
     return noLoggedDataText;
@@ -411,7 +411,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               return (
                 <WaterListItem
                   onPress={() => setWaterModal(true)}
-                  text={item.consumed}
+                  measure_system={userData.measure_system}
+                  consumed={item.consumed}
                 />
               );
             } else {

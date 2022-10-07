@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {NixButton} from 'components/NixButton';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -24,6 +25,7 @@ import {TotalProps} from 'store/userLog/userLog.types';
 // styles
 import {styles} from './WaterModal.styles';
 import {addWaterlog, updateWaterlog} from 'store/userLog/userLog.actions';
+import {Colors} from 'constants/Colors';
 
 interface WaterModalProps {
   visible: boolean;
@@ -36,6 +38,9 @@ const WaterModal: React.FC<WaterModalProps> = ({
   setVisible,
   selectedDate,
 }) => {
+  const measure_system = useSelector(
+    state => state.auth.userData.measure_system,
+  );
   const totals = useSelector(state => state.userLog.totals);
   const consumedWater = totals.find(
     (item: TotalProps) => item.date === selectedDate,
@@ -49,44 +54,67 @@ const WaterModal: React.FC<WaterModalProps> = ({
   const commonValues = [
     {
       id: 1,
-      text: '0.25 L',
-      value: 0.25,
+      text: measure_system === 1 ? '0.25 L' : '8 oz',
+      value: measure_system === 1 ? 0.25 : 8,
     },
     {
       id: 2,
-      text: '0.33 L',
-      value: 0.33,
+      text: measure_system === 1 ? '0.33 L' : '16 oz',
+      value: measure_system === 1 ? 0.33 : 16,
     },
     {
       id: 3,
-      text: '0.5 L',
-      value: 0.5,
+      text: measure_system === 1 ? '0.5 L' : '24 oz',
+      value: measure_system === 1 ? 0.5 : 24,
     },
     {
       id: 4,
-      text: '1 L',
-      value: 1,
+      text: measure_system === 1 ? '1 L' : '32 oz',
+      value: measure_system === 1 ? 1 : 32,
     },
   ];
 
   const handleAdd = (value: number) => {
     if (value) {
-      dispatch(addWaterlog([{date: selectedDate, consumed: +value}])).then(
-        () => {
-          setCustomValue('');
-        },
-      );
+      dispatch(
+        addWaterlog([
+          {
+            date: selectedDate,
+            consumed: measure_system === 1 ? +value : +(value / 33.814),
+          },
+        ]),
+      ).then(() => {
+        setCustomValue('');
+        setVisible(false);
+      });
     }
   };
   const handleEdit = (value: number) => {
     if (value) {
-      dispatch(updateWaterlog([{date: selectedDate, consumed: +value}]));
+      dispatch(
+        updateWaterlog([
+          {
+            date: selectedDate,
+            consumed: measure_system === 1 ? +value : +(value / 33.814),
+          },
+        ]),
+      ).then(() => {
+        setVisible(false);
+      });
     }
   };
 
   useEffect(() => {
-    setTotalValue(consumedWater ? String(consumedWater) : '');
-  }, [visible, consumedWater]);
+    setTotalValue(
+      consumedWater
+        ? String(
+            measure_system === 1
+              ? consumedWater
+              : (consumedWater * 33.814).toFixed(),
+          )
+        : '',
+    );
+  }, [visible, consumedWater, measure_system]);
 
   return (
     <Modal
@@ -100,6 +128,12 @@ const WaterModal: React.FC<WaterModalProps> = ({
         <View style={styles.waterModal}>
           <View style={styles.waterContainer}>
             <View style={styles.waterModalHeader}>
+              <Ionicons
+                style={styles.icon}
+                name="water"
+                color={Colors.Blue}
+                size={16}
+              />
               <Text>Log Water</Text>
             </View>
             <View style={styles.content}>
@@ -127,11 +161,11 @@ const WaterModal: React.FC<WaterModalProps> = ({
                         onChangeText={setCustomValue}
                         keyboardType="numeric"
                       />
-                      <Text>L</Text>
+                      <Text>{measure_system === 1 ? 'L' : 'oz'}</Text>
                     </View>
                     <NixButton
                       title="Add"
-                      type="facebook"
+                      type="blue"
                       onPress={() => handleAdd(+customValue)}
                     />
                   </View>
@@ -148,11 +182,11 @@ const WaterModal: React.FC<WaterModalProps> = ({
                         onChangeText={setTotalValue}
                         keyboardType="numeric"
                       />
-                      <Text>L</Text>
+                      <Text>{measure_system === 1 ? 'L' : 'oz'}</Text>
                     </View>
                     <NixButton
                       title="Update"
-                      type="facebook"
+                      type="blue"
                       onPress={() => handleEdit(+totalValue)}
                     />
                   </View>
