@@ -117,6 +117,7 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 <Text>Recent Exercises:</Text>
                 {recent.map((item: string) => (
                   <TouchableOpacity
+                    key={item}
                     style={styles.recent}
                     onPress={() =>
                       dispatch(addExerciseToLog(item)).then(() =>
