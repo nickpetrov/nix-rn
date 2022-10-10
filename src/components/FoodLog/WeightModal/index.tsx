@@ -1,7 +1,7 @@
 // utils
 import React, {useEffect, useState} from 'react';
 import moment from 'moment-timezone';
-import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 // components
 import {
@@ -27,6 +27,10 @@ import {addWeightlog, updateWeightlog} from 'store/userLog/userLog.actions';
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {WeightProps} from 'store/userLog/userLog.types';
+import {StackNavigatorParamList} from 'navigation/navigation.types';
+
+// constants
+import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './WeightModal.styles';
@@ -44,7 +48,10 @@ const WeightModal: React.FC<WeightModalProps> = ({
   weight,
   selectedDate,
 }) => {
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<StackNavigatorParamList, Routes.Dashboard>
+    >();
   const userData = useSelector(state => state.auth.userData);
   const [measureSystem, setMeasureSystem] = useState(userData.measure_system);
   const dispatch = useDispatch();
@@ -148,7 +155,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
                     style={{color: Colors.Info}}
                     onPress={() => {
                       setVisible(null);
-                      navigation.navigate('DailyCalories');
+                      navigation.navigate(Routes.Preferences);
                     }}>
                     Preference
                   </Text>

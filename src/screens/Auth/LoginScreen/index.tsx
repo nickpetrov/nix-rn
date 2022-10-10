@@ -177,6 +177,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
             type="facebook"
             iconName="facebook-square"
             onTap={fbLoginHandler}
+            withMarginTop={Platform.OS === 'ios' ? true : false}
           />
           <Text style={{...styles.noteText, ...styles.fbDisclamer}}>
             The app does not post to Facebook

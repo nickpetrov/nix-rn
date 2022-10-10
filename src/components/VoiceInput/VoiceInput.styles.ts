@@ -4,6 +4,10 @@ export const styles = StyleSheet.create({
   voiceContainer: {
     position: 'relative',
   },
+  input: {
+    height: 120,
+    textAlignVertical: 'top',
+  },
   voiceRecognitionControls: {
     backgroundColor: 'white',
     borderRadius: 20,

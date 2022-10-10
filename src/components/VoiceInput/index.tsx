@@ -156,8 +156,8 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
   return (
     <View style={styles.voiceContainer}>
       <TextInput
-        style={style}
-        multiline={true}
+        style={[styles.input, style]}
+        multiline
         numberOfLines={4}
         value={value}
         onChangeText={onChangeText}
