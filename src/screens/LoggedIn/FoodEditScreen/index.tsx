@@ -2,7 +2,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import moment from 'moment-timezone';
 import {launchImageLibrary} from 'react-native-image-picker';
-import equal from 'deep-equal';
+import _ from 'lodash';
 
 // components
 import {
@@ -204,7 +204,7 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
   };
 
   useEffect(() => {
-    setShowSave(!equal(foodObj, props.route.params?.foodObj));
+    setShowSave(!_.isEqual(foodObj, props.route.params?.foodObj));
   }, [foodObj, props.route.params?.foodObj]);
 
   return (

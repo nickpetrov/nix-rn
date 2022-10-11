@@ -66,6 +66,7 @@ import {mealTypes} from 'store/basket/basket.types';
 // styles
 import {styles} from './DashboardScreen.styles';
 import {Colors} from 'constants/Colors';
+import ErrorModal from 'components/ErrorModal';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -174,6 +175,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   }, [foods, selectedDate, weights, exercises, consumedWater]);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [scanError, setScanError] = useState(false);
   const [excerciseModal, setExcerciseModal] = useState<ExerciseProps | null>(
     null,
   );
@@ -220,6 +222,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       setShowPhotoUploadMessage(true);
     }
   }, [infoMessage]);
+
+  useEffect(() => {
+    if (route.params?.scanError) {
+      setScanError(true);
+    }
+  }, [route]);
 
   setTimeout(() => {
     setShowPhotoUploadMessage(false);
@@ -527,6 +535,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             ),
           )
         }
+      />
+      <ErrorModal
+        modalVisible={scanError}
+        setModalVisible={setScanError}
+        title="Error"
+        text="We scanned an unrecognized QR code, if you are trying to scan a
+        food product barcode, please try to avoid scanning the QR code
+        near the barcode and try scanning this product again"
       />
     </View>
   );

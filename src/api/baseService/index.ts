@@ -56,6 +56,9 @@ const baseService = {
       },
     });
   },
+  async shareMeal(foodId: string, shareKey: string) {
+    return await apiClient.get(`share/food/${foodId}/${shareKey}`);
+  },
 };
 
 export default baseService;

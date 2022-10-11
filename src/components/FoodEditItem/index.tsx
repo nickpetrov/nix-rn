@@ -1,7 +1,7 @@
 // utils
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import equal from 'deep-equal';
+import _ from 'lodash';
 
 // components
 import {
@@ -83,7 +83,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
   }, [foodObj]);
 
   useEffect(() => {
-    if (itemChangeCallback && !equal(foodObj, food)) {
+    if (itemChangeCallback && !_.isEqual(foodObj, food)) {
       itemChangeCallback(food, itemIndex || 0);
     }
   }, [food, itemIndex, itemChangeCallback, foodObj]);

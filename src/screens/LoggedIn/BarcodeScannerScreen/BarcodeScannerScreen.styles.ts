@@ -30,10 +30,39 @@ export const styles = StyleSheet.create({
     padding: 5,
   },
   qrCodeTitleContainer: {
-    backgroundColor: '#fff',
+    position: 'absolute',
+    bottom: 0,
+    zIndex: 1,
   },
   qrCodeTitle: {
+    color: '#fff',
     paddingVertical: 5,
     paddingHorizontal: 8,
+  },
+  alert: {
+    position: 'absolute',
+    top: '50%',
+    padding: 10,
+    flexDirection: 'column',
+  },
+  alertTitle: {
+    fontWeight: '500',
+    marginBottom: 10,
+  },
+  alertText: {
+    marginBottom: 10,
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  snapshot: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1,
+    opacity: 0.5,
   },
 });

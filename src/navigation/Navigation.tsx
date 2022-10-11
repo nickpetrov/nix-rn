@@ -164,6 +164,9 @@ const LoggedInNavigation = ({
       <Stack.Screen
         name={Routes.BarcodeScanner}
         component={BarcodeScannerScreen}
+        options={{
+          headerShown: false,
+        }}
       />
       <Stack.Screen
         name={Routes.CustomFoods}

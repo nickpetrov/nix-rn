@@ -13,6 +13,7 @@ export interface StackNavigatorParamList extends ParamListBase {
     | {
         justLoggedIn?: boolean;
         infoMessage?: string;
+        scanError?: boolean;
       }
     | undefined;
   [Routes.List]: undefined;
@@ -25,7 +26,12 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Notifications]: undefined;
   [Routes.GroceryAgentSettings]: undefined;
   [Routes.DeveloperSettings]: undefined;
-  [Routes.Basket]: undefined;
+  [Routes.Basket]:
+    | {
+        redirectStateKey?: string;
+        scanError?: boolean;
+      }
+    | undefined;
   [Routes.FoodEdit]: {
     foodObj: FoodProps;
     mealType?: number;
@@ -39,7 +45,12 @@ export interface StackNavigatorParamList extends ParamListBase {
       }
     | undefined;
   [Routes.TrackFoods]: undefined;
-  [Routes.BarcodeScanner]: undefined;
+  [Routes.BarcodeScanner]:
+    | {
+        force_photo_upload?: boolean;
+        redirectStateKey?: string;
+      }
+    | undefined;
   [Routes.CustomFoods]: undefined;
   [Routes.CustomFoodEdit]: {
     food: FoodProps | null;
@@ -61,6 +72,7 @@ export interface StackNavigatorParamList extends ParamListBase {
     barcode: string;
     picture?: PictureProps | null;
     picType?: number;
+    redirectStateKey?: string;
   };
   [Routes.Stats]: undefined;
   [Routes.Camera]: {barcode: string; picType: number};

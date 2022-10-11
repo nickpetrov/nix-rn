@@ -10,6 +10,7 @@ interface ErrorModalProps {
   modalVisible: boolean;
   setModalVisible: (v: false) => void;
   text: string;
+  title?: string;
 }
 
 const ErrorModal: React.FC<ErrorModalProps> = props => {
@@ -23,13 +24,20 @@ const ErrorModal: React.FC<ErrorModalProps> = props => {
       }}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>{props.text}</Text>
-          <View style={styles.btnContainer}>
-            <NixButton
-              title="Ok"
-              type="primary"
-              onPress={() => props.setModalVisible(false)}
-            />
+          {props.title && (
+            <View style={styles.header}>
+              <Text>{props.title}</Text>
+            </View>
+          )}
+          <View style={styles.content}>
+            <Text style={styles.modalText}>{props.text}</Text>
+            <View style={styles.btnContainer}>
+              <NixButton
+                title="Ok"
+                type="primary"
+                onPress={() => props.setModalVisible(false)}
+              />
+            </View>
           </View>
         </View>
       </View>

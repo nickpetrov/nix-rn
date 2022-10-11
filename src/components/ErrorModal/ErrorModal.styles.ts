@@ -1,3 +1,4 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -9,10 +10,9 @@ export const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
+    maxWidth: '70%',
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -28,5 +28,19 @@ export const styles = StyleSheet.create({
   },
   btnContainer: {
     flexDirection: 'row',
+  },
+  content: {
+    padding: 15,
+  },
+  header: {
+    alignItems: 'center',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.LightGray,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });

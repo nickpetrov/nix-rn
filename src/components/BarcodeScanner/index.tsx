@@ -14,6 +14,7 @@ import {styles} from './BarcodeScanner.styles';
 // types
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useRoute} from '@react-navigation/native';
 
 interface BarcodeScannerProps {
   navigation: NativeStackNavigationProp<
@@ -26,9 +27,12 @@ interface BarcodeScannerProps {
 }
 
 export const BarcodeScanner: React.FC<BarcodeScannerProps> = props => {
+  const route = useRoute();
   const initBarcodeScanner = () => {
     if (props.navigation) {
-      props.navigation.navigate(Routes.BarcodeScanner);
+      props.navigation.navigate(Routes.BarcodeScanner, {
+        redirectStateKey: route.key,
+      });
     }
     Keyboard.dismiss();
   };

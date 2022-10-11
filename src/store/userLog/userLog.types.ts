@@ -99,7 +99,7 @@ export interface TotalProps {
 export interface MeasureProps {
   measure: string;
   qty: number;
-  seq: number;
+  seq: number | null;
   serving_weight: number;
 }
 
@@ -119,7 +119,7 @@ export interface TagProp {
 export interface FoodProps {
   alt_measures: Array<MeasureProps>;
   brand_name: string | null;
-  consumed_at: string;
+  consumed_at: string | Date;
   food_name: string;
   full_nutrients: Array<NutrientProps>;
   id: string;
@@ -151,7 +151,7 @@ export interface FoodProps {
   share_key: string;
   source: number;
   tags: Array<TagProp>;
-  upc: null;
+  upc: string | null;
   net_carbs: number | null;
   vitamin_d: number | null;
   caffeine: number | null;
@@ -169,6 +169,7 @@ export interface FoodProps {
   sub_recipe?: string;
   public_id?: number | null;
   basketId?: string;
+  updated_at?: string;
 }
 
 export interface UserLogState {

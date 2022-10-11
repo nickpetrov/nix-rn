@@ -1,5 +1,5 @@
 // utils
-import React, {useCallback} from 'react';
+import React, {useCallback, useState, useEffect, useLayoutEffect} from 'react';
 
 // helpers
 import {multiply} from 'helpers/multiply';
@@ -33,6 +33,7 @@ import {
   NutrientProps,
 } from 'store/userLog/userLog.types';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {RouteProp} from '@react-navigation/native';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -40,12 +41,18 @@ import {Colors} from 'constants/Colors';
 
 // styles
 import {styles} from './BasketScreen.styles';
+import ErrorModal from 'components/ErrorModal';
 
 interface BasketScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Basket>;
+  route: RouteProp<StackNavigatorParamList, Routes.Basket>;
 }
 
-export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
+export const BasketScreen: React.FC<BasketScreenProps> = ({
+  navigation,
+  route,
+}) => {
+  const [scanError, setScanError] = useState(false);
   const {foods, isSingleFood, servings, recipeName, consumed_at, meal_type} =
     useSelector(state => state.basket);
   let rowRefs = new Map();
@@ -54,7 +61,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
   let totalProtein = 0;
   let totalFat = 0;
   let totalCarb = 0;
-  console.log('basekt foods', foods);
+
   foods.map((food: FoodProps) => {
     food = {
       ...food,
@@ -71,18 +78,33 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
     totalCarb += food.nf_total_carbohydrate || 0;
   });
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       header: (props: any) => (
         <NavigationHeader
           {...props}
           headerRight={
-            <BasketButton icon="times" onPress={() => navigation.goBack()} />
+            <BasketButton
+              icon="times"
+              onPress={() => {
+                if (route.params?.redirectStateKey) {
+                  navigation.navigate({key: route.params?.redirectStateKey});
+                } else {
+                  navigation.goBack();
+                }
+              }}
+            />
           }
         />
       ),
     });
-  }, [navigation]);
+  }, [navigation, route]);
+
+  useEffect(() => {
+    if (route.params?.scanError) {
+      setScanError(true);
+    }
+  }, [route.params?.scanError]);
 
   const logFoods = () => {
     let loggingOptions: Partial<loggingOptionsProps> = {};
@@ -297,6 +319,14 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({navigation}) => {
             />
           </View>
         )}
+        <ErrorModal
+          modalVisible={scanError}
+          setModalVisible={setScanError}
+          title="Error"
+          text="We scanned an unrecognized QR code, if you are trying to scan a
+        food product barcode, please try to avoid scanning the QR code
+        near the barcode and try scanning this product again"
+        />
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );

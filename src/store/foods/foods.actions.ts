@@ -6,6 +6,10 @@ import baseService from 'api/baseService';
 import autoCompleteService, {
   InstantQueryDataProps,
 } from 'api/autoCompleteService';
+import moment from 'moment-timezone';
+import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+import {addExistFoodToBasket} from 'store/basket/basket.actions';
+import {grocery_photo_upload} from 'config/index';
 
 export const getFoodInfo = (beginDate: string, endDate: string) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
@@ -30,29 +34,71 @@ export const getFoodInfo = (beginDate: string, endDate: string) => {
   };
 };
 
-export const getFoodByQRcode = (searchValue: string) => {
-  return async (dispatch: Dispatch) => {
-    const response = await baseService.getFoodByQRcode(searchValue);
-
+export const getFoodByQRcode = (
+  barcode: string,
+  force_photo_upload?: boolean,
+) => {
+  return async (dispatch: Dispatch<any>) => {
+    const response = await baseService.getFoodByQRcode(barcode);
+    console.log('getfoodByBarCode response', response);
     if (response.status === 404) {
       dispatch({
         type: foodsActionTypes.GET_FOOD_BY_QR_CODE,
         foodFindByQRcode: {
-          food_name: `Unrecognised food barcode: ${searchValue}`,
+          food_name: `Unrecognised food barcode: ${barcode}`,
           photo: {thumb: null},
         },
       });
+      throw response;
     } else {
-      const data = response.data;
+      const foods = response.data.foods;
 
-      // if (__DEV__) {
-      //   console.log('foodInfo', data);
-      // }
-      if (data.foods && data.foods[0]) {
+      if (foods && foods[0]) {
         dispatch({
           type: foodsActionTypes.GET_FOOD_BY_QR_CODE,
-          foodFindByQRcode: data.foods[0],
+          foodFindByQRcode: foods[0],
         });
+
+        foods[0].upc = barcode;
+        if (!foods[0].alt_measures && !!foods[0].serving_weight_grams) {
+          foods[0] = nixApiDataUtilites.addGramsToAltMeasures(foods[0]);
+        } else if (!!foods[0].alt_measures && !!foods[0].serving_weight_grams) {
+          let temp = {
+            serving_weight: foods[0].serving_weight_grams,
+            seq: null,
+            measure: foods[0].serving_unit,
+            qty: foods[0].serving_qty,
+          };
+          foods[0].alt_measures.unshift(temp);
+          foods[0] = nixApiDataUtilites.addGramsToAltMeasures(foods[0]);
+        }
+
+        // if barcode scanned from 'report' popup - don't add food to the basket.
+        if (!force_photo_upload) {
+          dispatch(addExistFoodToBasket(foods));
+        }
+
+        // check if enough time passed to ask user/agent to update food
+
+        let foodNeedsUpdate;
+        if (foods[0] && foods[0].updated_at) {
+          foodNeedsUpdate = moment(foods[0].updated_at)
+            .add(
+              grocery_photo_upload.food_update_time.quantity,
+              grocery_photo_upload.food_update_time.unit,
+            )
+            .isBefore(moment());
+        }
+
+        if (force_photo_upload) {
+          foodNeedsUpdate = true;
+        }
+
+        if (!foodNeedsUpdate) {
+          return null;
+        } else {
+          return foods;
+        }
       }
     }
   };
