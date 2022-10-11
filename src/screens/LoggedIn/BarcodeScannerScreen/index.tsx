@@ -225,6 +225,9 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
               });
             }
           });
+
+        // add firebase analitics
+        // AnalyticsService.trackEvent("foodlog_barcode", barcode);
       }
     }, [barcode, dispatch, navigation, force_photo_upload, userData, route]);
 
