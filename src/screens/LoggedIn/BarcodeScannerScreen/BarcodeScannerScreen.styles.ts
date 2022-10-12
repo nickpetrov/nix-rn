@@ -21,6 +21,7 @@ export const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    zIndex: 2,
   },
   camera: {
     display: 'flex',
@@ -63,6 +64,5 @@ export const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 1,
-    opacity: 0.5,
   },
 });

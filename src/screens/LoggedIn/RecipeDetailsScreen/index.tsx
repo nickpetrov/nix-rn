@@ -15,7 +15,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FoodEditItem from 'components/FoodEditItem';
 import {NixButton} from 'components/NixButton';
-import ErrorModal from 'components/ErrorModal';
+import InfoModal from 'components/InfoModal';
 import {NavigationHeader} from 'components/NavigationHeader';
 
 // actions
@@ -349,7 +349,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         <TextInput />
       </View>
       {error && (
-        <ErrorModal
+        <InfoModal
           modalVisible={!!error}
           setModalVisible={setError}
           text={error}

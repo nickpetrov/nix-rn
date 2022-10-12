@@ -243,7 +243,7 @@ const LoggedInNavigation = ({
         name={Routes.PhotoUpload}
         component={PhotoUploadScreen}
         options={{
-          headerTitle: 'Photo Upload',
+          headerTitle: 'User Photo Upload',
         }}
       />
       <Stack.Screen

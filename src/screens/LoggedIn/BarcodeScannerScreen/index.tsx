@@ -179,6 +179,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
       } else if (barcode) {
         dispatch(getFoodByQRcode(barcode, force_photo_upload))
           .then((foods?: FoodProps[] | null) => {
+            console.log('Exist food');
             // return foods only if foods need to be updated
             if (
               foods &&
@@ -207,6 +208,8 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
           })
           .catch(error => {
             if (error.status === 404) {
+              console.log('New food');
+              console.log('userData.grocery_agent', userData.grocery_agent);
               // check if user grocery_agent
               if (userData.grocery_agent) {
                 navigation.navigate(Routes.PhotoUpload, {
@@ -217,6 +220,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
                 navigation.navigate(Routes.PhotoUpload, {
                   barcode,
                   redirectStateKey: route.params?.redirectStateKey,
+                  new_product: true,
                 });
               }
             } else {

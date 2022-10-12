@@ -1,10 +1,13 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
-    display: 'flex',
-    flexGrow: 1,
-    padding: 10,
+    padding: 20,
   },
   tryAgainButtonWrapper: {
     backgroundColor: '#fff',
@@ -17,12 +20,13 @@ export const styles = StyleSheet.create({
   },
   previewImageWrapper: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
   },
   previewImage: {
-    width: '50%',
-    height: 160,
+    width: '30%',
+    height: 120,
   },
   pleaseWaitText: {
     width: '100%',
@@ -41,5 +45,50 @@ export const styles = StyleSheet.create({
   },
   w50: {
     width: '50%',
+  },
+  noteText: {
+    fontSize: 12,
+    marginBottom: 20,
+  },
+  noteTextLink: {
+    color: Colors.Info,
+  },
+  btnRetake: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f8f8f8',
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    borderRadius: 5,
+  },
+  retakeIcon: {
+    fontWeight: '600',
+    marginRight: 10,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  chekmarkIcon: {
+    marginLeft: 5,
+  },
+  loadContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadTextContainer: {
+    padding: 15,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+  },
+  loadText: {
+    textAlign: 'center',
+    color: '#fff',
   },
 });

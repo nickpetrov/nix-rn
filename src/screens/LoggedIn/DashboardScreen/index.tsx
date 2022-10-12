@@ -36,6 +36,7 @@ import SwipeHiddenButtons from 'components/SwipeHiddenButtons';
 import DeleteModal from 'components/DeleteModal';
 import WeighInListItem from 'components/FoodLog/WeighInListItem';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import InfoModal from 'components/InfoModal';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -66,7 +67,6 @@ import {mealTypes} from 'store/basket/basket.types';
 // styles
 import {styles} from './DashboardScreen.styles';
 import {Colors} from 'constants/Colors';
-import ErrorModal from 'components/ErrorModal';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -218,7 +218,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   }, [navigation]);
 
   useEffect(() => {
-    if (infoMessage === 'success') {
+    if (infoMessage) {
       setShowPhotoUploadMessage(true);
     }
   }, [infoMessage]);
@@ -228,10 +228,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       setScanError(true);
     }
   }, [route]);
-
-  setTimeout(() => {
-    setShowPhotoUploadMessage(false);
-  }, 3000);
 
   const getEmptySectionText = (key: string) => {
     let noLoggedDataText = 'No foods logged yet.';
@@ -536,13 +532,23 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           )
         }
       />
-      <ErrorModal
+      <InfoModal
         modalVisible={scanError}
         setModalVisible={setScanError}
         title="Error"
         text="We scanned an unrecognized QR code, if you are trying to scan a
         food product barcode, please try to avoid scanning the QR code
         near the barcode and try scanning this product again"
+      />
+      <InfoModal
+        modalVisible={showPhotoUploadMessage}
+        setModalVisible={setShowPhotoUploadMessage}
+        title="Thank you!"
+        text={infoMessage || ''}
+        btn={{
+          type: 'blue',
+          title: 'Close',
+        }}
       />
     </View>
   );

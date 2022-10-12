@@ -41,7 +41,7 @@ import {Colors} from 'constants/Colors';
 
 // styles
 import {styles} from './BasketScreen.styles';
-import ErrorModal from 'components/ErrorModal';
+import InfoModal from 'components/InfoModal';
 
 interface BasketScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Basket>;
@@ -319,7 +319,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
             />
           </View>
         )}
-        <ErrorModal
+        <InfoModal
           modalVisible={scanError}
           setModalVisible={setScanError}
           title="Error"

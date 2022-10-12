@@ -4,38 +4,48 @@ import React from 'react';
 // components
 import {Modal, Text, View} from 'react-native';
 import {NixButton} from 'components/NixButton';
-import {styles} from './ErrorModal.styles';
+import {styles} from './InfoModal.styles';
 
-interface ErrorModalProps {
+interface InfoModalProps {
   modalVisible: boolean;
   setModalVisible: (v: false) => void;
   text: string;
   title?: string;
+  btn?: {
+    title: string;
+    type: 'blue' | 'positive';
+  };
 }
 
-const ErrorModal: React.FC<ErrorModalProps> = props => {
+const InfoModal: React.FC<InfoModalProps> = ({
+  modalVisible,
+  setModalVisible,
+  text,
+  title,
+  btn,
+}) => {
   return (
     <Modal
       animationType="slide"
       transparent={true}
-      visible={props.modalVisible}
+      visible={modalVisible}
       onRequestClose={() => {
-        props.setModalVisible(false);
+        setModalVisible(false);
       }}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          {props.title && (
+          {title && (
             <View style={styles.header}>
-              <Text>{props.title}</Text>
+              <Text>{title}</Text>
             </View>
           )}
           <View style={styles.content}>
-            <Text style={styles.modalText}>{props.text}</Text>
+            <Text style={styles.modalText}>{text}</Text>
             <View style={styles.btnContainer}>
               <NixButton
-                title="Ok"
-                type="primary"
-                onPress={() => props.setModalVisible(false)}
+                title={btn?.title ? btn.title : 'Ok'}
+                type={btn?.type ? btn.type : 'primary'}
+                onPress={() => setModalVisible(false)}
               />
             </View>
           </View>
@@ -45,4 +55,4 @@ const ErrorModal: React.FC<ErrorModalProps> = props => {
   );
 };
 
-export default ErrorModal;
+export default InfoModal;

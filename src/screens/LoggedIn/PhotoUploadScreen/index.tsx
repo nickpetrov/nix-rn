@@ -1,10 +1,18 @@
 // utils
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState} from 'react';
 
 // components
-import {View, Text, Image, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableWithoutFeedback,
+  Linking,
+} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {NixButton} from 'components/NixButton';
+import {Asset, launchCamera, MediaType} from 'react-native-image-picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // hooks
 import {useSelector} from 'hooks/useRedux';
@@ -21,6 +29,7 @@ import {Routes} from 'navigation/Routes';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {TouchableOpacity} from 'react-native';
 
 interface PhotoUploadScreenProps {
   navigation: NativeStackNavigationProp<
@@ -38,18 +47,19 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
   route,
   navigation,
 }) => {
-  const [frontPackagePicture, setFrontPackagePicture] =
-    useState<PictureProps | null>(null);
+  const [frontPackagePicture, setFrontPackagePicture] = useState<Asset | null>(
+    null,
+  );
   const [nutritionPackagePicture, setNutritionPackagePicture] =
-    useState<PictureProps | null>(null);
+    useState<Asset | null>(null);
   const barcode = route.params?.barcode;
-  const [pictureType, setPictureType] = useState(1);
+  const new_product = route.params?.new_product;
+  const redirectStateKey = route.params?.redirectStateKey;
   const [uploadInProgress1, setUploadInProgress1] = useState(false);
   const [uploadInProgress2, setUploadInProgress2] = useState(false);
-  // const [statusMessage, setStatusMessage] = useState('');
 
   const userData = useSelector(state => state.auth.userData);
-
+  console.log('new_product', new_product);
   /*
 
   Photo file name template:
@@ -79,8 +89,21 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
   const uploadFinished = () => {
     setFrontPackagePicture(null);
     setNutritionPackagePicture(null);
-    // setStatusMessage('success');
-    navigation.navigate(Routes.Dashboard, {infoMessage: 'success'});
+    const infoMessage = new_product
+      ? 'We will have this product added to our database in the next three business days. To add a comparable food to your log right now, use the "Freeform" tab and enter the calories of the food, followed by a generic name of the food. Examples: 100 cal greek yogurt, 150 cal granola bar, 250 cal lean cuisine'
+      : 'We will have this product updated in our database in the next three business days.';
+    if (redirectStateKey) {
+      navigation.navigate({
+        key: redirectStateKey,
+        params: {
+          infoMessage,
+        },
+      });
+    } else {
+      navigation.navigate(Routes.Dashboard, {
+        infoMessage,
+      });
+    }
   };
 
   const uploadPhotos = async () => {
@@ -95,19 +118,11 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     const filename1 = `${barcode}-1-TRACK${userData.id}-${timestamp}.jpg`;
     const filename2 = `${barcode}-2-TRACK${userData.id}-${timestamp}.jpg`;
 
-    const blob1 = await fetch(
-      (Platform.OS === 'ios'
-        ? frontPackagePicture?.path
-        : `file://${frontPackagePicture?.path}`) || '',
-    ).then(res => {
+    const blob1 = await fetch(frontPackagePicture?.uri || '').then(res => {
       console.log(res);
       return res.blob();
     });
-    const blob2 = await fetch(
-      (Platform.OS === 'ios'
-        ? nutritionPackagePicture?.path
-        : `file://${nutritionPackagePicture?.path}`) || '',
-    ).then(res => {
+    const blob2 = await fetch(nutritionPackagePicture?.uri || '').then(res => {
       console.log(res);
       return res.blob();
     });
@@ -154,55 +169,49 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     }
   };
 
-  const recievePicture = useCallback((picture: any, picType: number) => {
-    console.log(picType);
-    if (picType === 1) {
-      setFrontPackagePicture({...picture});
-    } else if (picType === 2) {
-      setNutritionPackagePicture({...picture});
-    } else {
-      console.log('wrong picture type:', picType);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (route.params?.picture) {
-      recievePicture(
-        route.params?.picture,
-        route.params?.picType || pictureType,
-      );
-    }
-  }, [
-    route.params?.picture,
-    route.params?.picType,
-    recievePicture,
-    pictureType,
-  ]);
-
-  const showCameraPopupHandler = (picType: number) => {
-    setPictureType(picType);
-    navigation.navigate(Routes.Camera, {
-      barcode: route.params?.barcode,
-      picType,
+  const takePictureHandler = (picType: number) => {
+    const options = {
+      mediaType: 'photo' as MediaType,
+      noData: true,
+    };
+    launchCamera(options, response => {
+      if (response) {
+        if (response.assets?.length) {
+          if (picType === 1) {
+            setFrontPackagePicture(response.assets[0]);
+          } else {
+            setNutritionPackagePicture(response.assets[0]);
+          }
+        }
+      }
     });
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.root} contentContainerStyle={{flex: 1}}>
       <View style={styles.container}>
         <View style={styles.mb20}>
           <Text>
-            Congratulations! You found a product we do not yet have in the
-            Nutritionix database. Can you help us by taking 2 photos of the
-            product?
+            {!new_product
+              ? 'Thanks for helping us to keep Nutritionix database up-to-date!'
+              : 'Congratulations! You found a product we do not yet have in the Nutritionix database. Can you help us by taking 2 photos of the product?'}
           </Text>
         </View>
         <View style={styles.mb5}>
-          <Text style={styles.mb10}>1. Front Package Photo:</Text>
-          {!frontPackagePicture?.path ? (
-            <View>
+          <View style={styles.titleContainer}>
+            <Text>1. Front Package Photo:</Text>
+            {frontPackagePicture?.uri && (
+              <Ionicons
+                name="checkmark"
+                size={20}
+                style={styles.chekmarkIcon}
+              />
+            )}
+          </View>
+          {!frontPackagePicture?.uri ? (
+            <View style={styles.mb20}>
               <NixButton
-                onPress={() => showCameraPopupHandler(1)}
+                onPress={() => takePictureHandler(1)}
                 title="Take Front Package Photo"
                 iconName="camera"
               />
@@ -213,74 +222,86 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
                 resizeMode="contain"
                 style={styles.previewImage}
                 source={{
-                  uri:
-                    Platform.OS === 'ios'
-                      ? frontPackagePicture?.path
-                      : `file://${frontPackagePicture?.path}`,
+                  uri: frontPackagePicture?.uri,
                 }}
               />
-              <View style={styles.w50}>
-                <NixButton
-                  onPress={() => showCameraPopupHandler(1)}
-                  title="Retake"
-                  iconName="refresh"
-                />
-              </View>
+              <TouchableOpacity
+                style={styles.btnRetake}
+                onPress={() => takePictureHandler(1)}>
+                <Ionicons name="reload" size={20} style={styles.retakeIcon} />
+                <Text>Retake</Text>
+              </TouchableOpacity>
             </View>
           )}
         </View>
         <View style={styles.mb10}>
-          <Text style={styles.mb10}>2. Nutrition Label Photo:</Text>
-          {!nutritionPackagePicture?.path ? (
-            <NixButton
-              onPress={() => showCameraPopupHandler(2)}
-              title="Take Nutrition Label Photo"
-              iconName="camera"
-            />
+          <View style={styles.titleContainer}>
+            <Text>2. Nutrition Label Photo:</Text>
+            {nutritionPackagePicture?.uri && (
+              <Ionicons
+                name="checkmark"
+                size={20}
+                style={styles.chekmarkIcon}
+              />
+            )}
+          </View>
+          {!nutritionPackagePicture?.uri ? (
+            <View style={styles.mb20}>
+              <NixButton
+                onPress={() => takePictureHandler(2)}
+                title="Take Nutrition Label Photo"
+                iconName="camera"
+              />
+            </View>
           ) : (
             <View style={styles.previewImageWrapper}>
               <Image
                 resizeMode="contain"
                 style={styles.previewImage}
                 source={{
-                  uri:
-                    Platform.OS === 'ios'
-                      ? nutritionPackagePicture?.path
-                      : `file://${nutritionPackagePicture?.path}`,
+                  uri: nutritionPackagePicture?.uri,
                 }}
               />
-              <View style={styles.w50}>
-                <NixButton
-                  onPress={() => showCameraPopupHandler(2)}
-                  title="Retake"
-                  iconName="refresh"
-                />
-              </View>
+              <TouchableOpacity
+                style={styles.btnRetake}
+                onPress={() => takePictureHandler(2)}>
+                <Ionicons name="reload" size={20} style={styles.retakeIcon} />
+                <Text>Retake</Text>
+              </TouchableOpacity>
             </View>
           )}
         </View>
         <View style={styles.mb10}>
           <Text>Barcode Scanned: {barcode}</Text>
         </View>
-        <View style={styles.mb10}>
-          <Text>
-            By submitting photos, you accept the Nutritionix Privacy Policy
-          </Text>
-        </View>
+        <Text style={styles.noteText}>
+          By submitting photos, you accept the{' '}
+          <TouchableWithoutFeedback
+            onPress={() =>
+              Linking.openURL('https://www.nutritionix.com/privacy')
+            }>
+            <Text style={styles.noteTextLink}>Nutritionix Privacy Policy</Text>
+          </TouchableWithoutFeedback>
+        </Text>
         <View>
-          {!uploadInProgress1 && !uploadInProgress2 ? (
-            <NixButton
-              disabled={
-                !nutritionPackagePicture?.path || !frontPackagePicture?.path
-              }
-              onPress={uploadPhotos}
-              title="Submit photos to Nutritionix"
-            />
-          ) : (
-            <Text style={styles.pleaseWaitText}>Please wait</Text>
-          )}
+          <NixButton
+            disabled={
+              !nutritionPackagePicture?.uri || !frontPackagePicture?.uri
+            }
+            onPress={uploadPhotos}
+            title="Submit photos to Nutritionix"
+          />
         </View>
       </View>
+      {(uploadInProgress1 || uploadInProgress2) && (
+        <View style={styles.loadContainer}>
+          <View style={styles.loadTextContainer}>
+            <Text style={styles.loadText}>
+              Please hold while the photos are uploaded...
+            </Text>
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 };

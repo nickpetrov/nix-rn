@@ -73,6 +73,7 @@ export interface StackNavigatorParamList extends ParamListBase {
     picture?: PictureProps | null;
     picType?: number;
     redirectStateKey?: string;
+    new_product?: boolean;
   };
   [Routes.Stats]: undefined;
   [Routes.Camera]: {barcode: string; picType: number};
