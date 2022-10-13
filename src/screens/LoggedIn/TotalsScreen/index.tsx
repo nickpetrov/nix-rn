@@ -1,5 +1,6 @@
 // utils
 import React, {useEffect, useState, useLayoutEffect} from 'react';
+import moment from 'moment-timezone';
 
 // components
 import {
@@ -16,6 +17,7 @@ import NutritionPieChart, {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixButton} from 'components/NixButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import DeleteModal from 'components/DeleteModal';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
@@ -23,9 +25,13 @@ import {useSelector, useDispatch} from 'hooks/useRedux';
 // actions
 import * as userActions from 'store/auth/auth.actions';
 import * as logActions from 'store/userLog/userLog.actions';
+import * as userLogActions from 'store/userLog/userLog.actions';
+import {addExistFoodToBasket} from 'store/basket/basket.actions';
+import {getClientTotals} from 'store/coach/coach.actions';
 
 // helpres
 import getAttrValueById from 'helpers/getAttrValueById';
+import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 
 // types
 import {RouteProp} from '@react-navigation/native';
@@ -39,11 +45,6 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './TotalsScreen.styles';
-import moment from 'moment-timezone';
-import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
-import DeleteModal from 'components/DeleteModal';
-import * as userLogActions from 'store/userLog/userLog.actions';
-import {addExistFoodToBasket} from 'store/basket/basket.actions';
 
 interface TotalsScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Totals>;
@@ -58,8 +59,10 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   const mealType = route.params.type;
   const readOnly = route.params.readOnly;
   const date = route.params.date;
+  const clientId = route.params.clientId;
   const userData = useSelector(state => state.auth.userData);
   const {totals, selectedDate} = useSelector(state => state.userLog);
+  const clientTotals = useSelector(state => state.coach.clientTotals);
   const followDate = date || selectedDate;
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [pieChartData, setPieChartData] = useState<pieChartDataProps>();
@@ -118,7 +121,9 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   }, [navigation, mealType, followDate]);
 
   useEffect(() => {
-    if (totals.length) {
+    if (clientTotals.length) {
+      setDailyKcal(clientTotals[0].daily_kcal_limit);
+    } else if (totals.length) {
       const selectedDayTotals = totals.filter(
         (item: TotalProps) => item.date === followDate,
       )[0];
@@ -127,7 +132,18 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
         setDayNote(selectedDayTotals.notes);
       }
     }
-  }, [followDate, totals]);
+  }, [followDate, totals, clientTotals]);
+
+  useEffect(() => {
+    if (clientId) {
+      const options = {
+        clientId,
+        begin: moment(followDate).format('YYYY-MM-DD'),
+        end: moment(followDate).add(1, 'day').format('YYYY-MM-DD'),
+      };
+      dispatch(getClientTotals(options));
+    }
+  }, [clientId, dispatch, followDate]);
 
   useEffect(() => {
     setTotal(prev => {
@@ -314,6 +330,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
               <NutritionPieChart
                 data={pieChartData}
                 totalCalForPieChart={total.totalCalForPieChart}
+                clientTotals={clientTotals}
               />
             </View>
           ) : null}

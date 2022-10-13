@@ -5,6 +5,7 @@ import _ from 'lodash';
 // types
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {TotalProps} from 'store/userLog/userLog.types';
 
 // hooks
 import {useSelector} from 'hooks/useRedux';
@@ -29,11 +30,13 @@ export interface pieChartDataProps {
 interface NutritionPieChartProps {
   data: pieChartDataProps;
   totalCalForPieChart: number;
+  clientTotals: Array<TotalProps>;
 }
 
 const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
   data,
   totalCalForPieChart,
+  clientTotals,
 }) => {
   const route = useRoute<RouteProp<StackNavigatorParamList, Routes.Totals>>();
   const userData = useSelector(state => state.auth.userData);
@@ -67,7 +70,20 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
   }, [data, totalCalForPieChart]);
 
   const dailyGoals = clientId
-    ? {} /* TODO - getDailyGoalsFromCoach(clientId) */
+    ? {
+        protein_pct: clientTotals[0].daily_protein_pct,
+        protein_progress: Math.round(
+          (piChartPercent[0] / clientTotals[0].daily_protein_pct) * 100,
+        ),
+        carbohydrate_pct: clientTotals[0].daily_carbs_pct,
+        carbohydrate_progress: Math.round(
+          (piChartPercent[1] / clientTotals[0].daily_carbs_pct) * 100,
+        ),
+        fat_pct: clientTotals[0].daily_fat_pct,
+        fat_progress: Math.round(
+          (piChartPercent[2] / clientTotals[0].daily_fat_pct) * 100,
+        ),
+      }
     : {
         protein_pct: userData.daily_protein_pct,
         protein_progress: Math.round(
