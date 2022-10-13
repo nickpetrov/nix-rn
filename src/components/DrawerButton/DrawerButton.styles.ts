@@ -2,10 +2,9 @@ import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   buttonStyle: {
-    width: 55,
+    // width: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingRight: 20,
   },
   iconStyle: {
     width: 25,

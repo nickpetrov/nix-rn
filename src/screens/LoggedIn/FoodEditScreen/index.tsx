@@ -331,11 +331,11 @@ export const FoodEditScreen: React.FC<FoodEditScreenProps> = props => {
             </Text>
           </View>
 
-          {pieChartData && (
+          {/* {pieChartData && (
             <View style={styles.pieContainer}>
               <NutritionPieChart data={pieChartData} />
             </View>
-          )}
+          )} */}
 
           <View style={styles.p10}>
             <View style={styles.alignItemsCenter}>

@@ -306,7 +306,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
               <NixButton
                 title="Clear Basket"
                 onPress={clearBasket}
-                type="assertive"
+                type="red"
               />
             </View>
           </View>

@@ -16,6 +16,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'relative',
     flex: 1,
+    marginHorizontal: 15,
   },
   autocomplete: {
     backgroundColor: '#ffffff',
@@ -33,8 +34,12 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: '500',
     color: '#fff',
+    textAlign: 'center',
+  },
+  emptyRight: {
+    width: 40,
   },
 });

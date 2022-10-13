@@ -67,6 +67,8 @@ export interface StackNavigatorParamList extends ParamListBase {
     type: string;
     foods: Array<FoodProps> | Array<FoodProps>;
     date?: string;
+    clientId?: string;
+    readOnly?: boolean;
   };
   [Routes.PhotoUpload]: {
     barcode: string;

@@ -78,6 +78,9 @@ const ConnectedAppsNavigation = () => {
 
 const LoggedInNavigationOptions = () => ({
   header: (props: any) => <NavigationHeader {...props} />,
+  BackButtonstyles: {
+    padding: 0,
+  },
 });
 
 const PreferencesNavigation = () => {

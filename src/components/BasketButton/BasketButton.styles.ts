@@ -8,8 +8,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   container: {
-    width: 55,
-    paddingLeft: 20,
+    // width: 55,
   },
   badge: {
     width: 20,

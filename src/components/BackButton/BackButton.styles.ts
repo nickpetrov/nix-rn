@@ -4,8 +4,6 @@ export const styles = StyleSheet.create({
   buttonStyle: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    marginRight: 10,
   },
   iconStyle: {
     width: 25,

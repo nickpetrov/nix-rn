@@ -11,7 +11,7 @@ import {styles} from './NixButton.styles';
 interface NixButtonProps {
   type?:
     | 'facebook'
-    | 'assertive'
+    | 'red'
     | 'positive'
     | 'primary'
     | 'calm'
@@ -56,7 +56,7 @@ export const NixButton: React.FC<NixButtonProps> = ({
       buttonTypeTextStyles = styles.facebookBtnText;
       break;
     }
-    case 'assertive': {
+    case 'red': {
       buttonTypeStyles = styles.assertive;
       buttonTypeTextStyles = styles.assertiveText;
       break;

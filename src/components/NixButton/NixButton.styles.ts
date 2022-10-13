@@ -8,17 +8,19 @@ export const styles = StyleSheet.create({
     alignSelf: 'stretch',
     borderRadius: 5,
     overflow: 'hidden',
+    padding: 10,
+    height: 40,
   },
   contentWrapper: {
-    padding: 10,
+    flex: 1,
     flexDirection: 'row',
   },
   icon: {
     position: 'absolute',
-    top: 6,
-    left: 10,
-    fontSize: 26,
+    alignSelf: 'center',
+    left: 0,
     marginRight: 10,
+    fontSize: 26,
   },
   titleContainer: {
     flex: 1,
@@ -36,7 +38,7 @@ export const styles = StyleSheet.create({
     color: '#fff',
   },
   assertive: {
-    backgroundColor: '#ef473a',
+    backgroundColor: Colors.Red,
   },
   assertiveText: {
     color: '#fff',

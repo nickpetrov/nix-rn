@@ -57,6 +57,13 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
     dispatch(updateSearchResults(text));
   };
 
+  const smallSize =
+    route.name === Routes.Totals
+      ? {
+          fontSize: 16,
+        }
+      : {};
+
   return (
     <View style={styles.header}>
       {headerLeft ? headerLeft : back && <BackButton navigation={navigation} />}
@@ -86,10 +93,12 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
         </View>
       ) : (
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>{headerTitle ? headerTitle : title}</Text>
+          <Text style={[styles.title, smallSize]}>
+            {headerTitle ? headerTitle : title}
+          </Text>
         </View>
       )}
-      {headerRight ? headerRight : null}
+      {headerRight ? headerRight : <View style={styles.emptyRight}></View>}
     </View>
   );
 };

@@ -1,5 +1,5 @@
 // utils
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useLayoutEffect} from 'react';
 
 // components
 import {
@@ -9,7 +9,7 @@ import {
   SafeAreaView,
   TextInput,
 } from 'react-native';
-import FoodLabel from 'components/FoodLabel';
+// import FoodLabel from 'components/FoodLabel';
 import NutritionPieChart, {
   pieChartDataProps,
 } from 'components/NutritionPieChart';
@@ -32,25 +32,39 @@ import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {FoodProps, TotalProps} from 'store/userLog/userLog.types';
 import {User} from 'store/auth/auth.types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 // constants
 import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './TotalsScreen.styles';
+import moment from 'moment-timezone';
+import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+import DeleteModal from 'components/DeleteModal';
+import * as userLogActions from 'store/userLog/userLog.actions';
+import {addExistFoodToBasket} from 'store/basket/basket.actions';
 
 interface TotalsScreenProps {
+  navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Totals>;
   route: RouteProp<StackNavigatorParamList, Routes.Totals>;
 }
 
-export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
-  const foods = route.params?.foods;
-  const type = route.params?.type;
+export const TotalsScreen: React.FC<TotalsScreenProps> = ({
+  navigation,
+  route,
+}) => {
+  const foods = route.params.foods;
+  const mealType = route.params.type;
+  const readOnly = route.params.readOnly;
+  const date = route.params.date;
   const userData = useSelector(state => state.auth.userData);
   const {totals, selectedDate} = useSelector(state => state.userLog);
-
+  const followDate = date || selectedDate;
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [pieChartData, setPieChartData] = useState<pieChartDataProps>();
   const [showMoreNutrients, setShowMoreNutrients] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
   const [dailyKcal, setDailyKcal] = useState(userData.daily_kcal);
   const [dayNote, setDayNote] = useState(totals.length ? totals[0].note : '');
   const [total, setTotal] = useState<Record<string, any>>({
@@ -89,43 +103,38 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
     zinc: 0,
     magnesium: 0,
     net_carbs: 0,
+    totalCalForPieChart: 0,
   });
 
   const dispatch = useDispatch();
-  const [foodsArray, setFoodsArray] = useState<Array<FoodProps>>([]);
 
-  useEffect(() => {
-    let newFoodsArray: Array<FoodProps> = [];
-
-    newFoodsArray = foods || [];
-
-    // else if (type?.length) {
-    //   (foods as FoodProps[])?.map(day => {
-    //     if (day?.foods?.length) {
-    //       newFoodsArray = newFoodsArray.concat(day.foods);
-    //     }
-    //   });
-    // }
-    setFoodsArray(newFoodsArray);
-  }, [foods, type]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle:
+        mealType === 'daily'
+          ? `Summary of ${moment(followDate).format('dddd, MM/DD')}`
+          : `${mealType} - ${moment(followDate).format('ddd, MM/DD')}`,
+    });
+  }, [navigation, mealType, followDate]);
 
   useEffect(() => {
     if (totals.length) {
       const selectedDayTotals = totals.filter(
-        (item: TotalProps) => item.date === selectedDate,
+        (item: TotalProps) => item.date === followDate,
       )[0];
       if (selectedDayTotals) {
         setDailyKcal(selectedDayTotals.daily_kcal_limit);
         setDayNote(selectedDayTotals.notes);
       }
     }
-  }, [selectedDate, totals]);
+  }, [followDate, totals]);
 
   useEffect(() => {
     setTotal(prev => {
       const newTotal: Record<string, any> = {...prev};
 
-      foodsArray.map(food => {
+      foods.forEach(food => {
+        let foodCalories = food.nf_calories;
         newTotal.metric_qty += food.serving_weight_grams;
         newTotal.total_fat += food.nf_total_fat;
         newTotal.nf_saturated_fat += food.nf_saturated_fat;
@@ -149,18 +158,62 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
         newTotal.vitamin_b6 += getAttrValueById(food.full_nutrients, 415) || 0;
         newTotal.vitamin_b12 += getAttrValueById(food.full_nutrients, 418) || 0;
         newTotal.folic_acid += getAttrValueById(food.full_nutrients, 431) || 0;
-        newTotal.folate += getAttrValueById(food.full_nutrients, 641705) || 0;
+        newTotal.folate += getAttrValueById(food.full_nutrients, 417) || 0;
         newTotal.zinc += getAttrValueById(food.full_nutrients, 309) || 0;
         newTotal.magnesium += getAttrValueById(food.full_nutrients, 304) || 0;
 
+        let foodExtendedNf =
+          nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+            food.full_nutrients,
+          );
+        newTotal.nf_vitamin_a_dv += foodExtendedNf.nf_vitamin_a_dv || 0;
+        newTotal.nf_vitamin_c_dv += foodExtendedNf.nf_vitamin_c_dv || 0;
+        newTotal.nf_calcium_dv += foodExtendedNf.nf_calcium_dv || 0;
+        newTotal.nf_iron_dv += foodExtendedNf.nf_iron_dv || 0;
+
+        newTotal.alcohol += getAttrValueById(food.full_nutrients, 221) || 0;
+
+        var calories_calculated_by_formula =
+          (food.nf_protein || 0) * 4 +
+          (food.nf_total_carbohydrate || 0) * 4 +
+          (food.nf_total_fat || 0) * 9;
         if (
-          food.nf_total_carbohydrate !== 0 &&
-          (food.nf_total_carbohydrate || 0) - (food.nf_dietary_fiber || 0) <= 0
+          getAttrValueById(food.full_nutrients, 221) !== null &&
+          getAttrValueById(food.full_nutrients, 221) !== undefined
         ) {
-          newTotal.net_carbs +=
-            (food.nf_total_carbohydrate || 0) - (food.nf_dietary_fiber || 0);
+          //if have alcohol in nutrients - calculate totals based on the nutients
+          foodCalories =
+            calories_calculated_by_formula +
+            (getAttrValueById(food.full_nutrients, 221) || 0) * 7;
+        } else {
+          //if no alcohol in nutrients - check if it's missing in the total calories number
+
+          if (calories_calculated_by_formula / (food.nf_calories || 0) > 0.85) {
+            // if total calories calculated by formula not lesser than 85% of food.nf_calories field - use this value.
+            foodCalories = calories_calculated_by_formula;
+          } else {
+            // if total calories calculated by formula is lesser than 85% of nf_valories field - use nf_calories and count the rest as an alcohol calories.
+            foodCalories = food.nf_calories;
+            newTotal.alcohol +=
+              ((foodCalories || 0) - calories_calculated_by_formula) / 7;
+          }
         }
+
+        newTotal.calories += food.nf_calories;
+        newTotal.totalCalForPieChart += foodCalories;
       });
+      newTotal.serving_qty = 1;
+      newTotal.serving_unit = 'Serving';
+      newTotal.showServingUnitQuantityTextbox = false;
+      if (
+        newTotal.nf_total_carbohydrate === 0 ||
+        newTotal.nf_total_carbohydrate - newTotal.nf_dietary_fiber <= 0
+      ) {
+        newTotal.net_carbs = 0;
+      } else {
+        newTotal.net_carbs =
+          newTotal.nf_total_carbohydrate - newTotal.nf_dietary_fiber;
+      }
       for (const key in newTotal) {
         newTotal[key] = Math.round(newTotal[key] * 10) / 10;
       }
@@ -174,7 +227,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
       totalAlcoholCalories: 0,
     };
 
-    foodsArray.map(foodObj => {
+    foods.map(foodObj => {
       newPieChartData.totalFatCalories +=
         (foodObj
           ? foodObj.nf_total_fat ||
@@ -202,7 +255,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
     }
 
     setPieChartData(newPieChartData);
-  }, [foodsArray]);
+  }, [foods]);
 
   const updateCalorieLimit = () => {
     dispatch(userActions.updateUserData({daily_kcal: dailyKcal} as User));
@@ -212,18 +265,60 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
     dispatch(logActions.setDayNotes(selectedDate, dayNote));
   };
 
+  const handleCopyMeal = () => {
+    dispatch(addExistFoodToBasket(foods)).then(() => {
+      navigation.navigate(Routes.Basket);
+    });
+  };
+  const handleClearMeal = () =>
+    dispatch(
+      userLogActions.deleteFoodFromLog(
+        foods.map((item: FoodProps) => ({
+          id: item.id,
+        })),
+      ),
+    ).then(() => navigation.goBack());
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.root}>
       <KeyboardAwareScrollView>
+        <View style={styles.mb10}>
+          {/* before was data={foodsArray}, but it's not working this way */}
+          {/* <FoodLabel data={foodsArray} /> */}
+        </View>
+
         <View style={styles.container}>
-          <Text>Meal totals</Text>
+          {mealType === 'daily' && !readOnly && (
+            <View style={styles.dailyContainer}>
+              <Text style={styles.dailyText}>Daily Calorie Limit:</Text>
+              <TextInput
+                value={dailyKcal + ''}
+                onChangeText={text => setDailyKcal(parseInt(text))}
+                keyboardType="number-pad"
+                style={styles.dailyInput}
+              />
+              <View style={styles.dailyBtnContainer}>
+                <NixButton
+                  type="primary"
+                  disabled={userData.daily_kcal == dailyKcal ? true : false}
+                  title="Save"
+                  onPress={() => updateCalorieLimit()}
+                  style={styles.dailyBtn}
+                />
+              </View>
+            </View>
+          )}
 
-          <View style={styles.mb10}>
-            {/* before was data={foodsArray}, but it's not working this way */}
-            <FoodLabel data={foodsArray} />
-          </View>
+          {foods.length && pieChartData ? (
+            <View style={styles.mb10}>
+              <NutritionPieChart
+                data={pieChartData}
+                totalCalForPieChart={total.totalCalForPieChart}
+              />
+            </View>
+          ) : null}
 
-          <View style={styles.mb10}>
+          <View>
             <Text>Net Carbs ** : {total.net_carbs || 0} g</Text>
             <Text>Phosphorus ** : {total.nf_p || 0} mg</Text>
             <Text>Potassium ** : {total.nf_potassium || 0} mg</Text>
@@ -234,13 +329,14 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
                 onPress={() => setShowMoreNutrients(!showMoreNutrients)}
                 style={styles.flex1}>
                 <View style={styles.hideContent}>
+                  <FontAwesome
+                    name={showMoreNutrients ? 'chevron-down' : 'chevron-right'}
+                    size={12}
+                    style={styles.hideContentIcon}
+                  />
                   <Text>
                     {showMoreNutrients ? 'Hide' : 'View'} more micronutrients{' '}
                   </Text>
-                  <FontAwesome
-                    name={showMoreNutrients ? 'angle-down' : 'angle-right'}
-                    size={24}
-                  />
                 </View>
               </TouchableWithoutFeedback>
               {showMoreNutrients ? (
@@ -265,58 +361,45 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
             </View>
           </View>
 
-          {foodsArray.length && pieChartData ? (
-            <View style={styles.mb10}>
-              <NutritionPieChart data={pieChartData} />
-            </View>
-          ) : null}
-
-          {type === 'daily' ? (
+          {mealType === 'daily' && !readOnly && (
             <>
-              <View style={styles.dailyContainer}>
-                <Text>Daily Calorie Limit</Text>
-                <View style={styles.row}>
+              <TouchableWithoutFeedback
+                onPress={() => setShowNotes(!showNotes)}
+                style={styles.flex1}>
+                <View style={styles.hideContent}>
+                  <FontAwesome
+                    name="sticky-note-o"
+                    size={12}
+                    style={styles.hideContentIcon}
+                  />
+                  <Text>Notes</Text>
+                  <FontAwesome
+                    name={showNotes ? 'chevron-down' : 'chevron-right'}
+                    size={12}
+                    style={styles.hideContentIconRight}
+                  />
+                </View>
+              </TouchableWithoutFeedback>
+              {showNotes && (
+                <View style={styles.mb10}>
                   <TextInput
-                    value={dailyKcal + ''}
-                    onChangeText={text => setDailyKcal(parseInt(text))}
-                    keyboardType="number-pad"
-                    style={styles.dailyInput}
-                  />
-                  <View style={styles.flex1}>
-                    <NixButton
-                      type="primary"
-                      disabled={userData.daily_kcal == dailyKcal ? true : false}
-                      title="Save"
-                      onPress={() => updateCalorieLimit()}
-                    />
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.mb10}>
-                <Text style={styles.mb8}>Notes for this day:</Text>
-                <TextInput
-                  multiline
-                  numberOfLines={5}
-                  style={styles.noteInput}
-                  value={dayNote}
-                  onChangeText={text => setDayNote(text)}
-                />
-                <View style={styles.btnContainer}>
-                  <NixButton
-                    type="primary"
-                    disabled={
-                      totals.length && totals[0].notes == dayNote ? true : false
-                    }
-                    title="Save"
-                    onPress={() => saveDayNote()}
+                    multiline
+                    numberOfLines={5}
+                    style={styles.noteInput}
+                    value={dayNote}
+                    onChangeText={text => setDayNote(text)}
+                    onBlur={() => {
+                      if (totals.length && totals[0].notes !== dayNote) {
+                        saveDayNote();
+                      }
+                    }}
                   />
                 </View>
-              </View>
+              )}
             </>
-          ) : null}
+          )}
 
-          <Text>
+          <Text style={styles.noteText}>
             ** Please note that our restaurant and branded grocery food database
             does not have these attributes available, and if your food log
             contains restaurant or branded grocery foods, these totals may be
@@ -325,7 +408,30 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({route}) => {
             management.
           </Text>
         </View>
+        {mealType !== 'daily' && !readOnly && (
+          <View style={styles.btnsContainer}>
+            <NixButton
+              style={styles.btn}
+              title="Copy Meal"
+              type="energized"
+              onPress={handleCopyMeal}
+            />
+            <NixButton
+              style={styles.btn}
+              title="Clear Meal"
+              type="red"
+              onPress={() => setShowDeleteModal(!showDeleteModal)}
+            />
+          </View>
+        )}
       </KeyboardAwareScrollView>
+      <DeleteModal
+        modalVisible={showDeleteModal}
+        setModalVisible={setShowDeleteModal}
+        title="Delete Foods"
+        text={`Are you shure you want to delete all of your ${mealType} items?`}
+        delete={handleClearMeal}
+      />
     </SafeAreaView>
   );
 };
