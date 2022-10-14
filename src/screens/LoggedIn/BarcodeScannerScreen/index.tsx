@@ -75,11 +75,8 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
       },
     );
 
-    const takeSnapShot = async () => {
-      const photo = await camera.current?.takeSnapshot({
-        quality: 85,
-        skipMetadata: true,
-      });
+    const takePhoto = async () => {
+      const photo = await camera.current?.takePhoto();
       if (photo?.path) {
         setPicture((prev: PhotoFile | null) => {
           if (!prev) {
@@ -107,7 +104,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
     //       scanedBarcode.format !== BarcodeFormat.QR_CODE ||
     //       scanedBarcode.rawValue?.includes('nutritionix.com')
     //     ) {
-    //       takeSnapShot();
+    //       takePhoto();
     //       setTimeout(() => runOnJS(setBarcode)(scanedBarcode.rawValue), 3000);
     //     } else {
     //       navigation.navigate({
@@ -126,7 +123,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
           barcodes[0].format !== BarcodeFormat.QR_CODE ||
           barcodes[0].rawValue?.includes('nutritionix.com')
         ) {
-          takeSnapShot();
+          takePhoto();
           setTimeout(() => setBarcode(barcodes[0].rawValue), 3000);
         } else {
           navigation.navigate({
@@ -269,6 +266,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
           isActive={isActive}
           frameProcessor={frameProcessor}
           frameProcessorFps={5}
+          photo={true}
         />
         <View style={styles.qrCodeContainer}>
           <Svg height="100%" width="100%">
