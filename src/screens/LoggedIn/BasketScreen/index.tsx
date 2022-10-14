@@ -55,6 +55,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   const [scanError, setScanError] = useState(false);
   const {foods, isSingleFood, servings, recipeName, consumed_at, meal_type} =
     useSelector(state => state.basket);
+  const selectedDate = useSelector(state => state.userLog.selectedDate);
   let rowRefs = new Map();
   const dispatch = useDispatch();
   let totalCalories = 0;
@@ -131,7 +132,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     }
 
     loggingOptions.meal_type = meal_type;
-    loggingOptions.consumed_at = consumed_at;
+    loggingOptions.consumed_at = consumed_at || selectedDate;
 
     // delete temp basketId
     adjustedFoods.forEach((item: FoodProps) => {
@@ -293,7 +294,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
             </View>
             <View>
               <WhenSection
-                consumed_at={consumed_at}
+                consumed_at={consumed_at || selectedDate}
                 meal_type={meal_type}
                 onDateChange={onDateChange}
                 onMealTypeChange={onMealTypeChange}
