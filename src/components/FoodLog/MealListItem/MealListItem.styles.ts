@@ -11,6 +11,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
+  withoutBorder: {
+    borderBottomWidth: 0,
+  },
   foodThumb: {
     width: 40,
     height: 40,
@@ -23,12 +26,18 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   qty: {
-    color: '#999',
+    color: Colors.Secondary,
     fontSize: 10,
   },
   calories: {
     color: Colors.Primary,
   },
+  caloriesSub: {
+    textAlign: 'right',
+    fontSize: 12,
+    color: Colors.Secondary,
+  },
+  caloriesContainer: {},
   right: {
     flexDirection: 'row',
     alignItems: 'center',

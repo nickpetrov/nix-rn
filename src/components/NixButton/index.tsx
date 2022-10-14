@@ -4,6 +4,7 @@ import React from 'react';
 // components
 import {View, TouchableOpacity, Text} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // styles
 import {styles} from './NixButton.styles';
@@ -34,6 +35,10 @@ interface NixButtonProps {
   };
   width?: number | string;
   withMarginTop?: boolean;
+  iconStyles?: {
+    [key: string]: string | number;
+  };
+  iosIcon?: boolean;
 }
 
 export const NixButton: React.FC<NixButtonProps> = ({
@@ -46,6 +51,8 @@ export const NixButton: React.FC<NixButtonProps> = ({
   width,
   style,
   withMarginTop,
+  iconStyles,
+  iosIcon,
 }) => {
   let buttonTypeStyles = {};
   let buttonTypeTextStyles = {};
@@ -110,6 +117,8 @@ export const NixButton: React.FC<NixButtonProps> = ({
   let disabledStyles = disabled ? {opacity: 0.5} : {};
   const widthStyles = width ? {width} : {};
 
+  const Icon = iosIcon ? Ionicons : FontAwesome;
+
   return (
     <View
       style={[
@@ -127,10 +136,7 @@ export const NixButton: React.FC<NixButtonProps> = ({
         onPress={onTap || onPress}
         disabled={disabled}>
         {iconName ? (
-          <FontAwesome
-            name={iconName}
-            style={{...styles.icon, ...buttonTypeTextStyles}}
-          />
+          <Icon name={iconName} style={{...styles.icon, ...iconStyles}} />
         ) : null}
         <View style={styles.titleContainer}>
           <Text style={{...styles.title, ...buttonTypeTextStyles}}>

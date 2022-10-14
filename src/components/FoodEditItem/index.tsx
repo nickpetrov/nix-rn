@@ -37,6 +37,7 @@ interface FoodEditItemProps {
   itemIndex?: number;
   onTap?: () => void;
   withInfo?: boolean;
+  withoutBorder?: boolean;
 }
 
 const FoodEditItem: React.FC<FoodEditItemProps> = ({
@@ -45,6 +46,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
   itemIndex,
   itemChangeCallback,
   withInfo,
+  withoutBorder,
 }) => {
   const navigation =
     useNavigation<
@@ -130,7 +132,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
 
   return (
     <TouchableHighlight onPress={onTap}>
-      <View style={styles.foodItem}>
+      <View style={[styles.foodItem, withoutBorder && styles.withoutBorder]}>
         {food.photo ? (
           <Image
             style={styles.foodThumb}
@@ -187,8 +189,9 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
           {withInfo && (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate(Routes.FoodInfo, {
+                navigation.navigate(Routes.Food, {
                   foodObj,
+                  readOnly: true,
                 })
               }>
               <FontAwesome name="info-circle" color="#999" size={19} />

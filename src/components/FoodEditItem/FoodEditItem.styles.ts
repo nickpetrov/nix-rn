@@ -12,6 +12,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
+  withoutBorder: {
+    borderBottomWidth: 0,
+  },
   caloriesValue: {
     color: Colors.Primary,
     fontSize: 18,

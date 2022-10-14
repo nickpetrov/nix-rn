@@ -4,6 +4,7 @@ import {StyleSheet} from 'react-native';
 export const styles = StyleSheet.create({
   root: {
     backgroundColor: '#fff',
+    flex: 1,
   },
   text: {
     fontSize: 12,
@@ -21,17 +22,23 @@ export const styles = StyleSheet.create({
   mr10: {
     marginRight: 10,
   },
+  mt10: {
+    marginTop: 10,
+  },
   flex1: {
     flex: 1,
   },
   row: {
     flexDirection: 'row',
   },
-  input: {
-    marginTop: 10,
+  textarea: {
+    height: 75,
     borderWidth: 1,
-    padding: 8,
-    minHeight: 200,
+    paddingVertical: 3,
+    paddingHorizontal: 7,
+    textAlignVertical: 'top',
+    borderColor: '#eee',
+    marginHorizontal: 10,
   },
   alignItemsCenter: {
     alignItems: 'center',
@@ -57,11 +64,10 @@ export const styles = StyleSheet.create({
   photoBtnContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingVertical: 15,
   },
   photoBtn: {
     paddingHorizontal: 10,
-    paddingTop: 15,
-    paddingBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -132,5 +138,37 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.Delete,
+  },
+  hideContent: {
+    flex: 1,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  hideContentIcon: {
+    marginRight: 5,
+  },
+  hideContentIconRight: {
+    marginLeft: 5,
+  },
+  borderBottom: {
+    borderBottomWidth: 1,
+    borderColor: Colors.LightGray,
+  },
+  noPhoto: {
+    marginHorizontal: 10,
+    textAlign: 'center',
+  },
+  shareHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  backBtnContainer: {
+    marginVertical: 10,
+  },
+  backBtn: {
+    alignSelf: 'center',
   },
 });

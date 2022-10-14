@@ -5,7 +5,7 @@ export * from './CustomFoodEditScreen';
 export * from './CustomFoodsScreen';
 export * from './DailyGoalsScreen';
 export * from './DashboardScreen';
-export * from './FoodEditScreen';
+export * from './FoodScreen';
 export * from './FoodInfoScreen';
 export * from './HelpScreen';
 export * from './PhotoUploadScreen';

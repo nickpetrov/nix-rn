@@ -28,15 +28,18 @@ interface MealListItemProps {
   >;
   onTap?: () => void;
   withArrow?: boolean;
+  withoutPhotoUploadIcon?: boolean;
+  withoutBorder?: boolean;
+  withCal?: boolean;
 }
 const MealListItem: React.FC<MealListItemProps> = props => {
-  const {foodObj, mealName} = props;
+  const {foodObj, mealName, withoutPhotoUploadIcon, withCal} = props;
 
   return (
     <TouchableHighlight
       onPress={() =>
         props.navigation
-          ? props.navigation.navigate(Routes.FoodEdit, {
+          ? props.navigation.navigate(Routes.Food, {
               foodObj: foodObj,
               mealType: mealName
                 ? mealTypes[mealName as keyof typeof mealTypes]
@@ -44,7 +47,8 @@ const MealListItem: React.FC<MealListItemProps> = props => {
             })
           : props.onTap && props.onTap()
       }>
-      <View style={styles.foodItem}>
+      <View
+        style={[styles.foodItem, props.withoutBorder && styles.withoutBorder]}>
         <Image
           style={styles.foodThumb}
           source={{uri: foodObj.photo.thumb}}
@@ -59,7 +63,7 @@ const MealListItem: React.FC<MealListItemProps> = props => {
           </Text>
         </View>
         <View style={styles.right}>
-          {foodObj.photo.is_user_uploaded && (
+          {foodObj.photo.is_user_uploaded && !withoutPhotoUploadIcon && (
             <FontAwesome
               style={styles.icon}
               name="camera"
@@ -67,9 +71,12 @@ const MealListItem: React.FC<MealListItemProps> = props => {
               size={20}
             />
           )}
-          <Text style={styles.calories}>
-            {foodObj?.nf_calories ? foodObj.nf_calories.toFixed(0) : ''}
-          </Text>
+          <View style={styles.caloriesContainer}>
+            <Text style={styles.calories}>
+              {foodObj?.nf_calories ? foodObj.nf_calories.toFixed(0) : ''}
+            </Text>
+            {withCal && <Text style={styles.caloriesSub}>Cal</Text>}
+          </View>
           {props.withArrow && (
             <Ionicons
               style={styles.chevron}

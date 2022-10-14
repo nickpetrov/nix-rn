@@ -1,3 +1,4 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -6,11 +7,16 @@ export const styles = StyleSheet.create({
     width: '100%',
     flexGrow: 1,
     backgroundColor: '#fff',
-    borderColor: '#bbb',
+    borderColor: Colors.LightGray,
     borderTopWidth: 1,
     borderBottomWidth: 1,
   },
   titleWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  titleTextWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
   },

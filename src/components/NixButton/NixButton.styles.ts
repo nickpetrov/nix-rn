@@ -8,12 +8,13 @@ export const styles = StyleSheet.create({
     alignSelf: 'stretch',
     borderRadius: 5,
     overflow: 'hidden',
-    padding: 10,
+    padding: 5,
     height: 40,
   },
   contentWrapper: {
     flex: 1,
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   icon: {
     position: 'absolute',
@@ -23,7 +24,7 @@ export const styles = StyleSheet.create({
     fontSize: 26,
   },
   titleContainer: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'center',
   },
   title: {

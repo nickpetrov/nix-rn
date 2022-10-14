@@ -32,9 +32,10 @@ export interface StackNavigatorParamList extends ParamListBase {
         scanError?: boolean;
       }
     | undefined;
-  [Routes.FoodEdit]: {
+  [Routes.Food]: {
     foodObj: FoodProps;
     mealType?: number;
+    readOnly?: boolean;
   };
   [Routes.FoodInfo]: {
     foodObj: FoodProps;
