@@ -15,7 +15,7 @@ const baseService = {
     );
   },
   async getFoodByQRcode(searchValue: string) {
-    return await apiClient.get<{foods: Array<FoodProps>}>(`/search/item`, {
+    return await apiClient.get<{foods: Array<FoodProps>}>('/search/item', {
       params: {
         upc: searchValue,
       },
