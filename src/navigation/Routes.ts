@@ -11,7 +11,6 @@ export enum Routes {
   DeveloperSettings = 'DeveloperSettings',
   Dashboard = 'Dashboard',
   Basket = 'Basket',
-  FoodInfo = 'FoodInfo',
   Food = 'Food',
   Autocomplete = 'Autocomplete',
   TrackFoods = 'TrackFoods',

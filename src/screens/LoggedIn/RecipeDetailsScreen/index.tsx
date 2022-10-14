@@ -351,7 +351,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       {error && (
         <InfoModal
           modalVisible={!!error}
-          setModalVisible={setError}
+          setModalVisible={() => setError(false)}
           text={error}
         />
       )}

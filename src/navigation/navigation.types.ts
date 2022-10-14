@@ -37,9 +37,6 @@ export interface StackNavigatorParamList extends ParamListBase {
     mealType?: number;
     readOnly?: boolean;
   };
-  [Routes.FoodInfo]: {
-    foodObj: FoodProps;
-  };
   [Routes.Autocomplete]:
     | {
         mealType?: number;

@@ -31,7 +31,7 @@ export const multiply = (foodObj: any, multiplier: number, newQty: number) => {
       nf_potassium: +(foodObj.nf_potassium * multiplier).toFixed(2),
       consumed_at: foodObj.consumed_at,
       serving_weight_grams: +(
-        (foodObj.serving_weight_grams || foodObj.nf_serving_weight_grams) *
+        (foodObj.serving_weight_grams || foodObj.nf_serving_weight_grams || 0) *
         multiplier
       ).toFixed(2),
       tags: foodObj.tags || null,

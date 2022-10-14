@@ -22,6 +22,7 @@ export const styles = StyleSheet.create({
     left: 0,
     marginRight: 10,
     fontSize: 26,
+    color: '#fff',
   },
   titleContainer: {
     // flex: 1,

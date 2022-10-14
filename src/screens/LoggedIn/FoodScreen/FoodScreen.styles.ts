@@ -165,10 +165,42 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  mainButtons: {
+    flex: 1,
+    padding: 10,
+    flexDirection: 'row',
+    zIndex: 0,
+  },
   backBtnContainer: {
     marginVertical: 10,
   },
   backBtn: {
     alignSelf: 'center',
   },
+  relativeContainer: {
+    position: 'relative',
+  },
+  photoChoose: {
+    position: 'absolute',
+    top: 40,
+    right: 10,
+    zIndex: 1,
+    backgroundColor: Colors.BgGray,
+    borderRadius: 10,
+  },
+  photoChooseItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    width: 200,
+  },
+  photoChooseItemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  photoChooseItemBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.Gray,
+  },
+  photoChooseItemText: {},
 });

@@ -322,7 +322,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
         )}
         <InfoModal
           modalVisible={scanError}
-          setModalVisible={setScanError}
+          setModalVisible={() => setScanError(false)}
           title="Error"
           text="We scanned an unrecognized QR code, if you are trying to scan a
         food product barcode, please try to avoid scanning the QR code

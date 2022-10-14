@@ -8,7 +8,7 @@ import {styles} from './InfoModal.styles';
 
 interface InfoModalProps {
   modalVisible: boolean;
-  setModalVisible: (v: false) => void;
+  setModalVisible: () => void;
   text: string;
   title?: string;
   btn?: {
@@ -30,7 +30,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
-        setModalVisible(false);
+        setModalVisible();
       }}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
@@ -45,7 +45,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
               <NixButton
                 title={btn?.title ? btn.title : 'Ok'}
                 type={btn?.type ? btn.type : 'primary'}
-                onPress={() => setModalVisible(false)}
+                onPress={() => setModalVisible()}
               />
             </View>
           </View>

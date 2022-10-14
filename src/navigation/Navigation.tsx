@@ -15,7 +15,6 @@ import {LoginScreen, SigninScreen, SignupScreen} from 'screens/Auth';
 import {
   DashboardScreen,
   BasketScreen,
-  FoodInfoScreen,
   FoodScreen,
   TrackFoodsScreen,
   BarcodeScannerScreen,
@@ -147,13 +146,6 @@ const LoggedInNavigation = ({
         component={FoodScreen}
         options={{
           headerTitle: 'Edit Food',
-        }}
-      />
-      <Stack.Screen
-        name={Routes.FoodInfo}
-        component={FoodInfoScreen}
-        options={{
-          headerTitle: 'Food Info',
         }}
       />
       <Stack.Screen

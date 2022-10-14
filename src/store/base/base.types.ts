@@ -1,0 +1,7 @@
+export enum baseActionTypes {
+  SET_USER_AGREED_TO_USE_PHOTO = 'SET_USER_AGREED_TO_USE_PHOTO',
+  DISPLAY_AGREEMENT_POPUP = 'DISPLAY_AGREEMENT_POPUP',
+  CLEAR = 'CLEAR',
+}
+
+export type BaseState = {agreedToUsePhoto: boolean; agreementPopup: boolean};

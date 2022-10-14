@@ -1,7 +1,6 @@
 // utils
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import _ from 'lodash';
 
 // components
 import {
@@ -50,7 +49,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
 }) => {
   const navigation =
     useNavigation<
-      NativeStackNavigationProp<StackNavigatorParamList, Routes.FoodInfo>
+      NativeStackNavigationProp<StackNavigatorParamList, Routes.Food>
     >();
   const [food, setFoodObj] = useState(foodObj);
   let {
@@ -63,7 +62,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
     nf_calories,
   } = foodObj;
   const [nfCalories, setNfCalories] = useState(nf_calories);
-  const [servingQty, setServingQty] = useState(serving_qty);
+  const [servingQty, setServingQty] = useState(String(serving_qty));
   const [servingUnit, setServingUnit] = useState(serving_unit);
 
   if (!alt_measures) {
@@ -80,15 +79,15 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
   useEffect(() => {
     setFoodObj(foodObj);
     setNfCalories(foodObj.nf_calories);
-    setServingQty(foodObj.serving_qty);
+    setServingQty(String(foodObj.serving_qty));
     setServingUnit(foodObj.serving_unit);
   }, [foodObj]);
 
-  useEffect(() => {
-    if (itemChangeCallback && !_.isEqual(foodObj, food)) {
-      itemChangeCallback(food, itemIndex || 0);
-    }
-  }, [food, itemIndex, itemChangeCallback, foodObj]);
+  // useEffect(() => {
+  //   if (itemChangeCallback && !_.isEqual(foodObj, food)) {
+  //     itemChangeCallback(food, itemIndex || 0);
+  //   }
+  // }, [food, itemIndex, itemChangeCallback, foodObj]);
 
   const measures = alt_measures.map((item: MeasureProps) => {
     return {
@@ -115,18 +114,19 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
     );
     setFoodObj({...newFoodObj});
     setNfCalories(newFoodObj.nf_calories);
+    if (itemChangeCallback) {
+      itemChangeCallback({...newFoodObj}, itemIndex || 0);
+    }
   };
 
-  const onQtyChange = (value: string) => {
-    const newValue = parseFloat(value || '0');
-    if (newValue) {
-      const multiplyer = newValue / food.serving_qty;
-      const newFoodObj = multiply(food, multiplyer, newValue);
-      setFoodObj({...newFoodObj});
-      setNfCalories(newFoodObj.nf_calories);
-      setServingQty(newValue);
-    } else {
-      setServingQty(Number(value));
+  const onQtyChange = () => {
+    const newValue = parseFloat(servingQty) || 1;
+    const multiplyer = newValue / food.serving_qty;
+    const newFoodObj = multiply(food, multiplyer, newValue);
+    setFoodObj({...newFoodObj});
+    setNfCalories(newFoodObj.nf_calories);
+    if (itemChangeCallback) {
+      itemChangeCallback({...newFoodObj}, itemIndex || 0);
     }
   };
 
@@ -150,12 +150,12 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
           <View style={styles.servingWrapper}>
             <TextInput
               style={styles.qty_input}
-              value={'' + servingQty}
-              placeholder="qty"
+              value={servingQty}
               placeholderTextColor="#60605e"
               keyboardType={'numeric'}
               returnKeyType="done"
-              onChangeText={onQtyChange}
+              onChangeText={setServingQty}
+              onBlur={() => onQtyChange()}
             />
             <View style={styles.pickerContainer}>
               <ModalSelector
@@ -186,7 +186,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
         </View>
         <View
           style={[styles.footer, withInfo ? {flexGrow: 1} : {flexGrow: 0.6}]}>
-          {withInfo && (
+          {withInfo ? (
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate(Routes.Food, {
@@ -196,7 +196,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
               }>
               <FontAwesome name="info-circle" color="#999" size={19} />
             </TouchableOpacity>
-          )}
+          ) : null}
           <View style={[styles.calories, withInfo ? {marginLeft: 10} : {}]}>
             <Text style={styles.caloriesValue}>
               {' '}

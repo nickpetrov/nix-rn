@@ -5,11 +5,10 @@ import {NavigationContainer} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Settings} from 'react-native-fbsdk-next';
 import SplashScreen from 'react-native-splash-screen';
+import MainContent from 'components/MainContent';
 
 //for work uuid
 import 'react-native-get-random-values';
-
-import {Navigation} from 'navigation';
 
 // store
 import {store} from 'store';
@@ -31,7 +30,7 @@ const App = () => {
       <Provider store={store}>
         <SafeAreaView style={styles.container}>
           <NavigationContainer>
-            <Navigation />
+            <MainContent />
           </NavigationContainer>
         </SafeAreaView>
       </Provider>

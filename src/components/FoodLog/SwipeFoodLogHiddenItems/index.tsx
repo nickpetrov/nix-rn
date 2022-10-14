@@ -23,7 +23,7 @@ import {
 import {Routes} from 'navigation/Routes';
 
 // types
-import {foodLogSections} from 'store/userLog/userLog.types';
+import {foodLogSections, FoodProps} from 'store/userLog/userLog.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {mealTypes} from 'store/basket/basket.types';
@@ -47,8 +47,8 @@ const SwipeFoodLogHiddenItems: React.FC<SwipeFoodLogHiddenItemsProps> = ({
   const dispatch = useDispatch();
   const selectedDate = useSelector(state => state.userLog.selectedDate);
   const addItemToBasket = useCallback(
-    (foodName: string) => {
-      dispatch(basketActions.addFoodToBasket(foodName || '')).then(() => {
+    (food: FoodProps) => {
+      dispatch(basketActions.addExistFoodToBasket([food])).then(() => {
         dispatch(basketActions.changeConsumedAt(selectedDate));
         dispatch(
           basketActions.changeMealType(
@@ -95,7 +95,7 @@ const SwipeFoodLogHiddenItems: React.FC<SwipeFoodLogHiddenItemsProps> = ({
         foodLogSection !== foodLogSections.Weigh_in &&
         foodLogSection !== foodLogSections.Water
       ) {
-        return () => addItemToBasket(sectionItem.food_name);
+        return () => addItemToBasket(sectionItem);
       }
     } else if (action === 'delete') {
       if (foodLogSection === foodLogSections.Exercise) {

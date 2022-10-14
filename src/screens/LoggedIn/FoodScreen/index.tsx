@@ -1,7 +1,7 @@
 // utils
 import React, {useEffect, useState, useCallback, useLayoutEffect} from 'react';
 import moment from 'moment-timezone';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import _ from 'lodash';
 import {Easing} from 'react-native-reanimated';
 
@@ -23,15 +23,13 @@ import WhenSection from 'components/WhenSection';
 import {NixButton} from 'components/NixButton';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import NutritionPieChart, {
-//   pieChartDataProps,
-// } from 'components/NutritionPieChart';
 // import FoodLabel from 'components/FoodLabel';
 import DeleteModal from 'components/DeleteModal';
 // @ts-ignore
 import QRCode from 'react-native-qrcode-svg';
 import {NavigationHeader} from 'components/NavigationHeader';
 import MealListItem from 'components/FoodLog/MealListItem';
+import GoBackModal from 'components/GoBackModal';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -43,6 +41,7 @@ import {
   updateFoodFromlog,
   uploadImage,
 } from 'store/userLog/userLog.actions';
+import {showAgreementPopup} from 'store/base/base.actions';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -57,7 +56,6 @@ import {MediaType, Asset} from 'react-native-image-picker/lib/typescript/types';
 
 // styles
 import {styles} from './FoodScreen.styles';
-import GoBackModal from 'components/GoBackModal';
 
 interface FoodScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Food>;
@@ -66,6 +64,7 @@ interface FoodScreenProps {
 
 export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   const readOnly = route.params.readOnly;
+  const agreedToUsePhoto = useSelector(state => state.base.agreedToUsePhoto);
   const [photoVisible, setPhotoVisible] = useState<boolean>(false);
   const [showSpinner, setShowSpinner] = useState<boolean>(false);
   const [showCheck, setShowCheck] = useState<boolean>(false);
@@ -81,13 +80,16 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   const [foodObj, setFoodObj] = useState<FoodProps>(route.params?.foodObj);
   const [showNotes, setShowNotes] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  // const [pieChartData, setPieChartData] = useState<pieChartDataProps>();
+  const [showChooseGetPhoto, setShowChooseGetPhoto] = useState(false);
   const [image, setImage] = useState<Asset | null>(null);
   const [showSave, setShowSave] = useState<boolean>(false);
   const [photoError, setPhotoError] = useState('');
   const dispatch = useDispatch();
   const net_carbs =
-    (foodObj.nf_total_carbohydrate || 0) - (foodObj.nf_dietary_fiber || 0);
+    foodObj.nf_total_carbohydrate === 0 ||
+    (foodObj.nf_total_carbohydrate || 0) - (foodObj.nf_dietary_fiber || 0) <= 0
+      ? 0
+      : (foodObj.nf_total_carbohydrate || 0) - (foodObj.nf_dietary_fiber || 0);
 
   const spinValue = new Animated.Value(0);
 
@@ -138,43 +140,6 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     });
   }, [navigation, readOnly, showSpinner, showCheck, spin]);
 
-  // useEffect(() => {
-  //   const newPieChartData: pieChartDataProps = {
-  //     totalFatCalories:
-  //       (foodObj
-  //         ? foodObj.nf_total_fat ||
-  //           foodObj.full_nutrients.filter(attr => attr.attr_id === 204)[0]
-  //             .value ||
-  //           0
-  //         : 0) * 9,
-  //     totalCarbohydratesCalories:
-  //       (foodObj
-  //         ? foodObj.nf_total_carbohydrate ||
-  //           foodObj.full_nutrients.filter(attr => attr.attr_id === 205)[0]
-  //             .value ||
-  //           0
-  //         : 0) * 4,
-  //     totalProteinCalories:
-  //       (foodObj
-  //         ? foodObj.nf_protein ||
-  //           foodObj.full_nutrients.filter(attr => attr.attr_id === 203)[0]
-  //             .value ||
-  //           0
-  //         : 0) * 4,
-  //   };
-
-  //   let alcoholAttr =
-  //     foodObj && foodObj.full_nutrients
-  //       ? foodObj.full_nutrients.filter(attr => attr.attr_id === 221)[0]?.value
-  //       : 0;
-
-  //   if (alcoholAttr) {
-  //     newPieChartData.totalAlcoholCalories = alcoholAttr * 7;
-  //   }
-
-  //   setPieChartData(newPieChartData);
-  // }, [foodObj]);
-
   const deleteFromLog = () => {
     dispatch(deleteFoodFromLog([{id: foodObj?.id || '-1'}])).then(() => {
       setShowDeleteModal(false);
@@ -220,6 +185,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   );
 
   const lauchImageFromGallery = () => {
+    setShowChooseGetPhoto(!showChooseGetPhoto);
     setPhotoError('');
     const options = {
       mediaType: 'photo' as MediaType,
@@ -227,6 +193,23 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     };
     setPhotoVisible(true);
     launchImageLibrary(options, response => {
+      if (response) {
+        if (response.assets?.length) {
+          setImage(response.assets[0]);
+          console.log('choosen image', response.assets[0]);
+        }
+      }
+    });
+  };
+  const lauchImageFromCamera = () => {
+    setShowChooseGetPhoto(!showChooseGetPhoto);
+    setPhotoError('');
+    const options = {
+      mediaType: 'photo' as MediaType,
+      noData: true,
+    };
+    setPhotoVisible(true);
+    launchCamera(options, response => {
       if (response) {
         if (response.assets?.length) {
           setImage(response.assets[0]);
@@ -347,7 +330,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
               onMealTypeChange={onMealTypeChange}
             />
           )}
-          {(!readOnly || foodObj.note) && (
+          {(!readOnly || !!foodObj.note) && (
             <TouchableWithoutFeedback
               onPress={() => setShowNotes(!showNotes)}
               style={styles.flex1}>
@@ -369,7 +352,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           {showNotes && (
             <>
               {readOnly ? (
-                <>{foodObj.note ? <Text>{foodObj.note}</Text> : null}</>
+                <Text>{foodObj.note}</Text>
               ) : (
                 <TextInput
                   multiline={true}
@@ -382,140 +365,165 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
             </>
           )}
           <View style={[styles.borderBottom, showNotes && styles.p10]} />
-          <TouchableWithoutFeedback
-            onPress={() => setPhotoVisible(!photoVisible)}>
-            <View style={styles.photoBtnContainer}>
-              <View style={styles.photoBtn}>
-                <FontAwesome name="camera" color="#000" size={19} />
-                <Text style={styles.photoBtnText}>Photo</Text>
-                <FontAwesome
-                  name={photoVisible ? 'chevron-down' : 'chevron-right'}
-                  color="#000"
-                  size={15}
-                />
-              </View>
-              {!readOnly && (
-                <TouchableWithoutFeedback onPress={lauchImageFromGallery}>
-                  <View style={styles.photoBtn}>
-                    <FontAwesome name="plus" color="#000" size={11} />
-                    <Text style={styles.photoBtnText}>
-                      {foodObj.photo.is_user_uploaded
-                        ? 'Change Photo'
-                        : 'Add Photo'}
-                    </Text>
-                  </View>
-                </TouchableWithoutFeedback>
-              )}
-            </View>
-          </TouchableWithoutFeedback>
-          {photoVisible && (
-            <>
-              {!image && !foodObj.photo.highres && !foodObj.photo.thumb && (
-                <Text style={styles.noPhoto}>This food has no photo.</Text>
-              )}
-              <View style={styles.imageContainer}>
-                {image && (
-                  <>
-                    <TouchableOpacity
-                      style={styles.uploadBtn}
-                      onPress={handleUploadImage}>
-                      <Text style={styles.uploadBtnText}>Upload</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.deleteBtn}
-                      onPress={() => {
-                        setImage(null);
-                        setPhotoError('');
-                      }}>
-                      <FontAwesome name="trash" color="#fff" size={15} />
-                    </TouchableOpacity>
-                  </>
+          <View style={styles.relativeContainer}>
+            <TouchableWithoutFeedback
+              onPress={() => setPhotoVisible(!photoVisible)}>
+              <View style={styles.photoBtnContainer}>
+                <View style={styles.photoBtn}>
+                  <FontAwesome name="camera" color="#000" size={19} />
+                  <Text style={styles.photoBtnText}>Photo</Text>
+                  <FontAwesome
+                    name={photoVisible ? 'chevron-down' : 'chevron-right'}
+                    color="#000"
+                    size={15}
+                  />
+                </View>
+                {!readOnly && (
+                  <TouchableWithoutFeedback
+                    onPress={() => {
+                      if (agreedToUsePhoto) {
+                        setShowChooseGetPhoto(!showChooseGetPhoto);
+                      } else {
+                        dispatch(showAgreementPopup());
+                      }
+                    }}>
+                    <View style={styles.photoBtn}>
+                      <FontAwesome name="plus" color="#000" size={11} />
+                      <Text style={styles.photoBtnText}>
+                        {foodObj.photo.is_user_uploaded
+                          ? 'Change Photo'
+                          : 'Add Photo'}
+                      </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
                 )}
-                <Image
-                  style={styles.image}
-                  source={{
-                    uri: image
-                      ? image.uri
-                      : foodObj.photo.highres || foodObj.photo.thumb || '',
-                  }}
-                  resizeMode="contain"
+              </View>
+            </TouchableWithoutFeedback>
+            {showChooseGetPhoto && (
+              <View style={styles.photoChoose}>
+                <TouchableOpacity
+                  style={[styles.photoChooseItem, styles.photoChooseItemBorder]}
+                  onPress={lauchImageFromGallery}>
+                  <View style={styles.photoChooseItemRow}>
+                    <Text style={styles.photoChooseItemText}>Choose File</Text>
+                    <Ionicons name="folder-outline" color="#000" size={20} />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.photoChooseItem}
+                  onPress={lauchImageFromCamera}>
+                  <View style={styles.photoChooseItemRow}>
+                    <Text style={styles.photoChooseItemText}>Take photo</Text>
+                    <Ionicons name="camera-outline" color="#000" size={20} />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+            {photoVisible && (
+              <>
+                {!image && !foodObj.photo.highres && !foodObj.photo.thumb ? (
+                  <Text style={styles.noPhoto}>This food has no photo.</Text>
+                ) : null}
+                <View style={styles.imageContainer}>
+                  {!!image && (
+                    <>
+                      <TouchableOpacity
+                        style={styles.uploadBtn}
+                        onPress={handleUploadImage}>
+                        <Text style={styles.uploadBtnText}>Upload</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.deleteBtn}
+                        onPress={() => {
+                          setImage(null);
+                          setPhotoError('');
+                        }}>
+                        <FontAwesome name="trash" color="#fff" size={15} />
+                      </TouchableOpacity>
+                    </>
+                  )}
+                  <Image
+                    style={styles.image}
+                    source={{
+                      uri: image
+                        ? image.uri
+                        : foodObj.photo.highres || foodObj.photo.thumb || '',
+                    }}
+                    resizeMode="contain"
+                  />
+                </View>
+                {!!photoError && (
+                  <View style={styles.imageError}>
+                    <Text style={styles.imageErrorText}>{photoError}</Text>
+                  </View>
+                )}
+              </>
+            )}
+            {!readOnly && (
+              <>
+                <View
+                  style={[styles.borderBottom, photoVisible && styles.p10]}
                 />
-              </View>
-              {photoError && (
-                <View style={styles.imageError}>
-                  <Text style={styles.imageErrorText}>{photoError}</Text>
+                <View style={styles.mainButtons}>
+                  <View style={[styles.flex1, styles.mr10]}>
+                    <NixButton
+                      title="Copy"
+                      type="outline"
+                      onPress={() => addItemToBasket()}
+                      iconStyles={{position: 'relative', fontSize: 20}}
+                      iconName="copy"
+                      iosIcon
+                    />
+                  </View>
+                  <View style={styles.flex1}>
+                    <NixButton
+                      title="Delete"
+                      type="outline"
+                      iconName="trash"
+                      iconStyles={{position: 'relative', fontSize: 20}}
+                      onPress={() => setShowDeleteModal(true)}
+                      iosIcon
+                    />
+                  </View>
                 </View>
-              )}
-            </>
-          )}
-          {!readOnly && (
-            <>
-              <View style={[styles.borderBottom, photoVisible && styles.p10]} />
-              <View style={[styles.flex1, styles.p10, styles.row]}>
-                <View style={[styles.flex1, styles.mr10]}>
-                  <NixButton
-                    title="Copy"
-                    type="outline"
-                    onPress={() => addItemToBasket()}
-                    iconStyles={{position: 'relative', fontSize: 20}}
-                    iconName="copy"
-                    iosIcon
-                  />
-                </View>
-                <View style={styles.flex1}>
-                  <NixButton
-                    title="Delete"
-                    type="outline"
-                    iconName="trash"
-                    iconStyles={{position: 'relative', fontSize: 20}}
-                    onPress={() => setShowDeleteModal(true)}
-                    iosIcon
-                  />
-                </View>
-              </View>
-            </>
-          )}
+              </>
+            )}
+          </View>
           {/* <View style={styles.p10}>
             <FoodLabel data={foodObj} />
           </View> */}
-          {(net_carbs ||
-            foodObj.nf_p ||
-            foodObj.caffeine ||
-            foodObj.nf_potassium) && (
+          {(!!net_carbs ||
+            !!foodObj.nf_p ||
+            !!foodObj.caffeine ||
+            !!foodObj.nf_potassium) && (
             <View style={styles.listContainer}>
-              {net_carbs && (
+              {!!net_carbs && (
                 <Text style={styles.text}>
                   Net Carbs**: {(net_carbs || 0).toFixed(1)} g
                 </Text>
               )}
-              {foodObj.vitamin_d && (
+              {!!foodObj.vitamin_d && (
                 <Text style={styles.text}>
                   Vitamin D** : {(foodObj.vitamin_d || 0).toFixed(1)} IU
                 </Text>
               )}
-              {foodObj.nf_p && (
+              {!!foodObj.nf_p && (
                 <Text style={styles.text}>
                   Phosphorus** : {(foodObj.nf_p || 0).toFixed(1)} mg
                 </Text>
               )}
-              {foodObj.nf_potassium && (
+              {!!foodObj.nf_potassium && (
                 <Text style={styles.text}>
                   Potassium** : {(foodObj.nf_potassium || 0).toFixed(1)} mg
                 </Text>
               )}
-              {foodObj.caffeine && (
+              {!!foodObj.caffeine && (
                 <Text style={styles.text}>
                   Caffeine** : {(foodObj.caffeine || 0).toFixed(1)} mg
                 </Text>
               )}
             </View>
           )}
-
-          {/* {pieChartData && (
-            <View style={styles.pieContainer}>
-              <NutritionPieChart data={pieChartData} />
-            </View>
-          )} */}
 
           {!readOnly && (
             <View style={styles.p10}>
@@ -551,7 +559,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
               />
             </View>
           )}
-          {(foodObj.nf_p || foodObj.caffeine || foodObj.nf_potassium) && (
+          {(!!foodObj.nf_p || !!foodObj.caffeine || !!foodObj.nf_potassium) && (
             <Text style={styles.p10}>
               ** Please note that our restaurant and branded grocery food
               database does not have these attributes available, and if your
@@ -580,7 +588,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           </TouchableOpacity>
         </View>
       )}
-      {showUnsavedPopup?.backAction && (
+      {!!showUnsavedPopup?.backAction && (
         <GoBackModal
           show={!!showUnsavedPopup}
           goBack={() => {

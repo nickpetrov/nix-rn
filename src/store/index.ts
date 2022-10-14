@@ -16,6 +16,7 @@ import recipesReducer from './recipes/recipes.reducer';
 import customFoodsReducer from './customFoods/customFoods.reducer';
 import connectedAppsReducer from './connectedApps/connectedApps.reducer';
 import coachReducer from './coach/coach.reducer';
+import baseReducer from './base/base.reducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   customFoods: customFoodsReducer,
   connectedApps: connectedAppsReducer,
   coach: coachReducer,
+  base: baseReducer,
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));
