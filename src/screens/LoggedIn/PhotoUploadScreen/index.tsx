@@ -188,7 +188,7 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
   };
 
   return (
-    <ScrollView style={styles.root} contentContainerStyle={{flex: 1}}>
+    <ScrollView style={styles.root}>
       <View style={styles.container}>
         <View style={styles.mb20}>
           <Text>

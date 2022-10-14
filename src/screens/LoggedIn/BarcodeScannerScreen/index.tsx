@@ -253,7 +253,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
       return unsubscribe;
     }, [navigation]);
 
-    if (device == null || !hasPermission) {
+    if (device == null || !hasPermission || !isActive) {
       return <ActivityIndicator />;
     }
 

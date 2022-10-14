@@ -369,7 +369,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           {showNotes && (
             <>
               {readOnly ? (
-                <>{foodObj.note && <Text>{foodObj.note}</Text>}</>
+                <>{foodObj.note ? <Text>{foodObj.note}</Text> : null}</>
               ) : (
                 <TextInput
                   multiline={true}
