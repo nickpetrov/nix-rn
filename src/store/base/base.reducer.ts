@@ -1,5 +1,12 @@
 // utils
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Platform} from 'react-native';
+import {
+  getModel,
+  getVersion,
+  getManufacturer,
+  getReadableVersion,
+} from 'react-native-device-info';
 
 //types
 import {AnyAction} from 'redux';
@@ -19,9 +26,21 @@ const getAgreedToUsePhotoFromStorage = () => {
   return agreedToUsePhoto;
 };
 
+let manufacturer = '';
+getManufacturer().then(m => {
+  manufacturer = m;
+});
+
 const initialState: BaseState = {
   agreedToUsePhoto: getAgreedToUsePhotoFromStorage(),
   agreementPopup: false,
+  deviceInfo: {
+    version: getVersion(),
+    model: getModel(),
+    platform: Platform.OS,
+    manufacturer: manufacturer,
+    appVersion: getReadableVersion(),
+  },
 };
 
 export default (

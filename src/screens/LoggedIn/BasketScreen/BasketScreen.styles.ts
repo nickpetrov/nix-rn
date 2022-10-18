@@ -154,4 +154,21 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  clearBtn: {
+    textAlign: 'center',
+    color: Colors.Delete,
+    textDecorationLine: 'underline',
+    fontSize: 16,
+  },
+  linksContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    marginTop: 30,
+    paddingHorizontal: 10,
+  },
+  link: {
+    fontSize: 12,
+    color: Colors.Secondary,
+  },
 });

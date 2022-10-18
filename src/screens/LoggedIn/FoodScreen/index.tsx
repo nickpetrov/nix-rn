@@ -56,6 +56,7 @@ import {MediaType, Asset} from 'react-native-image-picker/lib/typescript/types';
 
 // styles
 import {styles} from './FoodScreen.styles';
+import requestCameraPermission from 'helpers/cameraPermision';
 
 interface FoodScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Food>;
@@ -199,6 +200,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       noData: true,
     };
     setPhotoVisible(true);
+
     launchImageLibrary(options, response => {
       if (response) {
         if (response.assets?.length) {
@@ -216,12 +218,16 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       noData: true,
     };
     setPhotoVisible(true);
-    launchCamera(options, response => {
-      if (response) {
-        if (response.assets?.length) {
-          setImage(response.assets[0]);
-          console.log('choosen image', response.assets[0]);
-        }
+    requestCameraPermission().then(result => {
+      if (result) {
+        launchCamera(options, response => {
+          if (response) {
+            if (response.assets?.length) {
+              setImage(response.assets[0]);
+              console.log('choosen image', response.assets[0]);
+            }
+          }
+        });
       }
     });
   };

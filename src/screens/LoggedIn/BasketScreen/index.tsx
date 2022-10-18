@@ -13,7 +13,6 @@ import {
   Text,
   View,
   SafeAreaView,
-  Button,
   TouchableWithoutFeedback,
   Image,
 } from 'react-native';
@@ -62,6 +61,8 @@ import {
 } from 'react-native-image-picker';
 import {showAgreementPopup} from 'store/base/base.actions';
 import {Platform, TouchableOpacity} from 'react-native';
+import requestCameraPermission from 'helpers/cameraPermision';
+import BugReportModal from 'components/BugReportModal';
 
 interface BasketScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Basket>;
@@ -75,9 +76,11 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   const agreedToUsePhoto = useSelector(state => state.base.agreedToUsePhoto);
   const [scanError, setScanError] = useState(false);
   const [isUploadPhotoLoading, setIsUploadPhotoLoading] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [showChooseGetPhoto, setShowChooseGetPhoto] = useState(false);
   const [uploadPhoto, setUploadPhoto] = useState<Asset | null>(null);
   const [photoVisible, setPhotoVisible] = useState<boolean>(false);
+  const [showBugReport, setShowBugReport] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState('');
   const {
     foods,
@@ -164,6 +167,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   }, [uploadPhoto, dispatch]);
 
   const logFoods = () => {
+    setLoadingSubmit(true);
     let loggingOptions: Partial<loggingOptionsProps> = {};
 
     let adjustedFoods = foods;
@@ -238,6 +242,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
 
     dispatch(userLogActions.addFoodToLog(adjustedFoods, loggingOptions)).then(
       () => {
+        setLoadingSubmit(false);
         dispatch(basketActions.reset());
         navigation.navigate(Routes.Dashboard);
       },
@@ -280,7 +285,6 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     setShowChooseGetPhoto(false);
     const options = {
       mediaType: 'photo' as MediaType,
-      noData: true,
     };
 
     launchImageLibrary(options, response => {
@@ -300,13 +304,17 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
       noData: true,
     };
 
-    launchCamera(options, response => {
-      if (response) {
-        if (response.assets?.length) {
-          setUploadPhoto(response.assets[0]);
-          console.log('choosen image', response.assets[0]);
-          setPhotoVisible(true);
-        }
+    requestCameraPermission().then(result => {
+      if (result) {
+        launchCamera(options, response => {
+          if (response) {
+            if (response.assets?.length) {
+              setUploadPhoto(response.assets[0]);
+              console.log('choosen image', response.assets[0]);
+              setPhotoVisible(true);
+            }
+          }
+        });
       }
     });
   };
@@ -574,27 +582,47 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                 </View>
                 {isUploadPhotoLoading && (
                   <View style={styles.uploadPhotoLoading}>
-                    <Ionicons name="spinner-balanced" color="#fff" size={16} />
+                    <FontAwesome name="spinner" color="#fff" size={16} />
                   </View>
                 )}
               </>
             )}
-            <View style={styles.mb20}>
-              <NixButton title="Log Foods" onPress={logFoods} type="primary" />
+            <NixButton
+              disabled={loadingSubmit}
+              title={
+                isSingleFood
+                  ? 'Log 1 Serving'
+                  : foods.length === 1
+                  ? 'Log 1 Food'
+                  : `Log ${foods.length} Foods`
+              }
+              onPress={logFoods}
+              type="primary"
+              style={{borderRadius: 0}}
+            />
+            <View style={styles.linksContainer}>
+              <TouchableOpacity onPress={() => setShowBugReport(true)}>
+                <Text style={styles.link}>Report a problem</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {}}>
+                <Text style={styles.link}>Report nutrition discrepancy</Text>
+              </TouchableOpacity>
             </View>
             <View>
-              <NixButton
-                title="Clear Basket"
-                onPress={clearBasket}
-                type="red"
-              />
+              <TouchableOpacity
+                style={{alignSelf: 'center'}}
+                onPress={clearBasket}>
+                <Text style={styles.clearBtn}>Clear Basket</Text>
+              </TouchableOpacity>
             </View>
           </View>
         ) : (
           <View>
-            <Button
+            <NixButton
               onPress={() => navigation.goBack()}
               title="Back to Food Log"
+              type="primary"
+              style={{borderRadius: 0}}
             />
           </View>
         )}
@@ -607,6 +635,10 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
         near the barcode and try scanning this product again"
         />
       </KeyboardAwareScrollView>
+      <BugReportModal
+        modalVisible={showBugReport}
+        setModalVisible={() => setShowBugReport(false)}
+      />
     </SafeAreaView>
   );
 };
