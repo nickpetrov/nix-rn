@@ -1,3 +1,4 @@
+import {mealTypes} from 'store/basket/basket.types';
 import {mealNameProps} from 'store/userLog/userLog.types';
 
 const mealsList: Array<mealNameProps> = [
@@ -27,6 +28,6 @@ export const guessMealTypeByTime = (hour: number) => {
   }
 };
 
-export const guessMealNameByType = (type: number) => {
+export const guessMealNameByType = (type: mealTypes) => {
   return mealsList[type - 1];
 };

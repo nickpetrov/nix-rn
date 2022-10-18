@@ -62,7 +62,10 @@ const initialState: AuthState = {
   },
 };
 
-export default (state: AuthState = initialState, action: AnyAction) => {
+export default (
+  state: AuthState = initialState,
+  action: AnyAction,
+): AuthState => {
   switch (action.type) {
     case authActionTypes.UPDATE_USER_DATA:
       const stateWithNewUserData = {

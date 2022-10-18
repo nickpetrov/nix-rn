@@ -49,6 +49,8 @@ export interface loggingOptionsProps {
   meal_type: number;
   serving_qty: number;
   consumed_at: string;
+  brand_name?: string;
+  aggregate_photo?: PhotoProps;
 }
 
 export interface ExerciseProps {

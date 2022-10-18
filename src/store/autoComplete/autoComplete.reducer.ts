@@ -9,7 +9,10 @@ const initialState: AutoCompleteState = {
   suggested: [],
 };
 
-export default (state: AutoCompleteState = initialState, action: AnyAction) => {
+export default (
+  state: AutoCompleteState = initialState,
+  action: AnyAction,
+): AutoCompleteState => {
   switch (action.type) {
     case autoCompleteActionTypes.UPDATE_SEARCH_RESULTS:
       return {...state, ...action.searchResult};

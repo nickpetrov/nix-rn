@@ -18,7 +18,10 @@ const initialState: FoodsState = {
   restaurantFoods: [],
 };
 
-export default (state: FoodsState = initialState, action: AnyAction) => {
+export default (
+  state: FoodsState = initialState,
+  action: AnyAction,
+): FoodsState => {
   switch (action.type) {
     case foodsActionTypes.GET_FOOD_INFO:
       const stateWithTotals = {...state, foodInfo: action.foodInfo};

@@ -1,14 +1,9 @@
 import {FoodProps} from 'store/userLog/userLog.types';
 export enum basketActionTypes {
   ADD_FOOD_TO_BASKET = 'ADD_FOOD_TO_BASKET',
-  CHANGE_LOGGING_TYPE = 'CHANGE_LOGGING_TYPE',
-  CHANGE_RECIPE_NAME = 'CHANGE_RECIPE_NAME',
-  CHANGE_RECIPE_SERVINGS = 'CHANGE_RECIPE_SERVINGS',
-  CHANGE_RECIPE_BRAND = 'CHANGE_RECIPE_BRAND',
-  CHANGE_CONSUMED_AT = 'CHANGE_CONSUMED_AT',
-  CHANGE_MEAL_TYPE = 'CHANGE_MEAL_TYPE',
   DELETE_FOOD_FROM_BASKET = 'DELETE_FOOD_FROM_BASKET',
   MERGE_BASKET = 'MERGE_BASKET',
+  MERGE_BASKET_FROM_STORAGE = 'MERGE_BASKET_FROM_STORAGE',
   UPDATE_BASKET_FOODS = 'UPDATE_BASKET_FOODS',
   RESET = 'RESET',
 }
@@ -28,5 +23,11 @@ export interface BasketState {
   recipeName: string;
   servings: string;
   consumed_at: string;
-  meal_type: number;
+  meal_type: mealTypes;
+  recipeBrand: string;
+  customPhoto: {
+    full: string;
+    thumb: string;
+    is_user_uploaded: boolean;
+  } | null;
 }

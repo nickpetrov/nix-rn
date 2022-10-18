@@ -75,8 +75,12 @@ const Grocery: React.FC<GroceryProps> = ({navigation}) => {
     let aggregatedFood = food;
 
     batch(() => {
-      dispatch(basketActions.changeMealType(aggregatedFood.meal_type));
-      dispatch(basketActions.changeConsumedAt(aggregatedFood.consumed_at));
+      dispatch(
+        basketActions.mergeBasket({
+          meal_type: aggregatedFood.meal_type,
+          consumed_at: aggregatedFood.consumed_at as string,
+        }),
+      );
       dispatch(basketActions.addExistFoodToBasket([aggregatedFood]));
     });
     navigation.replace(Routes.Basket);

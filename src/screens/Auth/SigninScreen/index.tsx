@@ -13,7 +13,7 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Formik, Field} from 'formik';
 import {NixButton} from 'components/NixButton';
-import {NixInput} from 'components/NixInput';
+import {NixInputField} from 'components/NixInputField';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {WebView} from 'react-native-webview';
 
@@ -87,7 +87,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
             {({handleSubmit, isValid}) => (
               <>
                 <Field
-                  component={NixInput}
+                  component={NixInputField}
                   name="email"
                   label="Email"
                   leftComponent={
@@ -101,7 +101,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                   keyboardType="email-address"
                 />
                 <Field
-                  component={NixInput}
+                  component={NixInputField}
                   name="password"
                   label="Password"
                   leftComponent={

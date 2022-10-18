@@ -63,47 +63,42 @@ export const addExistFoodToBasket = (foods: Array<FoodProps>) => {
   };
 };
 
-export const changeLoggingType = (isSingleFood: boolean) => {
-  saveBasketToStorage({isSingleFood});
-  return {type: basketActionTypes.CHANGE_LOGGING_TYPE, isSingleFood};
-};
-
-export const changeRecipeName = (newName: string) => {
-  saveBasketToStorage({recipeName: newName});
-  return {type: basketActionTypes.CHANGE_RECIPE_NAME, newName};
-};
-
-export const changeRecipeServings = (servings: string) => {
-  saveBasketToStorage({servings});
-  return {type: basketActionTypes.CHANGE_RECIPE_SERVINGS, servings};
-};
-
-// export const changeRecipeBrand = (recipeBrand: string) => {
-//   saveBasketToStorage({recipeBrand});
-//   return {type: basketActionTypes.CHANGE_RECIPE_BRAND, recipeBrand};
-// };
-
-export const changeConsumedAt = (consumed_at: string) => {
-  saveBasketToStorage({consumed_at});
-  return {type: basketActionTypes.CHANGE_CONSUMED_AT, consumed_at};
-};
-
-export const changeMealType = (newMealType: number) => {
-  saveBasketToStorage({meal_type: newMealType});
-  return {type: basketActionTypes.CHANGE_MEAL_TYPE, newMealType};
-};
-
 export const deleteFoodFromBasket = (id: string) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
     const oldFoods = useState().basket.foods;
     let newFoods = [...oldFoods];
-    newFoods = newFoods.filter(item => item.id !== id);
-    saveBasketToStorage({foods: newFoods});
+    newFoods = newFoods.filter(item => item.basketId !== id);
+    let newBasket;
+    if (newFoods.length === 1) {
+      newBasket = {
+        foods: newFoods,
+        recipeName: '',
+        servings: '1',
+        isSingleFood: false,
+        recipeBrand: '',
+      };
+      dispatch({
+        type: basketActionTypes.MERGE_BASKET,
+        payload: {
+          recipeName: '',
+          servings: '1',
+          isSingleFood: false,
+          recipeBrand: '',
+        },
+      });
+    } else {
+      newBasket = {foods: newFoods};
+    }
+    saveBasketToStorage(newBasket);
     dispatch({type: basketActionTypes.DELETE_FOOD_FROM_BASKET, id});
   };
 };
-export const mergeBasket = (basket: BasketState) => {
-  return {type: basketActionTypes.MERGE_BASKET, basket};
+export const mergeBasket = (basket: Partial<BasketState>) => {
+  saveBasketToStorage(basket);
+  return {type: basketActionTypes.MERGE_BASKET, payload: basket};
+};
+export const mergeBasketFromStorage = (basket: BasketState) => {
+  return {type: basketActionTypes.MERGE_BASKET_FROM_STORAGE, basket};
 };
 
 export const updateFoodAtBasket = (foodObj: FoodProps, index: number) => {

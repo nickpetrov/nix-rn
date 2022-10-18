@@ -4,7 +4,7 @@ import React, {useState, useEffect} from 'react';
 // components
 import {Field, Formik} from 'formik';
 import {ActivityIndicator, Text, View} from 'react-native';
-import {NixInput} from 'components/NixInput';
+import {NixInputField} from 'components/NixInputField';
 import {NixButton} from 'components/NixButton';
 import CountryPicker from 'react-native-country-picker-modal';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -129,7 +129,7 @@ const StepTwoForm: React.FC<Props> = ({
         {({handleSubmit, isValid, values, setFieldValue}) => (
           <>
             <Field
-              component={NixInput}
+              component={NixInputField}
               name="username"
               label="Username"
               style={styles.input}

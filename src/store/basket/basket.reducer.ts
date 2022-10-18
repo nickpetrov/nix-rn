@@ -1,16 +1,21 @@
 import {AnyAction} from 'redux';
 import {basketActionTypes, BasketState} from './basket.types';
 
-const initialState = {
+const initialState: BasketState = {
   foods: [],
   isSingleFood: false,
   recipeName: '',
   servings: '1',
   consumed_at: '',
   meal_type: 1,
+  recipeBrand: '',
+  customPhoto: null,
 };
 
-export default (state: BasketState = initialState, action: AnyAction) => {
+export default (
+  state: BasketState = initialState,
+  action: AnyAction,
+): BasketState => {
   switch (action.type) {
     case basketActionTypes.ADD_FOOD_TO_BASKET: {
       let newFoods = [...state.foods];
@@ -23,16 +28,6 @@ export default (state: BasketState = initialState, action: AnyAction) => {
     }
     case basketActionTypes.UPDATE_BASKET_FOODS:
       return {...state, foods: action.foods};
-    case basketActionTypes.CHANGE_LOGGING_TYPE:
-      return {...state, isSingleFood: action.isSingleFood};
-    case basketActionTypes.CHANGE_RECIPE_SERVINGS:
-      return {...state, servings: action.servings};
-    case basketActionTypes.CHANGE_RECIPE_NAME:
-      return {...state, recipeName: action.newName};
-    case basketActionTypes.CHANGE_CONSUMED_AT:
-      return {...state, consumed_at: action.consumed_at};
-    case basketActionTypes.CHANGE_MEAL_TYPE:
-      return {...state, meal_type: action.newMealType};
     case basketActionTypes.DELETE_FOOD_FROM_BASKET: {
       let newFoods = [...state.foods];
       newFoods = newFoods.filter(item => item.basketId !== action.id);
@@ -42,7 +37,10 @@ export default (state: BasketState = initialState, action: AnyAction) => {
         return initialState;
       }
     }
-    case basketActionTypes.MERGE_BASKET:
+    case basketActionTypes.MERGE_BASKET: {
+      return {...state, ...action.payload};
+    }
+    case basketActionTypes.MERGE_BASKET_FROM_STORAGE:
       let newFoodsAtBasket = [...state.foods];
       if (action.basket?.foods?.length) {
         newFoodsAtBasket = newFoodsAtBasket.concat(action.basket.foods);

@@ -150,11 +150,18 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   const addItemToBasket = async () => {
     dispatch(basketActions.addFoodToBasket(foodObj?.food_name || '')).then(
       () => {
-        dispatch(basketActions.changeConsumedAt(selectedDate));
-
-        if (route.params?.mealType) {
-          dispatch(basketActions.changeMealType(route.params.mealType));
-        }
+        dispatch(
+          basketActions.mergeBasket(
+            route.params?.mealType
+              ? {
+                  consumed_at: selectedDate,
+                  meal_type: route.params?.mealType,
+                }
+              : {
+                  consumed_at: selectedDate,
+                },
+          ),
+        );
         navigation.replace('Basket');
       },
     );

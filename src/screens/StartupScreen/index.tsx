@@ -16,7 +16,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 // actions
 import {getUserDataFromAPI, setUserJwt} from 'store/auth/auth.actions';
-import {mergeBasket} from 'store/basket/basket.actions';
+import {mergeBasketFromStorage} from 'store/basket/basket.actions';
 
 // types
 import {BasketState} from 'store/basket/basket.types';
@@ -53,7 +53,7 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
               return;
             } else {
               const newBasket: BasketState = JSON.parse(basket);
-              dispatch(mergeBasket(newBasket));
+              dispatch(mergeBasketFromStorage(newBasket));
             }
           };
           getBasketFromStorage();

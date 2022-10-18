@@ -18,7 +18,7 @@ import {setUserJwt, signup} from 'store/auth/auth.actions';
 // styles
 import {styles} from '../../SignupScreen.styles';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {NixInput} from 'components/NixInput';
+import {NixInputField} from 'components/NixInputField';
 import NixCheckbox from 'components/NixCheckbox';
 import {Colors} from 'constants/Colors';
 import {NixButton} from 'components/NixButton';
@@ -90,7 +90,7 @@ const StepOneForm: React.FC<Props> = ({
         {({handleSubmit, isValid}) => (
           <>
             <Field
-              component={NixInput}
+              component={NixInputField}
               name="first_name"
               label="First Name"
               style={styles.input}
@@ -104,7 +104,7 @@ const StepOneForm: React.FC<Props> = ({
               autoCapitalize="none"
             />
             <Field
-              component={NixInput}
+              component={NixInputField}
               name="email"
               label="Email"
               style={styles.input}
@@ -119,7 +119,7 @@ const StepOneForm: React.FC<Props> = ({
               keyboardType="email-address"
             />
             <Field
-              component={NixInput}
+              component={NixInputField}
               name="confirmEmail"
               label="Confirm Email"
               style={styles.input}
@@ -134,7 +134,7 @@ const StepOneForm: React.FC<Props> = ({
               keyboardType="email-address"
             />
             <Field
-              component={NixInput}
+              component={NixInputField}
               name="password"
               label="Password"
               style={styles.input}

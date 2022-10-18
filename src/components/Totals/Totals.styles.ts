@@ -8,7 +8,8 @@ export const styles = StyleSheet.create({
   overviewWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
     alignItems: 'center',
   },
   overviewLabel: {

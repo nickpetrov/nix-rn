@@ -315,8 +315,6 @@ export const addFoodToLog = (
 
     const timezone = useState().auth.userData.timezone;
 
-    // if (loggingOptions.sing)
-
     foodArray.map((food: FoodProps) => {
       food.consumed_at =
         moment(loggingOptions.consumed_at).format('YYYY-MM-DDTHH:mm:ss') +

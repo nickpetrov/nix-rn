@@ -24,7 +24,10 @@ const initialState: BaseState = {
   agreementPopup: false,
 };
 
-export default (state: BaseState = initialState, action: AnyAction) => {
+export default (
+  state: BaseState = initialState,
+  action: AnyAction,
+): BaseState => {
   switch (action.type) {
     case baseActionTypes.SET_USER_AGREED_TO_USE_PHOTO:
       const stateWithNewUserData = {
