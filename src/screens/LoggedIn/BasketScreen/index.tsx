@@ -289,6 +289,8 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
           setUploadPhotoFailedPopup(true);
           setIsUploadPhotoLoading(false);
         });
+    } else {
+      logFoods();
     }
   };
 
