@@ -15,9 +15,12 @@ import {Asset, launchCamera, MediaType} from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // hooks
-import {useSelector} from 'hooks/useRedux';
+import {useSelector, useDispatch} from 'hooks/useRedux';
 // @ts-ignore
 import AWS from 'aws-sdk/dist/aws-sdk-react-native';
+
+// actions
+import {setInfoMessage} from 'store/base/base.actions';
 
 // styles
 import {styles} from './PhotoUploadScreen.styles';
@@ -47,6 +50,7 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
   route,
   navigation,
 }) => {
+  const dispatch = useDispatch();
   const [frontPackagePicture, setFrontPackagePicture] = useState<Asset | null>(
     null,
   );
@@ -95,15 +99,11 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     if (redirectStateKey) {
       navigation.navigate({
         key: redirectStateKey,
-        params: {
-          infoMessage,
-        },
       });
     } else {
-      navigation.navigate(Routes.Dashboard, {
-        infoMessage,
-      });
+      navigation.navigate(Routes.Dashboard);
     }
+    dispatch(setInfoMessage(infoMessage));
   };
 
   const uploadPhotos = async () => {

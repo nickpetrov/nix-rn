@@ -1,5 +1,6 @@
 // utils
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import apiClient from 'api/index';
 
 //types
 import {AnyAction} from 'redux';
@@ -12,7 +13,10 @@ const getJWTFromStorage = () => {
   AsyncStorage.getItem('authData').then(data => {
     if (data) {
       const JWTFromStorage = JSON.parse(data)?.JWT;
-      if (JWTFromStorage) JWT = JWTFromStorage;
+      if (JWTFromStorage) {
+        JWT = JWTFromStorage;
+        apiClient.defaults.headers.common['x-user-jwt'] = JWTFromStorage;
+      }
     }
   });
 

@@ -24,7 +24,7 @@ import {NixButton} from 'components/NixButton';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 // import FoodLabel from 'components/FoodLabel';
-import DeleteModal from 'components/DeleteModal';
+import ChooseModal from 'components/ChooseModal';
 // @ts-ignore
 import QRCode from 'react-native-qrcode-svg';
 import {NavigationHeader} from 'components/NavigationHeader';
@@ -233,24 +233,29 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   };
 
   const handleUploadImage = () => {
-    uploadImage(
-      'foods',
-      moment(foodObj.consumed_at).format('YYYY-MM-DD'),
-      image,
-    ).then(result => {
-      if (result.error) {
-        setPhotoError(result.error);
-      } else {
-        console.log(result);
-        handleChangeFood({
-          photo: {
-            highres: result.full,
-            thumb: result.thumb,
-            is_user_uploaded: true,
-          },
+    if (image) {
+      uploadImage(
+        'foods',
+        moment(foodObj.consumed_at).format('YYYY-MM-DD'),
+        image,
+      )
+        .then(result => {
+          if (result) {
+            console.log(result);
+            setImage(null);
+            handleChangeFood({
+              photo: {
+                highres: result.full,
+                thumb: result.thumb,
+                is_user_uploaded: true,
+              },
+            });
+          }
+        })
+        .catch(err => {
+          setPhotoError(err.message);
         });
-      }
-    });
+    }
   };
 
   const handleSave = async (
@@ -584,12 +589,23 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           )}
         </ScrollView>
       ) : null}
-      <DeleteModal
+      <ChooseModal
         title="Delete Food"
-        text="Are you sure you wantto delete this food?"
+        subtitle="Are you sure you wantto delete this food?"
         modalVisible={showDeleteModal}
         setModalVisible={setShowDeleteModal}
-        delete={deleteFromLog}
+        btns={[
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => setShowDeleteModal(false),
+          },
+          {
+            type: 'primary',
+            title: 'Yes',
+            onPress: () => deleteFromLog(),
+          },
+        ]}
       />
       {showSave && (
         <View style={styles.saveBtnContainer}>

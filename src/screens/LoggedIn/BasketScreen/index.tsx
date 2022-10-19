@@ -6,6 +6,7 @@ import moment from 'moment-timezone';
 import {multiply} from 'helpers/multiply';
 import NixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
+import requestCameraPermission from 'helpers/cameraPermision';
 
 // components
 import BasketButton from 'components/BasketButton';
@@ -15,6 +16,8 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   Image,
+  Platform,
+  TouchableOpacity,
 } from 'react-native';
 import {NixButton} from 'components/NixButton';
 import Totals from 'components/Totals';
@@ -29,13 +32,23 @@ import InfoModal from 'components/InfoModal';
 import RadioButton from 'components/RadioButton';
 import {NixInput} from 'components/NixInput';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import BugReportModal from 'components/BugReportModal';
+import ChooseModal from 'components/ChooseModal';
+import {
+  Asset,
+  launchCamera,
+  launchImageLibrary,
+  MediaType,
+} from 'react-native-image-picker';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
+import useStateWithCallback from 'hooks/useStateWithCallback';
 
 // actions
 import * as basketActions from 'store/basket/basket.actions';
 import * as userLogActions from 'store/userLog/userLog.actions';
+import {showAgreementPopup, setAskForReview} from 'store/base/base.actions';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -53,16 +66,6 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './BasketScreen.styles';
-import {
-  Asset,
-  launchCamera,
-  launchImageLibrary,
-  MediaType,
-} from 'react-native-image-picker';
-import {showAgreementPopup} from 'store/base/base.actions';
-import {Platform, TouchableOpacity} from 'react-native';
-import requestCameraPermission from 'helpers/cameraPermision';
-import BugReportModal from 'components/BugReportModal';
 
 interface BasketScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Basket>;
@@ -73,14 +76,18 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   navigation,
   route,
 }) => {
-  const agreedToUsePhoto = useSelector(state => state.base.agreedToUsePhoto);
+  const {agreedToUsePhoto, reviewCheck} = useSelector(state => state.base);
   const [scanError, setScanError] = useState(false);
   const [isUploadPhotoLoading, setIsUploadPhotoLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [showChooseGetPhoto, setShowChooseGetPhoto] = useState(false);
-  const [uploadPhoto, setUploadPhoto] = useState<Asset | null>(null);
+  const [uploadPhoto, setUploadPhoto] = useStateWithCallback<Asset | null>(
+    null,
+  );
+  const [uploadPhotoFailedPopup, setUploadPhotoFailedPopup] = useState(false);
   const [photoVisible, setPhotoVisible] = useState<boolean>(false);
   const [showBugReport, setShowBugReport] = useState<boolean>(false);
+  const [showReportNutrion, setShowReportNutrion] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState('');
   const {
     foods,
@@ -141,14 +148,13 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
 
   useEffect(() => {
     if (uploadPhoto) {
+      console.log('uploadPhoto', uploadPhoto);
       setIsUploadPhotoLoading(true);
       userLogActions
         .uploadImage('foods', moment().format('YYYY-MM-DD'), uploadPhoto)
         .then(result => {
           setIsUploadPhotoLoading(false);
-          if (result.error) {
-            // some error
-          } else {
+          if (result) {
             dispatch(
               basketActions.mergeBasket({
                 customPhoto: {
@@ -242,11 +248,48 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
 
     dispatch(userLogActions.addFoodToLog(adjustedFoods, loggingOptions)).then(
       () => {
-        setLoadingSubmit(false);
         dispatch(basketActions.reset());
+        setLoadingSubmit(false);
         navigation.navigate(Routes.Dashboard);
+        if (
+          !(
+            !!reviewCheck.rateClicked ||
+            (!!reviewCheck.scheduleDate &&
+              moment(reviewCheck.scheduleDate, 'DD-MM-YYYY').isAfter(moment()))
+          ) &&
+          reviewCheck.runCounter > 4
+        ) {
+          dispatch(setAskForReview(true));
+        }
       },
     );
+  };
+
+  const handleSubmit = () => {
+    if (uploadPhoto && !customPhoto) {
+      setIsUploadPhotoLoading(true);
+      userLogActions
+        .uploadImage('foods', moment().format('YYYY-MM-DD'), uploadPhoto)
+        .then(result => {
+          setIsUploadPhotoLoading(false);
+          if (result) {
+            dispatch(
+              basketActions.mergeBasket({
+                customPhoto: {
+                  full: result.full,
+                  thumb: result.thumb,
+                  is_user_uploaded: true,
+                },
+              }),
+            );
+          }
+        })
+        .then(() => logFoods())
+        .catch(() => {
+          setUploadPhotoFailedPopup(true);
+          setIsUploadPhotoLoading(false);
+        });
+    }
   };
 
   const clearBasket = () => {
@@ -588,7 +631,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
               </>
             )}
             <NixButton
-              disabled={loadingSubmit}
+              disabled={loadingSubmit || isUploadPhotoLoading}
               title={
                 isSingleFood
                   ? 'Log 1 Serving'
@@ -596,7 +639,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                   ? 'Log 1 Food'
                   : `Log ${foods.length} Foods`
               }
-              onPress={logFoods}
+              onPress={handleSubmit}
               type="primary"
               style={{borderRadius: 0}}
             />
@@ -604,11 +647,11 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
               <TouchableOpacity onPress={() => setShowBugReport(true)}>
                 <Text style={styles.link}>Report a problem</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity onPress={() => setShowReportNutrion(true)}>
                 <Text style={styles.link}>Report nutrition discrepancy</Text>
               </TouchableOpacity>
             </View>
-            <View>
+            <View style={styles.mb20}>
               <TouchableOpacity
                 style={{alignSelf: 'center'}}
                 onPress={clearBasket}>
@@ -638,6 +681,57 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
       <BugReportModal
         modalVisible={showBugReport}
         setModalVisible={() => setShowBugReport(false)}
+      />
+      <InfoModal
+        modalVisible={showReportNutrion}
+        setModalVisible={() => setShowReportNutrion(false)}
+        btn={{
+          title: 'Cancel',
+          type: 'gray',
+        }}
+        title="Report Updated Nutrition Labels"
+        subtitle="Flag a product that needs to be updated or corrected by scanning the barcode and sending a photo of packaging:">
+        <View style={styles.reportNutrionContainer}>
+          <TouchableOpacity
+            activeOpacity={0.6}
+            style={styles.barcodeBtn}
+            onPress={() => {
+              setShowReportNutrion(false);
+              navigation.navigate(Routes.BarcodeScanner, {
+                force_photo_upload: true,
+                redirectStateKey: route.key,
+              });
+            }}>
+            <FontAwesome name="barcode" color="#fff" size={25} />
+          </TouchableOpacity>
+        </View>
+      </InfoModal>
+      <ChooseModal
+        modalVisible={uploadPhotoFailedPopup}
+        setModalVisible={setUploadPhotoFailedPopup}
+        title="Oops, something went wrong"
+        subtitle="Image upload failed"
+        text="Tap 'Ok' to try again, or 'Cancel' to proceed without image"
+        btns={[
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => {
+              setUploadPhotoFailedPopup(false);
+              setUploadPhoto(null, () => {
+                logFoods();
+              });
+            },
+          },
+          {
+            type: 'primary',
+            title: 'Ok',
+            onPress: () => {
+              setUploadPhotoFailedPopup(false);
+              handleSubmit();
+            },
+          },
+        ]}
       />
     </SafeAreaView>
   );

@@ -43,4 +43,8 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
+  subtitle: {
+    fontSize: 12,
+    textAlign: 'center',
+  },
 });

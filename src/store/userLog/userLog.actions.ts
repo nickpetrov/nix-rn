@@ -21,6 +21,7 @@ import {
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
 import {WaterLogProps} from './userLog.types';
+import {Asset} from 'react-native-image-picker';
 
 export const getDayTotals = (
   beginDate: string,
@@ -466,15 +467,19 @@ export const refreshLog = (selectedDate: string, timezone: string) => {
   };
 };
 
-export const uploadImage = async (entity: string, id: string, data: File) => {
-  // with formData 500
-  // const formData = new FormData();
-  // formData.append('file', data);
-  const response = await baseService.uploadImage(entity, id, data);
+export const uploadImage = async (entity: string, id: string, data: Asset) => {
+  const formData = new FormData();
+  console.log('upload image', data);
+  formData.append('file', {
+    name: data.fileName,
+    type: data.type,
+    uri: data.uri,
+  });
+  const response = await baseService.uploadImage(entity, id, formData);
   console.log('response upload image', response);
   if (response.status === 200) {
     return response.data;
   } else {
-    return {error: 'Image upload failed: Uploaded file type is not supported'};
+    throw new Error('Image upload failed: Uploaded file type is not supported');
   }
 };

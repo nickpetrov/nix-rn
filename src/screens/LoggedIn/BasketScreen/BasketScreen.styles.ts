@@ -171,4 +171,16 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.Secondary,
   },
+  reportNutrionContainer: {
+    marginBottom: 20,
+    alignSelf: 'center',
+  },
+  barcodeBtn: {
+    paddingVertical: 20,
+    paddingHorizontal: 25,
+    backgroundColor: Colors.Blue,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
 });

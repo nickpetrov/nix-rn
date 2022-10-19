@@ -48,12 +48,10 @@ const baseService = {
       },
     );
   },
-  async uploadImage(entity: string, id: string, data: File) {
+  async uploadImage(entity: string, id: string, data: FormData) {
     return await apiClient.post(`upload/image/${entity}/${id}`, data, {
       headers: {
-        'Content-Type': data.type,
-        // 'Content-Type': undefiened, not working - it's from prod
-        // 'Content-Type': 'multipart/form-data', not working if use formData 500
+        'Content-Type': 'multipart/form-data',
       },
     });
   },
