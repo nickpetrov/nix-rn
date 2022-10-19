@@ -511,15 +511,18 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           {
             type: 'primary',
             title: 'Yes',
-            onPress: () =>
-              deleteteModal &&
-              dispatch(
-                userLogActions.deleteFoodFromLog(
-                  deleteteModal.items.map((item: FoodProps) => ({
-                    id: item.id,
-                  })),
-                ),
-              ),
+            onPress: () => {
+              setDeleteteModal(false);
+              if (deleteteModal) {
+                dispatch(
+                  userLogActions.deleteFoodFromLog(
+                    deleteteModal.items.map((item: FoodProps) => ({
+                      id: item.id,
+                    })),
+                  ),
+                );
+              }
+            },
           },
         ]}
       />

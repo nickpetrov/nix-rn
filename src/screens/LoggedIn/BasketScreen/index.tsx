@@ -78,6 +78,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
 }) => {
   const {agreedToUsePhoto, reviewCheck} = useSelector(state => state.base);
   const [scanError, setScanError] = useState(false);
+  const [deleteteModal, setDeleteteModal] = useState(false);
   const [isUploadPhotoLoading, setIsUploadPhotoLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [showChooseGetPhoto, setShowChooseGetPhoto] = useState(false);
@@ -295,8 +296,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   };
 
   const clearBasket = () => {
-    // TODO - add confirmation popup
-    dispatch(basketActions.reset());
+    setDeleteteModal(true);
   };
 
   const setIsSingleFood = (value: boolean) => {
@@ -645,21 +645,6 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
               type="primary"
               style={{borderRadius: 0}}
             />
-            <View style={styles.linksContainer}>
-              <TouchableOpacity onPress={() => setShowBugReport(true)}>
-                <Text style={styles.link}>Report a problem</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setShowReportNutrion(true)}>
-                <Text style={styles.link}>Report nutrition discrepancy</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.mb20}>
-              <TouchableOpacity
-                style={{alignSelf: 'center'}}
-                onPress={clearBasket}>
-                <Text style={styles.clearBtn}>Clear Basket</Text>
-              </TouchableOpacity>
-            </View>
           </View>
         ) : (
           <View>
@@ -671,6 +656,23 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
             />
           </View>
         )}
+        <View style={styles.linksContainer}>
+          <TouchableOpacity onPress={() => setShowBugReport(true)}>
+            <Text style={styles.link}>Report a problem</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowReportNutrion(true)}>
+            <Text style={styles.link}>Report nutrition discrepancy</Text>
+          </TouchableOpacity>
+        </View>
+        {foods.length > 0 ? (
+          <View style={styles.mb20}>
+            <TouchableOpacity
+              style={{alignSelf: 'center'}}
+              onPress={clearBasket}>
+              <Text style={styles.clearBtn}>Clear Basket</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
         <InfoModal
           modalVisible={scanError}
           setModalVisible={() => setScanError(false)}
@@ -731,6 +733,27 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
             onPress: () => {
               setUploadPhotoFailedPopup(false);
               handleSubmit();
+            },
+          },
+        ]}
+      />
+      <ChooseModal
+        modalVisible={!!deleteteModal}
+        setModalVisible={(b: boolean) => setDeleteteModal(b as false)}
+        title="Clear Foods"
+        subtitle="Are you sure you want to clear the meal builder?"
+        btns={[
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => setDeleteteModal(false),
+          },
+          {
+            type: 'primary',
+            title: 'Yes',
+            onPress: () => {
+              setDeleteteModal(false);
+              dispatch(basketActions.reset());
             },
           },
         ]}

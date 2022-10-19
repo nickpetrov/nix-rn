@@ -15,8 +15,8 @@ import {Dispatch} from 'redux';
 import {authActionTypes, SignUpRequest, User} from './auth.types';
 import {RootState} from '../index';
 
-const saveAuthData = (userData: User, userJWT: string) => {
-  AsyncStorage.getItem('authData').then(data => {
+const saveAuthData = async (userData: User, userJWT: string) => {
+  await AsyncStorage.getItem('authData').then(data => {
     let prevData = JSON.parse(data || '{}');
     if (!userJWT) {
       userJWT = prevData.JWT || null;

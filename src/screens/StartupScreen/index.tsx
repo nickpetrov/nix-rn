@@ -21,6 +21,7 @@ import {mergeBasketFromStorage} from 'store/basket/basket.actions';
 // types
 import {BasketState} from 'store/basket/basket.types';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {getReviewCheckFromStorage} from 'store/base/base.actions';
 
 interface StartupScreenProps {
   navigation: NativeStackNavigationProp<
@@ -57,6 +58,9 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
             }
           };
           getBasketFromStorage();
+
+          //get checkReview from storage
+          dispatch(getReviewCheckFromStorage());
 
           navigation.navigate(Routes.LoggedIn);
         }

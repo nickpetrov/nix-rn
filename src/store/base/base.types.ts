@@ -3,14 +3,16 @@ export enum baseActionTypes {
   DISPLAY_AGREEMENT_POPUP = 'DISPLAY_AGREEMENT_POPUP',
   SET_INFO_MESSAGE = 'SET_INFO_MESSAGE',
   TOGGLE_ASK_FOR_REVIEW = 'TOGGLE_ASK_FOR_REVIEW',
+  MERGE_REVIEW_CHECK = 'MERGE_REVIEW_CHECK',
   CLEAR = 'CLEAR',
 }
 
 export type ReviewCheckType = {
-  rateClicked: boolean;
+  rateClicked: number | null;
   scheduleDate: string | null;
   lastRunDate: string | null;
   runCounter: number;
+  popupShown: 0 | 1;
 };
 
 export type BaseState = {

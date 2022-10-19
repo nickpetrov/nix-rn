@@ -611,7 +611,10 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           {
             type: 'primary',
             title: 'Yes',
-            onPress: () => deleteFromLog(),
+            onPress: () => {
+              setShowDeleteModal(false);
+              deleteFromLog();
+            },
           },
         ]}
       />

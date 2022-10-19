@@ -456,7 +456,10 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           {
             type: 'primary',
             title: 'Yes',
-            onPress: () => handleClearMeal(),
+            onPress: () => {
+              setShowDeleteModal(false);
+              handleClearMeal();
+            },
           },
         ]}
       />

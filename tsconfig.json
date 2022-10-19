@@ -19,6 +19,9 @@
       "assets/*": ["assets/*"],
       "api/*": ["api/*"],
       "config/*": ["config/*"]
-    }                          
+    },
+    "types": [
+      "node"
+    ],                         
   }
 }
