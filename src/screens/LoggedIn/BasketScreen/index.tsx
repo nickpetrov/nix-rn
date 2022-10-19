@@ -376,7 +376,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                 type: 'delete',
                 onPress: () => {
                   if (foods.length === 1) {
-                    clearBasket();
+                    dispatch(basketActions.reset());
                   } else {
                     dispatch(
                       basketActions.deleteFoodFromBasket(item.basketId || '-1'),
