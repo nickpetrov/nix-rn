@@ -488,7 +488,11 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
                       title="Copy"
                       type="outline"
                       onPress={() => addItemToBasket()}
-                      iconStyles={{position: 'relative', fontSize: 20}}
+                      iconStyles={{
+                        position: 'relative',
+                        fontSize: 20,
+                        color: '#000',
+                      }}
                       iconName="copy"
                       iosIcon
                     />
@@ -498,7 +502,11 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
                       title="Delete"
                       type="outline"
                       iconName="trash"
-                      iconStyles={{position: 'relative', fontSize: 20}}
+                      iconStyles={{
+                        position: 'relative',
+                        fontSize: 20,
+                        color: '#000',
+                      }}
                       onPress={() => setShowDeleteModal(true)}
                       iosIcon
                     />
