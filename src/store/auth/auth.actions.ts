@@ -67,7 +67,7 @@ export const appleLogin = (apple_user_data: any) => {
     const userData = response.data;
 
     await dispatch({type: authActionTypes.SIGNIN, userData});
-    saveAuthData(userData.user, userData['x-user-jwt']);
+    await saveAuthData(userData.user, userData['x-user-jwt']);
   };
 };
 
@@ -82,7 +82,7 @@ export const signin = (email: string, password: string) => {
     const userData = response.data;
 
     await dispatch({type: authActionTypes.SIGNIN, userData});
-    saveAuthData(userData.user, userData['x-user-jwt']);
+    await saveAuthData(userData.user, userData['x-user-jwt']);
   };
 };
 
@@ -100,7 +100,7 @@ export const signup = (data: SignUpRequest) => {
     const userData = response.data;
 
     await dispatch({type: authActionTypes.SIGNUP, userData});
-    saveAuthData(userData.user, userData['x-user-jwt']);
+    await saveAuthData(userData.user, userData['x-user-jwt']);
 
     return userData;
   };
@@ -120,7 +120,7 @@ export const updateUserData = (newUserObj: Partial<User>) => {
       type: authActionTypes.UPDATE_USER_DATA,
       newUserObj: newUserObj,
     });
-    saveAuthData(userData.user, userData['x-user-jwt']);
+    await saveAuthData(userData.user, userData['x-user-jwt']);
 
     return userData;
   };
@@ -140,7 +140,7 @@ export const getUserDataFromAPI = () => {
     console.log(result);
 
     dispatch({type: authActionTypes.UPDATE_USER_DATA, newUserObj: result});
-    saveAuthData(result, jwt);
+    await saveAuthData(result, jwt);
     return result;
   };
 };

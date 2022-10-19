@@ -8,7 +8,7 @@ import {View, Text, ScrollView} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {Formik, Field, FormikProps} from 'formik';
-import {NixInput} from 'components/NixInput';
+import {NixInputField} from 'components/NixInputField';
 import {NixButton} from 'components/NixButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
@@ -215,7 +215,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
               return (
                 <>
                   <Field
-                    component={NixInput}
+                    component={NixInputField}
                     name="first_name"
                     label="First Name"
                     style={styles.input}
@@ -229,7 +229,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                     autoCapitalize="none"
                   />
                   <Field
-                    component={NixInput}
+                    component={NixInputField}
                     name="last_name"
                     label="Last Name"
                     style={styles.input}
@@ -254,7 +254,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       item.value
                     }>
                     <Field
-                      component={NixInput}
+                      component={NixInputField}
                       name="timezone"
                       label="Tome Zone"
                       style={styles.input}
@@ -289,7 +289,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       String(item.value)
                     }>
                     <Field
-                      component={NixInput}
+                      component={NixInputField}
                       value={
                         values.measure_system === 1 ? 'Metric' : 'Imperial'
                       }
@@ -309,7 +309,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   {measureSystem === 1 ? (
                     <>
                       <Field
-                        component={NixInput}
+                        component={NixInputField}
                         name="weight_kg"
                         label="Weight"
                         style={styles.input}
@@ -325,7 +325,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                         keyboardType="numeric"
                       />
                       <Field
-                        component={NixInput}
+                        component={NixInputField}
                         name="height_cm"
                         label="Height"
                         style={styles.input}
@@ -344,7 +344,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   ) : (
                     <>
                       <Field
-                        component={NixInput}
+                        component={NixInputField}
                         name="weight_lb"
                         label="Weight"
                         style={styles.input}
@@ -360,7 +360,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                         keyboardType="numeric"
                       />
                       <Field
-                        component={NixInput}
+                        component={NixInputField}
                         name="height_ft"
                         label="Height"
                         style={styles.input}
@@ -376,7 +376,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                         keyboardType="numeric"
                       />
                       <Field
-                        component={NixInput}
+                        component={NixInputField}
                         name="height_in"
                         label="Height"
                         style={styles.input}
@@ -394,7 +394,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                     </>
                   )}
                   <Field
-                    component={NixInput}
+                    component={NixInputField}
                     name="age"
                     label="Age"
                     style={styles.input}

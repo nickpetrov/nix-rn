@@ -84,11 +84,18 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
 
   const addItemToBasket = async (item: FoodProps) => {
     dispatch(basketActions.addFoodToBasket(item.food_name)).then(() => {
-      dispatch(basketActions.changeConsumedAt(selectedDate));
-
-      if (route.params?.mealType) {
-        dispatch(basketActions.changeMealType(route.params.mealType));
-      }
+      dispatch(
+        basketActions.mergeBasket(
+          route.params?.mealType
+            ? {
+                consumed_at: selectedDate,
+                meal_type: route.params?.mealType,
+              }
+            : {
+                consumed_at: selectedDate,
+              },
+        ),
+      );
       navigation.replace(Routes.Basket);
     });
   };

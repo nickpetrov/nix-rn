@@ -12,7 +12,6 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Dashboard]:
     | {
         justLoggedIn?: boolean;
-        infoMessage?: string;
         scanError?: boolean;
       }
     | undefined;

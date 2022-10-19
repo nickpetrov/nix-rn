@@ -33,7 +33,7 @@ import FoodLogSectionHeader from 'components/FoodLog/FoodLogSectionHeader';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import SwipeFoodLogHiddenItems from 'components/FoodLog/SwipeFoodLogHiddenItems';
 import SwipeHiddenButtons from 'components/SwipeHiddenButtons';
-import DeleteModal from 'components/DeleteModal';
+import ChooseModal from 'components/ChooseModal';
 import WeighInListItem from 'components/FoodLog/WeighInListItem';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import InfoModal from 'components/InfoModal';
@@ -185,8 +185,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     weekday: userData.weekday_reminders_enabled,
     weekend: userData.weekend_reminders_enabled,
   });
-  const [showPhotoUploadMessage, setShowPhotoUploadMessage] = useState(false);
-  const infoMessage = route.params?.infoMessage;
 
   const refreshFoodLog = useCallback(() => {
     setIsRefreshing(true);
@@ -216,12 +214,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       ),
     });
   }, [navigation]);
-
-  useEffect(() => {
-    if (infoMessage) {
-      setShowPhotoUploadMessage(true);
-    }
-  }, [infoMessage]);
 
   useEffect(() => {
     if (route.params?.scanError) {
@@ -276,17 +268,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </View>
               </View>
             )}
-            {showPhotoUploadMessage ? (
-              <View style={styles.photoMessageContainer}>
-                <Text style={styles.photoMessageTitle}>Thank you!</Text>
-                <View style={styles.photoMessageTextContainer}>
-                  <Text style={styles.photoMessageText}>
-                    {' '}
-                    Soon this food will be updated in our database.
-                  </Text>
-                </View>
-              </View>
-            ) : null}
             <FoodLogHeader
               caloriesLimit={selectedDay.totals.daily_kcal_limit || 0}
               caloriesBurned={selectedDay.totals.total_cal_burned || 0}
@@ -514,23 +495,33 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         setVisible={setWaterModal}
         selectedDate={selectedDate}
       />
-      <DeleteModal
+      <ChooseModal
         modalVisible={!!deleteteModal}
         setModalVisible={(b: boolean) => setDeleteteModal(b as false)}
         title="Delete Foods"
-        text={`Are you shure you want to delete all of your ${
+        subtitle={`Are you shure you want to delete all of your ${
           deleteteModal ? deleteteModal.mealName.toLowerCase() : ''
         } items?`}
-        delete={() =>
-          deleteteModal &&
-          dispatch(
-            userLogActions.deleteFoodFromLog(
-              deleteteModal.items.map((item: FoodProps) => ({
-                id: item.id,
-              })),
-            ),
-          )
-        }
+        btns={[
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => setDeleteteModal(false),
+          },
+          {
+            type: 'primary',
+            title: 'Yes',
+            onPress: () =>
+              deleteteModal &&
+              dispatch(
+                userLogActions.deleteFoodFromLog(
+                  deleteteModal.items.map((item: FoodProps) => ({
+                    id: item.id,
+                  })),
+                ),
+              ),
+          },
+        ]}
       />
       <InfoModal
         modalVisible={scanError}
@@ -539,16 +530,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         text="We scanned an unrecognized QR code, if you are trying to scan a
         food product barcode, please try to avoid scanning the QR code
         near the barcode and try scanning this product again"
-      />
-      <InfoModal
-        modalVisible={showPhotoUploadMessage}
-        setModalVisible={() => setShowPhotoUploadMessage(false)}
-        title="Thank you!"
-        text={infoMessage || ''}
-        btn={{
-          type: 'blue',
-          title: 'Close',
-        }}
       />
     </View>
   );

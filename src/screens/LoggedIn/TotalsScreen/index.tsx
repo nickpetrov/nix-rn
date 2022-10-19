@@ -17,7 +17,7 @@ import NutritionPieChart, {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixButton} from 'components/NixButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import DeleteModal from 'components/DeleteModal';
+import ChooseModal from 'components/ChooseModal';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
@@ -442,12 +442,23 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           </View>
         )}
       </KeyboardAwareScrollView>
-      <DeleteModal
+      <ChooseModal
         modalVisible={showDeleteModal}
         setModalVisible={setShowDeleteModal}
         title="Delete Foods"
-        text={`Are you shure you want to delete all of your ${mealType} items?`}
-        delete={handleClearMeal}
+        subtitle={`Are you shure you want to delete all of your ${mealType} items?`}
+        btns={[
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => setShowDeleteModal(false),
+          },
+          {
+            type: 'primary',
+            title: 'Yes',
+            onPress: () => handleClearMeal(),
+          },
+        ]}
       />
     </SafeAreaView>
   );

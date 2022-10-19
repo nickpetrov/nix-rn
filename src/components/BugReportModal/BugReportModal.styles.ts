@@ -1,3 +1,4 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -9,10 +10,9 @@ export const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
+    maxWidth: '70%',
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -22,19 +22,31 @@ export const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  modalTitle: {
-    marginBottom: 10,
-    textAlign: 'center',
-    fontWeight: '600',
-    fontSize: 18,
-  },
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    fontSize: 14,
+  },
+  content: {
+    padding: 15,
+  },
+  header: {
+    alignItems: 'center',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.LightGray,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 12,
+    textAlign: 'center',
   },
   footer: {
     flexDirection: 'row',
+    marginTop: 20,
   },
   btnContainer: {
     flex: 1,
@@ -44,5 +56,10 @@ export const styles = StyleSheet.create({
   },
   mr10: {
     marginRight: 10,
+  },
+  input: {
+    backgroundColor: '#f5f5f5',
+    height: 100,
+    textAlignVertical: 'top',
   },
 });

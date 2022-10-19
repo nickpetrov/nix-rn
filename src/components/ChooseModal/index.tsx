@@ -4,29 +4,30 @@ import React from 'react';
 // components
 import {Modal, Text, View} from 'react-native';
 import {NixButton} from 'components/NixButton';
-import {styles} from './InfoModal.styles';
 
-interface InfoModalProps {
+// styles
+import {styles} from './ChooseModal.styles';
+
+interface ChooseModalProps {
   modalVisible: boolean;
-  setModalVisible: () => void;
-  text?: string;
+  setModalVisible: (v: boolean) => void;
   title?: string;
+  text?: string;
   subtitle?: string;
-  btn?: {
+  btns: Array<{
+    type: 'gray' | 'primary';
     title: string;
-    type: 'blue' | 'positive' | 'gray';
-  };
-  children?: React.ReactNode;
+    onPress: () => void;
+  }>;
 }
 
-const InfoModal: React.FC<InfoModalProps> = ({
+const ChooseModal: React.FC<ChooseModalProps> = ({
   modalVisible,
   setModalVisible,
-  text,
   title,
   subtitle,
-  btn,
-  children,
+  text,
+  btns,
 }) => {
   return (
     <Modal
@@ -34,7 +35,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
-        setModalVisible();
+        setModalVisible(false);
       }}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
@@ -46,13 +47,21 @@ const InfoModal: React.FC<InfoModalProps> = ({
           )}
           <View style={styles.content}>
             {text && <Text style={styles.modalText}>{text}</Text>}
-            {children && children}
-            <View style={styles.btnContainer}>
-              <NixButton
-                title={btn?.title ? btn.title : 'Ok'}
-                type={btn?.type ? btn.type : 'primary'}
-                onPress={() => setModalVisible()}
-              />
+            <View style={styles.footer}>
+              {btns.map((btn, index: number) => {
+                return (
+                  <View
+                    key={btn.title}
+                    style={[styles.btnContainer, index === 0 && styles.mr10]}>
+                    <NixButton
+                      buttonTextStyles={styles.btnText}
+                      title={btn.title}
+                      type={btn.type}
+                      onPress={btn.onPress}
+                    />
+                  </View>
+                );
+              })}
             </View>
           </View>
         </View>
@@ -61,4 +70,4 @@ const InfoModal: React.FC<InfoModalProps> = ({
   );
 };
 
-export default InfoModal;
+export default ChooseModal;

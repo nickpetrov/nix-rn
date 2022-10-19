@@ -3,13 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 
 // components
-import {
-  View,
-  Text,
-  TouchableHighlight,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, TouchableHighlight, Image} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import ModalSelector from 'react-native-modal-selector';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -22,13 +16,14 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './FoodEditItem.styles';
-import {Colors} from '../../constants/Colors';
+import {Colors} from 'constants/Colors';
 
 // types
 import {MeasureProps, NutrientProps} from 'store/userLog/userLog.types';
 import {FoodProps} from 'store/userLog/userLog.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {TouchableWithoutFeedback} from 'react-native';
 
 interface FoodEditItemProps {
   foodObj: FoodProps;
@@ -60,6 +55,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
     full_nutrients,
     food_name,
     nf_calories,
+    brand_name,
   } = foodObj;
   const [nfCalories, setNfCalories] = useState(nf_calories);
   const [servingQty, setServingQty] = useState(String(serving_qty));
@@ -158,57 +154,67 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
               onBlur={() => onQtyChange()}
             />
             <View style={styles.pickerContainer}>
-              <ModalSelector
-                style={styles.picker}
-                initValueTextStyle={{
-                  fontSize: 16,
-                  color: '#000',
-                }}
-                optionTextStyle={{
-                  fontSize: 16,
-                  color: '#000',
-                }}
-                selectedItemTextStyle={{
-                  fontSize: 16,
-                  color: Colors.Info,
-                  fontWeight: '500',
-                }}
-                data={measures}
-                initValue={servingUnit}
-                onChange={option => measureChange(option.value)}
-                keyExtractor={(item: {label: string; value: string}) =>
-                  item.value
-                }
-              />
+              {measures.length > 1 ? (
+                <ModalSelector
+                  style={styles.picker}
+                  initValueTextStyle={{
+                    fontSize: 16,
+                    color: '#000',
+                  }}
+                  optionTextStyle={{
+                    fontSize: 16,
+                    color: '#000',
+                  }}
+                  selectedItemTextStyle={{
+                    fontSize: 16,
+                    color: Colors.Info,
+                    fontWeight: '500',
+                  }}
+                  data={measures}
+                  initValue={servingUnit}
+                  onChange={option => measureChange(option.value)}
+                  keyExtractor={(item: {label: string; value: string}) =>
+                    item.value
+                  }
+                />
+              ) : (
+                <Text style={styles.pickerText}>{servingUnit}</Text>
+              )}
             </View>
           </View>
-          <Text style={styles.foodName}>{food_name}</Text>
-        </View>
-        <View
-          style={[styles.footer, withInfo ? {flexGrow: 1} : {flexGrow: 0.6}]}>
-          {withInfo ? (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(Routes.Food, {
-                  foodObj,
-                  readOnly: true,
-                })
-              }>
-              <FontAwesome name="info-circle" color="#999" size={19} />
-            </TouchableOpacity>
-          ) : null}
-          <View style={[styles.calories, withInfo ? {marginLeft: 10} : {}]}>
-            <Text style={styles.caloriesValue}>
-              {' '}
-              {nfCalories
-                ? nfCalories.toFixed(0)
-                : full_nutrients
-                    ?.filter((item: NutrientProps) => item.attr_id === 208)[0]
-                    .value.toFixed(0)}
-            </Text>
-            <Text>cal</Text>
+          <View>
+            <Text style={styles.foodName}>{food_name}</Text>
+            {brand_name && (
+              <Text style={styles.foodBrandName}>{brand_name}</Text>
+            )}
           </View>
         </View>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            if (withInfo) {
+              navigation.navigate(Routes.Food, {
+                foodObj,
+                readOnly: true,
+              });
+            }
+          }}>
+          <View style={[styles.footer]}>
+            {withInfo ? (
+              <FontAwesome name="info-circle" color="#999" size={19} />
+            ) : null}
+            <View style={[styles.calories, withInfo ? {marginLeft: 10} : {}]}>
+              <Text style={styles.caloriesValue}>
+                {' '}
+                {nfCalories
+                  ? nfCalories.toFixed(0)
+                  : full_nutrients
+                      ?.filter((item: NutrientProps) => item.attr_id === 208)[0]
+                      .value.toFixed(0)}
+              </Text>
+              <Text style={styles.cal}>cal</Text>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     </TouchableHighlight>
   );

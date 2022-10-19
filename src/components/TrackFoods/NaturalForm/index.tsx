@@ -49,8 +49,12 @@ const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
 
   const sendNaturalQuery = async () => {
     dispatch(basketActions.addFoodToBasket(naturalQuery)).then(foodsToAdd => {
-      dispatch(basketActions.changeMealType(foodsToAdd[0].meal_type));
-      dispatch(basketActions.changeConsumedAt(foodsToAdd[0].consumed_at));
+      dispatch(
+        basketActions.mergeBasket({
+          meal_type: foodsToAdd[0].meal_type,
+          consumed_at: foodsToAdd[0].consumed_at,
+        }),
+      );
       navigation.replace(Routes.Basket);
     });
   };

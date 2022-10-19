@@ -49,11 +49,11 @@ const SwipeFoodLogHiddenItems: React.FC<SwipeFoodLogHiddenItemsProps> = ({
   const addItemToBasket = useCallback(
     (food: FoodProps) => {
       dispatch(basketActions.addExistFoodToBasket([food])).then(() => {
-        dispatch(basketActions.changeConsumedAt(selectedDate));
         dispatch(
-          basketActions.changeMealType(
-            mealTypes[foodLogSection as keyof typeof mealTypes],
-          ),
+          basketActions.mergeBasket({
+            consumed_at: selectedDate,
+            meal_type: mealTypes[foodLogSection as keyof typeof mealTypes],
+          }),
         );
         // close all swipes after copy
         [...rowRefs.values()].forEach(ref => {

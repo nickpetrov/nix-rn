@@ -15,7 +15,7 @@ import {Formik, Field, FormikProps} from 'formik';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {NixInput} from 'components/NixInput';
+import {NixInputField} from 'components/NixInputField';
 import {NixButton} from 'components/NixButton';
 import {WebView} from 'react-native-webview';
 import ModalSelector from 'react-native-modal-selector';
@@ -184,7 +184,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     String(item.value)
                   }>
                   <Field
-                    component={NixInput}
+                    component={NixInputField}
                     value={values.measure_system === 1 ? 'Metric' : 'Imperial'}
                     name="measure_system"
                     label="Measure system"
@@ -232,7 +232,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     item.value
                   }>
                   <Field
-                    component={NixInput}
+                    component={NixInputField}
                     name="gender"
                     label="Gender"
                     style={{
@@ -260,7 +260,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                 {measureSystem === 1 ? (
                   <>
                     <Field
-                      component={NixInput}
+                      component={NixInputField}
                       name="weight_kg"
                       label="Weight"
                       style={styles.input}
@@ -280,7 +280,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                       keyboardType="numeric"
                     />
                     <Field
-                      component={NixInput}
+                      component={NixInputField}
                       name="height_cm"
                       label="Height"
                       style={styles.input}
@@ -303,7 +303,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                 ) : (
                   <>
                     <Field
-                      component={NixInput}
+                      component={NixInputField}
                       name="weight_lb"
                       label="Weight"
                       style={styles.input}
@@ -323,7 +323,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                       keyboardType="numeric"
                     />
                     <Field
-                      component={NixInput}
+                      component={NixInputField}
                       name="height_ft"
                       label="Height"
                       style={styles.input}
@@ -343,7 +343,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                       keyboardType="numeric"
                     />
                     <Field
-                      component={NixInput}
+                      component={NixInputField}
                       name="height_in"
                       label="Height"
                       style={styles.input}
@@ -365,7 +365,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                   </>
                 )}
                 <Field
-                  component={NixInput}
+                  component={NixInputField}
                   name="age"
                   label="Age"
                   style={styles.input}
@@ -447,7 +447,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                   </View>
                   <View style={styles.panelBody}>
                     <Field
-                      component={NixInput}
+                      component={NixInputField}
                       name="daily_kcal"
                       label="My Daily Calorie Limit"
                       style={styles.input}

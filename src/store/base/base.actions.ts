@@ -20,3 +20,16 @@ export const showAgreementPopup = () => {
     type: baseActionTypes.DISPLAY_AGREEMENT_POPUP,
   };
 };
+
+export const setInfoMessage = (message: string) => {
+  return {
+    type: baseActionTypes.SET_INFO_MESSAGE,
+    payload: message,
+  };
+};
+export const setAskForReview = (askForReview: boolean) => {
+  return {
+    type: baseActionTypes.TOGGLE_ASK_FOR_REVIEW,
+    payload: askForReview,
+  };
+};

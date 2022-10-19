@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import {View, Text, SafeAreaView} from 'react-native';
 import {Formik, Field, FormikProps} from 'formik';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {NixInput} from 'components/NixInput';
+import {NixInputField} from 'components/NixInputField';
 import {NixButton} from 'components/NixButton';
 
 // hooks
@@ -122,7 +122,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                 </View>
                 <View style={styles.w50}>
                   <Field
-                    component={NixInput}
+                    component={NixInputField}
                     name="daily_kcal"
                     label=""
                     style={styles.input}
@@ -149,7 +149,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                 </View>
                 <View style={styles.w50}>
                   <Field
-                    component={NixInput}
+                    component={NixInputField}
                     name="daily_protein_pct"
                     label=""
                     style={styles.input}
@@ -176,7 +176,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                 </View>
                 <View style={styles.w50}>
                   <Field
-                    component={NixInput}
+                    component={NixInputField}
                     name="daily_carbs_pct"
                     label=""
                     style={styles.input}
@@ -201,7 +201,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = () => {
                 </View>
                 <View style={styles.w50}>
                   <Field
-                    component={NixInput}
+                    component={NixInputField}
                     name="daily_fat_pct"
                     label=""
                     style={styles.input}

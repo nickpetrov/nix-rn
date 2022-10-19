@@ -24,7 +24,7 @@ import {NixButton} from 'components/NixButton';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 // import FoodLabel from 'components/FoodLabel';
-import DeleteModal from 'components/DeleteModal';
+import ChooseModal from 'components/ChooseModal';
 // @ts-ignore
 import QRCode from 'react-native-qrcode-svg';
 import {NavigationHeader} from 'components/NavigationHeader';
@@ -56,6 +56,7 @@ import {MediaType, Asset} from 'react-native-image-picker/lib/typescript/types';
 
 // styles
 import {styles} from './FoodScreen.styles';
+import requestCameraPermission from 'helpers/cameraPermision';
 
 interface FoodScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Food>;
@@ -150,11 +151,18 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   const addItemToBasket = async () => {
     dispatch(basketActions.addFoodToBasket(foodObj?.food_name || '')).then(
       () => {
-        dispatch(basketActions.changeConsumedAt(selectedDate));
-
-        if (route.params?.mealType) {
-          dispatch(basketActions.changeMealType(route.params.mealType));
-        }
+        dispatch(
+          basketActions.mergeBasket(
+            route.params?.mealType
+              ? {
+                  consumed_at: selectedDate,
+                  meal_type: route.params?.mealType,
+                }
+              : {
+                  consumed_at: selectedDate,
+                },
+          ),
+        );
         navigation.replace('Basket');
       },
     );
@@ -192,6 +200,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       noData: true,
     };
     setPhotoVisible(true);
+
     launchImageLibrary(options, response => {
       if (response) {
         if (response.assets?.length) {
@@ -209,35 +218,44 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       noData: true,
     };
     setPhotoVisible(true);
-    launchCamera(options, response => {
-      if (response) {
-        if (response.assets?.length) {
-          setImage(response.assets[0]);
-          console.log('choosen image', response.assets[0]);
-        }
+    requestCameraPermission().then(result => {
+      if (result) {
+        launchCamera(options, response => {
+          if (response) {
+            if (response.assets?.length) {
+              setImage(response.assets[0]);
+              console.log('choosen image', response.assets[0]);
+            }
+          }
+        });
       }
     });
   };
 
   const handleUploadImage = () => {
-    uploadImage(
-      'foods',
-      moment(foodObj.consumed_at).format('YYYY-MM-DD'),
-      image,
-    ).then(result => {
-      if (result.error) {
-        setPhotoError(result.error);
-      } else {
-        console.log(result);
-        handleChangeFood({
-          photo: {
-            highres: result.full,
-            thumb: result.thumb,
-            is_user_uploaded: true,
-          },
+    if (image) {
+      uploadImage(
+        'foods',
+        moment(foodObj.consumed_at).format('YYYY-MM-DD'),
+        image,
+      )
+        .then(result => {
+          if (result) {
+            console.log(result);
+            setImage(null);
+            handleChangeFood({
+              photo: {
+                highres: result.full,
+                thumb: result.thumb,
+                is_user_uploaded: true,
+              },
+            });
+          }
+        })
+        .catch(err => {
+          setPhotoError(err.message);
         });
-      }
-    });
+    }
   };
 
   const handleSave = async (
@@ -571,12 +589,23 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           )}
         </ScrollView>
       ) : null}
-      <DeleteModal
+      <ChooseModal
         title="Delete Food"
-        text="Are you sure you wantto delete this food?"
+        subtitle="Are you sure you wantto delete this food?"
         modalVisible={showDeleteModal}
         setModalVisible={setShowDeleteModal}
-        delete={deleteFromLog}
+        btns={[
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => setShowDeleteModal(false),
+          },
+          {
+            type: 'primary',
+            title: 'Yes',
+            onPress: () => deleteFromLog(),
+          },
+        ]}
       />
       {showSave && (
         <View style={styles.saveBtnContainer}>

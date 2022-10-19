@@ -29,14 +29,17 @@ export const styles = StyleSheet.create({
   },
   servingWrapper: {
     flexDirection: 'row',
+    alignItems: 'center',
     marginVertical: 6,
+    flex: 1,
   },
   qty_input: {
     marginRight: 10,
-    paddingVertical: 1,
-    paddingHorizontal: 8,
+    paddingVertical: 5,
+    paddingHorizontal: 2,
     borderWidth: 1,
     borderColor: '#ddd',
+    height: 38,
     width: 40,
     maxWidth: 40,
     textAlign: 'center',
@@ -51,22 +54,36 @@ export const styles = StyleSheet.create({
   foodName: {
     textTransform: 'capitalize',
   },
+  foodBrandName: {
+    textTransform: 'capitalize',
+    fontSize: 12,
+    color: Colors.Secondary,
+    fontFamily: 'Roboto, sans-serif',
+  },
   main: {
-    flex: 5,
+    flexGrow: 1,
     marginRight: 10,
   },
   pickerContainer: {
     flexGrow: 1,
+    flex: 1,
+    justifyContent: 'center',
+  },
+  pickerText: {
+    color: Colors.Gray8,
   },
   picker: {
     flex: 1,
+    flexGrow: 1,
   },
   footer: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
   },
-  calories: {
-    alignItems: 'center',
+  calories: {},
+  cal: {
+    textAlign: 'right',
+    fontSize: 12,
+    color: Colors.Gray8,
   },
 });

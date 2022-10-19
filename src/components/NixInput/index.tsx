@@ -1,51 +1,60 @@
 // utils
-import React, {useState} from 'react';
+import React, {useRef} from 'react';
 
 // components
-import {View, Text, TextInputProps} from 'react-native';
-import {FloatingLabelInput} from 'react-native-floating-label-input';
-import {FieldProps} from 'formik';
+import {
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  TextInputProps,
+} from 'react-native';
+import {TextInput} from 'react-native';
 
 // styles
 import {styles} from './Nixinput.styles';
 
-type NixInputProps = TextInputProps &
-  FieldProps & {
-    label: string;
+interface NixInputProps extends TextInputProps {
+  label?: string;
+  placeholder?: string;
+  value: string;
+  onChangeText: (v: string) => void;
+  error?: string;
+  style?: {
+    [key: string]: string | number;
   };
+}
 
-export const NixInput: React.FC<NixInputProps> = props => {
-  const {
-    field: {name, onBlur, onChange, value},
-    form: {errors, touched, setFieldTouched},
-    label,
-    ...inputProps
-  } = props;
+export const NixInput: React.FC<NixInputProps> = ({
+  value,
+  onChangeText,
+  label,
+  placeholder,
+  error,
+  ...props
+}) => {
+  const inputRef: React.RefObject<TextInput> = useRef(null);
 
-  const [isFocused, setIsFocused] = useState(false);
-
-  const hasError = errors[name] && touched[name];
-
+  const handleFocus = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
   return (
     <>
-      <View style={styles.inputWrapper}>
-        <FloatingLabelInput
-          style={[hasError ? styles.errorInput : {}]}
-          onChangeText={(text: string) => onChange(name)(text)}
-          isFocused={isFocused}
-          onBlur={() => {
-            setFieldTouched(name);
-            onBlur(name);
-            value === '' && setIsFocused(false);
-          }}
-          value={value}
-          label={label}
-          {...inputProps}
-        />
-      </View>
-      {hasError && (
-        <Text style={styles.errorText}>{errors[name] as React.ReactNode}</Text>
-      )}
+      <TouchableWithoutFeedback style={styles.root} onPress={handleFocus}>
+        <View style={styles.inputWrapper}>
+          {label && <Text style={styles.label}>{label}</Text>}
+          <TextInput
+            ref={inputRef}
+            style={[styles.input, !!error && styles.errorInput]}
+            onChangeText={onChangeText}
+            placeholder={placeholder}
+            value={value}
+            keyboardType={props.keyboardType}
+          />
+        </View>
+      </TouchableWithoutFeedback>
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </>
   );
 };

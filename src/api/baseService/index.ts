@@ -1,4 +1,5 @@
 import apiClient from 'api';
+import {BugReportType} from 'store/base/base.types';
 import {
   RestaurantsProps,
   RestaurantsWithCalcProps,
@@ -47,15 +48,18 @@ const baseService = {
       },
     );
   },
-  async uploadImage(entity: string, id: string, data: File) {
+  async uploadImage(entity: string, id: string, data: FormData) {
     return await apiClient.post(`upload/image/${entity}/${id}`, data, {
       headers: {
-        'Content-Type': data.type,
+        'Content-Type': 'multipart/form-data',
       },
     });
   },
   async shareMeal(foodId: string, shareKey: string) {
     return await apiClient.get(`share/food/${foodId}/${shareKey}`);
+  },
+  async sendBugReport(data: BugReportType) {
+    return await apiClient.post('feedback', data);
   },
 };
 
