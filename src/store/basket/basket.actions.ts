@@ -9,6 +9,7 @@ import {basketActionTypes, BasketState} from './basket.types';
 import {RootState} from '../index';
 import {FoodProps} from 'store/userLog/userLog.types';
 import moment from 'moment-timezone';
+import autoCompleteService from 'api/autoCompleteService';
 
 const saveBasketToStorage = (basket: Partial<BasketState>) => {
   AsyncStorage.getItem('basket').then(data => {
@@ -34,22 +35,45 @@ export const addFoodToBasket = (query: string) => {
   return async (dispatch: Dispatch) => {
     const response = await basketService.getFoodForBasket(query);
 
-    if (response.status === 400) {
-      throw new Error(response.status.toString());
+    if (response.status === 400 || response.status === 404) {
+      throw response;
+    } else {
+      const result = response.data;
+      const foods = result.foods.map((item: FoodProps) => ({
+        ...item,
+        basketId: uuidv4(),
+      }));
+      saveBasketToStorage({foods: foods});
+      dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: foods});
+      return foods;
     }
-
-    const result = response.data;
-    const foods = result.foods.map((item: FoodProps) => ({
-      ...item,
-      basketId: uuidv4(),
-    }));
-    saveBasketToStorage({foods: foods});
-    dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: foods});
-    return foods;
   };
 };
 
-export const addExistFoodToBasket = (foods: Array<FoodProps>) => {
+export const addFoodToBasketById = (id: string) => {
+  return async (dispatch: Dispatch) => {
+    const response = await autoCompleteService.getFoodById(id);
+
+    if (response.status === 400 || response.status === 404) {
+      throw response;
+    } else {
+      const food = response.data.foods[0];
+      if (food.id) {
+        delete food.id;
+      }
+      if (food.note) {
+        delete food.note;
+      }
+      food.consumed_at = moment().format();
+      food.basketId = uuidv4();
+      saveBasketToStorage({foods: [food]});
+      dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]});
+      return [food];
+    }
+  };
+};
+
+export const addExistFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
     const timezone = useState().auth.userData.timezone;
     const newFoods = foods.map(item => ({
@@ -60,6 +84,7 @@ export const addExistFoodToBasket = (foods: Array<FoodProps>) => {
       basketId: uuidv4(),
     }));
     dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: newFoods});
+    return newFoods;
   };
 };
 

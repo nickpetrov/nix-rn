@@ -3,6 +3,7 @@ import {autoCompleteActionTypes, AutoCompleteState} from './autoComplete.types';
 import {AnyAction} from 'redux';
 
 const initialState: AutoCompleteState = {
+  searchValue: '',
   self: [],
   common: [],
   branded: [],
@@ -18,6 +19,8 @@ export default (
       return {...state, ...action.searchResult};
     case autoCompleteActionTypes.SHOW_SUGGESTED_FOODS:
       return {...state, suggested: [...action.suggestedFoods]};
+    case autoCompleteActionTypes.SET_SEARCH_VALUE:
+      return {...state, searchValue: action.paylaod};
     case autoCompleteActionTypes.CLEAR:
       return initialState;
     default:

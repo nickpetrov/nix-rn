@@ -6,7 +6,10 @@ const initialState: CustomFoodsState = {
   foods: [],
 };
 
-export default (state: CustomFoodsState = initialState, action: AnyAction) => {
+export default (
+  state: CustomFoodsState = initialState,
+  action: AnyAction,
+): CustomFoodsState => {
   switch (action.type) {
     case customFoodsActionTypes.GET_ALL_CUSTOM_FOOD:
       const stateWithTotals = {...state, foods: action.foods};

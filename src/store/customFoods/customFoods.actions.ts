@@ -5,11 +5,14 @@ import {
 } from './customFoods.types';
 import customFoodsService from 'api/customFoodsService';
 
-export const getCustomFoods = () => {
+export const getCustomFoods = (limit?: number, offset?: number) => {
   return async (dispatch: Dispatch) => {
-    const limit = 50;
-    const offset = 0;
-    const response = await customFoodsService.getCustomFoods(limit, offset);
+    const optionLimit = limit || 300;
+    const optionOffset = offset || 0;
+    const response = await customFoodsService.getCustomFoods(
+      optionLimit,
+      optionOffset,
+    );
 
     const result = response.data;
     // if (__DEV__) {

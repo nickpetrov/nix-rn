@@ -8,10 +8,10 @@ import {getHeaderTitle} from '@react-navigation/elements';
 import BackButton from 'components/BackButton';
 
 // hooks
-import {useDispatch} from 'hooks/useRedux';
+import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
-import {updateSearchResults} from 'store/autoComplete/autoComplete.actions';
+import {setSearchValue} from 'store/autoComplete/autoComplete.actions';
 
 // styles
 import {styles} from './NavigationHeader.styles';
@@ -42,6 +42,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   headerRight,
   headerTitle,
 }) => {
+  const searchValue = useSelector(state => state.autoComplete.searchValue);
   const dispatch = useDispatch();
   const title = getHeaderTitle(options, route.name);
   const inputRef = useRef<TextInput>(null);
@@ -54,7 +55,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   };
 
   const searchAutocomplete = (text: string) => {
-    dispatch(updateSearchResults(text));
+    dispatch(setSearchValue(text));
   };
 
   const smallSize =
@@ -81,6 +82,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                 inputRef.current?.focus();
               }
             }}
+            value={searchValue}
             onFocus={showAutocomplete}
             onChangeText={searchAutocomplete}
           />

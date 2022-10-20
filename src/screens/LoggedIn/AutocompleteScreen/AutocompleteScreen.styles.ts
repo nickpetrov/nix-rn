@@ -1,8 +1,10 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   root: {
     backgroundColor: '#fff',
+    flex: 1,
   },
   main: {
     flexDirection: 'row',
@@ -28,5 +30,37 @@ export const styles = StyleSheet.create({
   },
   note: {
     textAlign: 'center',
+  },
+  sectionTitle: {
+    paddingVertical: 2,
+    paddingHorizontal: 15,
+    borderBottomColor: Colors.LightGray,
+    borderBottomWidth: 1,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    color: Colors.Gray7,
+    minHeight: 20,
+  },
+  noNet: {
+    paddingTop: 40,
+    paddingHorizontal: 30,
+    paddingBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomColor: Colors.LightGray,
+    borderBottomWidth: 1,
+  },
+  noNetText: {
+    textAlign: 'center',
+  },
+  showHint: {
+    alignItems: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 70,
+  },
+  showHintText: {
+    textAlign: 'center',
+    marginTop: 10,
+    color: Colors.Secondary,
   },
 });

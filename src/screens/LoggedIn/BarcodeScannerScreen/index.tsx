@@ -145,11 +145,13 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
             }),
           );
         } else if (barcode.includes('nutritionix.com/q2')) {
-          dispatch(addFoodToBasket(externalLinkV2(barcode))).then(() =>
-            navigation.navigate(Routes.Basket, {
-              redirectStateKey: route.params?.redirectStateKey,
-            }),
-          );
+          dispatch(addFoodToBasket(externalLinkV2(barcode)))
+            .then(() =>
+              navigation.navigate(Routes.Basket, {
+                redirectStateKey: route.params?.redirectStateKey,
+              }),
+            )
+            .catch(err => console.log(err));
         } else if (barcode.includes('nutritionix.com/q3')) {
           externalLinkV3(barcode).then(foods => {
             if (foods && foods.length) {

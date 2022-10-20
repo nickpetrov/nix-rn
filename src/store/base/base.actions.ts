@@ -55,10 +55,12 @@ export const showAgreementPopup = () => {
   };
 };
 
-export const setInfoMessage = (message: string) => {
+export const setInfoMessage = (
+  data: {title?: string; text?: string} | null,
+) => {
   return {
     type: baseActionTypes.SET_INFO_MESSAGE,
-    payload: message,
+    payload: data,
   };
 };
 export const setAskForReview = (askForReview: boolean) => {

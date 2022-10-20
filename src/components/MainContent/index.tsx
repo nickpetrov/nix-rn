@@ -108,10 +108,10 @@ const MainContent = () => {
         modalVisible={showPhotoUploadMessage}
         setModalVisible={() => {
           setShowPhotoUploadMessage(false);
-          dispatch(setInfoMessage(''));
+          dispatch(setInfoMessage(null));
         }}
-        title="Thank you!"
-        text={infoMessage || ''}
+        title={infoMessage?.title || 'Thank you!'}
+        text={infoMessage?.text || ''}
         btn={{
           type: 'blue',
           title: 'Close',

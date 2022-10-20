@@ -31,9 +31,11 @@ interface MealListItemProps {
   withoutPhotoUploadIcon?: boolean;
   withoutBorder?: boolean;
   withCal?: boolean;
+  smallImage?: boolean;
 }
 const MealListItem: React.FC<MealListItemProps> = props => {
-  const {foodObj, mealName, withoutPhotoUploadIcon, withCal} = props;
+  const {foodObj, mealName, withoutPhotoUploadIcon, withCal, smallImage} =
+    props;
 
   return (
     <TouchableHighlight
@@ -50,9 +52,9 @@ const MealListItem: React.FC<MealListItemProps> = props => {
       <View
         style={[styles.foodItem, props.withoutBorder && styles.withoutBorder]}>
         <Image
-          style={styles.foodThumb}
+          style={[styles.foodThumb, smallImage && styles.smallImage]}
           source={{uri: foodObj.photo.thumb}}
-          resizeMode="contain"
+          resizeMode={'contain'}
         />
         <View style={styles.flex1}>
           <Text style={styles.foodName}>{foodObj.food_name}</Text>

@@ -19,29 +19,12 @@ export const styles = StyleSheet.create({
     height: 40,
     marginRight: 8,
   },
-  smallImage: {
-    width: 30,
-    height: 30,
-  },
   foodName: {
     textTransform: 'capitalize',
   },
   flex1: {
     flex: 1,
   },
-  qty: {
-    color: Colors.Secondary,
-    fontSize: 10,
-  },
-  calories: {
-    color: Colors.Primary,
-  },
-  caloriesSub: {
-    textAlign: 'right',
-    fontSize: 12,
-    color: Colors.Secondary,
-  },
-  caloriesContainer: {},
   right: {
     flexDirection: 'row',
     alignItems: 'center',

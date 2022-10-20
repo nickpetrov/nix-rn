@@ -25,7 +25,10 @@ export type BaseState = {
     manufacturer: string;
     appVersion: string;
   };
-  infoMessage: string;
+  infoMessage: null | {
+    title?: string;
+    text?: string;
+  };
   askForReview: boolean;
   reviewCheck: ReviewCheckType;
 };

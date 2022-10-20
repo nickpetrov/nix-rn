@@ -41,7 +41,7 @@ const initialState: BaseState = {
     manufacturer: manufacturer,
     appVersion: getReadableVersion(),
   },
-  infoMessage: '',
+  infoMessage: null,
   askForReview: false,
   reviewCheck: {
     rateClicked: null,

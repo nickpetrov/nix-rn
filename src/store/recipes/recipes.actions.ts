@@ -2,11 +2,11 @@ import recipesService from 'api/recipeService';
 import {Dispatch} from 'redux';
 import {recipesActionTypes, UpdateRecipeProps} from './recipes.types';
 
-export const getRecipes = () => {
+export const getRecipes = (limit?: number, offset?: number) => {
   return async (dispatch: Dispatch) => {
-    const limit = 50;
-    const offset = 0;
-    const response = await recipesService.getRecipes(limit, offset);
+    const optionLimit = limit || 300;
+    const optionOffset = offset || 0;
+    const response = await recipesService.getRecipes(optionLimit, optionOffset);
 
     const result = response.data;
     // if (__DEV__) {

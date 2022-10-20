@@ -10,6 +10,9 @@ export interface InstantQueryDataProps {
 }
 
 const autoCompleteService = {
+  async getFoodById(id: string) {
+    return await apiClient.get(`log/${id}/detailed`);
+  },
   async getInstant(search?: string) {
     return await apiClient.get('search/instant', {
       params: {

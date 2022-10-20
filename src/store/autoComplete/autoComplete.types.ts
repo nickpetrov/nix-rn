@@ -3,7 +3,19 @@ import {FoodProps} from 'store/userLog/userLog.types';
 export enum autoCompleteActionTypes {
   UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS',
   SHOW_SUGGESTED_FOODS = 'SHOW_SUGGESTED_FOODS',
+  SET_SEARCH_VALUE = 'SET_SEARCH_VALUE',
   CLEAR = 'CLEAR',
+}
+
+export enum searchSections {
+  ALL = 'ALL',
+  YOUR_FOODS = 'YOUR FOODS',
+  SELF = 'SELF',
+  COMMON = 'COMMON FOODS',
+  BRANDED = 'BRANDED FOODS',
+  HISTORY = 'HISTORY',
+  SUGGESTED = 'SUGGESTED',
+  FREEFORM = 'FREEFORM',
 }
 
 export interface PhotoProps {
@@ -34,6 +46,7 @@ export interface PhotoProps {
 // }
 
 export interface AutoCompleteState {
+  searchValue: string;
   self: Array<FoodProps>;
   common: Array<FoodProps>;
   branded: Array<FoodProps>;

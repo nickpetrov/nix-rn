@@ -149,8 +149,8 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   };
 
   const addItemToBasket = async () => {
-    dispatch(basketActions.addFoodToBasket(foodObj?.food_name || '')).then(
-      () => {
+    dispatch(basketActions.addFoodToBasket(foodObj?.food_name || ''))
+      .then(() => {
         dispatch(
           basketActions.mergeBasket(
             route.params?.mealType
@@ -164,8 +164,8 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           ),
         );
         navigation.replace('Basket');
-      },
-    );
+      })
+      .catch(err => console.log(err));
   };
 
   const onMealTypeChange = (newMealType: mealTypes) => {
