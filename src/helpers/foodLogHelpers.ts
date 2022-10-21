@@ -31,3 +31,13 @@ export const guessMealTypeByTime = (hour: number) => {
 export const guessMealNameByType = (type: mealTypes) => {
   return mealsList[type - 1];
 };
+
+export const capitalize = (sentence: string) => {
+  const words = (sentence || '').trim().split(' ');
+
+  return words
+    .map((word: string) => {
+      return word[0].toUpperCase() + word.substring(1);
+    })
+    .join(' ');
+};

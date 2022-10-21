@@ -10,7 +10,7 @@ import {styles} from './ChooseModal.styles';
 
 interface ChooseModalProps {
   modalVisible: boolean;
-  setModalVisible: (v: boolean) => void;
+  hideModal: () => void;
   title?: string;
   text?: string;
   subtitle?: string;
@@ -23,7 +23,7 @@ interface ChooseModalProps {
 
 const ChooseModal: React.FC<ChooseModalProps> = ({
   modalVisible,
-  setModalVisible,
+  hideModal,
   title,
   subtitle,
   text,
@@ -35,7 +35,7 @@ const ChooseModal: React.FC<ChooseModalProps> = ({
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
-        setModalVisible(false);
+        hideModal();
       }}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>

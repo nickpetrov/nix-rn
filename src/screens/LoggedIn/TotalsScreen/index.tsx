@@ -444,7 +444,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
       </KeyboardAwareScrollView>
       <ChooseModal
         modalVisible={showDeleteModal}
-        setModalVisible={setShowDeleteModal}
+        hideModal={() => setShowDeleteModal(false)}
         title="Delete Foods"
         subtitle={`Are you shure you want to delete all of your ${mealType} items?`}
         btns={[

@@ -712,7 +712,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
       </InfoModal>
       <ChooseModal
         modalVisible={uploadPhotoFailedPopup}
-        setModalVisible={setUploadPhotoFailedPopup}
+        hideModal={() => setUploadPhotoFailedPopup(false)}
         title="Oops, something went wrong"
         subtitle="Image upload failed"
         text="Tap 'Ok' to try again, or 'Cancel' to proceed without image"
@@ -739,7 +739,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
       />
       <ChooseModal
         modalVisible={!!deleteteModal}
-        setModalVisible={(b: boolean) => setDeleteteModal(b as false)}
+        hideModal={() => setDeleteteModal(false)}
         title="Clear Foods"
         subtitle="Are you sure you want to clear the meal builder?"
         btns={[

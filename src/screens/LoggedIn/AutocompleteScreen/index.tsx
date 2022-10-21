@@ -14,10 +14,14 @@ import {NavigationHeader} from 'components/NavigationHeader';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import CommonFoodItem from 'components/CommonFoodItem';
 import LoadIndicator from 'components/LoadIndicator';
+import ChooseModal from 'components/ChooseModal';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
 import {useNetInfo} from '@react-native-community/netinfo';
+
+// api service
+import autoCompleteService from 'api/autoCompleteService';
 
 // actions
 import * as basketActions from 'store/basket/basket.actions';
@@ -33,12 +37,15 @@ import {FoodProps, MeasureProps} from 'store/userLog/userLog.types';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {searchSections} from 'store/autoComplete/autoComplete.types';
+import {RecipeProps} from 'store/recipes/recipes.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './AutocompleteScreen.styles';
+import {NixButton} from 'components/NixButton';
+import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 interface AutocompleteScreenProps {
   navigation: NativeStackNavigationProp<
@@ -54,21 +61,33 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
 }) => {
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
+  const basketFoods = useSelector(state => state.basket.foods);
   const customFoods = useSelector(state => state.customFoods.foods);
+  const recipes = useSelector(state => state.recipes.recipes);
   const searchValue = useSelector(state => state.autoComplete.searchValue);
-  const [searchQuery] = useDebounce(searchValue, 350);
+  const [searchQuery] = useDebounce(searchValue.trim(), 1000);
   const {selectedDate} = useSelector(state => state.userLog);
   const [suggestedTime, setSuggestedTime] = useState('');
   const [currentTab, setCurrentTab] = useState(searchSections.ALL);
   const autocompleteFoods = useSelector(state => state.autoComplete);
   const [loading, setLoading] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [showBasketIsNotEmpty, setShowBasketIsNotEmpty] = useState<
+    RecipeProps | false
+  >(false);
+  const [autocompleteView, setAutocompleteView] = useState({
+    commonLimit: 3,
+    brandedLimit: 5,
+    additionToLimit: 0,
+  });
 
   const sections = useMemo(() => {
+    // add HISTORY section
     let arr: {data: any; key: searchSections}[] = [
       {key: searchSections.HISTORY, data: autocompleteFoods.self},
     ];
 
+    // add Freeform section
     if (
       !autocompleteFoods.common?.filter(item => item.food_name).length ||
       searchQuery.includes('and') ||
@@ -85,21 +104,60 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
         ],
       });
     }
-
+    // add your foods section
     if (searchQuery && customFoods.length) {
       arr.push({
         key: searchSections.YOUR_FOODS,
-        data: customFoods.filter(item => item.food_name?.includes(searchQuery)),
+        data: customFoods
+          .filter(item =>
+            item.food_name?.includes(searchQuery.toLocaleLowerCase()),
+          )
+          .slice(0, 3 + autocompleteView.additionToLimit / 2),
       });
     }
+
+    // add your recipe section without section header (will be under your foods)
+    if (searchQuery && recipes.length) {
+      arr.push({
+        key: searchSections.RECIPES,
+        data: recipes
+          .filter(item => item.name?.includes(searchQuery.toLocaleLowerCase()))
+          .slice(0, 3 + autocompleteView.additionToLimit / 2),
+      });
+    }
+
+    // add your common and branded section
     arr = arr.concat([
-      {key: searchSections.COMMON, data: autocompleteFoods.common},
-      {key: searchSections.BRANDED, data: autocompleteFoods.branded},
+      {
+        key: searchSections.COMMON,
+        data: autocompleteFoods.common.slice(
+          0,
+          autocompleteView.commonLimit + autocompleteView.additionToLimit,
+        ),
+      },
+      {
+        key: searchSections.BRANDED,
+        data: autocompleteFoods.branded.slice(
+          0,
+          autocompleteView.brandedLimit + autocompleteView.additionToLimit,
+        ),
+      },
     ]);
 
-    if (currentTab !== searchSections.ALL) {
+    // filter by tab
+    if (currentTab === searchSections.YOUR_FOODS) {
+      arr = arr.filter(
+        item =>
+          item.key === currentTab ||
+          item.key === searchSections.HISTORY ||
+          item.key === searchSections.RECIPES,
+      );
+    } else if (currentTab !== searchSections.ALL) {
       arr = arr.filter(item => item.key === currentTab);
     }
+
+    // addutional clear empty sections
+    arr = arr.filter(item => item.data.length);
 
     return arr;
   }, [
@@ -109,6 +167,8 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
     currentTab,
     searchQuery,
     customFoods,
+    recipes,
+    autocompleteView,
   ]);
   const suggestedSection = [
     {key: searchSections.SUGGESTED, data: autocompleteFoods.suggested},
@@ -124,7 +184,12 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   }, [searchQuery, dispatch]);
 
   useEffect(() => {
-    setSuggestedTime(moment().format('h:00 A'));
+    const min = moment().get('minute');
+    if (min > 30) {
+      setSuggestedTime(moment().add(1, 'hour').format('hA'));
+    } else {
+      setSuggestedTime(moment().format('h A'));
+    }
     setLoading(true);
 
     // get suggested foods
@@ -162,6 +227,43 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
 
   const changeActiveTab = (tabName: searchSections) => {
     setCurrentTab(tabName);
+    if (tabName === searchSections.COMMON) {
+      setAutocompleteView({
+        brandedLimit: 0,
+        additionToLimit: 0,
+        commonLimit: 10,
+      });
+    } else if (tabName === searchSections.BRANDED) {
+      setAutocompleteView({
+        commonLimit: 0,
+        additionToLimit: 0,
+        brandedLimit: 10,
+      });
+    } else if (tabName === searchSections.YOUR_FOODS) {
+      setAutocompleteView({
+        commonLimit: 0,
+        additionToLimit: 0,
+        brandedLimit: 0,
+      });
+    } else {
+      setAutocompleteView({
+        additionToLimit: 0,
+        commonLimit: 3,
+        brandedLimit: 5,
+      });
+    }
+  };
+
+  const callBackAfterAddFoodToBasket = () => {
+    dispatch(
+      basketActions.mergeBasket({
+        consumed_at: selectedDate,
+        meal_type: route.params?.mealType
+          ? route.params?.mealType
+          : guessMealTypeByTime(moment().hours()),
+      }),
+    );
+    navigation.replace(Routes.Basket);
   };
 
   const addSuggestedFood = async (item: Partial<FoodProps>) => {
@@ -181,44 +283,18 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
       item.alt_measures.unshift(temp);
       item = addGramsToAltMeasures(item as FoodProps);
     }
-    dispatch(basketActions.addExistFoodToBasket([item])).then(() => {
-      dispatch(
-        basketActions.mergeBasket(
-          route.params?.mealType
-            ? {
-                consumed_at: selectedDate,
-                meal_type: route.params?.mealType,
-              }
-            : {
-                consumed_at: selectedDate,
-              },
-        ),
-      );
-      navigation.replace(Routes.Basket);
-    });
+    dispatch(basketActions.addExistFoodToBasket([item])).then(
+      callBackAfterAddFoodToBasket,
+    );
   };
 
   const handleAddCommonFood = (item_name: string, is_freeform: boolean) => {
     // log user interaction with autocomplete for analytics purpose
     if (!is_freeform) {
-      // ApiService.logAutocompleteStats($scope.data.search, 1, item_name);
+      autoCompleteService.logAutocompleteStats(item_name, 1, item_name);
     }
     dispatch(basketActions.addFoodToBasket(item_name))
-      .then(() => {
-        dispatch(
-          basketActions.mergeBasket(
-            route.params?.mealType
-              ? {
-                  consumed_at: selectedDate,
-                  meal_type: route.params?.mealType,
-                }
-              : {
-                  consumed_at: selectedDate,
-                },
-          ),
-        );
-        navigation.replace(Routes.Basket);
-      })
+      .then(callBackAfterAddFoodToBasket)
       .catch(err => {
         dispatch(
           setInfoMessage({
@@ -231,21 +307,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
 
   const addMyFood = (id: string) => {
     dispatch(basketActions.addFoodToBasketById(id))
-      .then(() => {
-        dispatch(
-          basketActions.mergeBasket(
-            route.params?.mealType
-              ? {
-                  consumed_at: selectedDate,
-                  meal_type: route.params?.mealType,
-                }
-              : {
-                  consumed_at: selectedDate,
-                },
-          ),
-        );
-        navigation.replace(Routes.Basket);
-      })
+      .then(callBackAfterAddFoodToBasket)
       .catch(err => {
         dispatch(
           setInfoMessage({
@@ -257,7 +319,43 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   };
 
   const addCustomFood = (food: FoodProps) => {
-    // todo
+    dispatch(basketActions.addCustomFoodToBasket([food])).then(
+      callBackAfterAddFoodToBasket,
+    );
+  };
+
+  const addRecipeToBasket = (id: string) => {
+    dispatch(basketActions.addRecipeToBasket(id)).then(
+      (scaled_recipe: RecipeProps) => {
+        dispatch(
+          basketActions.mergeBasket({
+            consumed_at: selectedDate,
+            meal_type: route.params?.mealType
+              ? route.params?.mealType
+              : guessMealTypeByTime(moment().hours()),
+            recipeBrand: scaled_recipe.brand_name,
+            servings: scaled_recipe.serving_qty.toString(),
+            recipeName: scaled_recipe.name,
+          }),
+        );
+        navigation.replace(Routes.Basket);
+      },
+    );
+  };
+
+  const tryAddRecipeToBasket = (recipe: RecipeProps) => {
+    if (!basketFoods.length) {
+      addRecipeToBasket(recipe.id);
+    } else {
+      setShowBasketIsNotEmpty(recipe);
+    }
+  };
+
+  const addBrandedFoodToBasket = (id: string) => {
+    autoCompleteService.logAutocompleteStats(searchQuery, 8, id);
+    dispatch(basketActions.addBrandedFoodToBasket(id)).then(
+      callBackAfterAddFoodToBasket,
+    );
   };
 
   const getActiveTabColor = (tabToCheck: searchSections) => {
@@ -279,6 +377,36 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
     }
   };
 
+  const showMore = () => {
+    const filteredCustomFoods = sections.find(
+      item => item.key === searchSections.SELF,
+    )?.data;
+    const filteredRecipes = sections.find(
+      item => item.key === searchSections.RECIPES,
+    )?.data;
+    if (
+      !autocompleteView.additionToLimit &&
+      currentTab !== searchSections.ALL &&
+      ((currentTab === searchSections.YOUR_FOODS &&
+        filteredCustomFoods?.length + filteredRecipes?.length > 6) ||
+        (currentTab === searchSections.COMMON &&
+          autocompleteFoods.common.length > autocompleteView.commonLimit) ||
+        (currentTab === searchSections.BRANDED &&
+          autocompleteFoods.branded.length > autocompleteView.commonLimit))
+    ) {
+      setAutocompleteView(prev => ({...prev, additionToLimit: 10}));
+    } else if (
+      autocompleteFoods.branded.length &&
+      autocompleteView.brandedLimit + autocompleteView.additionToLimit < 20 &&
+      currentTab === searchSections.ALL
+    ) {
+      setAutocompleteView(prev => ({
+        ...prev,
+        brandedLimit: 20,
+      }));
+    }
+  };
+  console.log('sections', sections);
   return (
     <View style={styles.root}>
       {netInfo.isConnected ? (
@@ -296,100 +424,223 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
                   </Text>
                 </View>
               )}
-              <SectionList
-                listKey="rootFoodList"
-                sections={searchQuery.length > 0 ? sections : suggestedSection}
-                keyExtractor={(item: any, index: number) =>
-                  `${index} - ${item.id || item.tag_id || item.nix_item_id}`
-                }
-                ListHeaderComponent={() => (
-                  <>
-                    <View style={styles.main}>
-                      {searchQuery &&
-                        Object.values(searchSections)
-                          .filter(
-                            item =>
-                              item !== searchSections.HISTORY &&
-                              item !== searchSections.SUGGESTED &&
-                              item !== searchSections.FREEFORM &&
-                              item !== searchSections.SELF,
-                          )
-                          .map(item => {
-                            return (
-                              <TouchableWithoutFeedback
-                                key={item}
-                                onPress={() =>
-                                  changeActiveTab(item as searchSections)
-                                }>
-                                <View
-                                  style={{
-                                    ...styles.tab,
-                                    marginLeft: 4,
-                                    backgroundColor: getActiveTabColor(
-                                      item as searchSections,
-                                    ),
-                                  }}>
-                                  <Text>
-                                    {getTabText(item as searchSections)}
-                                  </Text>
-                                </View>
-                              </TouchableWithoutFeedback>
-                            );
-                          })}
-                    </View>
-                  </>
-                )}
-                renderSectionHeader={({section}) => {
-                  if (section.data.length) {
-                    return (
-                      <Text style={styles.sectionTitle}>
-                        {section.key === searchSections.SUGGESTED
-                          ? `Foods Eaten Around ${suggestedTime}`
-                          : section.key}
-                      </Text>
-                    );
-                  } else if (
-                    currentTab !== searchSections.ALL &&
-                    !searchLoading
-                  ) {
-                    return <Text>No matching food found</Text>;
-                  } else {
-                    return null;
+              <View style={styles.tabs}>
+                {searchQuery &&
+                  Object.values(searchSections)
+                    .filter(
+                      item =>
+                        item !== searchSections.HISTORY &&
+                        item !== searchSections.SUGGESTED &&
+                        item !== searchSections.FREEFORM &&
+                        item !== searchSections.SELF &&
+                        item !== searchSections.RECIPES,
+                    )
+                    .map(item => {
+                      return (
+                        <TouchableWithoutFeedback
+                          key={item}
+                          onPress={() =>
+                            changeActiveTab(item as searchSections)
+                          }>
+                          <View
+                            style={{
+                              ...styles.tab,
+                              marginLeft: 4,
+                              backgroundColor: getActiveTabColor(
+                                item as searchSections,
+                              ),
+                            }}>
+                            <Text>{getTabText(item as searchSections)}</Text>
+                          </View>
+                        </TouchableWithoutFeedback>
+                      );
+                    })}
+              </View>
+              <View style={[!!searchQuery && styles.emptySpaceForTabs]}>
+                <SectionList
+                  listKey="rootFoodList"
+                  showsVerticalScrollIndicator={false}
+                  sections={
+                    searchQuery.length > 0 ? sections : suggestedSection
                   }
-                }}
-                renderItem={({item, section}: any) => {
-                  if (section.key === searchSections.FREEFORM) {
-                    return (
-                      <CommonFoodItem
-                        text={item.name}
-                        onTap={() => handleAddCommonFood(item.name, true)}
-                        withArrow
-                      />
-                    );
-                  } else {
-                    return (
-                      <MealListItem
-                        foodObj={item}
-                        onTap={() => {
-                          if (section.key === searchSections.HISTORY) {
-                            addMyFood(item.uuid);
-                          } else if (
-                            section.key === searchSections.YOUR_FOODS
-                          ) {
-                            addCustomFood(item);
-                          } else if (section.key === searchSections.SUGGESTED) {
-                            addSuggestedFood(item);
+                  keyExtractor={(item: any, index: number) =>
+                    `${index} - ${item.id || item.tag_id || item.nix_item_id}`
+                  }
+                  renderSectionHeader={({section}) => {
+                    if (
+                      section.key === searchSections.RECIPES &&
+                      !sections.find(
+                        item => item.key === searchSections.YOUR_FOODS,
+                      )
+                    ) {
+                      return (
+                        <Text style={styles.sectionTitle}>YOUR FOODS</Text>
+                      );
+                    } else if (section.key === searchSections.RECIPES) {
+                      return null;
+                    }
+                    if (section.data.length) {
+                      return (
+                        <Text style={styles.sectionTitle}>
+                          {section.key === searchSections.SUGGESTED
+                            ? `Foods Eaten Around ${suggestedTime}`
+                            : section.key}
+                        </Text>
+                      );
+                    } else if (
+                      currentTab !== searchSections.ALL &&
+                      !searchLoading
+                    ) {
+                      return (
+                        <Text style={styles.noMatch}>
+                          No matching food found
+                        </Text>
+                      );
+                    } else {
+                      return null;
+                    }
+                  }}
+                  renderItem={({item, section}: any) => {
+                    if (section.key === searchSections.FREEFORM) {
+                      return (
+                        <CommonFoodItem
+                          text={item.name}
+                          onTap={() => handleAddCommonFood(item.name, true)}
+                          withArrow
+                          searchValue={searchQuery}
+                        />
+                      );
+                    } else if (section.key === searchSections.COMMON) {
+                      return (
+                        <CommonFoodItem
+                          image={item.photo.thumb}
+                          name={item.food_name}
+                          onTap={() =>
+                            handleAddCommonFood(item.food_name, false)
                           }
-                        }}
-                        smallImage
-                      />
+                          searchValue={searchQuery}
+                          withArrow
+                        />
+                      );
+                    } else {
+                      return (
+                        <MealListItem
+                          foodObj={item}
+                          onTap={() => {
+                            if (section.key === searchSections.HISTORY) {
+                              addMyFood(item.uuid);
+                            } else if (
+                              section.key === searchSections.YOUR_FOODS
+                            ) {
+                              addCustomFood(item);
+                            } else if (
+                              section.key === searchSections.SUGGESTED
+                            ) {
+                              addSuggestedFood(item);
+                            } else if (section.key === searchSections.RECIPES) {
+                              tryAddRecipeToBasket(item);
+                            } else if (section.key === searchSections.BRANDED) {
+                              addBrandedFoodToBasket(item.nix_item_id);
+                            }
+                          }}
+                          smallImage
+                          withCal
+                          withoutPhotoUploadIcon
+                          recipe={section.key === searchSections.RECIPES}
+                          searchValue={searchQuery}
+                        />
+                      );
+                    }
+                  }}
+                  ListFooterComponent={() => {
+                    const filteredBrandedFoods = sections.find(
+                      item => item.key === searchSections.BRANDED,
+                    )?.data;
+                    const filteredCustomFoods = sections.find(
+                      item => item.key === searchSections.SELF,
+                    )?.data;
+                    const filteredRecipes = sections.find(
+                      item => item.key === searchSections.RECIPES,
+                    )?.data;
+                    return (
+                      <>
+                        {sections.length === 0 && !loading && !!searchQuery && (
+                          <Text style={styles.noMatch}>
+                            No matching food found
+                          </Text>
+                        )}
+
+                        {searchQuery &&
+                        ((!autocompleteView.additionToLimit &&
+                          currentTab !== searchSections.ALL &&
+                          ((currentTab === searchSections.YOUR_FOODS &&
+                            filteredCustomFoods?.length +
+                              filteredRecipes?.length >
+                              6) ||
+                            (currentTab === searchSections.COMMON &&
+                              autocompleteFoods.common.length >
+                                autocompleteView.commonLimit) ||
+                            (currentTab === searchSections.BRANDED &&
+                              autocompleteFoods.branded.length >
+                                autocompleteView.commonLimit))) ||
+                          (autocompleteFoods.branded.length &&
+                            autocompleteView.brandedLimit +
+                              autocompleteView.additionToLimit <
+                              20 &&
+                            currentTab === searchSections.ALL &&
+                            filteredBrandedFoods?.length < 20)) ? (
+                          <TouchableWithoutFeedback onPress={showMore}>
+                            <View style={styles.showMore}>
+                              <Text style={styles.showMoreText}>
+                                Show More Results
+                              </Text>
+                              <FontAwesome
+                                style={styles.showMoreIcon}
+                                name="angle-down"
+                              />
+                            </View>
+                          </TouchableWithoutFeedback>
+                        ) : null}
+                        {currentTab === searchSections.ALL &&
+                        searchQuery &&
+                        !sections.some(
+                          item => item.key === searchSections.FREEFORM,
+                        ) ? (
+                          <>
+                            <Text style={styles.sectionTitle}>FREEFORM</Text>
+                            <CommonFoodItem
+                              text={searchQuery}
+                              onTap={() =>
+                                handleAddCommonFood(searchQuery, true)
+                              }
+                              searchValue={searchQuery}
+                            />
+                          </>
+                        ) : null}
+                        <View style={styles.footer}>
+                          <NixButton
+                            onPress={() =>
+                              navigation.navigate(Routes.TrackFoods)
+                            }
+                            title="Browse All Foods"
+                            type="primary"
+                            style={{marginBottom: 10}}
+                          />
+                          <NixButton
+                            onPress={() =>
+                              navigation.navigate(Routes.CustomFoodEdit, {
+                                logAfterSubmit: true,
+                              })
+                            }
+                            title="Create custom food"
+                            type="primary"
+                          />
+                        </View>
+                      </>
                     );
-                  }
-                }}
-                // renderSectionFooter={({section}) => {
-                //   return;
-                // }}
-              />
+                  }}
+                />
+              </View>
             </>
           )}
         </>
@@ -400,6 +651,34 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
           </Text>
         </View>
       )}
+      <ChooseModal
+        modalVisible={!!showBasketIsNotEmpty}
+        hideModal={() => setShowBasketIsNotEmpty(false)}
+        title="Warning"
+        subtitle="The basket is not empty"
+        text="To log a recipe the basket needs to be empty. Tap OK to clear the basket and add this recipe."
+        btns={[
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => {
+              setShowBasketIsNotEmpty(false);
+            },
+          },
+          {
+            type: 'primary',
+            title: 'Yes',
+            onPress: () => {
+              dispatch(basketActions.reset()).then(() => {
+                if (showBasketIsNotEmpty) {
+                  addRecipeToBasket(showBasketIsNotEmpty.id);
+                }
+                setShowBasketIsNotEmpty(false);
+              });
+            },
+          },
+        ]}
+      />
     </View>
   );
 };

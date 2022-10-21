@@ -6,6 +6,7 @@ import {View, Text, TextInput} from 'react-native';
 import {BarcodeScanner} from 'components/BarcodeScanner';
 import {getHeaderTitle} from '@react-navigation/elements';
 import BackButton from 'components/BackButton';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -22,6 +23,7 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 interface NavigationHeaderProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, any>;
@@ -85,7 +87,15 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
             value={searchValue}
             onFocus={showAutocomplete}
             onChangeText={searchAutocomplete}
+            returnKeyType="search"
           />
+          {searchValue.length > 0 && (
+            <View style={styles.closeBtn}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <FontAwesome name="close" color="#000" size={13} />
+              </TouchableOpacity>
+            </View>
+          )}
           {route.name === Routes.Dashboard || route.name === Routes.Basket ? (
             <BarcodeScanner
               navigation={navigation}

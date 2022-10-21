@@ -119,7 +119,7 @@ const MainContent = () => {
       />
       <ChooseModal
         modalVisible={showRatePopup}
-        setModalVisible={setShowRatePopup}
+        hideModal={() => setShowRatePopup(false)}
         title="Enjoying Nutritionix Track?"
         text="★ Please rate the Track app now ★"
         btns={[

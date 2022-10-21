@@ -10,6 +10,7 @@ export enum autoCompleteActionTypes {
 export enum searchSections {
   ALL = 'ALL',
   YOUR_FOODS = 'YOUR FOODS',
+  RECIPES = 'RECIPES',
   SELF = 'SELF',
   COMMON = 'COMMON FOODS',
   BRANDED = 'BRANDED FOODS',

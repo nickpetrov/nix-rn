@@ -26,6 +26,7 @@ export interface RecipeProps {
   source: number;
   updated_at: string;
   user_id: string;
+  brand_name?: string;
 }
 
 export type UpdateRecipeProps = Omit<

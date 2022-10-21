@@ -30,6 +30,11 @@ export const styles = StyleSheet.create({
     right: 10,
     top: -5,
   },
+  closeBtn: {
+    position: 'absolute',
+    right: 10,
+    top: 8,
+  },
   titleContainer: {
     flex: 1,
   },

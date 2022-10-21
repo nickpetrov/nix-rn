@@ -42,6 +42,26 @@ const autoCompleteService = {
       },
     });
   },
+  async logAutocompleteStats(
+    input: string,
+    source: number,
+    result_key: string,
+  ) {
+    var data = {
+      meta: {
+        input: input,
+        source: source,
+        result_key: result_key,
+      },
+    };
+
+    return await apiClient.post('stats/log', data, {
+      headers: {
+        'x-app-id': '906641bd',
+        'x-app-key': '59bcfe12c0e9965162798a31ff38ec1f',
+      },
+    });
+  },
 };
 
 export default autoCompleteService;

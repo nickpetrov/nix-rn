@@ -2,14 +2,18 @@
 import React from 'react';
 
 // components
-import {View, Text, Image, TouchableHighlight} from 'react-native';
+import {View, Image, TouchableHighlight} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import HighlightText from 'components/HighlightText';
 
 // styles
 import {styles} from './CommonFoodItem.styles';
 
 // constants
 import {Colors} from 'constants/Colors';
+
+// helpers
+import {capitalize} from 'helpers/foodLogHelpers';
 
 interface CommonFoodItemProps {
   name?: string;
@@ -18,6 +22,7 @@ interface CommonFoodItemProps {
   onTap?: () => void;
   withArrow?: boolean;
   withoutBorder?: boolean;
+  searchValue?: string;
 }
 const CommonFoodItem: React.FC<CommonFoodItemProps> = ({
   name,
@@ -26,6 +31,7 @@ const CommonFoodItem: React.FC<CommonFoodItemProps> = ({
   withArrow,
   onTap,
   withoutBorder,
+  searchValue,
 }) => {
   return (
     <TouchableHighlight onPress={onTap}>
@@ -38,8 +44,21 @@ const CommonFoodItem: React.FC<CommonFoodItemProps> = ({
           />
         )}
         <View style={styles.flex1}>
-          {name && <Text style={styles.foodName}>{name}</Text>}
-          {text && <Text>{text}</Text>}
+          {name && (
+            <HighlightText
+              searchWords={[searchValue || '']}
+              textToHighlight={capitalize(name)}
+              style={styles.foodName}
+              highlightStyle={{fontWeight: '600'}}
+            />
+          )}
+          {text && (
+            <HighlightText
+              searchWords={[searchValue || '']}
+              textToHighlight={capitalize(text)}
+              highlightStyle={{fontWeight: '600'}}
+            />
+          )}
         </View>
         <View style={styles.right}>
           {withArrow && (

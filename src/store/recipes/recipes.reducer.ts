@@ -6,7 +6,10 @@ const initialState: RecipesState = {
   recipes: [],
 };
 
-export default (state: RecipesState = initialState, action: AnyAction) => {
+export default (
+  state: RecipesState = initialState,
+  action: AnyAction,
+): RecipesState => {
   switch (action.type) {
     case recipesActionTypes.GET_RECIPES:
       const stateWithTotals = {...state, recipes: action.recipes};

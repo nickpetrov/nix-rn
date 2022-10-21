@@ -15,12 +15,12 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   foodThumb: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     marginRight: 8,
   },
   foodName: {
-    textTransform: 'capitalize',
+    // textTransform: 'capitalize',
   },
   flex1: {
     flex: 1,

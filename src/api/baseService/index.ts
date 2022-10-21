@@ -27,6 +27,18 @@ const baseService = {
       },
     });
   },
+  async getBrandedFoodsById(id: string) {
+    return await apiClient.get<{foods: Array<FoodProps>}>('/search/item', {
+      params: {
+        nix_item_id: id,
+      },
+      headers: {
+        'x-3scale-bypass': 'c49e69471a7b51beb2bb0e452ef53867385f7a5a',
+        'x-app-key': '59bcfe12c0e9965162798a31ff38ec1f',
+        'x-app-id': '906641bd',
+      },
+    });
+  },
   async getSuggestedFood() {
     return await apiClient.get('recommended_products.json.gz', {
       baseURL: 'https://nix-export.s3.amazonaws.com/',

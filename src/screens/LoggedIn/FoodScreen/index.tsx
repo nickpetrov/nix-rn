@@ -601,7 +601,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
         title="Delete Food"
         subtitle="Are you sure you wantto delete this food?"
         modalVisible={showDeleteModal}
-        setModalVisible={setShowDeleteModal}
+        hideModal={() => setShowDeleteModal(false)}
         btns={[
           {
             type: 'gray',

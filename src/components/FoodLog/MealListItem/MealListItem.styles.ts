@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     height: 30,
   },
   foodName: {
-    textTransform: 'capitalize',
+    // textTransform: 'capitalize',
   },
   flex1: {
     flex: 1,

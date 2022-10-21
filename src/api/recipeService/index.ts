@@ -18,6 +18,9 @@ const recipesService = {
       recipe,
     });
   },
+  async getRecipeById(id: string) {
+    return await apiClient.get(`recipe/${id}`);
+  },
   async getIngridients(query: string) {
     return await apiClient.post(
       'natural/nutrients',

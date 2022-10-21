@@ -6,10 +6,17 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
-  main: {
+  tabs: {
     flexDirection: 'row',
     flexWrap: 'nowrap',
     marginTop: 3,
+    position: 'absolute',
+    top: 0,
+    height: 40,
+    width: '100%',
+  },
+  emptySpaceForTabs: {
+    marginTop: 40,
   },
   tab: {
     display: 'flex',
@@ -33,7 +40,7 @@ export const styles = StyleSheet.create({
   },
   sectionTitle: {
     paddingVertical: 2,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     borderBottomColor: Colors.LightGray,
     borderBottomWidth: 1,
     fontSize: 12,
@@ -62,5 +69,37 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
     color: Colors.Secondary,
+  },
+  footer: {
+    padding: 10,
+  },
+  showMore: {
+    width: 140,
+    backgroundColor: '#eee',
+    alignSelf: 'center',
+    padding: 4,
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  showMoreText: {
+    color: Colors.Gray6,
+    fontSize: 11,
+  },
+  showMoreIcon: {
+    fontSize: 14,
+    textAlignVertical: 'center',
+    marginLeft: 5,
+    color: Colors.Gray6,
+  },
+  noMatch: {
+    padding: 10,
+    textAlign: 'center',
+    borderBottomColor: Colors.LightGray,
+    borderBottomWidth: 1,
+    lineHeight: 35,
+    fontStyle: 'italic',
   },
 });

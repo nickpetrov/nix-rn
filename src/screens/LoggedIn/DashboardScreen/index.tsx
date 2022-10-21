@@ -497,7 +497,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       />
       <ChooseModal
         modalVisible={!!deleteteModal}
-        setModalVisible={(b: boolean) => setDeleteteModal(b as false)}
+        hideModal={() => setDeleteteModal(false)}
         title="Delete Foods"
         subtitle={`Are you shure you want to delete all of your ${
           deleteteModal ? deleteteModal.mealName.toLowerCase() : ''
