@@ -24,6 +24,7 @@ import {FoodProps} from 'store/userLog/userLog.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {TouchableWithoutFeedback} from 'react-native';
+import _ from 'lodash';
 
 interface FoodEditItemProps {
   foodObj: FoodProps;
@@ -70,6 +71,8 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
         qty: serving_qty,
       },
     ];
+  } else {
+    alt_measures = _.unionBy(alt_measures, 'measure');
   }
 
   useEffect(() => {
@@ -154,7 +157,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
               onBlur={() => onQtyChange()}
             />
             <View style={styles.pickerContainer}>
-              {measures.length > 1 ? (
+              {foodObj.alt_measures ? (
                 <ModalSelector
                   style={styles.picker}
                   initValueTextStyle={{
@@ -198,7 +201,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
               });
             }
           }}>
-          <View style={[styles.footer]}>
+          <View style={[styles.footer, withInfo && styles.between]}>
             {withInfo ? (
               <FontAwesome name="info-circle" color="#999" size={19} />
             ) : null}

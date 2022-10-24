@@ -77,13 +77,19 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
   },
   footer: {
+    minWidth: '20%',
+    width: '20%',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   calories: {},
   cal: {
     textAlign: 'right',
     fontSize: 12,
     color: Colors.Gray8,
+  },
+  between: {
+    justifyContent: 'space-between',
   },
 });
