@@ -8,3 +8,7 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
+
+# For correct work react-native-date-picker in production.
+-keep public class net.time4j.android.ApplicationStarter
+-keep public class net.time4j.PrettyTime

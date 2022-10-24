@@ -26,8 +26,8 @@ interface WhenSectionProps {
 }
 
 const WhenSection: React.FC<WhenSectionProps> = props => {
+  const [openTimeModal, setOpenTimeModal] = useState(false);
   const [showControls, setShowControls] = useState(false);
-  const [showDatePicker, setShowDatepicker] = useState(false);
   const currentDate = props.consumed_at;
   const [date, setDate] = useState<Date | string>(new Date(currentDate));
   const [mealType, setMealType] = useState<mealTypes>(props.meal_type);
@@ -45,12 +45,8 @@ const WhenSection: React.FC<WhenSectionProps> = props => {
     } else {
       setDate(newDate);
       // was  - props.onDateChange(newDate)
-      props.onDateChange(newDate.toDateString());
+      props.onDateChange(moment(newDate).format('YYYY-MM-DD'));
     }
-  };
-
-  const toggleDatePicker = () => {
-    setShowDatepicker(true);
   };
 
   return (
@@ -81,81 +77,103 @@ const WhenSection: React.FC<WhenSectionProps> = props => {
                 borderBottomColor: '#bbb',
               }}>
               <View
-                style={styles.mealTypeButton}
+                style={[
+                  styles.mealTypeButton,
+                  mealType === mealTypes.Breakfast && styles.choosed,
+                ]}
                 onTouchStart={() => onMealTypeChange(mealTypes.Breakfast)}>
-                <Text>
-                  Breakfast{mealType === mealTypes.Breakfast ? '*' : ''}
-                </Text>
+                <Text>Breakfast</Text>
               </View>
               <View
-                style={styles.mealTypeButton}
+                style={[
+                  styles.mealTypeButton,
+                  mealType === mealTypes.Lunch && styles.choosed,
+                ]}
                 onTouchStart={() => onMealTypeChange(mealTypes.Lunch)}>
-                <Text>Lunch{mealType === mealTypes.Lunch ? '*' : ''}</Text>
+                <Text>Lunch</Text>
               </View>
               <View
-                style={{...styles.mealTypeButton, borderRightWidth: 0}}
+                style={[
+                  {...styles.mealTypeButton, borderRightWidth: 0},
+                  mealType === mealTypes.Dinner && styles.choosed,
+                ]}
                 onTouchStart={() => onMealTypeChange(mealTypes.Dinner)}>
-                <Text>Dinner{mealType === mealTypes.Dinner ? '*' : ''}</Text>
+                <Text>Dinner</Text>
               </View>
             </View>
             <View style={styles.controlsRow}>
               <View
-                style={styles.mealTypeButton}
+                style={[
+                  styles.mealTypeButton,
+                  mealType === mealTypes['AM Snack'] && styles.choosed,
+                ]}
                 onTouchStart={() => onMealTypeChange(mealTypes['AM Snack'])}>
-                <Text>
-                  AM Snack{mealType === mealTypes['AM Snack'] ? '*' : ''}
-                </Text>
+                <Text>AM Snack</Text>
               </View>
               <View
-                style={styles.mealTypeButton}
+                style={[
+                  styles.mealTypeButton,
+                  mealType === mealTypes['PM Snack'] && styles.choosed,
+                ]}
                 onTouchStart={() => onMealTypeChange(mealTypes['PM Snack'])}>
-                <Text>
-                  PM Snack{mealType === mealTypes['PM Snack'] ? '*' : ''}
-                </Text>
+                <Text>PM Snack</Text>
               </View>
               <View
-                style={{...styles.mealTypeButton, borderRightWidth: 0}}
+                style={[
+                  {...styles.mealTypeButton, borderRightWidth: 0},
+                  mealType === mealTypes['Late Snack'] && styles.choosed,
+                ]}
                 onTouchStart={() => onMealTypeChange(mealTypes['Late Snack'])}>
-                <Text>
-                  Late Snack{mealType === mealTypes['Late Snack'] ? '*' : ''}
-                </Text>
+                <Text>Late Snack</Text>
               </View>
             </View>
           </View>
-          {!showDatePicker ? (
-            <View style={styles.dateWrapper}>
-              <View
-                style={styles.dateButton}
-                onTouchStart={() => onDateChange(-1)}>
-                <Text>
-                  Yesterday
-                  {currentDate ===
-                  timeHelper.offsetDays(timeHelper.today(), '', -1)
-                    ? '*'
-                    : ''}
-                </Text>
-              </View>
-              <View
-                style={styles.dateButton}
-                onTouchStart={() => onDateChange(0)}>
-                <Text>
-                  Today{currentDate === timeHelper.today() ? '*' : ''}
-                </Text>
-              </View>
-              <View
-                style={styles.dateButton}
-                onTouchStart={() => toggleDatePicker()}>
-                <Text>Choose a day</Text>
-              </View>
+          <View style={styles.dateWrapper}>
+            <View
+              style={[
+                styles.dateButton,
+                currentDate ===
+                  timeHelper.offsetDays(timeHelper.today(), '', -1) &&
+                  styles.choosed,
+              ]}
+              onTouchStart={() => onDateChange(-1)}>
+              <Text>Yesterday</Text>
             </View>
-          ) : (
-            <View style={{alignItems: 'center'}}>
-              <DatePicker
-                date={date as Date}
-                onDateChange={(x: Date) => onDateChange(x)}
-              />
+            <View
+              style={[
+                styles.dateButton,
+                currentDate === timeHelper.today() && styles.choosed,
+              ]}
+              onTouchStart={() => onDateChange(0)}>
+              <Text>Today</Text>
             </View>
-          )}
+            <View
+              style={[
+                styles.dateButton,
+                currentDate !== timeHelper.today() &&
+                  currentDate !==
+                    timeHelper.offsetDays(timeHelper.today(), '', -1) &&
+                  styles.choosed,
+              ]}
+              onTouchStart={() => setOpenTimeModal(true)}>
+              <Text>Choose a day</Text>
+            </View>
+          </View>
+          <DatePicker
+            date={date as Date}
+            androidVariant="nativeAndroid"
+            mode="date"
+            modal
+            open={openTimeModal}
+            onConfirm={(x: Date) => {
+              setOpenTimeModal(false);
+              onDateChange(x);
+            }}
+            onCancel={() => {
+              setOpenTimeModal(false);
+            }}
+            title={null}
+          />
         </View>
       ) : null}
     </View>

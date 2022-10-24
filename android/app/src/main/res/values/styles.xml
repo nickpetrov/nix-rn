@@ -13,4 +13,7 @@
         <item name="android:background">@drawable/background_splash</item>
         <item name="android:statusBarColor">@color/splashscreen_background</item>
 </style>
+<style name="DatePickerTheme" parent="DatePickerBaseTheme">
+    <item name="android:colorControlNormal">#08A9DB</item>
+</style>
 </resources>

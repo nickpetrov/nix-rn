@@ -64,4 +64,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  choosed: {
+    backgroundColor: '#d0d0d0',
+  },
 });
