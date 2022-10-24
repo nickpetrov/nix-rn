@@ -624,12 +624,12 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                       resizeMode="cover"
                     />
                   ) : null}
+                  {isUploadPhotoLoading && (
+                    <View style={styles.uploadPhotoLoading}>
+                      <FontAwesome name="spinner" color="#fff" size={16} />
+                    </View>
+                  )}
                 </View>
-                {isUploadPhotoLoading && (
-                  <View style={styles.uploadPhotoLoading}>
-                    <FontAwesome name="spinner" color="#fff" size={16} />
-                  </View>
-                )}
               </>
             )}
             <NixButton
