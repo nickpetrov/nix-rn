@@ -42,4 +42,14 @@ export const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+  empty: {
+    padding: 10,
+    borderBottomColor: Colors.LightGray,
+    borderBottomWidth: 1,
+  },
+  emptyText: {
+    textAlign: 'center',
+    fontSize: 12,
+  },
+  swipeItemContainer: {},
 });

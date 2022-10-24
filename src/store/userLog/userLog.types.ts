@@ -172,6 +172,7 @@ export interface FoodProps {
   public_id?: number | null;
   basketId?: string;
   updated_at?: string;
+  created_at?: string;
 }
 
 export interface UserLogState {

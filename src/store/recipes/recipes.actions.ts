@@ -1,11 +1,19 @@
 import recipesService from 'api/recipeService';
 import {Dispatch} from 'redux';
 import {recipesActionTypes, UpdateRecipeProps} from './recipes.types';
+import {RootState} from '../index';
 
-export const getRecipes = (limit?: number, offset?: number) => {
-  return async (dispatch: Dispatch) => {
-    const optionLimit = limit || 300;
-    const optionOffset = offset || 0;
+export const getRecipes = ({
+  newLimit,
+  newOffset,
+}: {
+  newLimit?: number;
+  newOffset?: number;
+}) => {
+  return async (dispatch: Dispatch, useState: () => RootState) => {
+    const {limit, offset} = useState().recipes;
+    const optionLimit = newLimit || limit;
+    const optionOffset = newOffset || offset;
     const response = await recipesService.getRecipes(optionLimit, optionOffset);
 
     const result = response.data;
@@ -15,7 +23,7 @@ export const getRecipes = (limit?: number, offset?: number) => {
     if (result.recipes) {
       dispatch({
         type: recipesActionTypes.GET_RECIPES,
-        recipes: result.recipes || [],
+        payload: {recipes: result.recipes || [], offset: optionOffset},
       });
       return result.recipes;
     }
@@ -48,4 +56,10 @@ export const getIngridientsForUpdate = async (query: string) => {
   //   console.log('get ingridients for update', result);
   // }
   return result;
+};
+
+export const reset = () => {
+  return async (dispatch: Dispatch) => {
+    dispatch({type: recipesActionTypes.CLEAR});
+  };
 };

@@ -6,17 +6,20 @@ import {FullOptions, Searcher} from 'fast-fuzzy';
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // components
-import {View, Text, TouchableWithoutFeedback, Image} from 'react-native';
+import {View, Text} from 'react-native';
 import {
   FlatList,
+  Swipeable,
   TextInput,
   TouchableOpacity,
 } from 'react-native-gesture-handler';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {NavigationHeader} from 'components/NavigationHeader';
+import MealListItem from 'components/FoodLog/MealListItem';
+import SwipeHiddenButtons from 'components/SwipeHiddenButtons';
 
 // actions
-import {getRecipes} from 'store/recipes/recipes.actions';
+import {getRecipes, reset} from 'store/recipes/recipes.actions';
 
 // styles
 import {styles} from './RecipesScreen.styles';
@@ -28,18 +31,29 @@ import {Routes} from 'navigation/Routes';
 import {RecipeProps} from 'store/recipes/recipes.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {RouteProp} from '@react-navigation/native';
 
 interface RecipesScreenProps {
   navigation: NativeStackNavigationProp<
     StackNavigatorParamList,
     Routes.Recipes
   >;
+  route: RouteProp<StackNavigatorParamList, Routes.Recipes>;
 }
 
-export const RecipesScreen: React.FC<RecipesScreenProps> = ({navigation}) => {
+export const RecipesScreen: React.FC<RecipesScreenProps> = ({
+  navigation,
+  route,
+}) => {
   const dispatch = useDispatch();
-  const recipes = useSelector(state => state.recipes.recipes);
-
+  const [showSavedRecipeMessage, setShowSavedRecipeMessage] = useState(
+    route?.params?.showSavedRecipeMessage,
+  );
+  const {recipes, limit, offset, showMore} = useSelector(
+    state => state.recipes,
+  );
+  let rowRefs = new Map<string, Swipeable>();
+  const [loading, setLoading] = useState(false);
   const [filteredRecipes, setFilteredRecipes] = useState<Array<RecipeProps>>(
     [],
   );
@@ -67,9 +81,20 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({navigation}) => {
   }, [navigation]);
 
   useEffect(() => {
-    dispatch(getRecipes()).then(data => {
+    setLoading(true);
+    dispatch(getRecipes({}))
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      }); /*.then(data => {
       setFilteredRecipes(data);
-    });
+    });*/
+
+    return () => {
+      dispatch(reset());
+    };
   }, [dispatch]);
 
   useEffect(() => {
@@ -94,6 +119,21 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({navigation}) => {
     navigation.navigate(Routes.RecipeDetails, {recipe: item});
   };
 
+  const loadMoreRecipes = () => {
+    setLoading(true);
+    dispatch(getRecipes({newOffset: limit + offset}))
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const deleteRecipe = (id: string) => {};
+  const copyRecipe = (recipe: RecipeProps) => {};
+  const quickLog = (recipe: RecipeProps) => {};
+
   return (
     <View style={styles.root}>
       <TextInput
@@ -105,19 +145,79 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({navigation}) => {
       <View style={styles.swipeContainer}>
         <Text style={styles.swipeText}>swipe left to delete</Text>
       </View>
+      {recipes.length === 0 && (
+        <View style={styles.empty}>
+          <Text style={styles.emptyText}>
+            {loading ? 'Loading. Please wait.' : 'You have no saved recipes.'}
+          </Text>
+        </View>
+      )}
       <FlatList
         data={filteredRecipes}
         keyExtractor={item => item.id}
         renderItem={({item}) => (
-          <TouchableWithoutFeedback
-            style={styles.row}
-            onPress={() => handleOnPress(item)}>
-            <View style={styles.recipeListItem}>
-              <Image source={{uri: item.photo.thumb}} style={styles.image} />
-              <Text>{item.name}</Text>
-            </View>
-          </TouchableWithoutFeedback>
+          <Swipeable
+            containerStyle={styles.swipeItemContainer}
+            renderRightActions={() => (
+              <SwipeHiddenButtons
+                buttons={[
+                  {
+                    type: 'delete',
+                    onPress: () => {
+                      deleteRecipe(item.id);
+                    },
+                  },
+                  {
+                    type: 'copy',
+                    onPress: () => {
+                      copyRecipe(item);
+                      // close all swipes after copy
+                      [...rowRefs.values()].forEach(ref => {
+                        if (ref) {
+                          ref.close();
+                        }
+                      });
+                      navigation.navigate(Routes.Basket);
+                    },
+                  },
+                  {
+                    type: 'log',
+                    onPress: () => {
+                      quickLog(item);
+                    },
+                  },
+                ]}
+              />
+            )}
+            ref={ref => {
+              if (ref && !rowRefs.get(item.id)) {
+                rowRefs.set(item.id, ref);
+              }
+            }}
+            onSwipeableWillOpen={() => {
+              [...rowRefs.entries()].forEach(([key, ref]) => {
+                if (key !== item.id && ref) {
+                  ref.close();
+                }
+              });
+            }}>
+            <MealListItem
+              onTap={() => handleOnPress(item)}
+              foodObj={item}
+              recipe
+              smallImage
+              withCal
+              withoutPhotoUploadIcon
+              reverse
+              withNewLabel
+            />
+          </Swipeable>
         )}
+        onEndReached={() => {
+          if (recipes.length <= limit + offset && showMore) {
+            loadMoreRecipes();
+          }
+        }}
       />
     </View>
   );

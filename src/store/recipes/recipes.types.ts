@@ -47,4 +47,7 @@ export type UpdateRecipeProps = Omit<
 
 export interface RecipesState {
   recipes: Array<RecipeProps>;
+  limit: number;
+  offset: number;
+  showMore: boolean;
 }
