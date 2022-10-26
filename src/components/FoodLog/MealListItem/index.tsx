@@ -24,6 +24,7 @@ import {Colors} from 'constants/Colors';
 // helpers
 import getAttrValueById from 'helpers/getAttrValueById';
 import {capitalize} from 'helpers/foodLogHelpers';
+import moment from 'moment-timezone';
 
 interface MealListItemProps {
   foodObj: FoodProps | RecipeProps;
@@ -39,6 +40,8 @@ interface MealListItemProps {
   withoutBorder?: boolean;
   withCal?: boolean;
   smallImage?: boolean;
+  reverse?: boolean;
+  withNewLabel?: boolean;
   searchValue?: string;
 }
 const MealListItem: React.FC<MealListItemProps> = props => {
@@ -50,7 +53,11 @@ const MealListItem: React.FC<MealListItemProps> = props => {
     smallImage,
     recipe,
     searchValue,
+    reverse,
+    withNewLabel,
   } = props;
+
+  //reverse - use at recipe screen; display alwayes 1 serving
 
   const name = recipe
     ? (foodObj as RecipeProps).name
@@ -73,12 +80,18 @@ const MealListItem: React.FC<MealListItemProps> = props => {
       }>
       <View
         style={[styles.foodItem, props.withoutBorder && styles.withoutBorder]}>
+        {withNewLabel &&
+          moment(foodObj.created_at).isAfter(moment().subtract('5', 'day')) && (
+            <View style={styles.new}>
+              <Text style={styles.newText}>NEW</Text>
+            </View>
+          )}
         <Image
           style={[styles.foodThumb, smallImage && styles.smallImage]}
           source={{uri: foodObj.photo.thumb}}
           resizeMode={'contain'}
         />
-        <View style={styles.flex1}>
+        <View style={[styles.flex1, reverse && styles.columnReverse]}>
           <HighlightText
             searchWords={[searchValue || '']}
             textToHighlight={capitalize(name)}
@@ -87,11 +100,15 @@ const MealListItem: React.FC<MealListItemProps> = props => {
           />
           <HighlightText
             searchWords={[searchValue || '']}
-            textToHighlight={capitalize(
-              `${foodObj.brand_name ? `${foodObj.brand_name} ` : ''}${
-                foodObj.serving_qty
-              } ${foodObj.serving_unit}`,
-            )}
+            textToHighlight={
+              reverse
+                ? '1 Serving'
+                : capitalize(
+                    `${foodObj.brand_name ? `${foodObj.brand_name} ` : ''}${
+                      foodObj.serving_qty
+                    } ${foodObj.serving_unit}`,
+                  )
+            }
             style={styles.qty}
             highlightStyle={{fontWeight: '600'}}
           />

@@ -29,6 +29,9 @@ export const styles = StyleSheet.create({
   flex1: {
     flex: 1,
   },
+  columnReverse: {
+    flexDirection: 'column-reverse',
+  },
   qty: {
     color: Colors.Secondary,
     fontSize: 10,
@@ -51,5 +54,18 @@ export const styles = StyleSheet.create({
   },
   chevron: {
     marginLeft: 5,
+  },
+  new: {
+    position: 'absolute',
+    left: -16,
+    top: -4,
+    backgroundColor: '#28a54c',
+    transform: [{rotateZ: '-45deg'}],
+    paddingHorizontal: 13,
+    paddingTop: 9,
+  },
+  newText: {
+    fontSize: 8,
+    color: '#fff',
   },
 });

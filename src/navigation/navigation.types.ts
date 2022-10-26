@@ -53,7 +53,11 @@ export interface StackNavigatorParamList extends ParamListBase {
     food?: FoodProps;
     logAfterSubmit?: boolean;
   };
-  [Routes.Recipes]: undefined;
+  [Routes.Recipes]:
+    | {
+        showSavedRecipeMessage?: boolean;
+      }
+    | undefined;
   [Routes.RecipeDetails]: {
     recipe: RecipeProps | null;
   };

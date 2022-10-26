@@ -1,3 +1,4 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -7,7 +8,8 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   btn: {
-    width: 75,
+    minWidth: 75,
+    paddingHorizontal: 10,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -21,5 +23,8 @@ export const styles = StyleSheet.create({
   },
   bgRed: {
     backgroundColor: 'red',
+  },
+  bgBlue: {
+    backgroundColor: Colors.Blue,
   },
 });

@@ -4,6 +4,8 @@ import {FoodProps, NutrientProps} from 'store/userLog/userLog.types';
 export enum recipesActionTypes {
   GET_RECIPES = 'GET_RECIPES',
   UPDATE_OR_CREATE_RECIPE = 'UPDATE_OR_CREATE_RECIPE',
+  COPY_RECIPE = 'COPY_RECIPE',
+  DELETE_RECIPE = 'DELETE_RECIPE',
   CLEAR = 'CLEAR',
 }
 
@@ -47,4 +49,7 @@ export type UpdateRecipeProps = Omit<
 
 export interface RecipesState {
   recipes: Array<RecipeProps>;
+  limit: number;
+  offset: number;
+  showMore: boolean;
 }

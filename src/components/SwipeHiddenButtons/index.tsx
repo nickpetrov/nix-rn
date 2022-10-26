@@ -3,7 +3,7 @@ import {View, TouchableOpacity, Text} from 'react-native';
 import {styles} from './SwipeHiddenButtons.styles';
 
 export type SwipeHidderButtonProps = {
-  type: 'copy' | 'delete';
+  type: 'copy' | 'delete' | 'log';
   onPress: () => void;
 };
 
@@ -31,6 +31,15 @@ const SwipeHiddenButtons: React.FC<SwipeHiddenButtonsProps> = ({buttons}) => {
               onPress={() => item.onPress()}
               style={[styles.btn, styles.bgRed]}>
               <Text style={styles.btnText}>Delete</Text>
+            </TouchableOpacity>
+          );
+        } else if (item.type === 'log') {
+          return (
+            <TouchableOpacity
+              key={item.type}
+              onPress={() => item.onPress()}
+              style={[styles.btn, styles.bgBlue]}>
+              <Text style={styles.btnText}>Quick Log</Text>
             </TouchableOpacity>
           );
         }

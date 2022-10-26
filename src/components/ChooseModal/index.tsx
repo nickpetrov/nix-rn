@@ -18,7 +18,9 @@ interface ChooseModalProps {
     type: 'gray' | 'primary';
     title: string;
     onPress: () => void;
+    disabled?: boolean;
   }>;
+  children?: React.ReactNode;
 }
 
 const ChooseModal: React.FC<ChooseModalProps> = ({
@@ -28,6 +30,7 @@ const ChooseModal: React.FC<ChooseModalProps> = ({
   subtitle,
   text,
   btns,
+  children,
 }) => {
   return (
     <Modal
@@ -47,6 +50,7 @@ const ChooseModal: React.FC<ChooseModalProps> = ({
           )}
           <View style={styles.content}>
             {text && <Text style={styles.modalText}>{text}</Text>}
+            {children && children}
             <View style={styles.footer}>
               {btns.map((btn, index: number) => {
                 return (
@@ -58,6 +62,7 @@ const ChooseModal: React.FC<ChooseModalProps> = ({
                       title={btn.title}
                       type={btn.type}
                       onPress={btn.onPress}
+                      disabled={btn.disabled}
                     />
                   </View>
                 );

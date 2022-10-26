@@ -201,7 +201,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
     dispatch(getCustomFoods());
 
     //get recipes
-    dispatch(getRecipes());
+    dispatch(getRecipes({newLimit: 300}));
 
     return () => {
       dispatch(autocompleteActions.clear());
