@@ -20,6 +20,13 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>NSCameraUsageDescription</key>
+	<string>For barcode scanning</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Read exercises data.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Share workout data with other apps.</string>
+
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
