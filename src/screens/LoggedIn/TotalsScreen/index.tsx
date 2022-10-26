@@ -10,7 +10,6 @@ import {
   SafeAreaView,
   TextInput,
 } from 'react-native';
-// import FoodLabel from 'components/FoodLabel';
 import NutritionPieChart, {
   pieChartDataProps,
 } from 'components/NutritionPieChart';
@@ -18,6 +17,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixButton} from 'components/NixButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ChooseModal from 'components/ChooseModal';
+import NutritionLabel from 'components/NutrionixLabel/NutritionLabel';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
@@ -45,6 +45,7 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './TotalsScreen.styles';
+import {defaultOption} from 'helpers/nutrionixLabel';
 
 interface TotalsScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Totals>;
@@ -230,9 +231,6 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
         newTotal.net_carbs =
           newTotal.nf_total_carbohydrate - newTotal.nf_dietary_fiber;
       }
-      for (const key in newTotal) {
-        newTotal[key] = Math.round(newTotal[key] * 10) / 10;
-      }
       return newTotal;
     });
 
@@ -295,12 +293,66 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
       ),
     ).then(() => navigation.goBack());
 
+  const labelOptions = {
+    textNutritionFacts: '',
+    showDisclaimer: false,
+    allowCustomWidth: true,
+    adjustUserDailyValues: true,
+    allowFDARounding: false,
+    applyMathRounding: true,
+    brandName: 'Nutritionix',
+    decimalPlacesForQuantityTextbox: 2,
+    itemName: 'cheeseburger',
+    scrollLongItemNamePixel: 38,
+    showAmountPerServing: false,
+    showCalcium: true,
+    showCalories: true,
+    showCholesterol: true,
+    showFatCalories: true,
+    showFibers: true,
+    showItemName: false,
+    showIngredients: false,
+    showIron: true,
+    showMonoFat: false,
+    showPolyFat: false,
+    showProteins: true,
+    showSatFat: true,
+    showServingSize: true,
+    showServingUnitQuantity: false,
+    showServingsPerContainer: false,
+    showSodium: true,
+    showSugars: true,
+    showTotalCarb: true,
+    showTotalFat: true,
+    showTransFat: false,
+    showVitaminA: true,
+    showVitaminC: true,
+    valueServingUnitQuantity: 1,
+    valueServingSizeUnit: 'Serving',
+
+    valueCalories: total.calories || 0,
+    valueFatCalories: (total.total_fat || 0) * 9,
+    valueTotalFat: total.total_fat || 0,
+    valueSatFat: total.nf_saturated_fat || 0,
+    valueCholesterol: total.nf_cholesterol || 0,
+    valueSodium: total.nf_sodium || 0,
+    valueTotalCarb: total.nf_total_carbohydrate || 0,
+    valueFibers: total.nf_dietary_fiber || 0,
+    valueSugars: total.nf_sugars || 0,
+    valueProteins: total.nf_protein || 0,
+    valueVitaminA: total.nf_vitamin_a_dv || 0,
+    valueVitaminC: total.nf_vitamin_c_dv || 0,
+    valueCalcium: total.nf_calcium_dv || 0,
+    valueIron: total.nf_iron_dv || 0,
+    calorieIntake: userData.daily_kcal,
+  };
+
   return (
     <SafeAreaView style={styles.root}>
       <KeyboardAwareScrollView>
         <View style={styles.mb10}>
           {/* before was data={foodsArray}, but it's not working this way */}
-          {/* <FoodLabel data={foodsArray} /> */}
+          <NutritionLabel option={labelOptions || defaultOption} />
         </View>
 
         <View style={styles.container}>

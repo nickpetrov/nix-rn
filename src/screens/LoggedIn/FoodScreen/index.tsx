@@ -30,9 +30,11 @@ import QRCode from 'react-native-qrcode-svg';
 import {NavigationHeader} from 'components/NavigationHeader';
 import MealListItem from 'components/FoodLog/MealListItem';
 import GoBackModal from 'components/GoBackModal';
+import NutritionLabel from 'components/NutrionixLabel/NutritionLabel';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
+import useFoodLabel from './useFoodLabel';
 
 // actions
 import * as basketActions from 'store/basket/basket.actions';
@@ -42,6 +44,9 @@ import {
   uploadImage,
 } from 'store/userLog/userLog.actions';
 import {showAgreementPopup} from 'store/base/base.actions';
+
+// helpers
+import requestCameraPermission from 'helpers/cameraPermision';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -56,7 +61,7 @@ import {MediaType, Asset} from 'react-native-image-picker/lib/typescript/types';
 
 // styles
 import {styles} from './FoodScreen.styles';
-import requestCameraPermission from 'helpers/cameraPermision';
+import {defaultOption} from 'helpers/nutrionixLabel';
 
 interface FoodScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Food>;
@@ -91,7 +96,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     (foodObj.nf_total_carbohydrate || 0) - (foodObj.nf_dietary_fiber || 0) <= 0
       ? 0
       : (foodObj.nf_total_carbohydrate || 0) - (foodObj.nf_dietary_fiber || 0);
-
+  const labelOption = useFoodLabel(foodObj);
   const spinValue = new Animated.Value(0);
 
   Animated.loop(
@@ -515,9 +520,9 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
               </>
             )}
           </View>
-          {/* <View style={styles.p10}>
-            <FoodLabel data={foodObj} />
-          </View> */}
+          <View style={styles.p10}>
+            <NutritionLabel option={labelOption || defaultOption} />
+          </View>
           {(!!net_carbs ||
             !!foodObj.nf_p ||
             !!foodObj.caffeine ||
