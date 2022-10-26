@@ -4,9 +4,17 @@ import {StyleSheet} from 'react-native';
 export const styles = StyleSheet.create({
   root: {
     backgroundColor: '#fff',
+    flex: 1,
+  },
+  createNew: {
+    marginRight: 10,
+    borderRadius: 5,
+    borderColor: Colors.Gray7,
+    borderWidth: 0.5,
+    padding: 5,
   },
   swipeContainer: {
-    padding: 3,
+    padding: 4,
     marginTop: 10,
     borderTopColor: Colors.LightGray,
     borderTopWidth: 1,
@@ -16,6 +24,19 @@ export const styles = StyleSheet.create({
   swipeText: {
     fontSize: 12,
     color: '#999',
+    textAlign: 'center',
+  },
+  saved: {
+    position: 'absolute',
+    margin: 'auto',
+    alignSelf: 'center',
+    backgroundColor: '#74d490',
+    color: '#096122',
+    borderRadius: 5,
+    width: 120,
+    padding: 0,
+    lineHeight: 24,
+    height: 24,
     textAlign: 'center',
   },
   recipeListItem: {

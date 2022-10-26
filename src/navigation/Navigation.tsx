@@ -181,7 +181,7 @@ const LoggedInNavigation = ({
         name={Routes.Recipes}
         component={RecipesScreen}
         options={{
-          headerTitle: 'My Recipes',
+          headerTitle: 'My Recipes 2.0',
         }}
       />
       <Stack.Screen

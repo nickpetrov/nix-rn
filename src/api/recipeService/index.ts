@@ -13,10 +13,18 @@ const recipesService = {
       },
     });
   },
+  async createRecipe(recipe: UpdateRecipeProps) {
+    return await apiClient.post('recipe', {
+      recipe,
+    });
+  },
   async updateRecipe(recipe: UpdateRecipeProps) {
     return await apiClient.put(`recipe/${recipe.id || ''}`, {
       recipe,
     });
+  },
+  async deleteRecipe(recipeId: string) {
+    return await apiClient.delete(`recipe/${recipeId}`);
   },
   async getRecipeById(id: string) {
     return await apiClient.get(`recipe/${id}`);

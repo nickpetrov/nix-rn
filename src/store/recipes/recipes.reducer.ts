@@ -25,7 +25,7 @@ export default (
         showMore: action.payload.length === state.limit,
       };
     }
-    case recipesActionTypes.UPDATE_OR_CREATE_RECIPE:
+    case recipesActionTypes.UPDATE_OR_CREATE_RECIPE: {
       const newRecipes = [...state.recipes];
       const recipeIndex = newRecipes.findIndex(
         item => item.id === action.recipe.id,
@@ -36,6 +36,19 @@ export default (
         newRecipes.push(action.recipe);
       }
       return {...state, recipes: newRecipes};
+    }
+    case recipesActionTypes.COPY_RECIPE: {
+      const newRecipes = [...state.recipes];
+
+      newRecipes.splice(action.clonedRecipeIndex + 1, 0, action.payload);
+      return {...state, recipes: newRecipes};
+    }
+    case recipesActionTypes.DELETE_RECIPE: {
+      const newRecipes = state.recipes.filter(
+        item => item.id !== action.payload,
+      );
+      return {...state, recipes: newRecipes};
+    }
     case recipesActionTypes.CLEAR:
       return initialState;
     default:
