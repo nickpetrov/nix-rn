@@ -232,7 +232,7 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
       />
       <View style={styles.swipeContainer}>
         <Text style={styles.swipeText}>swipe left to delete</Text>
-        {!showSavedRecipeMessage && (
+        {showSavedRecipeMessage && (
           <Text style={styles.saved}>Recipe Saved</Text>
         )}
       </View>
