@@ -44,3 +44,16 @@ export const updateOrCreateCustomFood = (food: UpdateCustomFoodProps) => {
     return result;
   };
 };
+
+export const deleteCustomFood = (id: string) => {
+  return async (dispatch: Dispatch<any>) => {
+    const response = await customFoodsService.deleteCustomFood(id);
+
+    if (response.status === 200) {
+      dispatch({
+        type: customFoodsActionTypes.DELETE_CUSTOM_FOOD,
+        payload: id,
+      });
+    }
+  };
+};

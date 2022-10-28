@@ -4,6 +4,7 @@ import {NutrientProps} from '../userLog/userLog.types';
 export enum customFoodsActionTypes {
   GET_ALL_CUSTOM_FOOD = 'GET_ALL_CUSTOM_FOOD',
   UPDATE_OR_CREATE_CUSTOM_FOOD = 'UPDATE_OR_CREATE_CUSTOM_FOOD',
+  DELETE_CUSTOM_FOOD = 'DELETE_CUSTOM_FOOD',
   CLEAR = 'CLEAR',
 }
 

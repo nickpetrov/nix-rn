@@ -21,6 +21,9 @@ const customFoodsService = {
       },
     );
   },
+  async deleteCustomFood(id: string) {
+    return await apiClient.delete(`custom_foods/${id}`);
+  },
 };
 
 export default customFoodsService;

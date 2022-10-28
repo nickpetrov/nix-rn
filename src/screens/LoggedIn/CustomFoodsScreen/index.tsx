@@ -3,19 +3,19 @@ import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {FullOptions, Searcher} from 'fast-fuzzy';
 
 // components
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import {FlatList, TextInput} from 'react-native-gesture-handler';
+import {View, Text, TouchableOpacity} from 'react-native';
+import {FlatList, TextInput, Swipeable} from 'react-native-gesture-handler';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {NavigationHeader} from 'components/NavigationHeader';
+import MealListItem from 'components/FoodLog/MealListItem';
+import SwipeHiddenButtons from 'components/SwipeHiddenButtons';
 
 // actions
-import {getCustomFoods} from 'store/customFoods/customFoods.actions';
+import {
+  deleteCustomFood,
+  getCustomFoods,
+} from 'store/customFoods/customFoods.actions';
+import {addCustomFoodToBasket} from 'store/basket/basket.actions';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -27,6 +27,7 @@ import {useSelector, useDispatch} from 'hooks/useRedux';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {FoodProps} from 'store/userLog/userLog.types';
+import {RouteProp} from '@react-navigation/native';
 
 // styles
 import {styles} from './CustomFoodsScreen.styles';
@@ -36,17 +37,34 @@ interface CustomFoodsScreenProps {
     StackNavigatorParamList,
     Routes.CustomFoods
   >;
+  route: RouteProp<StackNavigatorParamList, Routes.CustomFoods>;
 }
 
 export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
   navigation,
+  route,
 }) => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [showSavedFoodMessage, setShowSavedFoodMessage] = useState(false);
   const foods = useSelector(state => state.customFoods.foods);
   const [filteredFoods, setFilteredFoods] = useState<Array<FoodProps>>([]);
   const [filterQuery, setFilterQuery] = useState('');
   const [foodsSearcher, setFoodsSearcher] =
     useState<Searcher<FoodProps, FullOptions<FoodProps>>>();
+  let rowRefs = new Map<string, Swipeable>();
+
+  useEffect(() => {
+    setShowSavedFoodMessage(!!route?.params?.showSavedFoodMessage);
+  }, [route?.params?.showSavedFoodMessage]);
+
+  useEffect(() => {
+    if (showSavedFoodMessage) {
+      setTimeout(() => {
+        setShowSavedFoodMessage(false);
+      }, 2500);
+    }
+  }, [showSavedFoodMessage]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -55,11 +73,9 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
           {...props}
           headerRight={
             <TouchableOpacity
-              style={{marginRight: 10}}
-              onPress={() =>
-                navigation.navigate(Routes.CustomFoodEdit, {food: null})
-              }>
-              <FontAwesome5 size={26} color={'white'} name="plus" />
+              style={styles.createNew}
+              onPress={() => navigation.navigate(Routes.CustomFoodEdit)}>
+              <FontAwesome5 size={15} color={'white'} name="plus" />
             </TouchableOpacity>
           }
         />
@@ -68,7 +84,14 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
   }, [navigation]);
 
   useEffect(() => {
-    dispatch(getCustomFoods());
+    setLoading(true);
+    dispatch(getCustomFoods())
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   }, [dispatch]);
 
   useEffect(() => {
@@ -97,25 +120,78 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
     navigation.navigate(Routes.CustomFoodEdit, {food: item});
   };
 
+  const handleDeleteRecipe = (id: string) => {
+    dispatch(deleteCustomFood(id));
+  };
+  const quickLog = (item: FoodProps) => {
+    dispatch(addCustomFoodToBasket([item])).then(() => {
+      navigation.replace(Routes.Basket);
+    });
+  };
+
   return (
-    <View>
+    <View style={styles.root}>
       <TextInput
-        style={styles.input}
+        placeholder="Search custom foods"
+        style={styles.inputQuery}
         value={filterQuery}
         onChangeText={text => setFilterQuery(text)}
       />
+      <View style={styles.swipeContainer}>
+        <Text style={styles.swipeText}>swipe left to delete</Text>
+        {showSavedFoodMessage && <Text style={styles.saved}>Recipe Saved</Text>}
+      </View>
+      {foods.length === 0 && (
+        <View style={styles.empty}>
+          <Text style={styles.emptyText}>
+            {loading ? 'Loading. Please wait.' : 'You have no saved recipes.'}
+          </Text>
+        </View>
+      )}
       <FlatList
         data={filteredFoods}
         keyExtractor={item => item.id}
         renderItem={({item}) => (
-          <TouchableWithoutFeedback
-            style={styles.itemContainer}
-            onPress={() => handleOnPress(item)}>
-            <View style={styles.foodListItem}>
-              <Image source={{uri: item.photo.thumb}} style={styles.image} />
-              <Text>{item.food_name}</Text>
-            </View>
-          </TouchableWithoutFeedback>
+          <Swipeable
+            containerStyle={styles.swipeItemContainer}
+            renderRightActions={() => (
+              <SwipeHiddenButtons
+                buttons={[
+                  {
+                    type: 'delete',
+                    onPress: () => {
+                      handleDeleteRecipe(item.id);
+                    },
+                  },
+                  {
+                    type: 'log',
+                    onPress: () => {
+                      quickLog(item);
+                    },
+                  },
+                ]}
+              />
+            )}
+            ref={ref => {
+              if (ref && !rowRefs.get(item.id)) {
+                rowRefs.set(item.id, ref);
+              }
+            }}
+            onSwipeableWillOpen={() => {
+              [...rowRefs.entries()].forEach(([key, ref]) => {
+                if (key !== item.id && ref) {
+                  ref.close();
+                }
+              });
+            }}>
+            <MealListItem
+              onTap={() => handleOnPress(item)}
+              foodObj={item}
+              withCal
+              withoutPhotoUploadIcon
+              reverse
+            />
+          </Swipeable>
         )}
       />
     </View>

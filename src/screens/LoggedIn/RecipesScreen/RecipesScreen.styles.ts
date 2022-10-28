@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   createNew: {
-    marginRight: 10,
     borderRadius: 5,
     borderColor: Colors.Gray7,
     borderWidth: 0.5,

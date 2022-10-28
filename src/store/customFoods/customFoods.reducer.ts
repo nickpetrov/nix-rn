@@ -14,7 +14,7 @@ export default (
     case customFoodsActionTypes.GET_ALL_CUSTOM_FOOD:
       const stateWithTotals = {...state, foods: action.foods};
       return stateWithTotals;
-    case customFoodsActionTypes.UPDATE_OR_CREATE_CUSTOM_FOOD:
+    case customFoodsActionTypes.UPDATE_OR_CREATE_CUSTOM_FOOD: {
       const newFoods = [...state.foods];
       const foodIndex = newFoods.findIndex(item => item.id === action.food.id);
       if (foodIndex !== -1) {
@@ -23,6 +23,11 @@ export default (
         newFoods.push(action.food);
       }
       return {...state, foods: newFoods};
+    }
+    case customFoodsActionTypes.DELETE_CUSTOM_FOOD: {
+      const newFoods = state.foods.filter(item => item.id !== action.payload);
+      return {...state, foods: newFoods};
+    }
     case customFoodsActionTypes.CLEAR:
       return initialState;
     default:

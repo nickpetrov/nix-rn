@@ -48,11 +48,13 @@ export interface StackNavigatorParamList extends ParamListBase {
         redirectStateKey?: string;
       }
     | undefined;
-  [Routes.CustomFoods]: undefined;
-  [Routes.CustomFoodEdit]: {
-    food?: FoodProps;
-    logAfterSubmit?: boolean;
-  };
+  [Routes.CustomFoods]: {showSavedFoodMessage?: boolean} | undefined;
+  [Routes.CustomFoodEdit]:
+    | {
+        food?: FoodProps;
+        logAfterSubmit?: boolean;
+      }
+    | undefined;
   [Routes.Recipes]:
     | {
         showSavedRecipeMessage?: boolean;

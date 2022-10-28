@@ -38,6 +38,7 @@ export const styles = StyleSheet.create({
   },
   calories: {
     color: Colors.Primary,
+    textAlign: 'center',
   },
   caloriesSub: {
     textAlign: 'right',
