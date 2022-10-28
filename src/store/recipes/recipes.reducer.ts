@@ -43,6 +43,9 @@ export default (
       newRecipes.splice(action.clonedRecipeIndex + 1, 0, action.payload);
       return {...state, recipes: newRecipes};
     }
+    case recipesActionTypes.CREATE_RECIPE: {
+      return {...state, recipes: [action.payload, ...state.recipes]};
+    }
     case recipesActionTypes.DELETE_RECIPE: {
       const newRecipes = state.recipes.filter(
         item => item.id !== action.payload,

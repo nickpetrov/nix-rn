@@ -1,41 +1,60 @@
 // utils
-import React, {useState, useEffect, useCallback, useLayoutEffect} from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+} from 'react';
+import _ from 'lodash';
+import moment from 'moment-timezone';
 
 // hooks
-import {useDispatch} from 'hooks/useRedux';
+import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // components
-import {View, Text, TouchableWithoutFeedback} from 'react-native';
+import {View, Text, TouchableWithoutFeedback, Image} from 'react-native';
 import {
-  ScrollView,
+  Swipeable,
   TextInput,
   TouchableOpacity,
 } from 'react-native-gesture-handler';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import FoodEditItem from 'components/FoodEditItem';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixButton} from 'components/NixButton';
 import InfoModal from 'components/InfoModal';
 import {NavigationHeader} from 'components/NavigationHeader';
+import ChooseModal from 'components/ChooseModal';
+import VoiceInput from 'components/VoiceInput';
+import AddPhotoView from 'components/AddPhotoView';
+import GoBackModal from 'components/GoBackModal';
 
 // actions
 import {
+  copyRecipe,
+  createRecipe,
   getIngridientsForUpdate,
-  updateOrCreateRecipe,
+  getRecipeById,
+  updateRecipe,
 } from 'store/recipes/recipes.actions';
+import * as basketActions from 'store/basket/basket.actions';
+import {setInfoMessage} from 'store/base/base.actions';
+import {uploadImage} from 'store/userLog/userLog.actions';
 
 // constants
 import {Routes} from 'navigation/Routes';
 
-// helpres
-import nixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
-
 // types
+import {Asset} from 'react-native-image-picker';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {RouteProp} from '@react-navigation/native';
-import {UpdateRecipeProps} from 'store/recipes/recipes.types';
-import {FoodProps} from 'store/userLog/userLog.types';
+import {RecipeProps, UpdateRecipeProps} from 'store/recipes/recipes.types';
+
+// helpers
+import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+import {multiply} from 'helpers/multiply';
 
 // styles
 import {styles} from './RecipeDetailsScreen.styles';
@@ -48,13 +67,45 @@ interface RecipeDetailsScreenProps {
   route: RouteProp<StackNavigatorParamList, Routes.RecipeDetails>;
 }
 
+type ErrorIngridient = {
+  text: string;
+  index: number;
+  error: string;
+};
+
 export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
   navigation,
   route,
 }) => {
   const dispatch = useDispatch();
+  const ingridientsInputRefs = useRef<Array<TextInput | null>>([]);
   const [error, setError] = useState<false | string>(false);
-
+  const [errorIngridient, setErrorIngridient] = useState<
+    ErrorIngridient | false
+  >(false);
+  const [showPreloader, setShowPreloader] = useState(false);
+  const [showSpinner, setShowSpinner] = useState<boolean>(false);
+  const [showSave, setShowSave] = useState<boolean>(false);
+  const recipes = useSelector(state => state.recipes.recipes);
+  const [copyRecipePopup, setCopyRecipePopup] = useState(false);
+  const [newRecipeName, setNewRecipeName] = useState<string>('');
+  const [defaultRecipe, setDefaultRecipe] = useState<UpdateRecipeProps>({
+    name: '',
+    serving_qty: 1,
+    serving_unit: 'Serving',
+    prep_time_min: null,
+    cook_time_min: null,
+    ingredients: [],
+    directions: '',
+  });
+  const [showUnsavedPopup, setShowUnsavedPopup] = useState<null | {
+    backAction: Readonly<{
+      type: string;
+      payload?: object | undefined;
+      source?: string | undefined;
+      target?: string | undefined;
+    }>;
+  }>(null);
   const [recipe, setRecipe] = useState<UpdateRecipeProps>({
     name: '',
     serving_qty: 1,
@@ -64,10 +115,20 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
     ingredients: [],
     directions: '',
   });
-
+  let rowRefs = new Map<string, Swipeable>();
   const [caloriesPerServing, setCaloriesPerServing] = useState(0);
   const [showNewIngredientsInput, setShowNewIngredientInput] = useState(false);
+  const [loadingCopyRecipe, setLoadingCopyRecipe] = useState(false);
+  const [invalidForm, setInvalidForm] = useState(false);
+  const [photoUploading, setPhotoUploading] = useState(false);
   const [addIngredientsQuery, setAddIngredientsQuery] = useState('');
+  const defaultErrorMessages = {
+    name: '',
+    serving_unit: '',
+    serving_qty: '',
+    ingredients: '',
+  };
+  const [errorMessages, setErrorMessages] = useState(defaultErrorMessages);
 
   const addIngredientPlaceholder = `For best results, please limit one ingredient per line.
 
@@ -77,46 +138,150 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
   .25 cups onions, chopped`;
 
   useEffect(() => {
-    setRecipe((prevRecipe: UpdateRecipeProps) => {
-      if (route.params?.recipe) {
-        const adjustedIngredients =
-          route.params?.recipe?.ingredients?.map(foodObj => {
-            const adjustedIngredient = {
-              ...foodObj,
-              ...nixHelpers.convertFullNutrientsToNfAttributes(
-                foodObj.full_nutrients,
-              ),
-            };
-            return nixHelpers.convertV1ItemToTrackFood(adjustedIngredient);
-          }) || [];
-        return {
-          ...prevRecipe,
-          ...route.params?.recipe,
-          ingredients: [...adjustedIngredients],
-        };
-      } else {
-        return prevRecipe;
+    if (route.params?.recipe) {
+      setShowPreloader(true);
+      dispatch(getRecipeById(route.params?.recipe.id)).then(
+        (resp: RecipeProps) => {
+          _.forEach(resp.ingredients, function (foodObj) {
+            if (foodObj.alt_measures) {
+              var temp = {
+                serving_weight: foodObj.serving_weight_grams,
+                seq: null,
+                measure: foodObj.serving_unit,
+                qty: foodObj.serving_qty,
+              };
+              foodObj.alt_measures.unshift(temp);
+            }
+            if (!foodObj.metadata || !foodObj.metadata.original_input) {
+              if (!foodObj.metadata) {
+                foodObj.metadata = {};
+              }
+              foodObj.metadata.original_input =
+                foodObj.serving_qty +
+                ' ' +
+                foodObj.serving_unit +
+                ' ' +
+                foodObj.food_name;
+            }
+          });
+          setRecipe(resp);
+          setDefaultRecipe(resp);
+          setShowPreloader(false);
+        },
+      );
+    }
+  }, [route.params?.recipe, dispatch]);
+
+  const validatedRecipe = useCallback(() => {
+    if (!recipe.name) {
+      setErrorMessages(prev => ({
+        ...prev,
+        name: 'Recipe Name is required',
+      }));
+      setInvalidForm(true);
+      return false;
+    }
+
+    if (!recipe.serving_unit) {
+      setErrorMessages(prev => ({
+        ...prev,
+        serving_unit: 'Serving unit is required',
+      }));
+      setInvalidForm(true);
+      return false;
+    }
+
+    if (!recipe.serving_qty) {
+      setErrorMessages(prev => ({
+        ...prev,
+        serving_qty: 'Serving quantity is required',
+      }));
+      setInvalidForm(true);
+      return false;
+    }
+
+    if (!recipe.ingredients.length) {
+      setErrorMessages(prev => ({
+        ...prev,
+        ingredients: 'Recipe must have at least one ingredient',
+      }));
+      setInvalidForm(true);
+      return false;
+    }
+    return true;
+  }, [recipe]);
+
+  const saveRecipe = useCallback(
+    async (logAfterUpdate?: boolean) => {
+      if (!validatedRecipe()) {
+        return;
       }
-    });
-  }, [route.params?.recipe]);
+      setShowSpinner(true);
+      if (route.params?.recipe) {
+        const recipeToUpdate = _.cloneDeep(recipe);
+        delete recipeToUpdate.public_id;
+        delete recipeToUpdate.created_at;
+        delete recipeToUpdate.updated_at;
+        delete recipeToUpdate.full_nutrients;
+        delete recipeToUpdate.serving_weight_grams;
+        return await dispatch(updateRecipe(recipeToUpdate))
+          .then(res => {
+            setShowSave(false);
+            setShowSpinner(false);
+            return res;
+          })
+          .then(res => {
+            if (logAfterUpdate) {
+              return res;
+            } else {
+              navigation.navigate(Routes.Recipes, {
+                showSavedRecipeMessage: true,
+              });
+            }
+          })
+          .catch(err => {
+            setShowSpinner(false);
+            if (!!err && !!err.data && !!err.data.message) {
+              setError(err.data.message);
+            }
+          });
+      } else {
+        return await dispatch(createRecipe(recipe))
+          .then(res => {
+            setShowSave(false);
+            setShowSpinner(false);
+            return res;
+          })
+          .then(res => {
+            if (logAfterUpdate) {
+              return res;
+            } else {
+              navigation.navigate(Routes.Recipes, {
+                showSavedRecipeMessage: true,
+              });
+            }
+          })
+          .catch(err => {
+            setShowSpinner(false);
+            if (
+              !!err &&
+              !!err.data &&
+              !!err.data.message &&
+              err.data.message === 'resource already exists'
+            ) {
+              setError(err.data.message);
+            }
+          });
+      }
+    },
+    [recipe, dispatch, navigation, route.params?.recipe, validatedRecipe],
+  );
 
-  const saveRecipe = useCallback(() => {
-    dispatch(updateOrCreateRecipe(recipe))
-      .then(() => {
-        navigation.navigate(Routes.Recipes);
-      })
-      .catch(err => {
-        setError(err.message);
-      });
-  }, [recipe, dispatch, navigation]);
-
-  const handleItemChange = useCallback((foodObj: FoodProps, index: number) => {
-    setRecipe(prevRecipe => {
-      const updatedIngredients = [...prevRecipe.ingredients];
-      updatedIngredients[index] = foodObj;
-      return {...prevRecipe, ingredients: updatedIngredients};
-    });
-  }, []);
+  useEffect(() => {
+    if (recipe && !showPreloader) {
+      setShowSave(!_.isEqual(recipe, defaultRecipe));
+    }
+  }, [recipe, defaultRecipe, showPreloader]);
 
   useEffect(() => {
     let totalCalories = 0;
@@ -141,24 +306,97 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
   };
 
   const handleAddIngredients = async () => {
-    getIngridientsForUpdate(addIngredientsQuery).then(result => {
-      if (!!result.foods && result.foods.length) {
-        setRecipe({
-          ...recipe,
-          ingredients: recipe.ingredients.concat(result.foods),
+    getIngridientsForUpdate({
+      query: addIngredientsQuery,
+      line_delimited: true,
+      use_raw_foods: true,
+    })
+      .then(result => {
+        if (!!result.foods && result.foods.length) {
+          _.forEach(result.foods, function (foodObj) {
+            if (foodObj.alt_measures) {
+              var temp = {
+                serving_weight: foodObj.serving_weight_grams,
+                seq: null,
+                measure: foodObj.serving_unit,
+                qty: foodObj.serving_qty,
+              };
+              foodObj.alt_measures.unshift(temp);
+            }
+            if (!foodObj.metadata.original_input) {
+              foodObj.metadata.original_input =
+                foodObj.serving_qty +
+                ' ' +
+                foodObj.serving_unit +
+                ' ' +
+                foodObj.food_name;
+            }
+          });
+          setRecipe({
+            ...recipe,
+            ingredients: recipe.ingredients.concat(result.foods),
+          });
+          setAddIngredientsQuery('');
+        } else {
+          setError(result.message);
+          setInvalidForm(true);
+        }
+        if (!!result.errors && result.errors.length) {
+          const wrongQuery = result.errors.map((err: any) => {
+            return err.original_text;
+          });
+          console.log(wrongQuery.join('\n'));
+          setAddIngredientsQuery(wrongQuery.join('\n'));
+          setInvalidForm(true);
+        }
+        setShowNewIngredientInput(false);
+      })
+      .catch(() => {
+        getIngridientsForUpdate({
+          query: addIngredientsQuery,
+          line_delimited: false,
+          use_raw_foods: true,
+        }).then(result => {
+          if (!!result.foods && result.foods.length) {
+            _.forEach(result.foods, function (foodObj) {
+              if (foodObj.alt_measures) {
+                var temp = {
+                  serving_weight: foodObj.serving_weight_grams,
+                  seq: null,
+                  measure: foodObj.serving_unit,
+                  qty: foodObj.serving_qty,
+                };
+                foodObj.alt_measures.unshift(temp);
+              }
+              if (!foodObj.metadata.original_input) {
+                foodObj.metadata.original_input =
+                  foodObj.serving_qty +
+                  ' ' +
+                  foodObj.serving_unit +
+                  ' ' +
+                  foodObj.food_name;
+              }
+            });
+            setRecipe({
+              ...recipe,
+              ingredients: recipe.ingredients.concat(result.foods),
+            });
+            setAddIngredientsQuery('');
+          } else {
+            setError(result.message);
+            setInvalidForm(true);
+          }
+          if (!!result.errors && result.errors.length) {
+            const wrongQuery = result.errors.map((err: any) => {
+              return err.original_text;
+            });
+            console.log(wrongQuery.join('\n'));
+            setAddIngredientsQuery(wrongQuery.join('\n'));
+            setInvalidForm(true);
+          }
         });
-        setAddIngredientsQuery('');
-      } else {
-        setError(result.message);
-      }
-      if (!!result.errors && result.errors.length) {
-        const wrongQuery = result.errors.map((err: any) => {
-          return err.original_text;
-        });
-        console.log(wrongQuery.join('\n'));
-        setAddIngredientsQuery(wrongQuery.join('\n'));
-      }
-    });
+        setShowNewIngredientInput(false);
+      });
   };
 
   let updateTextField = (
@@ -170,6 +408,12 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       clonedRecipe[fieldName] = newValue as never;
       return {...clonedRecipe};
     });
+    if (fieldName === 'name' && newValue) {
+      setErrorMessages(prev => ({
+        ...prev,
+        name: '',
+      }));
+    }
   };
 
   let updateNumberField = (
@@ -181,7 +425,38 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       clonedRecipe[fieldName] = parseFloat(newValue) as never;
       return {...clonedRecipe};
     });
+    if (fieldName === 'serving_qty' && parseFloat(newValue)) {
+      setErrorMessages(prev => ({
+        ...prev,
+        serving_qty: '',
+      }));
+    }
   };
+
+  useEffect(() => {
+    if (invalidForm) {
+      setTimeout(() => {
+        setInvalidForm(false);
+      }, 500);
+    }
+  }, [invalidForm]);
+
+  useEffect(
+    () =>
+      navigation.addListener('beforeRemove', e => {
+        if (!showSave) {
+          // If we don't have unsaved changes, then we don't need to do anything
+          return;
+        }
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        // Prompt the user before leaving the screen
+        setShowUnsavedPopup({
+          backAction: e.data.action,
+        });
+      }),
+    [navigation, showSave],
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -194,9 +469,16 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           headerRight={
             <TouchableOpacity
               style={{marginRight: 10}}
-              onPress={() => saveRecipe()}>
-              <Text style={styles.saveBtn}>Save</Text>
-              {/* <FontAwesome5 size={26} color={'white'} name="save" /> */}
+              onPress={() => {
+                if (route.params?.recipe) {
+                  navigation.goBack();
+                } else {
+                  saveRecipe();
+                }
+              }}>
+              <Text style={styles.headerBtn}>
+                {route.params?.recipe ? 'Cancel' : 'Save'}
+              </Text>
             </TouchableOpacity>
           }
         />
@@ -204,65 +486,291 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
     });
   }, [navigation, route, saveRecipe]);
 
+  const saveChangeIngredient = (text: string, index: number) => {
+    if (text === recipe.ingredients[index]?.metadata?.original_input) {
+      return;
+    }
+    getIngridientsForUpdate({
+      query: text,
+      line_delimited: true,
+      use_raw_foods: true,
+    }).then(result => {
+      if (!!result.foods && result.foods.length) {
+        const newIngridients = [...recipe.ingredients];
+        newIngridients[index] = result.foods[0];
+        if (!newIngridients[index]?.metadata?.original_input) {
+          newIngridients[index] = {
+            ...newIngridients[index],
+            metadata: {
+              ...newIngridients[index]?.metadata,
+              original_input: text,
+            },
+          };
+        }
+        setRecipe(() => {
+          return {
+            ...recipe,
+            ingredients: newIngridients,
+          };
+        });
+      } else {
+        setErrorIngridient({
+          error:
+            result.message ===
+            'child "query" fails because ["query" is not allowed to be empty]'
+              ? 'No food found.'
+              : result.message + ' for:',
+          text,
+          index,
+        });
+        setInvalidForm(true);
+      }
+    });
+  };
+  const handleDeleteUploadPhoto = useCallback(() => {
+    setRecipe(prev => {
+      return {
+        ...prev,
+        photo: defaultRecipe?.photo,
+      };
+    });
+  }, [defaultRecipe?.photo]);
+
+  const handleChangePhoto = useCallback((photo: Asset) => {
+    if (photo) {
+      setPhotoUploading(true);
+      uploadImage('foods', moment().format('YYYY-MM-DD'), photo)
+        .then(result => {
+          if (result) {
+            console.log(result);
+            setRecipe(prev => {
+              return {
+                ...prev,
+                photo: {
+                  highres: result.full,
+                  thumb: result.thumb,
+                  is_user_uploaded: true,
+                },
+              };
+            });
+          }
+          setPhotoUploading(false);
+        })
+        .catch(() => {
+          setPhotoUploading(false);
+        });
+    }
+  }, []);
+
+  const removeIngridient = (index: number) => {
+    setRecipe(prev => {
+      const newIngridients = [...prev.ingredients];
+      newIngridients.splice(index, 1);
+      return {
+        ...prev,
+        ingredients: newIngridients,
+      };
+    });
+  };
+
+  const startCopyRecipe = () => {
+    setCopyRecipePopup(true);
+    setNewRecipeName(recipe.name);
+  };
+
+  const handleCopyRecipe = () => {
+    const match = recipes.some(
+      (item: RecipeProps) => item.name === newRecipeName,
+    );
+    if (!newRecipeName || match || newRecipeName === recipe.name) {
+      dispatch(
+        setInfoMessage({
+          title: 'Error',
+          text: 'Recipe name must be unique',
+        }),
+      );
+    } else {
+      setLoadingCopyRecipe(true);
+      const clonedRecipeIndex = recipes.findIndex(
+        item => item.id === recipe.id,
+      );
+      const clonedRecipe: UpdateRecipeProps = _.cloneDeep(recipe);
+      delete clonedRecipe.created_at;
+      delete clonedRecipe.updated_at;
+      delete clonedRecipe.id;
+      clonedRecipe.name = newRecipeName;
+      dispatch(copyRecipe(clonedRecipe, clonedRecipeIndex))
+        .then(resCopyRecipe => {
+          setCopyRecipePopup(false);
+          setNewRecipeName('');
+          setLoadingCopyRecipe(false);
+          navigation.navigate(Routes.RecipeDetails, {
+            recipe: resCopyRecipe,
+          });
+        })
+        .catch(err => {
+          setLoadingCopyRecipe(false);
+          if (!!err && !!err.data && !!err.data.message) {
+            setError(err.data.message);
+          }
+        });
+    }
+  };
+
+  const logRecipe = async () => {
+    if (!validatedRecipe()) {
+      return;
+    }
+    const savedRecipe = await saveRecipe(true);
+
+    if (savedRecipe) {
+      var recipeToLog = _.cloneDeep(savedRecipe);
+
+      // need to do this for top level as well as each ingredient
+      var nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+        recipeToLog.full_nutrients,
+      );
+      var accepted = [
+        'nf_calories',
+        'nf_total_fat',
+        'nf_saturated_fat',
+        'nf_cholesterol',
+        'nf_sodium',
+        'nf_total_carbohydrate',
+        'nf_dietary_fiber',
+        'nf_sugars',
+        'nf_protein',
+        'nf_potassium',
+        'nf_p',
+      ];
+      var keep = _.pick(nf, accepted);
+      _.extend(recipeToLog, keep);
+
+      _.forEach(recipeToLog.ingredients, function (ingredient) {
+        var ing_nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+          ingredient.full_nutrients,
+        );
+        var ing_keep = _.pick(ing_nf, accepted);
+        _.extend(ingredient, ing_keep);
+      });
+
+      //only want to log 1 serving
+      var scaled_recipe = multiply(recipeToLog, 1 / savedRecipe.serving_qty, 1);
+
+      dispatch(
+        basketActions.addExistFoodToBasket(scaled_recipe.ingredients),
+      ).then(() => {
+        dispatch(
+          basketActions.mergeBasket({
+            isSingleFood: true,
+            recipeBrand: scaled_recipe.brand_name,
+            servings: scaled_recipe.serving_qty.toString(),
+            recipeName: scaled_recipe.name,
+            customPhoto:
+              !!savedRecipe.photo && !!savedRecipe.photo.highres
+                ? {
+                    full: savedRecipe.photo.highres,
+                    thumb: savedRecipe.photo.thumb,
+                    is_user_uploaded: false,
+                  }
+                : null,
+          }),
+        );
+        navigation.replace(Routes.Basket);
+      });
+    }
+  };
+
   return (
-    <KeyboardAwareScrollView style={styles.root}>
-      <ScrollView style={styles.scrollView}>
-        <Text style={styles.label}>Recipe Name:</Text>
-        <TextInput
-          value={recipe.name}
-          onChangeText={text => updateTextField('name', text)}
-          style={[styles.input, styles.m10]}
-        />
-
-        <View style={styles.recipeContainer}>
-          <Text>Recipe Makes:</Text>
-          <TextInput
-            value={(recipe.serving_qty || '') + ''}
-            onChangeText={text => updateNumberField('serving_qty', text)}
-            style={[styles.input, styles.w60, styles.mh8]}
-            keyboardType="numeric"
-          />
-          <TextInput
-            value={recipe.serving_unit}
-            onChangeText={text => updateTextField('serving_unit', text)}
-            style={[styles.input, styles.flex1, styles.ml8]}
-          />
+    <>
+      {showPreloader && (
+        <View style={styles.preloader}>
+          <Text style={styles.preloaderText}>Loading. Please wait.</Text>
         </View>
-
-        <View style={[styles.row, styles.m10]}>
-          <View style={[styles.flex1, styles.alignItemsStretch]}>
-            <TextInput
-              value={(recipe.prep_time_min || '') + ''}
-              onChangeText={text => updateNumberField('prep_time_min', text)}
-              placeholder="0 min"
-              keyboardType="numeric"
-              style={styles.numericInput}
-            />
-            <View style={styles.prepContainer}>
-              <Text style={styles.fz11}>Preparation</Text>
+      )}
+      <KeyboardAwareScrollView
+        style={styles.root}
+        enableOnAndroid={true}
+        enableAutomaticScroll={true}>
+        {invalidForm && <Text style={styles.invalid}>Recipe not saved</Text>}
+        <View style={styles.itemWrap}>
+          <TextInput
+            value={recipe.name}
+            onChangeText={text => updateTextField('name', text)}
+            style={[styles.input, !!errorMessages.name && styles.invalidInput]}
+            placeholder="Recipe Name"
+          />
+          {errorMessages.name && (
+            <Text style={styles.errorMessage}>{errorMessages.name}</Text>
+          )}
+        </View>
+        <View style={[styles.itemWrap, styles.recipeContainer]}>
+          <View style={styles.label}>
+            <Text>
+              Recipe Makes<Text style={styles.red}>*</Text>
+            </Text>
+            {errorMessages.serving_qty && (
+              <Text style={styles.errorMessage}>
+                {errorMessages.serving_qty}
+              </Text>
+            )}
+          </View>
+          <View style={styles.inputs}>
+            <View style={styles.flex1}>
+              <TextInput
+                value={(recipe.serving_qty || '') + ''}
+                onChangeText={text => updateNumberField('serving_qty', text)}
+                style={[
+                  styles.input,
+                  styles.textAlCenter,
+                  !!errorMessages.serving_qty && styles.invalidInput,
+                ]}
+                keyboardType="numeric"
+              />
+            </View>
+            <View style={[styles.flex1, styles.ml8]}>
+              <Text style={styles.textAlCenter}>
+                {recipe.serving_unit}
+                {recipe.serving_qty > 1 ? 's' : ''}
+              </Text>
             </View>
           </View>
-          <View style={[styles.flex1, styles.alignItemsStretch, styles.ml8]}>
-            <TextInput
-              value={(recipe.cook_time_min || '') + ''}
-              onChangeText={text => updateNumberField('cook_time_min', text)}
-              placeholder="0 min"
-              keyboardType="numeric"
-              style={styles.numericInput}
-            />
-            <View style={styles.prepContainer}>
-              <Text style={styles.fz11}>Cooking</Text>
+        </View>
+        <View style={[styles.itemWrap, styles.recipeContainer]}>
+          <View style={styles.totalContainer}>
+            <FontAwesome5 name="clock" size={20} />
+            <Text style={[styles.mh8]}>
+              Total: {(recipe.prep_time_min || 0) + (recipe.cook_time_min || 0)}{' '}
+              min
+            </Text>
+          </View>
+          <View style={styles.inputs}>
+            <View style={[styles.flex1]}>
+              <TextInput
+                value={(recipe.prep_time_min || '') + ''}
+                onChangeText={text => updateNumberField('prep_time_min', text)}
+                placeholder="0 min"
+                keyboardType="numeric"
+                style={styles.numericInput}
+              />
+              <View style={styles.prepContainer}>
+                <Text style={styles.fz11}>Preparation</Text>
+              </View>
+            </View>
+            <View style={[styles.flex1, styles.ml8]}>
+              <TextInput
+                value={(recipe.cook_time_min || '') + ''}
+                onChangeText={text => updateNumberField('cook_time_min', text)}
+                placeholder="0 min"
+                keyboardType="numeric"
+                style={styles.numericInput}
+              />
+              <View style={styles.prepContainer}>
+                <Text style={styles.fz11}>Cooking</Text>
+              </View>
             </View>
           </View>
         </View>
-        <View style={styles.totalContainer}>
-          <FontAwesome5 name="clock" size={20} />
-          <Text style={[styles.fz18, styles.mh8]}>
-            Total: {(recipe.prep_time_min || 0) + (recipe.cook_time_min || 0)}{' '}
-            min
-          </Text>
-        </View>
-
         <View style={styles.ingridientsContainer}>
           <Text>Ingredients:</Text>
           <Text>Calories Per Serving: {caloriesPerServing}</Text>
@@ -270,84 +778,112 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         <View>
           {recipe.ingredients.map((ingredient, index) => {
             return (
-              <FoodEditItem
-                key={ingredient.food_name + ingredient.consumed_at}
-                foodObj={ingredient}
-                itemIndex={index}
-                itemChangeCallback={handleItemChange}
-              />
+              <View
+                style={styles.ingridientItemContainer}
+                key={ingredient.metadata?.original_input || index}>
+                <Swipeable
+                  renderRightActions={() => (
+                    <TouchableOpacity
+                      onPress={() => removeIngridient(index)}
+                      style={[styles.btnHidden]}>
+                      <FontAwesome name="trash" color="#fff" size={16} />
+                    </TouchableOpacity>
+                  )}
+                  ref={ref => {
+                    if (
+                      ref &&
+                      !rowRefs.get(ingredient.id + ingredient.food_name)
+                    ) {
+                      rowRefs.set(ingredient.id + ingredient.food_name, ref);
+                    }
+                  }}
+                  onSwipeableWillOpen={() => {
+                    [...rowRefs.entries()].forEach(([key, ref]) => {
+                      if (key !== ingredient.id + ingredient.food_name && ref) {
+                        ref.close();
+                      }
+                    });
+                  }}>
+                  <View style={styles.ingridientItem}>
+                    <Image
+                      style={styles.ingridientItemImage}
+                      source={
+                        ingredient.photo.thumb
+                          ? {uri: ingredient.photo.thumb}
+                          : require('assets/gray_nix_apple_small.png')
+                      }
+                      resizeMode="contain"
+                    />
+                    <TextInput
+                      ref={el =>
+                        (ingridientsInputRefs.current[index] = el as TextInput)
+                      }
+                      defaultValue={ingredient.metadata?.original_input || ''}
+                      // value={ingredient.metadata?.original_input || ''}
+                      onEndEditing={(e: any) => {
+                        saveChangeIngredient(e.nativeEvent.text, index);
+                      }}
+                      style={[styles.input, styles.flex1]}
+                    />
+                    <View style={styles.ingridientItemFooter}>
+                      <Text>{ingredient.nf_calories?.toFixed(0)}</Text>
+                      <Text>kcal</Text>
+                    </View>
+                  </View>
+                </Swipeable>
+              </View>
             );
           })}
           <TouchableWithoutFeedback
             style={styles.flex1}
             onPress={() => handleShowAddIngredientsInput()}>
-            {!showNewIngredientsInput ? (
-              <View style={styles.ingrBtnContainer}>
-                <FontAwesome5 name="plus-circle" size={20} />
-                <Text style={styles.ml10}>Add Ingredients</Text>
-              </View>
-            ) : (
-              <View style={styles.m10}>
-                <Text style={styles.mb10}>
-                  Type Ingredients in the field below and hit 'Add' button
-                </Text>
-                <TextInput
-                  value={addIngredientsQuery}
-                  style={{
-                    height: 130,
-                    marginBottom: 10,
-                    borderWidth: 1,
-                    borderColor: '#bebebe',
-                  }}
-                  multiline={true}
-                  placeholder={addIngredientPlaceholder}
-                  onChangeText={text => setAddIngredientsQuery(text)}
-                />
-                <View
-                  style={{
-                    width: '50%',
-                    marginHorizontal: '25%',
-                    marginBottom: 10,
-                  }}>
-                  <NixButton
-                    title="Add"
-                    type="positive"
-                    onPress={() => handleAddIngredients()}
-                  />
-                </View>
-              </View>
-            )}
+            <View style={styles.ingrBtnContainer}>
+              <FontAwesome5 name="plus" size={15} style={styles.ingrBtnIcon} />
+              <Text style={styles.ingrBtnText}>Add Ingredients</Text>
+            </View>
           </TouchableWithoutFeedback>
         </View>
-
         <View>
           <Text style={styles.directionText}>Directions</Text>
-          <View style={styles.m10}>
-            <TextInput
-              value={recipe.directions || ''}
-              onChangeText={text => updateTextField('directions', text)}
-              multiline={true}
-              style={{
-                borderWidth: 1,
-                borderColor: '#bebebe',
-                minHeight: 100,
-              }}
-            />
-          </View>
+          <TextInput
+            value={recipe.directions || ''}
+            onChangeText={text => updateTextField('directions', text)}
+            multiline={true}
+            numberOfLines={4}
+            style={styles.directionInput}
+            placeholder="Type your recipe prep notes and cooking instructions here."
+          />
         </View>
-
-        <View style={styles.footer}>
-          <View style={{flex: 1, marginRight: 5}}>
-            <NixButton title="Copy" type="primary" />
+        {errorMessages.ingredients && (
+          <View style={styles.itemWrap}>
+            <Text style={styles.red}>{errorMessages.ingredients}</Text>
           </View>
-          <View style={{flex: 1, marginLeft: 5}}>
-            <NixButton title="Log this recipe" type="calm" />
+        )}
+        <AddPhotoView
+          image={recipe.photo}
+          deletePhoto={handleDeleteUploadPhoto}
+          changePhoto={handleChangePhoto}
+          isUploadPhotoLoading={photoUploading}
+        />
+        {route.params?.recipe && (
+          <View style={styles.footer}>
+            <View style={{flex: 1, marginRight: 5}}>
+              <NixButton
+                title="Copy"
+                type="primary"
+                onPress={startCopyRecipe}
+              />
+            </View>
+            <View style={{flex: 1, marginLeft: 5}}>
+              <NixButton
+                title="Log this recipe"
+                type="calm"
+                onPress={logRecipe}
+              />
+            </View>
           </View>
-        </View>
-      </ScrollView>
-      <View>
-        <TextInput />
-      </View>
+        )}
+      </KeyboardAwareScrollView>
       {error && (
         <InfoModal
           modalVisible={!!error}
@@ -355,6 +891,132 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           text={error}
         />
       )}
-    </KeyboardAwareScrollView>
+      <ChooseModal
+        modalVisible={!!showNewIngredientsInput}
+        hideModal={() => setShowNewIngredientInput(false)}
+        title="Add Ingredients"
+        btns={[
+          {
+            type: 'primary',
+            title: 'Add',
+            onPress: () => {
+              handleAddIngredients();
+            },
+          },
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => {
+              setAddIngredientsQuery('');
+              setShowNewIngredientInput(false);
+            },
+          },
+        ]}>
+        <View style={styles.voiceInputContainer}>
+          <VoiceInput
+            style={styles.voiceInput}
+            placeholder={addIngredientPlaceholder}
+            value={addIngredientsQuery}
+            onChangeText={(value: string) => setAddIngredientsQuery(value)}
+          />
+        </View>
+      </ChooseModal>
+      {showSave && (
+        <View style={styles.saveBtnContainer}>
+          <TouchableOpacity
+            style={styles.saveBtn}
+            onPress={() => saveRecipe()}
+            disabled={showSpinner || photoUploading}>
+            <Text style={styles.saveBtnText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {!!showUnsavedPopup?.backAction && (
+        <GoBackModal
+          show={!!showUnsavedPopup}
+          goBack={() => {
+            navigation.dispatch(showUnsavedPopup?.backAction);
+          }}
+          disabled={showSpinner}
+          save={() => {
+            setShowUnsavedPopup(null);
+            saveRecipe();
+          }}
+        />
+      )}
+      <ChooseModal
+        modalVisible={!!copyRecipePopup}
+        hideModal={() => {
+          setCopyRecipePopup(false);
+          setNewRecipeName('');
+        }}
+        title="Copy Recipe"
+        text="Enter new unique name for the new recipe"
+        btns={[
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => {
+              setCopyRecipePopup(false);
+              setNewRecipeName('');
+            },
+          },
+          {
+            type: 'primary',
+            title: 'Sumbit',
+            onPress: () => {
+              handleCopyRecipe();
+            },
+            disabled: loadingCopyRecipe,
+          },
+        ]}>
+        <TextInput
+          value={newRecipeName}
+          onChangeText={setNewRecipeName}
+          editable={!loadingCopyRecipe}
+        />
+      </ChooseModal>
+      <ChooseModal
+        modalVisible={!!errorIngridient}
+        hideModal={() => {
+          setErrorIngridient(false);
+        }}
+        title={(errorIngridient && errorIngridient.error) || ''}
+        text={(errorIngridient && errorIngridient.text) || ''}
+        btns={[
+          {
+            type: 'primary',
+            title: 'Edit',
+            onPress: () => {
+              setErrorIngridient(false);
+              if (
+                errorIngridient &&
+                ingridientsInputRefs.current[errorIngridient.index]
+              ) {
+                ingridientsInputRefs.current[errorIngridient.index]?.focus();
+              }
+            },
+          },
+          {
+            type: 'gray',
+            title: 'Dismiss',
+            onPress: () => {
+              if (
+                errorIngridient &&
+                ingridientsInputRefs.current[errorIngridient.index]
+              ) {
+                ingridientsInputRefs.current[
+                  errorIngridient.index
+                ]?.setNativeProps({
+                  text: recipe.ingredients[errorIngridient.index].metadata
+                    ?.original_input,
+                });
+              }
+              setErrorIngridient(false);
+            },
+          },
+        ]}
+      />
+    </>
   );
 };

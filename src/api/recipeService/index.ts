@@ -29,13 +29,21 @@ const recipesService = {
   async getRecipeById(id: string) {
     return await apiClient.get(`recipe/${id}`);
   },
-  async getIngridients(query: string) {
+  async getIngridients({
+    query,
+    line_delimited,
+    use_raw_foods,
+  }: {
+    query: string;
+    line_delimited?: boolean;
+    use_raw_foods?: boolean;
+  }) {
     return await apiClient.post(
       'natural/nutrients',
       {
         query,
-        line_delimited: true,
-        use_raw_foods: true,
+        line_delimited: line_delimited ?? true,
+        use_raw_foods: use_raw_foods ?? true,
       },
       {
         headers: {

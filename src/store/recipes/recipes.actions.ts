@@ -30,24 +30,52 @@ export const getRecipes = ({
   };
 };
 
-export const updateOrCreateRecipe = (recipe: UpdateRecipeProps) => {
-  return async (dispatch: Dispatch) => {
-    const response = await recipesService.updateRecipe(recipe);
+export const getRecipeById = (id: string) => {
+  return async () => {
+    const response = await recipesService.getRecipeById(id);
 
     const result = response.data;
-    // if (__DEV__) {
-    //   console.log('update or create recipes', result);
-    // }
+
+    if (result) {
+      return result;
+    }
+  };
+};
+
+export const updateRecipe = (recipe: UpdateRecipeProps) => {
+  return async (dispatch: Dispatch) => {
+    const response = await recipesService.updateRecipe(recipe);
+    const result = response.data;
+
     if (result.name) {
       dispatch({
         type: recipesActionTypes.UPDATE_OR_CREATE_RECIPE,
         recipe: result,
       });
+      return result;
+    } else {
+      throw response;
     }
-    return result;
   };
 };
 
+export const createRecipe = (recipe: UpdateRecipeProps) => {
+  return async (dispatch: Dispatch) => {
+    const response = await recipesService.createRecipe(recipe);
+
+    const result = response.data;
+
+    if (result.name) {
+      dispatch({
+        type: recipesActionTypes.CREATE_RECIPE,
+        payload: result,
+      });
+      return result;
+    } else {
+      throw response;
+    }
+  };
+};
 export const copyRecipe = (
   recipe: UpdateRecipeProps,
   clonedRecipeIndex: number,
@@ -65,8 +93,10 @@ export const copyRecipe = (
         payload: result,
         clonedRecipeIndex,
       });
+      return result;
+    } else {
+      throw response;
     }
-    return result;
   };
 };
 
@@ -83,14 +113,30 @@ export const deleteRecipe = (id: string) => {
   };
 };
 
-export const getIngridientsForUpdate = async (query: string) => {
-  const response = await recipesService.getIngridients(query);
+export const getIngridientsForUpdate = async ({
+  query,
+  line_delimited,
+  use_raw_foods,
+}: {
+  query: string;
+  line_delimited?: boolean;
+  use_raw_foods?: boolean;
+}) => {
+  const response = await recipesService.getIngridients({
+    query,
+    line_delimited,
+    use_raw_foods,
+  });
 
   const result = response.data;
   // if (__DEV__) {
   //   console.log('get ingridients for update', result);
   // }
-  return result;
+  if (result) {
+    return result;
+  } else {
+    throw response;
+  }
 };
 
 export const reset = () => {

@@ -128,7 +128,6 @@ export interface FoodProps {
   lat: null;
   lng: null;
   meal_type: number;
-  metadata: {is_raw_food: boolean};
   ndb_no: number | null;
   nf_calories: number | null;
   nf_cholesterol: number | null;
@@ -173,6 +172,10 @@ export interface FoodProps {
   basketId?: string;
   updated_at?: string;
   created_at?: string;
+  metadata?: {
+    original_input?: string;
+    is_raw_food?: boolean;
+  };
 }
 
 export interface UserLogState {

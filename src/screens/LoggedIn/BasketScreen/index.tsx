@@ -454,7 +454,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                   </View>
                 </View>
               ) : null}
-              {isSingleFood ? (
+              {isSingleFood && foods.length > 1 ? (
                 <View>
                   <NixInput
                     label="Meal Name"

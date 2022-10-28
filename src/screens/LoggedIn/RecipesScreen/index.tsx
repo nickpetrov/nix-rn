@@ -55,9 +55,7 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
   route,
 }) => {
   const dispatch = useDispatch();
-  const [showSavedRecipeMessage, setShowSavedRecipeMessage] = useState(
-    route?.params?.showSavedRecipeMessage,
-  );
+  const [showSavedRecipeMessage, setShowSavedRecipeMessage] = useState(false);
   const {recipes, limit, offset, showMore} = useSelector(
     state => state.recipes,
   );
@@ -93,6 +91,10 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
       ),
     });
   }, [navigation]);
+
+  useEffect(() => {
+    setShowSavedRecipeMessage(!!route?.params?.showSavedRecipeMessage);
+  }, [route?.params?.showSavedRecipeMessage]);
 
   useEffect(() => {
     if (showSavedRecipeMessage) {

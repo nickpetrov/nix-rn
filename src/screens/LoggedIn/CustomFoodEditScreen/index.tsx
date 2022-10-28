@@ -314,9 +314,6 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           </View>
         </View>
       </ScrollView>
-      <View>
-        <TextInput />
-      </View>
     </KeyboardAwareScrollView>
   );
 };
