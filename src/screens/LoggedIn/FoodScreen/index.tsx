@@ -331,7 +331,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   return (
     <SafeAreaView style={styles.root}>
       {foodObj ? (
-        <ScrollView>
+        <ScrollView overScrollMode="never">
           {readOnly ? (
             <MealListItem
               foodObj={foodObj}

@@ -349,7 +349,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.root}>
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView overScrollMode="never">
         <View style={styles.mb10}>
           <NutritionLabel option={labelOptions || defaultOption} />
         </View>
