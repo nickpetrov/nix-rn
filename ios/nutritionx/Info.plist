@@ -62,8 +62,6 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Use your camera to scan barcodes on food packages to quickly log grocery items.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Add photos to your food log, recipes, and custom foods.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Read exercises data.</string>
 	<key>NSHealthUpdateUsageDescription</key>
@@ -72,6 +70,8 @@
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Use the Freeform feature to log foods with speech-to-text.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Add photos to your food log, recipes, and custom foods.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Description of why you require the use of the speech recognition</string>
 	<key>UIAppFonts</key>
