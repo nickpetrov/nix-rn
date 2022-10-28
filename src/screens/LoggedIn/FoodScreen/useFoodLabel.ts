@@ -144,7 +144,7 @@ const useFoodLabel = (food: FoodProps) => {
 
     calorieIntake: userData.daily_kcal || 0,
   };
-  return total.serving_qty ? labelData : null;
+  return total.serving_qty ? {labelData, total} : null;
 };
 
 export default useFoodLabel;

@@ -351,7 +351,6 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     <SafeAreaView style={styles.root}>
       <KeyboardAwareScrollView>
         <View style={styles.mb10}>
-          {/* before was data={foodsArray}, but it's not working this way */}
           <NutritionLabel option={labelOptions || defaultOption} />
         </View>
 
@@ -388,10 +387,12 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           ) : null}
 
           <View>
-            <Text>Net Carbs ** : {total.net_carbs || 0} g</Text>
-            <Text>Phosphorus ** : {total.nf_p || 0} mg</Text>
-            <Text>Potassium ** : {total.nf_potassium || 0} mg</Text>
-            <Text>Caffeine ** : {total.caffeine || 0} mg</Text>
+            <Text>Net Carbs ** : {(total.net_carbs || 0).toFixed(1)} g</Text>
+            <Text>Phosphorus ** : {(total.nf_p || 0).toFixed(1)} mg</Text>
+            <Text>
+              Potassium ** : {(total.nf_potassium || 0).toFixed(1)} mg
+            </Text>
+            <Text>Caffeine ** : {(total.caffeine || 0).toFixed(1)} mg</Text>
 
             <View style={styles.hideContainer}>
               <TouchableWithoutFeedback
@@ -410,21 +411,38 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
               </TouchableWithoutFeedback>
               {showMoreNutrients ? (
                 <View style={styles.vitaminContainer}>
-                  <Text>Vitamin D**: {total.vitamin_d || 0} IU</Text>
-                  <Text>Vitamin E**: {total.vitamin_e || 0} IU</Text>
-                  <Text>Vitamin K**: {total.vitamin_k || 0} µg</Text>
-                  <Text>Thiamine**: {total.thiamine || 0} mg</Text>
-                  <Text>Riboflavin**: {total.riboflavin || 0} mg</Text>
-                  <Text>Niacin**: {total.niacin || 0} mg</Text>
                   <Text>
-                    Pantothenic Acid**: {total.pantothenic_acid || 0} mg
+                    Vitamin D**: {(total.vitamin_d || 0).toFixed(1)} IU
                   </Text>
-                  <Text>Vitamin B-6**: {total.vitamin_b6 || 0} mg</Text>
-                  <Text>Folate**: {total.folate || 0} µg</Text>
-                  <Text>Vitamin B-12**: {total.vitamin_b12 || 0} µg</Text>
-                  <Text>Folic Acid**: {total.folic_acid || 0} µg</Text>
-                  <Text>Zinc**: {total.zinc || 0} mg</Text>
-                  <Text>Magnesium**: {total.magnesium || 0} mg</Text>
+                  <Text>
+                    Vitamin E**: {(total.vitamin_e || 0).toFixed(1)} IU
+                  </Text>
+                  <Text>
+                    Vitamin K**: {(total.vitamin_k || 0).toFixed(1)} µg
+                  </Text>
+                  <Text>Thiamine**: {(total.thiamine || 0).toFixed(1)} mg</Text>
+                  <Text>
+                    Riboflavin**: {(total.riboflavin || 0).toFixed(1)} mg
+                  </Text>
+                  <Text>Niacin**: {(total.niacin || 0).toFixed(1)} mg</Text>
+                  <Text>
+                    Pantothenic Acid**:{' '}
+                    {(total.pantothenic_acid || 0).toFixed(1)} mg
+                  </Text>
+                  <Text>
+                    Vitamin B-6**: {(total.vitamin_b6 || 0).toFixed(1)} mg
+                  </Text>
+                  <Text>Folate**: {(total.folate || 0).toFixed(1)} µg</Text>
+                  <Text>
+                    Vitamin B-12**: {(total.vitamin_b12 || 0).toFixed(1)} µg
+                  </Text>
+                  <Text>
+                    Folic Acid**: {(total.folic_acid || 0).toFixed(1)} µg
+                  </Text>
+                  <Text>Zinc**: {(total.zinc || 0).toFixed(1)} mg</Text>
+                  <Text>
+                    Magnesium**: {(total.magnesium || 0).toFixed(1)} mg
+                  </Text>
                 </View>
               ) : null}
             </View>

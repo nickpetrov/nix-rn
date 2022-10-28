@@ -97,6 +97,8 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       ? 0
       : (foodObj.nf_total_carbohydrate || 0) - (foodObj.nf_dietary_fiber || 0);
   const labelOption = useFoodLabel(foodObj);
+  const labelData = labelOption?.labelData;
+  const total = labelOption?.total;
   const spinValue = new Animated.Value(0);
 
   Animated.loop(
@@ -521,36 +523,36 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
             )}
           </View>
           <View style={styles.p10}>
-            <NutritionLabel option={labelOption || defaultOption} />
+            <NutritionLabel option={labelData || defaultOption} />
           </View>
           {(!!net_carbs ||
-            !!foodObj.nf_p ||
-            !!foodObj.caffeine ||
-            !!foodObj.nf_potassium) && (
+            !!total?.nf_p ||
+            !!total?.caffeine ||
+            !!total?.nf_potassium) && (
             <View style={styles.listContainer}>
               {!!net_carbs && (
                 <Text style={styles.text}>
                   Net Carbs**: {(net_carbs || 0).toFixed(1)} g
                 </Text>
               )}
-              {!!foodObj.vitamin_d && (
+              {!!total?.vitamin_d && (
                 <Text style={styles.text}>
-                  Vitamin D** : {(foodObj.vitamin_d || 0).toFixed(1)} IU
+                  Vitamin D** : {(total?.vitamin_d || 0).toFixed(1)} IU
                 </Text>
               )}
-              {!!foodObj.nf_p && (
+              {!!total?.nf_p && (
                 <Text style={styles.text}>
-                  Phosphorus** : {(foodObj.nf_p || 0).toFixed(1)} mg
+                  Phosphorus** : {(total?.nf_p || 0).toFixed(1)} mg
                 </Text>
               )}
-              {!!foodObj.nf_potassium && (
+              {!!total?.nf_potassium && (
                 <Text style={styles.text}>
-                  Potassium** : {(foodObj.nf_potassium || 0).toFixed(1)} mg
+                  Potassium** : {(total?.nf_potassium || 0).toFixed(1)} mg
                 </Text>
               )}
-              {!!foodObj.caffeine && (
+              {!!total?.caffeine && (
                 <Text style={styles.text}>
-                  Caffeine** : {(foodObj.caffeine || 0).toFixed(1)} mg
+                  Caffeine** : {(total?.caffeine || 0).toFixed(1)} mg
                 </Text>
               )}
             </View>
