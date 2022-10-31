@@ -14,8 +14,12 @@ import {NixInput} from 'components/NixInput';
 import ShakeView from 'components/ShakeView';
 
 // actions
-import {updateOrCreateCustomFood} from 'store/customFoods/customFoods.actions';
+import {
+  getCustomFoodById,
+  updateOrCreateCustomFood,
+} from 'store/customFoods/customFoods.actions';
 import {setInfoMessage} from 'store/base/base.actions';
+import {addExistFoodToBasket, mergeBasket} from 'store/basket/basket.actions';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -29,7 +33,6 @@ import {UpdateCustomFoodProps} from 'store/customFoods/customFoods.types';
 
 // styles
 import {styles} from './CustomFoodEditScreen.styles';
-import {addExistFoodToBasket, mergeBasket} from 'store/basket/basket.actions';
 import {FoodProps} from 'store/userLog/userLog.types';
 
 interface CustomFoodEditScreenProps {
@@ -45,6 +48,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
   route,
 }) => {
   const [invalid, setInvalid] = useState(false);
+  const [showPreloader, setShowPreloader] = useState(false);
   const [isProcessingFood, setIsProcessingFood] = useState(false);
   const logAfterSubmit = route.params?.logAfterSubmit;
   const dispatch = useDispatch();
@@ -74,20 +78,27 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
   });
 
   useEffect(() => {
-    setFoodObj(prevFood => {
-      if (route.params?.food) {
-        return {
-          ...prevFood,
-          ...route.params?.food,
-          ...nixApiDataUtilites.convertFullNutrientsToNfAttributes(
-            route.params?.food?.full_nutrients || [],
-          ),
-        };
-      } else {
-        return prevFood;
-      }
-    });
-  }, [route.params?.food]);
+    if (route.params?.food) {
+      setShowPreloader(true);
+      dispatch(getCustomFoodById(route.params?.food.id))
+        .then((resp: FoodProps) => {
+          setFoodObj(prevFood => {
+            return {
+              ...prevFood,
+              ...resp,
+              ...nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+                resp?.full_nutrients || [],
+              ),
+            };
+          });
+          setShowPreloader(false);
+        })
+        .catch(err => {
+          console.log(err);
+          setShowPreloader(false);
+        });
+    }
+  }, [route.params?.food, dispatch]);
 
   useEffect(() => {
     if (invalid) {
@@ -221,214 +232,224 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
   }, [navigation, route]);
 
   return (
-    <KeyboardAwareScrollView
-      style={styles.root}
-      enableOnAndroid={true}
-      enableAutomaticScroll={true}>
-      <NixInput
-        label="Food Name"
-        required
-        style={styles.input}
-        value={(foodObj.food_name || '') + ''}
-        onChangeText={value => updateTextField('food_name', value)}
-        placeholder="Food Name"
-      />
-      <NixInput
-        label="Serving Info"
-        required
-        style={styles.input}
-        value={(foodObj.serving_qty || '') + ''}
-        onChangeText={value => updateTextField('serving_qty', value)}
-        keyboardType="numeric"
-        placeholder="Quantity"
-      />
-      <NixInput
-        label=""
-        style={styles.input}
-        value={foodObj.serving_unit || 'Serving'}
-        onChangeText={value => updateTextField('serving_unit', value)}
-        placeholder="Serving Unit"
-      />
-      <NixInput
-        label="Calories"
-        required
-        style={styles.input}
-        value={(foodObj.nf_calories || '') + ''}
-        unit="kcal"
-        onChangeText={value => updateCustomField('nf_calories', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Fat"
-        style={styles.input}
-        value={(foodObj.nf_total_fat || '') + ''}
-        unit="g"
-        onChangeText={value => updateCustomField('nf_total_fat', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Saturated Fat"
-        style={styles.input}
-        value={(foodObj.nf_saturated_fat || '') + ''}
-        unit=""
-        onChangeText={value => updateCustomField('nf_saturated_fat', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Cholesterol"
-        style={styles.input}
-        value={(foodObj.nf_cholesterol || '') + ''}
-        unit="mg"
-        onChangeText={value => updateCustomField('nf_cholesterol', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Sodium"
-        style={styles.input}
-        value={(foodObj.nf_sodium || '') + ''}
-        unit="mg"
-        onChangeText={value => updateCustomField('nf_sodium', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Total Carbohydrate"
-        style={styles.input}
-        value={(foodObj.nf_total_carbohydrate || '') + ''}
-        unit="g"
-        onChangeText={value =>
-          updateCustomField('nf_total_carbohydrate', value)
-        }
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Dietary Fiber"
-        style={styles.input}
-        value={(foodObj.nf_dietary_fiber || '') + ''}
-        unit="g"
-        onChangeText={value => updateCustomField('nf_dietary_fiber', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Sugars"
-        style={styles.input}
-        value={(foodObj.nf_sugars || '') + ''}
-        unit="g"
-        onChangeText={value => updateCustomField('nf_sugars', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Protein"
-        style={styles.input}
-        value={(foodObj.nf_protein || '') + ''}
-        unit="g"
-        onChangeText={value => updateCustomField('nf_protein', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Vitamin A"
-        style={styles.input}
-        value={(foodObj.nf_vitamin_a_dv || '') + ''}
-        unit="%dv"
-        onChangeText={value => updateCustomField('nf_vitamin_a_dv', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Vitamin C"
-        style={styles.input}
-        value={(foodObj.nf_vitamin_c_dv || '') + ''}
-        unit="%dv"
-        onChangeText={value => updateCustomField('nf_vitamin_c_dv', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Vitamin D"
-        style={styles.input}
-        value={(foodObj.nf_vitamin_d_dv || '') + ''}
-        unit="%dv"
-        onChangeText={value => updateCustomField('nf_vitamin_d_dv', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Calcium"
-        style={styles.input}
-        value={(foodObj.nf_calcium_dv || '') + ''}
-        unit="%dv"
-        onChangeText={value => updateCustomField('nf_calcium_dv', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Iron"
-        style={styles.input}
-        value={(foodObj.nf_iron_dv || '') + ''}
-        unit="%dv"
-        onChangeText={value => updateCustomField('nf_iron_dv', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Phosphorus"
-        style={styles.input}
-        value={(foodObj.nf_p || '') + ''}
-        unit="mg"
-        onChangeText={value => updateCustomField('nf_p', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-      <NixInput
-        label="Potassium"
-        style={styles.input}
-        value={(foodObj.nf_potassium || '') + ''}
-        unit="mg"
-        onChangeText={value => updateCustomField('nf_potassium', value)}
-        keyboardType="numeric"
-        placeholder="0"
-      />
-
-      <View style={styles.footer}>
-        <Text style={styles.note}>
-          <Text style={styles.red}>*</Text>
-          denotes required fields
-        </Text>
-        <View style={[styles.flex1]}>
-          <ShakeView animated={invalid}>
-            <NixButton
-              title={
-                route.params?.food
-                  ? 'Update'
-                  : logAfterSubmit
-                  ? 'Save and add to Log'
-                  : 'Submit'
-              }
-              type="primary"
-              onPress={saveCustomFood}
-              disabled={isProcessingFood}
-            />
-          </ShakeView>
+    <>
+      {showPreloader && (
+        <View style={styles.preloader}>
+          <Text style={styles.preloaderText}>Loading. Please wait.</Text>
         </View>
-        {route.params?.food && (
-          <View style={[styles.flex1, styles.mt20]}>
-            <NixButton
-              title="Log this food"
-              type="primary"
-              disabled={isProcessingFood}
-              onPress={() => saveCustomFood(true)}
-            />
+      )}
+      <KeyboardAwareScrollView
+        style={styles.root}
+        enableOnAndroid={true}
+        enableAutomaticScroll={true}>
+        <NixInput
+          label="Food Name"
+          required
+          style={styles.input}
+          value={(foodObj.food_name || '') + ''}
+          onChangeText={value => updateTextField('food_name', value)}
+          placeholder="Food Name"
+        />
+        <NixInput
+          label="Serving Info"
+          required
+          style={styles.input}
+          value={(foodObj.serving_qty || '') + ''}
+          onChangeText={value => updateTextField('serving_qty', value)}
+          keyboardType="numeric"
+          placeholder="Quantity"
+        />
+        <NixInput
+          label=""
+          style={styles.input}
+          value={foodObj.serving_unit || 'Serving'}
+          onChangeText={value => updateTextField('serving_unit', value)}
+          placeholder="Serving Unit"
+        />
+        <NixInput
+          label="Calories"
+          required
+          style={styles.input}
+          value={(foodObj.nf_calories || '') + ''}
+          unit="kcal"
+          onChangeText={value => updateCustomField('nf_calories', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Fat"
+          style={styles.input}
+          value={(foodObj.nf_total_fat || '') + ''}
+          unit="g"
+          onChangeText={value => updateCustomField('nf_total_fat', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Saturated Fat"
+          style={styles.input}
+          value={(foodObj.nf_saturated_fat || '') + ''}
+          unit=""
+          onChangeText={value => updateCustomField('nf_saturated_fat', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Cholesterol"
+          style={styles.input}
+          value={(foodObj.nf_cholesterol || '') + ''}
+          unit="mg"
+          onChangeText={value => updateCustomField('nf_cholesterol', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Sodium"
+          style={styles.input}
+          value={(foodObj.nf_sodium || '') + ''}
+          unit="mg"
+          onChangeText={value => updateCustomField('nf_sodium', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Total Carbohydrate"
+          style={styles.input}
+          value={(foodObj.nf_total_carbohydrate || '') + ''}
+          unit="g"
+          onChangeText={value =>
+            updateCustomField('nf_total_carbohydrate', value)
+          }
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Dietary Fiber"
+          style={styles.input}
+          value={(foodObj.nf_dietary_fiber || '') + ''}
+          unit="g"
+          onChangeText={value => updateCustomField('nf_dietary_fiber', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Sugars"
+          style={styles.input}
+          value={(foodObj.nf_sugars || '') + ''}
+          unit="g"
+          onChangeText={value => updateCustomField('nf_sugars', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Protein"
+          style={styles.input}
+          value={(foodObj.nf_protein || '') + ''}
+          unit="g"
+          onChangeText={value => updateCustomField('nf_protein', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Vitamin A"
+          style={styles.input}
+          value={(foodObj.nf_vitamin_a_dv || '') + ''}
+          unit="%dv"
+          onChangeText={value => updateCustomField('nf_vitamin_a_dv', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Vitamin C"
+          style={styles.input}
+          value={(foodObj.nf_vitamin_c_dv || '') + ''}
+          unit="%dv"
+          onChangeText={value => updateCustomField('nf_vitamin_c_dv', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Vitamin D"
+          style={styles.input}
+          value={(foodObj.nf_vitamin_d_dv || '') + ''}
+          unit="%dv"
+          onChangeText={value => updateCustomField('nf_vitamin_d_dv', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Calcium"
+          style={styles.input}
+          value={(foodObj.nf_calcium_dv || '') + ''}
+          unit="%dv"
+          onChangeText={value => updateCustomField('nf_calcium_dv', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Iron"
+          style={styles.input}
+          value={(foodObj.nf_iron_dv || '') + ''}
+          unit="%dv"
+          onChangeText={value => updateCustomField('nf_iron_dv', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Phosphorus"
+          style={styles.input}
+          value={(foodObj.nf_p || '') + ''}
+          unit="mg"
+          onChangeText={value => updateCustomField('nf_p', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+        <NixInput
+          label="Potassium"
+          style={styles.input}
+          value={(foodObj.nf_potassium || '') + ''}
+          unit="mg"
+          onChangeText={value => updateCustomField('nf_potassium', value)}
+          keyboardType="numeric"
+          placeholder="0"
+        />
+
+        <View style={styles.footer}>
+          <Text style={styles.note}>
+            <Text style={styles.red}>*</Text>
+            denotes required fields
+          </Text>
+          <View style={[styles.flex1]}>
+            <ShakeView animated={invalid}>
+              <NixButton
+                title={
+                  route.params?.food
+                    ? 'Update'
+                    : logAfterSubmit
+                    ? 'Save and add to Log'
+                    : 'Submit'
+                }
+                type="primary"
+                onPress={() => saveCustomFood()}
+                disabled={isProcessingFood}
+              />
+            </ShakeView>
           </View>
-        )}
-      </View>
-    </KeyboardAwareScrollView>
+          {route.params?.food && (
+            <View style={[styles.flex1, styles.mt20]}>
+              <NixButton
+                title="Log this food"
+                type="primary"
+                iconName="ios-add-circle-outline"
+                iosIcon
+                iconStyles={styles.logIcon}
+                disabled={isProcessingFood}
+                onPress={() => saveCustomFood(true)}
+              />
+            </View>
+          )}
+        </View>
+      </KeyboardAwareScrollView>
+    </>
   );
 };

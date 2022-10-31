@@ -47,6 +47,18 @@ export const updateOrCreateCustomFood = (food: UpdateCustomFoodProps) => {
   };
 };
 
+export const getCustomFoodById = (id: string) => {
+  return async () => {
+    const response = await customFoodsService.getCustomFoodById(id);
+
+    const result = response.data;
+
+    if (result) {
+      return result;
+    }
+  };
+};
+
 export const deleteCustomFood = (id: string) => {
   return async (dispatch: Dispatch<any>) => {
     const response = await customFoodsService.deleteCustomFood(id);

@@ -21,6 +21,9 @@ const customFoodsService = {
       },
     );
   },
+  async getCustomFoodById(id: string) {
+    return await apiClient.get(`custom_foods/${id}`);
+  },
   async deleteCustomFood(id: string) {
     return await apiClient.delete(`custom_foods/${id}`);
   },
