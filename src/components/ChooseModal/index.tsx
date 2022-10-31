@@ -2,7 +2,7 @@
 import React from 'react';
 
 // components
-import {Modal, Text, View} from 'react-native';
+import {Modal, Text, View, KeyboardAvoidingView, Platform} from 'react-native';
 import {NixButton} from 'components/NixButton';
 
 // styles
@@ -40,7 +40,9 @@ const ChooseModal: React.FC<ChooseModalProps> = ({
       onRequestClose={() => {
         hideModal();
       }}>
-      <View style={styles.centeredView}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.centeredView}>
         <View style={styles.modalView}>
           {title && (
             <View style={styles.header}>
@@ -70,7 +72,7 @@ const ChooseModal: React.FC<ChooseModalProps> = ({
             </View>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
