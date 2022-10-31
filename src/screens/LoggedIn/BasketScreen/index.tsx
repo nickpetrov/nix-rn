@@ -231,14 +231,17 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     if (isSingleFood) {
       if (!loggingOptions.aggregate) {
         setErrorMessage('Please enter a food name');
+        setLoadingSubmit(false);
         return;
       }
       if (!loggingOptions.serving_qty) {
         setErrorMessage('Please enter a valid serving size');
+        setLoadingSubmit(false);
         return;
       }
       if (!loggingOptions.consumed_at) {
         setErrorMessage('Please enter date of consumption');
+        setLoadingSubmit(false);
         return;
       } else if (!loggingOptions.meal_type) {
         loggingOptions.meal_type = guessMealTypeByTime(

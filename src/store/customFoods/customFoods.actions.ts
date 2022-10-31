@@ -40,8 +40,10 @@ export const updateOrCreateCustomFood = (food: UpdateCustomFoodProps) => {
         type: customFoodsActionTypes.UPDATE_OR_CREATE_CUSTOM_FOOD,
         food: result,
       });
+      return result;
+    } else {
+      throw response;
     }
-    return result;
   };
 };
 

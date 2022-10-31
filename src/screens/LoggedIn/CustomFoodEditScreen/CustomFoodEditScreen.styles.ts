@@ -1,40 +1,39 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   root: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#fff',
-  },
-  scrollView: {
-    flex: 1,
-    padding: 10,
   },
   row: {
     flexDirection: 'row',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#bebebe',
-    padding: 10,
-    marginRight: 5,
-    marginVertical: 10,
+    backgroundColor: '#f2f2f2',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 3,
   },
-  saveBtn: {
-    fontSize: 18,
-    fontWeight: '600',
+  headerBtn: {
+    fontSize: 16,
+    fontWeight: '500',
     color: '#fff',
   },
   footer: {
-    flexDirection: 'row',
-    marginHorizontal: 10,
+    margin: 10,
   },
   flex1: {
     flex: 1,
   },
-  ml5: {
-    marginLeft: 5,
+  mt20: {
+    marginTop: 20,
   },
-  mr5: {
-    marginRight: 5,
+  note: {
+    paddingVertical: 10,
+    marginTop: 10,
+  },
+  red: {
+    color: Colors.Delete,
   },
 });

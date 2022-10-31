@@ -53,6 +53,7 @@ export interface StackNavigatorParamList extends ParamListBase {
     | {
         food?: FoodProps;
         logAfterSubmit?: boolean;
+        mealType?: number;
       }
     | undefined;
   [Routes.Recipes]:

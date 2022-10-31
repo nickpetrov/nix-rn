@@ -20,7 +20,7 @@ export default (
       if (foodIndex !== -1) {
         newFoods[foodIndex] = action.food;
       } else {
-        newFoods.push(action.food);
+        newFoods.unshift(action.food);
       }
       return {...state, foods: newFoods};
     }

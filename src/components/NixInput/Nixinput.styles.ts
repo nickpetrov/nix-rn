@@ -9,13 +9,16 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     paddingHorizontal: 15,
+    paddingRight: 10,
     borderBottomColor: Colors.LightGray,
     borderBottomWidth: 1,
   },
   label: {
+    fontWeight: '500',
     width: '30%',
   },
   input: {
+    flex: 1,
     paddingHorizontal: 2,
     paddingVertical: 0,
   },
@@ -25,5 +28,14 @@ export const styles = StyleSheet.create({
   },
   errorInput: {
     borderColor: 'red',
+  },
+  red: {
+    color: Colors.Delete,
+  },
+  unit: {
+    color: '#aaa',
+    fontSize: 14,
+    paddingHorizontal: 10,
+    width: '50%',
   },
 });

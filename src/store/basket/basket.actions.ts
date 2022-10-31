@@ -53,7 +53,7 @@ export const addFoodToBasket = (query: string) => {
       const result = response.data;
       const foods = result.foods.map((item: FoodProps) => {
         if (item.alt_measures) {
-          var temp = {
+          const temp = {
             serving_weight: item.serving_weight_grams,
             seq: null,
             measure: item.serving_unit,
@@ -126,10 +126,10 @@ export const addCustomFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
       delete foodToLog.public_id;
 
       // need to do this for top level
-      var nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+      const nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
         foodToLog.full_nutrients,
       );
-      var accepted = [
+      const accepted = [
         'nf_calories',
         'nf_total_fat',
         'nf_saturated_fat',
@@ -142,9 +142,9 @@ export const addCustomFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
         'nf_potassium',
         'nf_p',
       ];
-      var keep = _.pick(nf, accepted);
+      const keep = _.pick(nf, accepted);
       _.extend(foodToLog, keep);
-      var scaled_food = multiply(foodToLog, 1 / serving_qty, 1);
+      const scaled_food = multiply(foodToLog, 1 / serving_qty, 1);
       return {
         ...scaled_food,
         consumed_at:

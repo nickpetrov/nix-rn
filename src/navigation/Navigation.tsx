@@ -167,7 +167,7 @@ const LoggedInNavigation = ({
         name={Routes.CustomFoods}
         component={CustomFoodsScreen}
         options={{
-          headerTitle: 'Your Foods',
+          headerTitle: 'Custom Foods',
         }}
       />
       <Stack.Screen

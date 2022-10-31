@@ -630,6 +630,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
                             onPress={() =>
                               navigation.navigate(Routes.CustomFoodEdit, {
                                 logAfterSubmit: true,
+                                mealType: route.params?.mealType,
                               })
                             }
                             title="Create custom food"
