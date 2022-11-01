@@ -4,7 +4,7 @@ import moment from 'moment-timezone';
 
 // types
 import {Dispatch} from 'redux';
-import {baseActionTypes, ReviewCheckType} from './base.types';
+import {baseActionTypes, InfoMessageType, ReviewCheckType} from './base.types';
 
 export const setAgreedToUsePhoto = (agreedToUsePhoto: boolean) => {
   return async (dispatch: Dispatch) => {
@@ -55,9 +55,7 @@ export const showAgreementPopup = () => {
   };
 };
 
-export const setInfoMessage = (
-  data: {title?: string; text?: string} | null,
-) => {
+export const setInfoMessage = (data: InfoMessageType | null) => {
   return {
     type: baseActionTypes.SET_INFO_MESSAGE,
     payload: data,

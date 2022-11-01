@@ -15,7 +15,15 @@ import {styles} from './Nixinput.styles';
 
 interface NixInputProps extends TextInputProps {
   label?: string;
+  subLabel?: string;
   unit?: string;
+  unitValue?: string;
+  labelContainerStyle?: {
+    [key: string]: string | number;
+  };
+  labelStyle?: {
+    [key: string]: string | number;
+  };
   unitStyle?: {
     [key: string]: string | number;
   };
@@ -23,11 +31,15 @@ interface NixInputProps extends TextInputProps {
   value: string;
   onChangeText: (v: string) => void;
   error?: string;
+  rootStyles?: {
+    [key: string]: string | number;
+  };
   style?: {
     [key: string]: string | number;
   };
   required?: boolean;
   emptyLabel?: boolean;
+  withoutErorrText?: boolean;
 }
 
 export const NixInput: React.FC<NixInputProps> = ({
@@ -35,11 +47,17 @@ export const NixInput: React.FC<NixInputProps> = ({
   onChangeText,
   label,
   unit,
+  unitValue,
   placeholder,
   error,
   required,
   style,
+  rootStyles,
   unitStyle,
+  labelStyle,
+  subLabel,
+  labelContainerStyle,
+  withoutErorrText,
   ...props
 }) => {
   const inputRef: React.RefObject<TextInput> = useRef(null);
@@ -51,17 +69,26 @@ export const NixInput: React.FC<NixInputProps> = ({
   };
   return (
     <>
-      <TouchableWithoutFeedback style={styles.root} onPress={handleFocus}>
+      <TouchableWithoutFeedback
+        style={[styles.root, rootStyles && rootStyles]}
+        onPress={handleFocus}>
         <View style={styles.inputWrapper}>
-          {label !== undefined && (
-            <Text style={styles.label}>
-              {label && label}
-              {required && <Text style={styles.red}>*</Text>}
-            </Text>
-          )}
+          <View
+            style={[
+              styles.labelContainer,
+              labelContainerStyle && labelContainerStyle,
+            ]}>
+            {subLabel && <Text style={styles.subLabel}>{subLabel}</Text>}
+            {label !== undefined && (
+              <Text style={[styles.label, labelStyle && labelStyle]}>
+                {label && label}
+                {required && <Text style={styles.red}>*</Text>}
+              </Text>
+            )}
+          </View>
           <TextInput
             ref={inputRef}
-            style={[styles.input, !!error && styles.errorInput, style && style]}
+            style={[styles.input, style && style, !!error && styles.errorInput]}
             onChangeText={onChangeText}
             placeholder={placeholder}
             value={value}
@@ -73,9 +100,12 @@ export const NixInput: React.FC<NixInputProps> = ({
               {unit && unit}
             </Text>
           )}
+          {unitValue && <Text style={styles.unitValue}>{unitValue}</Text>}
         </View>
       </TouchableWithoutFeedback>
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && !withoutErorrText && (
+        <Text style={styles.errorText}>{error}</Text>
+      )}
     </>
   );
 };

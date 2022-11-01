@@ -15,6 +15,12 @@ export type ReviewCheckType = {
   popupShown: 0 | 1;
 };
 
+export type InfoMessageType = {
+  title?: string;
+  text?: string;
+  btnText?: string;
+};
+
 export type BaseState = {
   agreedToUsePhoto: boolean;
   agreementPopup: boolean;
@@ -25,10 +31,7 @@ export type BaseState = {
     manufacturer: string;
     appVersion: string;
   };
-  infoMessage: null | {
-    title?: string;
-    text?: string;
-  };
+  infoMessage: null | InfoMessageType;
   askForReview: boolean;
   reviewCheck: ReviewCheckType;
 };

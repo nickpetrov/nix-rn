@@ -114,7 +114,7 @@ const MainContent = () => {
         text={infoMessage?.text || ''}
         btn={{
           type: 'blue',
-          title: 'Close',
+          title: infoMessage?.btnText ? infoMessage?.btnText : 'Close',
         }}
       />
       <ChooseModal

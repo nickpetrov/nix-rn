@@ -13,9 +13,16 @@ export const styles = StyleSheet.create({
     borderBottomColor: Colors.LightGray,
     borderBottomWidth: 1,
   },
+  labelContainer: {
+    width: '30%',
+    paddingHorizontal: 10,
+  },
   label: {
     fontWeight: '500',
-    width: '30%',
+  },
+  subLabel: {
+    textAlign: 'right',
+    fontSize: 12,
   },
   input: {
     flex: 1,
@@ -37,5 +44,9 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     paddingHorizontal: 10,
     width: '50%',
+  },
+  unitValue: {
+    width: '20%',
+    textAlign: 'right',
   },
 });

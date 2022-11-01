@@ -54,6 +54,7 @@ import {
   StackNavigatorParamList,
 } from './navigation.types';
 import {NavigationHeader} from 'components/NavigationHeader';
+import WebViewScreen from 'screens/LoggedIn/WebViewScreen';
 
 const Stack = createNativeStackNavigator<StackNavigatorParamList>();
 const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
@@ -246,6 +247,13 @@ const LoggedInNavigation = ({
         component={StatsScreen}
         options={{
           headerTitle: 'Stats',
+        }}
+      />
+      <Stack.Screen
+        name={Routes.WebView}
+        component={WebViewScreen}
+        options={{
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

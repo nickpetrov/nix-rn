@@ -34,4 +34,5 @@ export enum Routes {
   LoggedIn = 'LoggedIn',
   LoginScreens = 'LoginScreens',
   Camera = 'Camera',
+  WebView = 'WebView',
 }

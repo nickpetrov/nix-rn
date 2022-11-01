@@ -1,18 +1,50 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   root: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
+    flexGrow: 1,
   },
   row: {
     flexDirection: 'row',
   },
+  item: {
+    height: 60,
+  },
   input: {
-    fontSize: 20,
+    borderColor: '#d7d7d7',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 4,
+    height: 40,
+    width: 150,
+    maxWidth: 150,
+  },
+  itemValue: {
+    width: '20%',
+    textAlign: 'right',
+  },
+  unit: {
+    width: '30%',
+    color: '#000',
+  },
+  smallUnit: {
+    width: '10%',
+  },
+  labelContainerStyle: {
+    width: '50%',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  label: {
+    textAlign: 'right',
+    fontWeight: '500',
+    fontSize: 16,
   },
   icon: {
     marginRight: 15,
@@ -20,27 +52,18 @@ export const styles = StyleSheet.create({
     color: '#666',
   },
   footer: {
-    marginBottom: 50,
+    marginVertical: 10,
     marginHorizontal: 8,
   },
-  textAlignRight: {
-    textAlign: 'right',
+  question: {
+    padding: 5,
   },
-  fz16: {
-    fontSize: 16,
+  errorView: {
+    padding: 10,
   },
-  fz13: {
-    fontSize: 13,
-  },
-  fz20: {
-    fontSize: 20,
-  },
-  w50: {
-    width: '50%',
-  },
-  labelContainer: {
-    width: '50%',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
+  error: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    color: Colors.Red,
   },
 });

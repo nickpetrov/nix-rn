@@ -42,6 +42,9 @@ export interface StackNavigatorParamList extends ParamListBase {
       }
     | undefined;
   [Routes.TrackFoods]: undefined;
+  [Routes.WebView]: {
+    url: string;
+  };
   [Routes.BarcodeScanner]:
     | {
         force_photo_upload?: boolean;
