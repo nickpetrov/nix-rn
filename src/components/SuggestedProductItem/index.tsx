@@ -3,7 +3,7 @@ import React from 'react';
 
 // components
 import {Image, Text, TouchableWithoutFeedback, View} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 
 // types
 import {SuggestedFoodProps} from 'store/foods/foods.types';
@@ -23,7 +23,7 @@ const SuggestedProductItem: React.FC<SuggestedProductItemProps> = ({
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <View style={styles.root}>
-        <View>
+        <View style={styles.imageContainer}>
           <Image
             style={styles.image}
             source={{uri: item.image_thumb}}
@@ -32,11 +32,11 @@ const SuggestedProductItem: React.FC<SuggestedProductItemProps> = ({
         </View>
         <View style={styles.content}>
           <Text style={styles.header}>{item.item_name}</Text>
-          <Text style={styles.text}>{item.brand_name}</Text>
-          <Text>{item.description}</Text>
+          <Text style={styles.brand}>{item.brand_name}</Text>
+          <Text style={styles.description}>{item.description}</Text>
         </View>
         <View style={styles.icon}>
-          <FontAwesome name="angle-right" size={50} color="#bebebe" />
+          <Ionicon name="ios-chevron-forward" size={30} color="#ddd" />
         </View>
       </View>
     </TouchableWithoutFeedback>

@@ -217,7 +217,7 @@ const LoggedInNavigation = ({
         name={Routes.Suggested}
         component={SuggestedScreen}
         options={{
-          headerTitle: 'Recommended Products',
+          headerTitle: 'Product Suggestions',
         }}
       />
       <Stack.Screen

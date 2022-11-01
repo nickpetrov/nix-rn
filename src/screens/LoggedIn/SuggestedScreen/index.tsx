@@ -2,14 +2,7 @@
 import React, {useCallback, useEffect} from 'react';
 
 // components
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  Image,
-  FlatList,
-  Linking,
-} from 'react-native';
+import {View, Text, Image, FlatList, Linking} from 'react-native';
 import {SvgUri} from 'react-native-svg';
 import Footer from 'components/Footer';
 import SuggestedProductItem from 'components/SuggestedProductItem';
@@ -29,6 +22,7 @@ import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
 import {getSuggestedFoods} from 'store/foods/foods.actions';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const {uri} = Image.resolveAssetSource(require('assets/recommended.svg'));
 
@@ -42,6 +36,7 @@ interface SuggestedScreenProps {
 export const SuggestedScreen: React.FC<SuggestedScreenProps> = ({
   navigation,
 }) => {
+  const netInfo = useNetInfo();
   const dispatch = useDispatch();
   const suggested_foods = useSelector(state => state.foods.suggested_foods);
 
@@ -57,35 +52,48 @@ export const SuggestedScreen: React.FC<SuggestedScreenProps> = ({
   return (
     <>
       <View style={styles.root}>
-        <View style={styles.imageContainer}>
-          <SvgUri
-            uri={uri}
-            width="50"
-            height="60"
-            viewBox="0 0 10 16"
-            preserveAspectRatio="none"
-          />
-        </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>
-            Our team of registered dietitians scours the web to pick out
-            products that could help you stay on track to leading a healthier
-            lifestyle.
-          </Text>
-        </View>
-      </View>
-      <TouchableWithoutFeedback>
-        <FlatList
-          data={suggested_foods}
-          keyExtractor={item => item.id}
-          renderItem={product => (
-            <SuggestedProductItem
-              onPress={() => handlePress(product.item.url)}
-              item={product.item}
+        <View style={styles.banner}>
+          <View style={styles.imageContainer}>
+            <SvgUri
+              uri={uri}
+              width="40"
+              height="60"
+              viewBox="0 0 10 16"
+              preserveAspectRatio="none"
             />
-          )}
-        />
-      </TouchableWithoutFeedback>
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.text}>
+              Our team of registered dietitians scours the web to pick out
+              products that could help you stay on track to leading a healthier
+              lifestyle.
+            </Text>
+          </View>
+        </View>
+        {netInfo.isConnected ? (
+          <FlatList
+            data={suggested_foods}
+            keyExtractor={item => item.id}
+            renderItem={product => (
+              <SuggestedProductItem
+                onPress={() => handlePress(product.item.url)}
+                item={product.item}
+              />
+            )}
+            ListFooterComponent={() => (
+              <Text style={styles.disclaimer}>
+                We hope you enjoy our product recommendations! Nutritionix may
+                collect a share of sales or other compensation from the links on
+                this page.
+              </Text>
+            )}
+          />
+        ) : (
+          <Text style={styles.offline}>
+            This feature is not available in offline mode.
+          </Text>
+        )}
+      </View>
       <Footer hide={false} navigation={navigation} />
     </>
   );

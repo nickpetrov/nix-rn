@@ -42,7 +42,7 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({navigation}) => {
           <View style={styles.flex1}>
             <NixDietGraph
               title="Food Logging Calendar"
-              target={userData.daily_kcal}
+              target={userData.daily_kcal || 0}
               initialDisplayDate={selectedDate}
               navigation={navigation}
             />
