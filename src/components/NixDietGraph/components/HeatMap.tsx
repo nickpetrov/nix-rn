@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import moment from 'moment';
 
 // components
-import {ScrollView} from 'react-native';
+import {View} from 'react-native';
 import Svg, {G, Rect, Text} from 'react-native-svg';
 
 // hooks
@@ -31,8 +31,10 @@ interface HeatMapProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Stats>;
 }
 
+// original app use angular-diet-graph-directive -> cal-heatmap for render months
 const HeatMap: React.FC<HeatMapProps> = props => {
   const dispatch = useDispatch();
+  // look for colors https://github.com/nutritionix/angular-diet-graph-directive/blob/master/src/angular-diet-graph-directive.scss
   const colorsArray = props.colors || [
     '#ededed',
     '#58a61c',
@@ -90,26 +92,29 @@ const HeatMap: React.FC<HeatMapProps> = props => {
     return SQUARE_SIZE + gutterSize;
   };
 
+  // look for percent - legend at https://github.com/nutritionix/angular-diet-graph-directive/blob/master/src/angular-diet-graph-directive.js
   const getFillColor = (value: number, goal: number) => {
     const percent = Math.round((value / goal) * 100);
     let color = colorsArray[0];
     switch (true) {
-      case percent >= 110:
+      case percent >= 115:
         color = colorsArray[6];
         break;
-      case percent >= 104:
+      case percent >= 107.5:
         color = colorsArray[5];
         break;
       case percent >= 100:
         color = colorsArray[4];
         break;
-      case percent >= 66:
+      case percent >= 92.5:
         color = colorsArray[3];
         break;
-      case percent >= 33:
+      case percent >= 85:
         color = colorsArray[2];
         break;
-      case percent > 0 && percent < 33:
+      case percent > 0 && percent < 85:
+      case value / goal > 0 && percent === 0:
+      case value < 0:
         color = colorsArray[1];
         break;
       default:
@@ -188,14 +193,27 @@ const HeatMap: React.FC<HeatMapProps> = props => {
   };
 
   return (
-    <ScrollView>
+    <View>
       <Svg
         // style={{ borderWidth: 1, borderColor: 'red' }}
         height={canvasHeight}
         width={canvasWidth}>
         {renderMonth()}
       </Svg>
-    </ScrollView>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          paddingVertical: 10,
+        }}>
+        {colorsArray.slice(1, 7).map(item => (
+          <View
+            key={item}
+            style={{backgroundColor: item, width: 10, height: 10, margin: 2}}
+          />
+        ))}
+      </View>
+    </View>
   );
 };
 

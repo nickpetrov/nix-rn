@@ -1,6 +1,6 @@
 import userLogService from 'api/userLogService';
 import {Dispatch} from 'redux';
-import {statsActionTypes} from './stats.types';
+import {getWeightParams, statsActionTypes} from './stats.types';
 import {RootState} from '../index';
 
 export const getDayTotals = (beginDate: string, endDate: string) => {
@@ -26,9 +26,11 @@ export const getDayTotals = (beginDate: string, endDate: string) => {
   };
 };
 
-export const getStatsWeight = () => {
+export const getStatsWeight = (params?: getWeightParams) => {
   return async (dispatch: Dispatch) => {
-    const response = await userLogService.getUserWeightlog({});
+    const response = await userLogService.getUserWeightlog(
+      params ? params : {},
+    );
 
     const result = response.data;
     // if (__DEV__) {
@@ -38,7 +40,9 @@ export const getStatsWeight = () => {
       dispatch({
         type: statsActionTypes.STATS_GET_WEIGHTS,
         weights: result.weights,
+        add: !!params?.offset && params?.offset > 0,
       });
+      return result.weights;
     }
   };
 };

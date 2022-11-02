@@ -2,12 +2,7 @@
 import React from 'react';
 
 // componetns
-import {
-  View,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ScrollView,
-} from 'react-native';
+import {View, ScrollView} from 'react-native';
 import Footer from 'components/Footer';
 import NixDietGraph from 'components/NixDietGraph';
 import {WeightGraph} from 'components/WeightGraph';
@@ -32,26 +27,20 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({navigation}) => {
   const {selectedDate} = useSelector(state => state.userLog);
 
   return (
-    <TouchableWithoutFeedback
-      style={styles.layout}
-      onPress={() => {
-        Keyboard.dismiss();
-      }}>
-      <>
-        <ScrollView style={styles.layout}>
-          <View style={styles.flex1}>
-            <NixDietGraph
-              title="Food Logging Calendar"
-              target={userData.daily_kcal || 0}
-              initialDisplayDate={selectedDate}
-              navigation={navigation}
-            />
+    <>
+      <ScrollView style={styles.layout}>
+        <View style={styles.flex1}>
+          <NixDietGraph
+            title="Food Logging Calendar"
+            target={userData.daily_kcal || 0}
+            initialDisplayDate={selectedDate}
+            navigation={navigation}
+          />
 
-            <WeightGraph />
-          </View>
-        </ScrollView>
-        <Footer hide={false} navigation={navigation} />
-      </>
-    </TouchableWithoutFeedback>
+          <WeightGraph />
+        </View>
+      </ScrollView>
+      <Footer hide={false} navigation={navigation} />
+    </>
   );
 };

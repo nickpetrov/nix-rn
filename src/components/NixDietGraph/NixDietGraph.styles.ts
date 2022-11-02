@@ -1,12 +1,27 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  root: {
+    borderWidth: 1,
+    borderColor: Colors.LightGray,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  content: {
+    padding: 10,
+  },
   titleContainer: {
-    alignItems: 'center',
-    marginVertical: 10,
+    backgroundColor: Colors.Highlight,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderBottomColor: Colors.LightGray,
+    borderBottomWidth: 2,
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
   },
   title: {
-    fontSize: 18,
+    fontWeight: 'bold',
   },
   btnsContainer: {
     width: 90,
@@ -34,9 +49,26 @@ export const styles = StyleSheet.create({
   },
   footer: {
     flexDirection: 'row',
+    borderTopColor: Colors.LightGray,
+    borderTopWidth: 1,
+  },
+  footerItem: {
+    flex: 1,
+    padding: 10,
   },
   flex1: {
     flex: 1,
+  },
+  fz12: {
+    fontSize: 12,
+  },
+  borderRight: {
+    borderRightWidth: 1,
+    borderRightColor: Colors.LightGray,
+  },
+  bold: {
+    fontSize: 16,
+    fontWeight: '500',
   },
   alignCenter: {
     alignItems: 'center',
@@ -49,11 +81,18 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 10,
     color: '#666',
+    marginBottom: 30,
   },
   textAlignCenter: {
     textAlign: 'center',
   },
   marginV10: {
     marginVertical: 10,
+  },
+  iconStyle: {
+    position: 'relative',
+    alignSelf: 'center',
+    marginRight: 0,
+    fontSize: 15,
   },
 });

@@ -1,6 +1,6 @@
 import moment from 'moment-timezone';
 
-const maxPoints = 10;
+const maxPoints = 12;
 
 export const pickerOptions = [
   {label: 'Last 7 days', value: 'week'},
@@ -74,7 +74,8 @@ export const getWeightChartData = (weightLog: any, from: any, to: any) => {
         moment(record.timestamp).isBefore(moment(to)) &&
         moment(record.timestamp).isAfter(moment(from)),
     )
-    .sort((a: any, b: any) => moment(a.timestamp).isAfter(moment(b.timestamp)));
+    .sort((a: any, b: any) => moment(a.timestamp).isBefore(moment(b.timestamp)))
+    .reverse();
   weightLogBoundaries.forEach(function (weight: any) {
     const date = moment(weight.timestamp).format(dateFormat);
     if (!dates[date]) {
@@ -106,11 +107,12 @@ export const getWeightChartData = (weightLog: any, from: any, to: any) => {
       dates[date] = weights.reduce((acc, val) => acc + val) / weights.length;
     }
   });
+
   if (datesKeys.length > maxPoints) {
     const intervalLength = (datesKeys.length - 2) / (maxPoints - 2);
     const tmp = [];
 
-    for (let i = 1; i <= maxPoints - 2; i += 1) {
+    for (let i = 0; i <= maxPoints - 2; i += 1) {
       const startIndex = 1 + (i - 1) * intervalLength;
       const endIndex = 1 + i * intervalLength;
 
@@ -127,5 +129,8 @@ export const getWeightChartData = (weightLog: any, from: any, to: any) => {
     datesKeys = [...new Set(tmp)];
   }
 
-  return {labels: datesKeys, values: datesKeys.map(key => dates[key])};
+  return {
+    labels: datesKeys,
+    values: datesKeys.map(key => +dates[key].toFixed(1)),
+  };
 };

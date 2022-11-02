@@ -1,12 +1,21 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  root: {
+    borderWidth: 1,
+    borderColor: Colors.LightGray,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
   titleContainer: {
-    backgroundColor: '#ddd',
+    backgroundColor: Colors.Highlight,
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderBottomColor: '#ccc',
+    borderBottomColor: Colors.LightGray,
     borderBottomWidth: 2,
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
   },
   title: {
     fontWeight: 'bold',
@@ -17,7 +26,14 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderColor: '#ccc',
+    borderColor: Colors.LightGray,
+    borderWidth: 1,
+    borderTopWidth: 0,
+  },
+  chartContainer: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderColor: Colors.LightGray,
     borderWidth: 1,
     borderTopWidth: 0,
   },
@@ -41,5 +57,25 @@ export const styles = StyleSheet.create({
   },
   footerText: {
     textAlign: 'center',
+  },
+  labels: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingVertical: 10,
+  },
+  labelTitle: {
+    color: '#333',
+    fontSize: 12,
+    textAlign: 'center',
+    fontWeight: '800',
+  },
+  labelNote: {
+    textAlign: 'center',
+    fontSize: 10,
+    textTransform: 'uppercase',
+    color: Colors.Secondary,
+  },
+  labelIcon: {
+    fontSize: 12,
   },
 });

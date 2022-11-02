@@ -33,6 +33,7 @@ interface NixDietGraphProps {
 }
 
 const NixDietGraph: React.FC<NixDietGraphProps> = props => {
+  const showMissedDays = true;
   const dispatch = useDispatch();
   const dates = useSelector(state => state.stats.dates);
   const [monthOffset, setMonthOffset] = useState(0);
@@ -62,6 +63,9 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
 
   const [trackedDays, setTrackedDays] = useState(0);
   const [greenDays, setGreenDays] = useState(0);
+  const currentDay = moment();
+  const dayPassedFromTheStartOfMonth = currentDay.diff(startDate, 'days');
+  let missed = dayPassedFromTheStartOfMonth - trackedDays;
 
   // const disableNavigation = false;
   // let disablePrev = false;
@@ -162,67 +166,84 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
   }, [dates]);
 
   return (
-    <View>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
-      <View>
-        <View style={styles.btnsContainer}>
-          <View style={[styles.btn, styles.mr3]}>
-            <NixButton
-              iconName="chevron-left"
-              type="calm"
-              onPress={() => setMonthOffset(prevState => prevState - 1)}
+    <>
+      <View style={styles.root}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{title}</Text>
+        </View>
+        <View style={styles.content}>
+          <View style={styles.btnsContainer}>
+            <View style={[styles.btn, styles.mr3]}>
+              <NixButton
+                iconName="chevron-left"
+                type="calm"
+                onPress={() => setMonthOffset(prevState => prevState - 1)}
+                iconStyles={styles.iconStyle}
+              />
+            </View>
+            <View style={[styles.btn, styles.ml3]}>
+              <NixButton
+                iconName="chevron-right"
+                type="calm"
+                onPress={() => setMonthOffset(prevState => prevState + 1)}
+                iconStyles={styles.iconStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.main}>
+            <Text style={styles.text}>
+              {selectedMonth}, {moment(startDate).format('YYYY')}
+            </Text>
+            <HeatMap
+              targets={targets}
+              values={values}
+              skipFromStart={+firstWeekdayNumber - 1}
+              daysInMonth={daysInMonth}
+              selectedMonth={selectedMonth}
+              navigation={props.navigation}
             />
           </View>
-          <View style={[styles.btn, styles.ml3]}>
-            <NixButton
-              iconName="chevron-right"
-              type="calm"
-              onPress={() => setMonthOffset(prevState => prevState + 1)}
-            />
-          </View>
         </View>
-        <View style={styles.main}>
-          <Text style={styles.text}>
-            {selectedMonth}, {moment(startDate).format('YYYY')}
-          </Text>
-          <HeatMap
-            targets={targets}
-            values={values}
-            skipFromStart={+firstWeekdayNumber - 1}
-            daysInMonth={daysInMonth}
-            selectedMonth={selectedMonth}
-            navigation={props.navigation}
-          />
-        </View>
-        <View style={styles.footer}>
-          <View style={[styles.flex1, styles.alignCenter]}>
-            <Text style={styles.footerCenteredText}>
-              Total Days{'\n'}Tracked
-            </Text>
-            <Text style={[styles.textAlignCenter, styles.marginV10]}>
-              {trackedDays} Days
-            </Text>
+        {(!!missed || !!trackedDays) && (
+          <View style={styles.footer}>
+            {!showMissedDays && (
+              <View style={styles.footerItem}>
+                <Text style={styles.footerCenteredText}>
+                  Total Days Tracked
+                </Text>
+                <Text style={[styles.textAlignCenter, styles.bold]}>
+                  {trackedDays} Days
+                </Text>
+              </View>
+            )}
+            {showMissedDays && (
+              <View style={[styles.footerItem, styles.borderRight]}>
+                <Text style={[styles.footerCenteredText, styles.fz12]}>
+                  Days Missed
+                </Text>
+                <Text style={[styles.textAlignCenter, styles.bold]}>
+                  {missed} Days
+                </Text>
+              </View>
+            )}
+            <View style={styles.footerItem}>
+              <Text style={[styles.footerCenteredText, styles.fz12]}>
+                % Days of Green
+              </Text>
+              <Text style={[styles.textAlignCenter, styles.bold]}>
+                {trackedDays && greenDays
+                  ? Math.round((greenDays / trackedDays) * 100)
+                  : 0}
+                %
+              </Text>
+            </View>
           </View>
-          <View style={styles.flex1}>
-            <Text style={styles.footerCenteredText}>Days{'\n'}Missed</Text>
-            <Text style={[styles.textAlignCenter, styles.marginV10]}>
-              {+daysInMonth - trackedDays} Days
-            </Text>
-          </View>
-          <View style={styles.flex1}>
-            <Text style={styles.footerCenteredText}>% Days{'\n'}of Green</Text>
-            <Text style={[styles.textAlignCenter, styles.marginV10]}>
-              {trackedDays && greenDays ? (greenDays / trackedDays) * 100 : 0}%
-            </Text>
-          </View>
-        </View>
-        <Text style={styles.footerNote}>
-          Tap on any date on the calendar to review or add foods.
-        </Text>
+        )}
       </View>
-    </View>
+      <Text style={styles.footerNote}>
+        Tap on any date on the calendar to review or add foods.
+      </Text>
+    </>
   );
 };
 

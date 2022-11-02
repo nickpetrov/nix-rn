@@ -10,3 +10,11 @@ export interface StatsState {
   dates: Array<TotalProps>;
   weights: Array<WeightProps>;
 }
+
+export type getWeightParams = {
+  begin?: string;
+  end?: string;
+  timezone?: string;
+  offset?: number;
+  limit?: number;
+};

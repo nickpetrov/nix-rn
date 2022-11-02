@@ -1,4 +1,5 @@
 import apiClient from 'api';
+import {getWeightParams} from 'store/stats/stats.types';
 import {
   ExerciseProps,
   FoodProps,
@@ -50,23 +51,19 @@ const userLogService = {
     });
   },
   async getUserWeightlog({
-    beginDate,
-    endDate,
+    begin,
+    end,
     offset,
     timezone,
-  }: {
-    beginDate?: string;
-    endDate?: string;
-    offset?: number | undefined;
-    timezone?: string;
-  }) {
+    limit,
+  }: getWeightParams) {
     return await apiClient.get('weight/log', {
       params: {
-        begin: beginDate,
-        end: endDate,
+        begin,
+        end,
         offset,
         timezone,
-        limit: 500,
+        limit: limit || 500,
       },
     });
   },
