@@ -1,8 +1,12 @@
 // utils
 import React from 'react';
+import {getReadableVersion, getBuildNumber} from 'react-native-device-info';
 
 // components
 import {View, Text, TouchableWithoutFeedback, SafeAreaView} from 'react-native';
+
+// hooks
+import {useSelector} from 'hooks/useRedux';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -24,8 +28,11 @@ interface PreferencesMenuScreenProps {
 export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
   navigation,
 }) => {
+  const daily_kcal = useSelector(state => state.auth.userData.daily_kcal);
+  const appVersion = getReadableVersion();
+  const buildNumber = getBuildNumber();
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.root}>
       <TouchableWithoutFeedback
         onPress={() => {
           navigation.navigate(Routes.Profile);
@@ -38,8 +45,9 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
         onPress={() => {
           navigation.navigate(Routes.DailyCalories);
         }}>
-        <View style={styles.menuItem}>
+        <View style={[styles.menuItem, styles.menuItemRow]}>
           <Text>Daily Calorie Preferences</Text>
+          <Text style={styles.cal}>{daily_kcal}</Text>
         </View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
@@ -74,6 +82,9 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
           <Text>Developer settings</Text>
         </View>
       </TouchableWithoutFeedback>
+      <Text style={styles.version}>
+        Version: {appVersion}({buildNumber})
+      </Text>
     </SafeAreaView>
   );
 };
