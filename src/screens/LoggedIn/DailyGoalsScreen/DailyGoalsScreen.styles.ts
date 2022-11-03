@@ -12,9 +12,9 @@ export const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
   },
-  item: {
-    height: 60,
-  },
+  // item: {
+  //   height: 60,
+  // },
   input: {
     borderColor: '#d7d7d7',
     borderWidth: 1,

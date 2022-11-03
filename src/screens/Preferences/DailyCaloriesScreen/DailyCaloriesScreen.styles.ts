@@ -1,3 +1,4 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -7,7 +8,13 @@ export const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginVertical: 10,
+    marginVertical: 5,
+    padding: 10,
+  },
+  fields: {
+    borderRadius: 10,
+    borderColor: Colors.LightGray,
+    borderWidth: 1,
   },
   panel: {
     margin: 10,
@@ -39,4 +46,7 @@ export const styles = StyleSheet.create({
     textDecorationColor: '#0000ff',
   },
   input: {},
+  question: {
+    padding: 5,
+  },
 });

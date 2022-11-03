@@ -2,16 +2,18 @@ import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
-  root: {},
+  root: {
+    flexDirection: 'row',
+    borderBottomColor: Colors.LightGray,
+    borderBottomWidth: 1,
+    padding: 10,
+    paddingHorizontal: 15,
+    paddingRight: 10,
+  },
   inputWrapper: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    paddingHorizontal: 15,
-    paddingRight: 10,
-    borderBottomColor: Colors.LightGray,
-    borderBottomWidth: 1,
   },
   column: {
     flexDirection: 'column',

@@ -1,5 +1,5 @@
 // utils
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useLayoutEffect} from 'react';
 import moment from 'moment-timezone';
 
 // components
@@ -7,7 +7,6 @@ import {
   View,
   Text,
   TouchableWithoutFeedback,
-  ScrollView,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
@@ -40,6 +39,7 @@ import {styles} from './DailyCaloriesScreen.styles';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {User} from 'store/auth/auth.types';
+import {NavigationHeader} from 'components/NavigationHeader';
 
 interface DailyCaloriesScreenProps {
   navigation: NativeStackNavigationProp<
@@ -69,16 +69,10 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
   const [measureSystem, setMeasureSystem] = useState(userData.measure_system);
   const [daily_kcal] = useState(userData.daily_kcal + '');
   const [weight_kg] = useState(userData.weight_kg + '');
-  const [weight_lb] = useState(
-    Math.round(parseFloat(userData.weight_kg) * 2.20462) + '',
-  );
+  const [weight_lb] = useState(Math.round(userData.weight_kg * 2.20462) + '');
   const [height_cm] = useState(userData.height_cm + '');
-  const [height_ft] = useState(
-    Math.floor(parseFloat(userData.height_cm) / 30.48) + '',
-  );
-  const [height_in] = useState(
-    (parseFloat(userData.height_cm) % 30.48) / 2.54 + '',
-  );
+  const [height_ft] = useState(Math.floor(userData.height_cm / 30.48) + '');
+  const [height_in] = useState((userData.height_cm % 30.48) / 2.54 + '');
   const [gender, setGender] = useState(userData.gender);
   const [birth_year] = useState(userData.birth_year + '');
   const [age] = useState(moment().year() - userData.birth_year + '');
@@ -138,6 +132,27 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
     }
   };
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      header: (props: any) => (
+        <NavigationHeader
+          {...props}
+          headerRight={
+            <TouchableOpacity
+              style={styles.question}
+              onPress={() =>
+                navigation.navigate(Routes.WebView, {
+                  url: 'https://help.nutritionix.com/articles/6153-setting-understanding-your-daily-calorie-limit',
+                })
+              }>
+              <FontAwesome5 size={15} color={'white'} name="question" />
+            </TouchableOpacity>
+          }
+        />
+      ),
+    });
+  }, [navigation]);
+
   const FormikInitValues: FormikDataProps = {
     measure_system: measureSystem,
     weight_kg,
@@ -152,17 +167,17 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
   };
 
   return (
-    <KeyboardAwareScrollView style={styles.root}>
-      <SafeAreaView style={styles.container}>
-        <ScrollView>
-          <Formik
-            initialValues={FormikInitValues}
-            innerRef={formRef}
-            onSubmit={values => submitHandler(values)}
-            // validationSchema={}
-            validateOnMount>
-            {({handleSubmit, setFieldValue, isValid, values, dirty}) => (
-              <>
+    <SafeAreaView style={styles.root}>
+      <KeyboardAwareScrollView style={styles.container}>
+        <Formik
+          initialValues={FormikInitValues}
+          innerRef={formRef}
+          onSubmit={values => submitHandler(values)}
+          // validationSchema={}
+          validateOnMount>
+          {({handleSubmit, setFieldValue, isValid, values, dirty}) => (
+            <>
+              <View style={styles.fields}>
                 <ModalSelector
                   data={[
                     {
@@ -382,165 +397,165 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     setFieldValue('birth_year', moment().year() - newVal);
                   }}
                 />
-                <View style={styles.panel}>
-                  <View style={styles.panelHeader}>
-                    <Text>Recommended Calories</Text>
-                  </View>
-                  <View style={styles.panelBody}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginBottom: 10,
-                      }}>
-                      <Text style={styles.recommendedKcal}>
-                        {NixCalc.calculateRecommendedCalories(
-                          values.gender || 'female',
-                          values.weight_kg,
-                          values.height_cm,
-                          values.age,
-                          2,
-                        )}
-                      </Text>
-                      <Text>Maintain Current Weight</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginBottom: 10,
-                      }}>
-                      <Text style={styles.recommendedKcal}>
-                        {NixCalc.calculateRecommendedCalories(
-                          values.gender || 'female',
-                          values.weight_kg,
-                          values.height_cm,
-                          values.age,
-                          2,
-                        ) - 500}
-                      </Text>
-                      <Text>
-                        Lose {values.measure_system === 1 ? '~0.5 kg' : '~1 lb'}{' '}
-                        per week
-                      </Text>
-                    </View>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={styles.recommendedKcal}>
-                        {NixCalc.calculateRecommendedCalories(
-                          values.gender || 'female',
-                          values.weight_kg,
-                          values.height_cm,
-                          values.age,
-                          2,
-                        ) + 500}
-                      </Text>
-                      <Text>
-                        Gain {values.measure_system === 1 ? '~0.5 kg' : '~1 lb'}{' '}
-                        per week
-                      </Text>
-                    </View>
-                  </View>
+              </View>
+              <View style={styles.panel}>
+                <View style={styles.panelHeader}>
+                  <Text>Recommended Calories</Text>
                 </View>
-                <View style={styles.panel}>
-                  <View style={styles.panelHeader}>
-                    <Text>Enter daily calorie limit: </Text>
-                  </View>
-                  <View style={styles.panelBody}>
-                    <Field
-                      component={NixInputField}
-                      name="daily_kcal"
-                      label="My Daily Calorie Limit"
-                      style={styles.input}
-                      leftComponent={
-                        <FontAwesome
-                          name={'fire'}
-                          size={30}
-                          style={{
-                            marginRight: 15,
-                            marginBottom: 2,
-                            color: '#666',
-                          }}
-                        />
-                      }
-                      autoCapitalize="none"
-                      keyboardType="numeric"
-                      onValueChange={(newVal: number) => {
-                        setFieldValue('birth_year', moment().year() - newVal);
-                      }}
-                    />
-                  </View>
-                </View>
-                <View style={{paddingHorizontal: 10}}>
-                  <Text>
-                    <Text style={{fontWeight: 'bold'}}>Disclaimer: </Text>
-                    This information is for use in adults defined as individuals
-                    18 years of age or older and not by younger people, or
-                    pregnant or breastfeeding women.This information is not
-                    intended to provide medical advice.A health care provider
-                    who has examined you and knows your medical history is the
-                    best person to diagnose and treat your health problem. If
-                    you have specific health questions, please consult your
-                    health care provider.Calorie calculations are based on the
-                    Harris Benedict equation, and corrected MET values are
-                    provided as referenced at these sources:
-                  </Text>
-                  <TouchableWithoutFeedback
-                    onPress={() => {
-                      setModalWebViewUrl(
-                        'https://sites.google.com/site/compendiumofphysicalactivities/corrected-mets',
-                      );
-                    }}>
-                    <Text style={styles.hyperlink}>
-                      Compendium of Physical Activities
-                    </Text>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback
-                    onPress={() => {
-                      setModalWebViewUrl(
-                        'http://www.umass.edu/physicalactivity/newsite/publications/Sarah%20Keadle/papers/1.pdf',
-                      );
-                    }}>
-                    <Text style={styles.hyperlink}>
-                      Corrected Metabolic Equivalents
-                    </Text>
-                  </TouchableWithoutFeedback>
-                </View>
-                <View style={{marginBottom: 50}}>
+                <View style={styles.panelBody}>
                   <View
                     style={{
-                      flex: 1,
-                      marginHorizontal: 8,
-                      position: 'absolute',
-                      width: '50%',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginBottom: 10,
                     }}>
-                    <NixButton
-                      title="Sumbit"
-                      onPress={handleSubmit}
-                      type="primary"
-                      disabled={!isValid || !dirty}
-                    />
+                    <Text style={styles.recommendedKcal}>
+                      {NixCalc.calculateRecommendedCalories(
+                        values.gender || 'female',
+                        values.weight_kg,
+                        values.height_cm,
+                        values.age,
+                        2,
+                      )}
+                    </Text>
+                    <Text>Maintain Current Weight</Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginBottom: 10,
+                    }}>
+                    <Text style={styles.recommendedKcal}>
+                      {NixCalc.calculateRecommendedCalories(
+                        values.gender || 'female',
+                        values.weight_kg,
+                        values.height_cm,
+                        values.age,
+                        2,
+                      ) - 500}
+                    </Text>
+                    <Text>
+                      Lose {values.measure_system === 1 ? '~0.5 kg' : '~1 lb'}{' '}
+                      per week
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={styles.recommendedKcal}>
+                      {NixCalc.calculateRecommendedCalories(
+                        values.gender || 'female',
+                        values.weight_kg,
+                        values.height_cm,
+                        values.age,
+                        2,
+                      ) + 500}
+                    </Text>
+                    <Text>
+                      Gain {values.measure_system === 1 ? '~0.5 kg' : '~1 lb'}{' '}
+                      per week
+                    </Text>
                   </View>
                 </View>
-              </>
-            )}
-          </Formik>
-          {modalWebViewUrl.length ? (
-            <View
-              style={{
-                position: 'absolute',
-                flex: 1,
-                top: 0,
-                left: 0,
-                width: '100%',
-              }}>
-              <TouchableOpacity>
-                <FontAwesome name="close" />
-              </TouchableOpacity>
-              <WebView style={{flex: 1}} source={{uri: modalWebViewUrl}} />
-            </View>
-          ) : null}
-        </ScrollView>
-      </SafeAreaView>
-    </KeyboardAwareScrollView>
+              </View>
+              <View style={styles.panel}>
+                <View style={styles.panelHeader}>
+                  <Text>Enter daily calorie limit: </Text>
+                </View>
+                <View style={styles.panelBody}>
+                  <Field
+                    component={NixInputField}
+                    name="daily_kcal"
+                    label="My Daily Calorie Limit"
+                    style={styles.input}
+                    leftComponent={
+                      <FontAwesome
+                        name={'fire'}
+                        size={30}
+                        style={{
+                          marginRight: 15,
+                          marginBottom: 2,
+                          color: '#666',
+                        }}
+                      />
+                    }
+                    autoCapitalize="none"
+                    keyboardType="numeric"
+                    onValueChange={(newVal: number) => {
+                      setFieldValue('birth_year', moment().year() - newVal);
+                    }}
+                  />
+                </View>
+              </View>
+              <View style={{paddingHorizontal: 10}}>
+                <Text>
+                  <Text style={{fontWeight: 'bold'}}>Disclaimer: </Text>
+                  This information is for use in adults defined as individuals
+                  18 years of age or older and not by younger people, or
+                  pregnant or breastfeeding women.This information is not
+                  intended to provide medical advice.A health care provider who
+                  has examined you and knows your medical history is the best
+                  person to diagnose and treat your health problem. If you have
+                  specific health questions, please consult your health care
+                  provider.Calorie calculations are based on the Harris Benedict
+                  equation, and corrected MET values are provided as referenced
+                  at these sources:
+                </Text>
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    setModalWebViewUrl(
+                      'https://sites.google.com/site/compendiumofphysicalactivities/corrected-mets',
+                    );
+                  }}>
+                  <Text style={styles.hyperlink}>
+                    Compendium of Physical Activities
+                  </Text>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    setModalWebViewUrl(
+                      'http://www.umass.edu/physicalactivity/newsite/publications/Sarah%20Keadle/papers/1.pdf',
+                    );
+                  }}>
+                  <Text style={styles.hyperlink}>
+                    Corrected Metabolic Equivalents
+                  </Text>
+                </TouchableWithoutFeedback>
+              </View>
+              <View style={{marginBottom: 50}}>
+                <View
+                  style={{
+                    flex: 1,
+                    marginHorizontal: 8,
+                    position: 'absolute',
+                    width: '50%',
+                  }}>
+                  <NixButton
+                    title="Sumbit"
+                    onPress={handleSubmit}
+                    type="primary"
+                    disabled={!isValid || !dirty}
+                  />
+                </View>
+              </View>
+            </>
+          )}
+        </Formik>
+        {modalWebViewUrl.length ? (
+          <View
+            style={{
+              position: 'absolute',
+              flex: 1,
+              top: 0,
+              left: 0,
+              width: '100%',
+            }}>
+            <TouchableOpacity>
+              <FontAwesome name="close" />
+            </TouchableOpacity>
+            <WebView style={{flex: 1}} source={{uri: modalWebViewUrl}} />
+          </View>
+        ) : null}
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 };

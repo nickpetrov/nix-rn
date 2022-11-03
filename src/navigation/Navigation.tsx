@@ -103,6 +103,7 @@ const PreferencesNavigation = () => {
       <Stack.Screen
         name={Routes.DailyCalories}
         component={DailyCaloriesScreen}
+        options={{headerTitle: 'Calculate Daily Calories'}}
       />
       <Stack.Screen
         name={Routes.ConnectedApps}

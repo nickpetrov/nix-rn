@@ -189,196 +189,87 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
             errors,
           }) => (
             <View>
-              <View style={styles.item}>
-                <NixInput
-                  label="Daily Calorie Limit:"
-                  labelStyle={styles.label}
-                  labelContainerStyle={styles.labelContainerStyle}
-                  style={styles.input}
-                  value={(values.daily_kcal || '') + ''}
-                  unit="kcal"
-                  unitStyle={styles.unit}
-                  onChangeText={handleChange('daily_kcal')}
-                  onBlur={handleBlur('daily_kcal')}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  error={errors.daily_kcal}
-                  withoutErorrText
-                />
-              </View>
-              <View style={styles.item}>
-                <NixInput
-                  subLabel="% of Calories from"
-                  label="Carbohydrates:"
-                  labelStyle={styles.label}
-                  labelContainerStyle={styles.labelContainerStyle}
-                  style={styles.input}
-                  value={(values.daily_carbs_pct || '') + ''}
-                  unit="%"
-                  unitValue={`${(
-                    (((values.daily_kcal || 0) / 100) *
-                      (values.daily_carbs_pct || 0)) /
-                    4
-                  ).toFixed(1)}g`}
-                  unitStyle={{...styles.unit, ...styles.smallUnit}}
-                  onChangeText={handleChange('daily_carbs_pct')}
-                  onBlur={handleBlur('daily_carbs_pct')}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  error={errors.daily_carbs_pct}
-                  withoutErorrText
-                />
-              </View>
-              <View style={styles.item}>
-                <NixInput
-                  subLabel="% of Calories from"
-                  label="Protein:"
-                  labelStyle={styles.label}
-                  labelContainerStyle={styles.labelContainerStyle}
-                  style={styles.input}
-                  value={(values.daily_protein_pct || '') + ''}
-                  unit="%"
-                  unitValue={`${(
-                    (((values.daily_kcal || 0) / 100) *
-                      (values.daily_protein_pct || 0)) /
-                    4
-                  ).toFixed(1)}g`}
-                  unitStyle={{...styles.unit, ...styles.smallUnit}}
-                  onChangeText={handleChange('daily_protein_pct')}
-                  onBlur={handleBlur('daily_protein_pct')}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  error={errors.daily_protein_pct}
-                  withoutErorrText
-                />
-              </View>
-              <View style={styles.item}>
-                <NixInput
-                  subLabel="% of Calories from"
-                  label="Fat:"
-                  labelStyle={styles.label}
-                  labelContainerStyle={styles.labelContainerStyle}
-                  style={styles.input}
-                  value={(values.daily_fat_pct || '') + ''}
-                  unit="%"
-                  unitValue={`${(
-                    (((values.daily_kcal || 0) / 100) *
-                      (values.daily_fat_pct || 0)) /
-                    9
-                  ).toFixed(1)}g`}
-                  unitStyle={{...styles.unit, ...styles.smallUnit}}
-                  onChangeText={handleChange('daily_fat_pct')}
-                  onBlur={handleBlur('daily_fat_pct')}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  error={errors.daily_fat_pct}
-                  withoutErorrText
-                />
-              </View>
+              <NixInput
+                label="Daily Calorie Limit:"
+                labelStyle={styles.label}
+                labelContainerStyle={styles.labelContainerStyle}
+                style={styles.input}
+                value={(values.daily_kcal || '') + ''}
+                unit="kcal"
+                unitStyle={styles.unit}
+                onChangeText={handleChange('daily_kcal')}
+                onBlur={handleBlur('daily_kcal')}
+                keyboardType="numeric"
+                placeholder="0"
+                error={errors.daily_kcal}
+                withoutErorrText
+              />
 
-              {/* <View style={styles.row}>
-                <View style={styles.labelContainer}>
-                  <Text style={[styles.textAlignRight, styles.fz16]}>
-                    Daily Calorie Limit:
-                  </Text>
-                </View>
-                <View style={styles.w50}>
-                  <Field
-                    component={NixInputField}
-                    name="daily_kcal"
-                    label=""
-                    style={styles.input}
-                    leftComponent={
-                      <FontAwesome
-                        name={'fire'}
-                        size={30}
-                        style={styles.icon}
-                      />
-                    }
-                    autoCapitalize="none"
-                    keyboardType="numeric"
-                  />
-                </View>
-              </View>
-              <View style={styles.row}>
-                <View style={styles.labelContainer}>
-                  <Text style={[styles.textAlignRight, styles.fz13]}>
-                    Calories from
-                  </Text>
-                  <Text style={[styles.textAlignRight, styles.fz20]}>
-                    Protein:
-                  </Text>
-                </View>
-                <View style={styles.w50}>
-                  <Field
-                    component={NixInputField}
-                    name="daily_protein_pct"
-                    label=""
-                    style={styles.input}
-                    rightComponent={
-                      <FontAwesome
-                        name={'percent'}
-                        size={20}
-                        style={styles.icon}
-                      />
-                    }
-                    autoCapitalize="none"
-                    keyboardType="numeric"
-                  />
-                </View>
-              </View>
-              <View style={styles.row}>
-                <View style={styles.labelContainer}>
-                  <Text style={[styles.textAlignRight, styles.fz13]}>
-                    Calories from
-                  </Text>
-                  <Text style={[styles.textAlignRight, styles.fz20]}>
-                    Carbohydrates:
-                  </Text>
-                </View>
-                <View style={styles.w50}>
-                  <Field
-                    component={NixInputField}
-                    name="daily_carbs_pct"
-                    label=""
-                    style={styles.input}
-                    rightComponent={
-                      <FontAwesome
-                        name={'percent'}
-                        size={20}
-                        style={styles.icon}
-                      />
-                    }
-                    autoCapitalize="none"
-                    keyboardType="numeric"
-                  />
-                </View>
-              </View>
-              <View style={styles.row}>
-                <View style={styles.labelContainer}>
-                  <Text style={[styles.textAlignRight, styles.fz13]}>
-                    Calories from
-                  </Text>
-                  <Text style={[styles.textAlignRight, styles.fz20]}>Fat:</Text>
-                </View>
-                <View style={styles.w50}>
-                  <Field
-                    component={NixInputField}
-                    name="daily_fat_pct"
-                    label=""
-                    style={styles.input}
-                    rightComponent={
-                      <FontAwesome
-                        name={'percent'}
-                        size={20}
-                        style={styles.icon}
-                      />
-                    }
-                    autoCapitalize="none"
-                    keyboardType="numeric"
-                  />
-                </View>
-              </View> */}
+              <NixInput
+                subLabel="% of Calories from"
+                label="Carbohydrates:"
+                labelStyle={styles.label}
+                labelContainerStyle={styles.labelContainerStyle}
+                style={styles.input}
+                value={(values.daily_carbs_pct || '') + ''}
+                unit="%"
+                unitValue={`${(
+                  (((values.daily_kcal || 0) / 100) *
+                    (values.daily_carbs_pct || 0)) /
+                  4
+                ).toFixed(1)}g`}
+                unitStyle={{...styles.unit, ...styles.smallUnit}}
+                onChangeText={handleChange('daily_carbs_pct')}
+                onBlur={handleBlur('daily_carbs_pct')}
+                keyboardType="numeric"
+                placeholder="0"
+                error={errors.daily_carbs_pct}
+                withoutErorrText
+              />
+
+              <NixInput
+                subLabel="% of Calories from"
+                label="Protein:"
+                labelStyle={styles.label}
+                labelContainerStyle={styles.labelContainerStyle}
+                style={styles.input}
+                value={(values.daily_protein_pct || '') + ''}
+                unit="%"
+                unitValue={`${(
+                  (((values.daily_kcal || 0) / 100) *
+                    (values.daily_protein_pct || 0)) /
+                  4
+                ).toFixed(1)}g`}
+                unitStyle={{...styles.unit, ...styles.smallUnit}}
+                onChangeText={handleChange('daily_protein_pct')}
+                onBlur={handleBlur('daily_protein_pct')}
+                keyboardType="numeric"
+                placeholder="0"
+                error={errors.daily_protein_pct}
+                withoutErorrText
+              />
+
+              <NixInput
+                subLabel="% of Calories from"
+                label="Fat:"
+                labelStyle={styles.label}
+                labelContainerStyle={styles.labelContainerStyle}
+                style={styles.input}
+                value={(values.daily_fat_pct || '') + ''}
+                unit="%"
+                unitValue={`${(
+                  (((values.daily_kcal || 0) / 100) *
+                    (values.daily_fat_pct || 0)) /
+                  9
+                ).toFixed(1)}g`}
+                unitStyle={{...styles.unit, ...styles.smallUnit}}
+                onChangeText={handleChange('daily_fat_pct')}
+                onBlur={handleBlur('daily_fat_pct')}
+                keyboardType="numeric"
+                placeholder="0"
+                error={errors.daily_fat_pct}
+                withoutErorrText
+              />
               {Object.values(errors).some(item => item) && (
                 <View style={styles.errorView}>
                   <Text style={styles.error}>
