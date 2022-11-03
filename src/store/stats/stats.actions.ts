@@ -6,43 +6,50 @@ import {RootState} from '../index';
 export const getDayTotals = (beginDate: string, endDate: string) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
     const timezone = useState().auth.userData.timezone;
-
-    const response = await userLogService.getTotals({
-      beginDate,
-      endDate,
-      timezone,
-    });
-
-    const totals = response.data;
-    // if (__DEV__) {
-    //   console.log('totals', totals);
-    // }
-    if (totals.dates) {
-      dispatch({
-        type: statsActionTypes.STATS_GET_DAY_TOTALS,
-        dates: totals.dates || [],
+    try {
+      const response = await userLogService.getTotals({
+        beginDate,
+        endDate,
+        timezone,
       });
+
+      const totals = response.data;
+      // if (__DEV__) {
+      //   console.log('totals', totals);
+      // }
+      if (totals.dates) {
+        dispatch({
+          type: statsActionTypes.STATS_GET_DAY_TOTALS,
+          dates: totals.dates || [],
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 
 export const getStatsWeight = (params?: getWeightParams) => {
   return async (dispatch: Dispatch) => {
-    const response = await userLogService.getUserWeightlog(
-      params ? params : {},
-    );
+    try {
+      const response = await userLogService.getUserWeightlog(
+        params ? params : {},
+      );
 
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('weightsLog', result.weights);
-    // }
-    if (result.weights) {
-      dispatch({
-        type: statsActionTypes.STATS_GET_WEIGHTS,
-        weights: result.weights,
-        add: !!params?.offset && params?.offset > 0,
-      });
-      return result.weights;
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('weightsLog', result.weights);
+      // }
+      if (result.weights) {
+        dispatch({
+          type: statsActionTypes.STATS_GET_WEIGHTS,
+          weights: result.weights,
+          add: !!params?.offset && params?.offset > 0,
+        });
+        return result.weights;
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };

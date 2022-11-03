@@ -45,11 +45,9 @@ const resetBasketStorage = () => {
 // add by name
 export const addFoodToBasket = (query: string) => {
   return async (dispatch: Dispatch) => {
-    const response = await basketService.getFoodForBasket(query);
+    try {
+      const response = await basketService.getFoodForBasket(query);
 
-    if (response.status === 400 || response.status === 404) {
-      throw response;
-    } else {
       const result = response.data;
       const foods = result.foods.map((item: FoodProps) => {
         if (item.alt_measures) {
@@ -70,6 +68,8 @@ export const addFoodToBasket = (query: string) => {
       saveBasketToStorage({foods: foods});
       dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: foods});
       return foods;
+    } catch (err: any) {
+      throw err;
     }
   };
 };
@@ -77,11 +77,9 @@ export const addFoodToBasket = (query: string) => {
 // add by id
 export const addFoodToBasketById = (id: string) => {
   return async (dispatch: Dispatch) => {
-    const response = await autoCompleteService.getFoodById(id);
+    try {
+      const response = await autoCompleteService.getFoodById(id);
 
-    if (response.status === 400 || response.status === 404) {
-      throw response;
-    } else {
       const food = response.data.foods[0];
       if (food.id) {
         delete food.id;
@@ -94,6 +92,8 @@ export const addFoodToBasketById = (id: string) => {
       saveBasketToStorage({foods: [food]});
       dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]});
       return [food];
+    } catch (err: any) {
+      throw err;
     }
   };
 };
@@ -161,67 +161,69 @@ export const addCustomFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
 // add exist food
 export const addRecipeToBasket = (id: string) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
-    const response = await recipesService.getRecipeById(id);
-    const recipe = response.data;
-    if (recipe) {
-      _.forEach(recipe.ingredients, function (foodObj) {
-        if (foodObj.alt_measures) {
-          const temp = {
-            serving_weight: foodObj.serving_weight_grams,
-            seq: null,
-            measure: foodObj.serving_unit,
-            qty: foodObj.serving_qty,
-          };
-          foodObj.alt_measures.unshift(temp);
-        }
-      });
+    try {
+      const response = await recipesService.getRecipeById(id);
+      const recipe = response.data;
+      if (recipe) {
+        _.forEach(recipe.ingredients, function (foodObj) {
+          if (foodObj.alt_measures) {
+            const temp = {
+              serving_weight: foodObj.serving_weight_grams,
+              seq: null,
+              measure: foodObj.serving_unit,
+              qty: foodObj.serving_qty,
+            };
+            foodObj.alt_measures.unshift(temp);
+          }
+        });
 
-      const serving_qty = recipe.serving_qty;
+        const serving_qty = recipe.serving_qty;
 
-      const recipeToLog = _.cloneDeep(recipe);
+        const recipeToLog = _.cloneDeep(recipe);
 
-      // need to do this for top level as well as each ingredient
-      const nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
-        recipeToLog.full_nutrients,
-      );
-      const accepted = [
-        'nf_calories',
-        'nf_total_fat',
-        'nf_saturated_fat',
-        'nf_cholesterol',
-        'nf_sodium',
-        'nf_total_carbohydrate',
-        'nf_dietary_fiber',
-        'nf_sugars',
-        'nf_protein',
-        'nf_potassium',
-        'nf_p',
-      ];
-      const keep = _.pick(nf, accepted);
-      _.extend(recipeToLog, keep);
-
-      _.forEach(recipeToLog.ingredients, function (ingredient) {
-        const ing_nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
-          ingredient.full_nutrients,
+        // need to do this for top level as well as each ingredient
+        const nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+          recipeToLog.full_nutrients,
         );
-        const ing_keep = _.pick(ing_nf, accepted);
-        _.extend(ingredient, ing_keep);
-      });
+        const accepted = [
+          'nf_calories',
+          'nf_total_fat',
+          'nf_saturated_fat',
+          'nf_cholesterol',
+          'nf_sodium',
+          'nf_total_carbohydrate',
+          'nf_dietary_fiber',
+          'nf_sugars',
+          'nf_protein',
+          'nf_potassium',
+          'nf_p',
+        ];
+        const keep = _.pick(nf, accepted);
+        _.extend(recipeToLog, keep);
 
-      //only want to log 1 serving
-      const scaled_recipe = multiply(recipeToLog, 1 / serving_qty, 1);
-      const timezone = useState().auth.userData.timezone;
-      const newFoods = scaled_recipe.ingredients.map((item: FoodProps) => ({
-        ...item,
-        consumed_at:
-          moment().format('YYYY-MM-DDTHH:mm:ss') +
-          moment.tz(timezone).format('Z'),
-        basketId: uuidv4(),
-      }));
-      dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: newFoods});
-      return scaled_recipe;
-    } else {
-      throw response;
+        _.forEach(recipeToLog.ingredients, function (ingredient) {
+          const ing_nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+            ingredient.full_nutrients,
+          );
+          const ing_keep = _.pick(ing_nf, accepted);
+          _.extend(ingredient, ing_keep);
+        });
+
+        //only want to log 1 serving
+        const scaled_recipe = multiply(recipeToLog, 1 / serving_qty, 1);
+        const timezone = useState().auth.userData.timezone;
+        const newFoods = scaled_recipe.ingredients.map((item: FoodProps) => ({
+          ...item,
+          consumed_at:
+            moment().format('YYYY-MM-DDTHH:mm:ss') +
+            moment.tz(timezone).format('Z'),
+          basketId: uuidv4(),
+        }));
+        dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: newFoods});
+        return scaled_recipe;
+      }
+    } catch (err: any) {
+      throw err;
     }
   };
 };
@@ -229,30 +231,34 @@ export const addRecipeToBasket = (id: string) => {
 // add branded food
 export const addBrandedFoodToBasket = (id: string) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
-    const response = await baseService.getBrandedFoodsById(id);
-    let food = response.data.foods[0];
-    if (food) {
-      if (!food.alt_measures && food.serving_weight_grams) {
-        food.alt_measures = [
-          {
-            measure: food.serving_unit,
-            qty: food.serving_qty,
-            seq: null,
-            serving_weight: food.serving_weight_grams,
-          },
-        ];
-        food = addGramsToAltMeasures(food);
+    try {
+      const response = await baseService.getBrandedFoodsById(id);
+      let food = response.data.foods[0];
+      if (food) {
+        if (!food.alt_measures && food.serving_weight_grams) {
+          food.alt_measures = [
+            {
+              measure: food.serving_unit,
+              qty: food.serving_qty,
+              seq: null,
+              serving_weight: food.serving_weight_grams,
+            },
+          ];
+          food = addGramsToAltMeasures(food);
+        }
+        const timezone = useState().auth.userData.timezone;
+        food = {
+          ...food,
+          consumed_at:
+            moment().format('YYYY-MM-DDTHH:mm:ss') +
+            moment.tz(timezone).format('Z'),
+          basketId: uuidv4(),
+        };
+        dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]});
+        return food;
       }
-      const timezone = useState().auth.userData.timezone;
-      food = {
-        ...food,
-        consumed_at:
-          moment().format('YYYY-MM-DDTHH:mm:ss') +
-          moment.tz(timezone).format('Z'),
-        basketId: uuidv4(),
-      };
-      dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]});
-      return food;
+    } catch (err: any) {
+      throw err;
     }
   };
 };

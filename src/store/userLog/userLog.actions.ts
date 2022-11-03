@@ -22,6 +22,7 @@ import {Dispatch} from 'redux';
 import {RootState} from '../index';
 import {WaterLogProps} from './userLog.types';
 import {Asset} from 'react-native-image-picker';
+import {setInfoMessage} from '../base/base.actions';
 
 export const getDayTotals = (
   beginDate: string,
@@ -29,21 +30,25 @@ export const getDayTotals = (
   timezone: string,
 ) => {
   return async (dispatch: Dispatch) => {
-    const response = await userLogService.getTotals({
-      beginDate,
-      endDate,
-      timezone,
-    });
-
-    const totals = response.data;
-    // if (__DEV__) {
-    //   console.log('totals', totals);
-    // }
-    if (totals.dates) {
-      dispatch({
-        type: userLogActionTypes.GET_DAY_TOTALS,
-        totals: totals.dates || [],
+    try {
+      const response = await userLogService.getTotals({
+        beginDate,
+        endDate,
+        timezone,
       });
+
+      const totals = response.data;
+      // if (__DEV__) {
+      //   console.log('totals', totals);
+      // }
+      if (totals.dates) {
+        dispatch({
+          type: userLogActionTypes.GET_DAY_TOTALS,
+          totals: totals.dates || [],
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
@@ -67,113 +72,141 @@ export const getUserFoodlog = (
     endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
 
     const timezone = useState().auth.userData.timezone;
-    const response = await userLogService.getUserFoodlog({
-      beginDate,
-      endDate,
-      offset,
-      timezone,
-    });
 
-    const userFoodlog = response.data;
-    // if (__DEV__) {
-    //   console.log('userFoodlog', userFoodlog.foods);
-    // }
-    if (userFoodlog.foods) {
-      dispatch({
-        type: userLogActionTypes.GET_USER_FOODLOG,
-        foodLog: userFoodlog.foods,
+    try {
+      const response = await userLogService.getUserFoodlog({
+        beginDate,
+        endDate,
+        offset,
+        timezone,
       });
-    }
-    const beginDateSelected = useState().userLog.selectedDate;
 
-    dispatch(getDayTotals(beginDateSelected, endDate, timezone));
+      const userFoodlog = response.data;
+      // if (__DEV__) {
+      //   console.log('userFoodlog', userFoodlog.foods);
+      // }
+      if (userFoodlog.foods) {
+        dispatch({
+          type: userLogActionTypes.GET_USER_FOODLOG,
+          foodLog: userFoodlog.foods,
+        });
+      }
+      const beginDateSelected = useState().userLog.selectedDate;
+
+      dispatch(getDayTotals(beginDateSelected, endDate, timezone));
+    } catch (error) {
+      throw error;
+    }
   };
 };
 
 export const getUserWeightlog = (
-  beginDate: string,
+  begin: string,
   endDate: string,
   offset: number | undefined,
 ) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
-    endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
+    const end = moment(endDate, 'YYYY-MM-DD')
+      .add(1, 'day')
+      .format('YYYY-MM-DD');
 
     const timezone = useState().auth.userData.timezone;
-    const response = await userLogService.getUserWeightlog({
-      beginDate,
-      endDate,
-      offset,
-      timezone,
-    });
 
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('weightsLog', result.weights);
-    // }
-    if (result.weights) {
-      dispatch({
-        type: userLogActionTypes.GET_USER_WEIGHT_LOG,
-        weights: result.weights,
+    try {
+      const response = await userLogService.getUserWeightlog({
+        begin,
+        end,
+        offset,
+        timezone,
       });
+
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('weightsLog', result.weights);
+      // }
+      if (result.weights) {
+        dispatch({
+          type: userLogActionTypes.GET_USER_WEIGHT_LOG,
+          weights: result.weights,
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 
 export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
   return async (dispatch: Dispatch<any>) => {
-    const response = await userLogService.addWeightlog(weights);
+    try {
+      const response = await userLogService.addWeightlog(weights);
 
-    const result = response.data;
+      const result = response.data;
 
-    if (result.weights) {
-      dispatch({
-        type: userLogActionTypes.ADD_WEIGHT_LOG,
-        weights: result.weights,
-      });
-      dispatch(refreshUserLogTotals());
+      if (result.weights) {
+        dispatch({
+          type: userLogActionTypes.ADD_WEIGHT_LOG,
+          weights: result.weights,
+        });
+        dispatch(refreshUserLogTotals());
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 
 export const updateWeightlog = (weights: Array<WeightProps>) => {
   return async (dispatch: Dispatch<any>) => {
-    const response = await userLogService.updateWeightlog(weights);
+    try {
+      const response = await userLogService.updateWeightlog(weights);
 
-    const result = response.data;
+      const result = response.data;
 
-    if (result.weights) {
-      dispatch({
-        type: userLogActionTypes.UPDATE_WEIGHT_LOG,
-        weights: result.weights,
-      });
-      dispatch(refreshUserLogTotals());
+      if (result.weights) {
+        dispatch({
+          type: userLogActionTypes.UPDATE_WEIGHT_LOG,
+          weights: result.weights,
+        });
+        dispatch(refreshUserLogTotals());
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 
 export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
   return async (dispatch: Dispatch<any>) => {
-    const response = await userLogService.deleteWeightFromLog(weights);
+    try {
+      const response = await userLogService.deleteWeightFromLog(weights);
 
-    if (response.status === 200) {
-      dispatch({
-        type: userLogActionTypes.DELETE_WEIGHT_FROM_LOG,
-        weights: weights.map(item => item.id),
-      });
-      dispatch(refreshUserLogTotals());
+      if (response.status === 200) {
+        dispatch({
+          type: userLogActionTypes.DELETE_WEIGHT_FROM_LOG,
+          weights: weights.map(item => item.id),
+        });
+        dispatch(refreshUserLogTotals());
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 export const deleteExerciseFromLog = (exercises: Array<{id: string}>) => {
   return async (dispatch: Dispatch<any>) => {
-    const response = await userLogService.deleteExerciseFromLog(exercises);
+    try {
+      const response = await userLogService.deleteExerciseFromLog(exercises);
 
-    if (response.status === 200) {
-      dispatch({
-        type: userLogActionTypes.DELETE_EXERCISE_FROM_LOG,
-        exercises: exercises.map(item => item.id),
-      });
-      dispatch(refreshUserLogTotals());
+      if (response.status === 200) {
+        dispatch({
+          type: userLogActionTypes.DELETE_EXERCISE_FROM_LOG,
+          exercises: exercises.map(item => item.id),
+        });
+        dispatch(refreshUserLogTotals());
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
@@ -187,22 +220,26 @@ export const getUserExerciseslog = (
     endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
 
     const timezone = useState().auth.userData.timezone;
-    const response = await userLogService.getUserExerciseslog({
-      beginDate,
-      endDate,
-      offset,
-      timezone,
-    });
-
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('exercisesLog', result.exercises);
-    // }
-    if (result.exercises) {
-      dispatch({
-        type: userLogActionTypes.GET_USER_EXERCISES_LOG,
-        exercises: result.exercises,
+    try {
+      const response = await userLogService.getUserExerciseslog({
+        beginDate,
+        endDate,
+        offset,
+        timezone,
       });
+
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('exercisesLog', result.exercises);
+      // }
+      if (result.exercises) {
+        dispatch({
+          type: userLogActionTypes.GET_USER_EXERCISES_LOG,
+          exercises: result.exercises,
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
@@ -222,31 +259,46 @@ export const addExerciseToLog = (query: string) => {
       query,
     };
 
-    const checkResponse = await userLogService.getExerciseByQuery(user_data);
+    try {
+      const checkResponse = await userLogService.getExerciseByQuery(user_data);
 
-    const checkResult = checkResponse.data;
+      const checkResult = checkResponse.data;
 
-    if (checkResult.exercises?.length > 0) {
-      const response = await userLogService.addExerciseLog([
-        {
-          ...checkResult.exercises[0],
-          timestamp: moment(selectedDate)
-            .hours(moment().hours())
-            .minutes(moment().minutes()),
-        },
-      ]);
+      if (checkResult.exercises?.length > 0) {
+        const response = await userLogService.addExerciseLog([
+          {
+            ...checkResult.exercises[0],
+            timestamp: moment(selectedDate)
+              .hours(moment().hours())
+              .minutes(moment().minutes()),
+          },
+        ]);
 
-      const result = response.data;
+        const result = response.data;
 
-      if (result.exercises) {
-        dispatch({
-          type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
-          exercises: result.exercises,
-        });
-        dispatch(refreshUserLogTotals());
+        if (result.exercises.length) {
+          dispatch({
+            type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
+            exercises: result.exercises,
+          });
+          dispatch(refreshUserLogTotals());
+        } else {
+          dispatch(
+            setInfoMessage({
+              title: 'Could not determine any exercises to log.',
+              btnText: 'Ok',
+            }),
+          );
+        }
       }
-    } else {
-      return {error: true};
+    } catch (error) {
+      dispatch(
+        setInfoMessage({
+          title: 'Could not determine any exercises to log.',
+          btnText: 'Ok',
+        }),
+      );
+      throw error;
     }
   };
 };
@@ -264,33 +316,34 @@ export const updateExerciseToLog = (query: string, exercise: ExerciseProps) => {
       gender: userDate.gender || null,
       query,
     };
+    try {
+      const checkResponse = await userLogService.getExerciseByQuery(user_data);
 
-    const checkResponse = await userLogService.getExerciseByQuery(user_data);
+      const checkResult = checkResponse.data;
 
-    const checkResult = checkResponse.data;
+      if (checkResult.exercises?.length > 0) {
+        const response = await userLogService.updateExerciseLog([
+          {
+            ...exercise,
+            ...checkResult.exercises[0],
+            timestamp: moment(selectedDate)
+              .hours(moment().hours())
+              .minutes(moment().minutes()),
+          },
+        ]);
 
-    if (checkResult.exercises?.length > 0) {
-      const response = await userLogService.updateExerciseLog([
-        {
-          ...exercise,
-          ...checkResult.exercises[0],
-          timestamp: moment(selectedDate)
-            .hours(moment().hours())
-            .minutes(moment().minutes()),
-        },
-      ]);
+        const result = response.data;
 
-      const result = response.data;
-
-      if (result.exercises.length) {
-        dispatch({
-          type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
-          exercises: result.exercises,
-        });
-        dispatch(refreshUserLogTotals());
+        if (result.exercises.length) {
+          dispatch({
+            type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
+            exercises: result.exercises,
+          });
+          dispatch(refreshUserLogTotals());
+        }
       }
-    } else {
-      return {error: true};
+    } catch (error) {
+      throw error;
     }
   };
 };
@@ -326,49 +379,61 @@ export const addFoodToLog = (
       delete food.public_id;
     });
 
-    const response = await userLogService.addFoodToLog(
-      foodArray,
-      loggingOptions,
-    );
+    try {
+      const response = await userLogService.addFoodToLog(
+        foodArray,
+        loggingOptions,
+      );
 
-    const result = response.data;
+      const result = response.data;
 
-    if (result.foods) {
-      dispatch({
-        type: userLogActionTypes.ADD_FOOD_TO_LOG,
-        foodObj: result.foods,
-      });
-      dispatch(refreshUserLogTotals());
+      if (result.foods) {
+        dispatch({
+          type: userLogActionTypes.ADD_FOOD_TO_LOG,
+          foodObj: result.foods,
+        });
+        dispatch(refreshUserLogTotals());
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 
 export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
   return async (dispatch: Dispatch<any>) => {
-    const response = await userLogService.updateFoodFromLog(foodArray);
+    try {
+      const response = await userLogService.updateFoodFromLog(foodArray);
 
-    const result = response.data;
+      const result = response.data;
 
-    if (result.foods?.length) {
-      dispatch({
-        type: userLogActionTypes.UPDATE_FOOD_FROM_LOG,
-        payload: result.foods[0],
-      });
-      dispatch(refreshUserLogTotals());
+      if (result.foods?.length) {
+        dispatch({
+          type: userLogActionTypes.UPDATE_FOOD_FROM_LOG,
+          payload: result.foods[0],
+        });
+        dispatch(refreshUserLogTotals());
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 
 export const deleteFoodFromLog = (foodIds: Array<{id: string}>) => {
   return async (dispatch: Dispatch<any>) => {
-    const response = await userLogService.deleteFoodFromLog(foodIds);
+    try {
+      const response = await userLogService.deleteFoodFromLog(foodIds);
 
-    if (response.status === 200) {
-      dispatch({
-        type: userLogActionTypes.DELETE_FOOD_FROM_LOG,
-        foodIds: foodIds.map(item => item.id),
-      });
-      dispatch(refreshUserLogTotals());
+      if (response.status === 200) {
+        dispatch({
+          type: userLogActionTypes.DELETE_FOOD_FROM_LOG,
+          foodIds: foodIds.map(item => item.id),
+        });
+        dispatch(refreshUserLogTotals());
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
@@ -384,15 +449,19 @@ export const setDayNotes = (targetDate: string, newNotes: string) => {
       ],
     };
 
-    const response = await userLogService.setDayNotes(data);
+    try {
+      const response = await userLogService.setDayNotes(data);
 
-    const totals = response.data;
+      const totals = response.data;
 
-    if (totals.dates) {
-      dispatch({
-        type: userLogActionTypes.SET_DAY_NOTES,
-        totals: totals.dates || [],
-      });
+      if (totals.dates) {
+        dispatch({
+          type: userLogActionTypes.SET_DAY_NOTES,
+          totals: totals.dates || [],
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
@@ -408,32 +477,40 @@ export const changeSelectedDay = (newDate: string) => {
 
 export const addWaterlog = (water: Array<WaterLogProps>) => {
   return async (dispatch: Dispatch<any>) => {
-    const response = await userLogService.addWaterLog(water);
+    try {
+      const response = await userLogService.addWaterLog(water);
 
-    const result = response.data;
+      const result = response.data;
 
-    if (result.logs?.length) {
-      dispatch({
-        type: userLogActionTypes.UPDATE_WATER_LOG,
-        payload: result.logs[0].consumed,
-      });
-      dispatch(refreshUserLogTotals());
+      if (result.logs?.length) {
+        dispatch({
+          type: userLogActionTypes.UPDATE_WATER_LOG,
+          payload: result.logs[0].consumed,
+        });
+        dispatch(refreshUserLogTotals());
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 
 export const updateWaterlog = (water: Array<WaterLogProps>) => {
   return async (dispatch: Dispatch<any>) => {
-    const response = await userLogService.updateWaterLog(water);
+    try {
+      const response = await userLogService.updateWaterLog(water);
 
-    const result = response.data;
+      const result = response.data;
 
-    if (result.logs?.length) {
-      dispatch({
-        type: userLogActionTypes.UPDATE_WATER_LOG,
-        payload: result.logs[0].consumed,
-      });
-      dispatch(refreshUserLogTotals());
+      if (result.logs?.length) {
+        dispatch({
+          type: userLogActionTypes.UPDATE_WATER_LOG,
+          payload: result.logs[0].consumed,
+        });
+        dispatch(refreshUserLogTotals());
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
@@ -441,15 +518,19 @@ export const updateWaterlog = (water: Array<WaterLogProps>) => {
 export const deleteWaterFromLog = () => {
   return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     const selectedDate = useState().userLog.selectedDate;
-    const response = await userLogService.deleteWaterFromLog([
-      {date: selectedDate},
-    ]);
+    try {
+      const response = await userLogService.deleteWaterFromLog([
+        {date: selectedDate},
+      ]);
 
-    if (response.status === 200) {
-      dispatch({
-        type: userLogActionTypes.DELETE_WATER_FROM_LOG,
-      });
-      dispatch(refreshUserLogTotals());
+      if (response.status === 200) {
+        dispatch({
+          type: userLogActionTypes.DELETE_WATER_FROM_LOG,
+        });
+        dispatch(refreshUserLogTotals());
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
@@ -475,11 +556,11 @@ export const uploadImage = async (entity: string, id: string, data: Asset) => {
     type: data.type,
     uri: data.uri,
   });
-  const response = await baseService.uploadImage(entity, id, formData);
-  console.log('response upload image', response);
-  if (response.status === 200) {
+  try {
+    const response = await baseService.uploadImage(entity, id, formData);
+    console.log('response upload image', response);
     return response.data;
-  } else {
+  } catch (error) {
     throw new Error('Image upload failed: Uploaded file type is not supported');
   }
 };

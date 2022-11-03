@@ -14,30 +14,41 @@ export const getRecipes = ({
     const {limit, offset} = useState().recipes;
     const optionLimit = newLimit || limit;
     const optionOffset = newOffset || offset;
-    const response = await recipesService.getRecipes(optionLimit, optionOffset);
+    try {
+      const response = await recipesService.getRecipes(
+        optionLimit,
+        optionOffset,
+      );
 
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('recipes', result);
-    // }
-    if (result.recipes) {
-      dispatch({
-        type: recipesActionTypes.GET_RECIPES,
-        payload: {recipes: result.recipes || [], offset: optionOffset},
-      });
-      return result.recipes;
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('recipes', result);
+      // }
+      if (result.recipes) {
+        dispatch({
+          type: recipesActionTypes.GET_RECIPES,
+          payload: {recipes: result.recipes || [], offset: optionOffset},
+        });
+        return result.recipes;
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 
 export const getRecipeById = (id: string) => {
   return async () => {
-    const response = await recipesService.getRecipeById(id);
+    try {
+      const response = await recipesService.getRecipeById(id);
 
-    const result = response.data;
+      const result = response.data;
 
-    if (result) {
-      return result;
+      if (result) {
+        return result;
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
@@ -62,18 +73,20 @@ export const updateRecipe = (recipe: UpdateRecipeProps) => {
 
 export const createRecipe = (recipe: UpdateRecipeProps) => {
   return async (dispatch: Dispatch) => {
-    const response = await recipesService.createRecipe(recipe);
+    try {
+      const response = await recipesService.createRecipe(recipe);
 
-    const result = response.data;
+      const result = response.data;
 
-    if (result.name) {
-      dispatch({
-        type: recipesActionTypes.CREATE_RECIPE,
-        payload: result,
-      });
-      return result;
-    } else {
-      throw response;
+      if (result.name) {
+        dispatch({
+          type: recipesActionTypes.CREATE_RECIPE,
+          payload: result,
+        });
+        return result;
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
@@ -105,13 +118,17 @@ export const copyRecipe = (
 
 export const deleteRecipe = (id: string) => {
   return async (dispatch: Dispatch<any>) => {
-    const response = await recipesService.deleteRecipe(id);
+    try {
+      const response = await recipesService.deleteRecipe(id);
 
-    if (response.status === 200) {
-      dispatch({
-        type: recipesActionTypes.DELETE_RECIPE,
-        payload: id,
-      });
+      if (response.status === 200) {
+        dispatch({
+          type: recipesActionTypes.DELETE_RECIPE,
+          payload: id,
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
@@ -125,20 +142,22 @@ export const getIngridientsForUpdate = async ({
   line_delimited?: boolean;
   use_raw_foods?: boolean;
 }) => {
-  const response = await recipesService.getIngridients({
-    query,
-    line_delimited,
-    use_raw_foods,
-  });
+  try {
+    const response = await recipesService.getIngridients({
+      query,
+      line_delimited,
+      use_raw_foods,
+    });
 
-  const result = response.data;
-  // if (__DEV__) {
-  //   console.log('get ingridients for update', result);
-  // }
-  if (result) {
-    return result;
-  } else {
-    throw response;
+    const result = response.data;
+    // if (__DEV__) {
+    //   console.log('get ingridients for update', result);
+    // }
+    if (result) {
+      return result;
+    }
+  } catch (error) {
+    throw error;
   }
 };
 

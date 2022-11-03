@@ -21,19 +21,23 @@ export const getClientTotals = (options: Partial<OptionsProps>) => {
     if (!newOptions.timezone) {
       newOptions.timezone = 'US/Eastern';
     }
-    const response = await coachService.getClientTotals(
-      newOptions as OptionsProps,
-    );
+    try {
+      const response = await coachService.getClientTotals(
+        newOptions as OptionsProps,
+      );
 
-    const result = response.data;
-    if (__DEV__) {
-      console.log('client totals', result);
-    }
-    if (result.dates) {
-      dispatch({
-        type: coachActionTypes.GET_CLIENT_TOTTALS,
-        paylaod: result.dates,
-      });
+      const result = response.data;
+      if (__DEV__) {
+        console.log('client totals', result);
+      }
+      if (result.dates) {
+        dispatch({
+          type: coachActionTypes.GET_CLIENT_TOTTALS,
+          paylaod: result.dates,
+        });
+      }
+    } catch (err) {
+      throw err;
     }
   };
 };

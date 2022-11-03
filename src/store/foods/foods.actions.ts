@@ -39,18 +39,9 @@ export const getFoodByQRcode = (
   force_photo_upload?: boolean,
 ) => {
   return async (dispatch: Dispatch<any>) => {
-    const response = await baseService.getFoodByQRcode(barcode);
-    console.log('getfoodByBarCode response', response);
-    if (response.status === 404) {
-      dispatch({
-        type: foodsActionTypes.GET_FOOD_BY_QR_CODE,
-        foodFindByQRcode: {
-          food_name: `Unrecognised food barcode: ${barcode}`,
-          photo: {thumb: null},
-        },
-      });
-      throw response;
-    } else {
+    try {
+      const response = await baseService.getFoodByQRcode(barcode);
+
       const foods = response.data.foods;
 
       if (foods && foods[0]) {
@@ -100,6 +91,17 @@ export const getFoodByQRcode = (
           return foods;
         }
       }
+    } catch (error: any) {
+      if (error.status === 404) {
+        dispatch({
+          type: foodsActionTypes.GET_FOOD_BY_QR_CODE,
+          foodFindByQRcode: {
+            food_name: `Unrecognised food barcode: ${barcode}`,
+            photo: {thumb: null},
+          },
+        });
+        throw error;
+      }
     }
   };
 };
@@ -110,116 +112,144 @@ export const clearSnanedFood = () => {
 
 export const getAllCustomFoods = () => {
   return async (dispatch: Dispatch) => {
-    const response = await userLogService.getUserWeightlog({});
+    try {
+      const response = await userLogService.getUserWeightlog({});
 
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('all custom foods', result.custom_foods);
-    // }
-    if (result.custom_foods) {
-      dispatch({
-        type: foodsActionTypes.GET_ALL_CUSTOM_FOOD,
-        custom_foods: result.custom_foods,
-      });
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('all custom foods', result.custom_foods);
+      // }
+      if (result.custom_foods) {
+        dispatch({
+          type: foodsActionTypes.GET_ALL_CUSTOM_FOOD,
+          custom_foods: result.custom_foods,
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 
 export const getSuggestedFoods = () => {
   return async (dispatch: Dispatch) => {
-    const response = await baseService.getSuggestedFood();
+    try {
+      const response = await baseService.getSuggestedFood();
 
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('all suggested foods', result.products);
-    // }
-    if (result.products) {
-      dispatch({
-        type: foodsActionTypes.GET_ALL_SUGGESTED_FOOD,
-        suggested_foods: result.products,
-      });
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('all suggested foods', result.products);
+      // }
+      if (result.products) {
+        dispatch({
+          type: foodsActionTypes.GET_ALL_SUGGESTED_FOOD,
+          suggested_foods: result.products,
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 
 export const getGroceries = (data: InstantQueryDataProps) => {
   return async (dispatch: Dispatch) => {
-    const response = await autoCompleteService.getTrackInstant(data);
+    try {
+      const response = await autoCompleteService.getTrackInstant(data);
 
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('groceries', result.branded);
-    // }
-    if (result.branded) {
-      dispatch({
-        type: foodsActionTypes.GET_GROCERIES,
-        groceries: result.branded,
-      });
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('groceries', result.branded);
+      // }
+      if (result.branded) {
+        dispatch({
+          type: foodsActionTypes.GET_GROCERIES,
+          groceries: result.branded,
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 export const getHistoryFoods = (data: InstantQueryDataProps) => {
   return async (dispatch: Dispatch) => {
-    const response = await autoCompleteService.getTrackInstant(data);
+    try {
+      const response = await autoCompleteService.getTrackInstant(data);
 
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('historyFoods', result.self);
-    // }
-    if (result.self) {
-      dispatch({
-        type: foodsActionTypes.GET_HISTORY_FOODS,
-        historyFoods: result.self,
-      });
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('historyFoods', result.self);
+      // }
+      if (result.self) {
+        dispatch({
+          type: foodsActionTypes.GET_HISTORY_FOODS,
+          historyFoods: result.self,
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 export const getRestorants = () => {
   return async (dispatch: Dispatch) => {
-    const response = await baseService.getBrandRestorants();
+    try {
+      const response = await baseService.getBrandRestorants();
 
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('restaurants', result);
-    // }
-    if (result) {
-      dispatch({
-        type: foodsActionTypes.GET_RESTORANTS,
-        restaurants: result,
-      });
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('restaurants', result);
+      // }
+      if (result) {
+        dispatch({
+          type: foodsActionTypes.GET_RESTORANTS,
+          restaurants: result,
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 
 export const getRestorantsWithCalc = () => {
   return async (dispatch: Dispatch) => {
-    const response = await baseService.getRestorantsWithCalc();
+    try {
+      const response = await baseService.getRestorantsWithCalc();
 
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('restaurants with calc', result);
-    // }
-    if (result) {
-      dispatch({
-        type: foodsActionTypes.GET_RESTORANTS_WITH_CALC,
-        restaurantsWithCalc: result,
-      });
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('restaurants with calc', result);
+      // }
+      if (result) {
+        dispatch({
+          type: foodsActionTypes.GET_RESTORANTS_WITH_CALC,
+          restaurantsWithCalc: result,
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };
 export const getRestorantsFoods = (data: InstantQueryDataProps) => {
   return async (dispatch: Dispatch) => {
-    const response = await autoCompleteService.getTrackInstant(data);
+    try {
+      const response = await autoCompleteService.getTrackInstant(data);
 
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('restaurants foods', result.branded);
-    // }
-    if (result.branded && result.branded.length) {
-      dispatch({
-        type: foodsActionTypes.GET_RESTORANTS_FOODS,
-        restaurantFoods: result.branded,
-      });
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('restaurants foods', result.branded);
+      // }
+      if (result.branded && result.branded.length) {
+        dispatch({
+          type: foodsActionTypes.GET_RESTORANTS_FOODS,
+          restaurantFoods: result.branded,
+        });
+      }
+    } catch (error) {
+      throw error;
     }
   };
 };

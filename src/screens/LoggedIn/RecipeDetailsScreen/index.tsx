@@ -337,17 +337,6 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             ingredients: recipe.ingredients.concat(result.foods),
           });
           setAddIngredientsQuery('');
-        } else {
-          setError(result.message);
-          setInvalidForm(true);
-        }
-        if (!!result.errors && result.errors.length) {
-          const wrongQuery = result.errors.map((err: any) => {
-            return err.original_text;
-          });
-          console.log(wrongQuery.join('\n'));
-          setAddIngredientsQuery(wrongQuery.join('\n'));
-          setInvalidForm(true);
         }
         setShowNewIngredientInput(false);
       })
@@ -356,45 +345,49 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           query: addIngredientsQuery,
           line_delimited: false,
           use_raw_foods: true,
-        }).then(result => {
-          if (!!result.foods && result.foods.length) {
-            _.forEach(result.foods, function (foodObj) {
-              if (foodObj.alt_measures) {
-                var temp = {
-                  serving_weight: foodObj.serving_weight_grams,
-                  seq: null,
-                  measure: foodObj.serving_unit,
-                  qty: foodObj.serving_qty,
-                };
-                foodObj.alt_measures.unshift(temp);
-              }
-              if (!foodObj.metadata.original_input) {
-                foodObj.metadata.original_input =
-                  foodObj.serving_qty +
-                  ' ' +
-                  foodObj.serving_unit +
-                  ' ' +
-                  foodObj.food_name;
-              }
-            });
-            setRecipe({
-              ...recipe,
-              ingredients: recipe.ingredients.concat(result.foods),
-            });
+        })
+          .then(result => {
+            if (!!result.foods && result.foods.length) {
+              _.forEach(result.foods, function (foodObj) {
+                if (foodObj.alt_measures) {
+                  var temp = {
+                    serving_weight: foodObj.serving_weight_grams,
+                    seq: null,
+                    measure: foodObj.serving_unit,
+                    qty: foodObj.serving_qty,
+                  };
+                  foodObj.alt_measures.unshift(temp);
+                }
+                if (!foodObj.metadata.original_input) {
+                  foodObj.metadata.original_input =
+                    foodObj.serving_qty +
+                    ' ' +
+                    foodObj.serving_unit +
+                    ' ' +
+                    foodObj.food_name;
+                }
+              });
+              setRecipe({
+                ...recipe,
+                ingredients: recipe.ingredients.concat(result.foods),
+              });
+              setAddIngredientsQuery('');
+            }
+          })
+          .catch(res => {
             setAddIngredientsQuery('');
-          } else {
-            setError(result.message);
+            setError(res?.data?.message);
             setInvalidForm(true);
-          }
-          if (!!result.errors && result.errors.length) {
-            const wrongQuery = result.errors.map((err: any) => {
-              return err.original_text;
-            });
-            console.log(wrongQuery.join('\n'));
-            setAddIngredientsQuery(wrongQuery.join('\n'));
-            setInvalidForm(true);
-          }
-        });
+
+            if (!!res.errors && res.errors.length) {
+              const wrongQuery = res.errors.map((err: any) => {
+                return err.original_text;
+              });
+              console.log(wrongQuery.join('\n'));
+              setAddIngredientsQuery(wrongQuery.join('\n'));
+              setInvalidForm(true);
+            }
+          });
         setShowNewIngredientInput(false);
       });
   };
@@ -494,38 +487,40 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       query: text,
       line_delimited: true,
       use_raw_foods: true,
-    }).then(result => {
-      if (!!result.foods && result.foods.length) {
-        const newIngridients = [...recipe.ingredients];
-        newIngridients[index] = result.foods[0];
-        if (!newIngridients[index]?.metadata?.original_input) {
-          newIngridients[index] = {
-            ...newIngridients[index],
-            metadata: {
-              ...newIngridients[index]?.metadata,
-              original_input: text,
-            },
-          };
+    })
+      .then(result => {
+        if (!!result.foods && result.foods.length) {
+          const newIngridients = [...recipe.ingredients];
+          newIngridients[index] = result.foods[0];
+          if (!newIngridients[index]?.metadata?.original_input) {
+            newIngridients[index] = {
+              ...newIngridients[index],
+              metadata: {
+                ...newIngridients[index]?.metadata,
+                original_input: text,
+              },
+            };
+          }
+          setRecipe(() => {
+            return {
+              ...recipe,
+              ingredients: newIngridients,
+            };
+          });
         }
-        setRecipe(() => {
-          return {
-            ...recipe,
-            ingredients: newIngridients,
-          };
-        });
-      } else {
+      })
+      .catch(err => {
         setErrorIngridient({
           error:
-            result.message ===
+            err?.data?.message ===
             'child "query" fails because ["query" is not allowed to be empty]'
               ? 'No food found.'
-              : result.message + ' for:',
+              : err?.data?.message + ' for:',
           text,
           index,
         });
         setInvalidForm(true);
-      }
-    });
+      });
   };
   const handleDeleteUploadPhoto = useCallback(() => {
     setRecipe(prev => {
