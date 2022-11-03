@@ -43,86 +43,96 @@ const removeAuthData = () => {
 
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch) => {
-    const response = await authService.fbSignIn(access_token);
+    try {
+      const response = await authService.fbSignIn(access_token);
 
-    if (response.status === 400 || response.status === 500) {
-      throw new Error(response.status.toString());
+      const userData = response.data;
+
+      await dispatch({type: authActionTypes.SIGNIN, userData});
+      saveAuthData(userData.user, userData['x-user-jwt']);
+    } catch (err: any) {
+      if (err.status === 400 || err.status === 500) {
+        throw new Error(err.status.toString());
+      }
     }
-
-    const userData = response.data;
-
-    await dispatch({type: authActionTypes.SIGNIN, userData});
-    saveAuthData(userData.user, userData['x-user-jwt']);
   };
 };
 
 export const appleLogin = (apple_user_data: any) => {
   return async (dispatch: Dispatch) => {
-    const response = await authService.appleSignIn(apple_user_data);
+    try {
+      const response = await authService.appleSignIn(apple_user_data);
 
-    if (response.status === 400 || response.status === 500) {
-      throw new Error(response.status.toString());
+      const userData = response.data;
+
+      await dispatch({type: authActionTypes.SIGNIN, userData});
+      await saveAuthData(userData.user, userData['x-user-jwt']);
+    } catch (err: any) {
+      if (err.status === 400 || err.status === 500) {
+        throw new Error(err.status.toString());
+      }
     }
-
-    const userData = response.data;
-
-    await dispatch({type: authActionTypes.SIGNIN, userData});
-    await saveAuthData(userData.user, userData['x-user-jwt']);
   };
 };
 
 export const signin = (email: string, password: string) => {
   return async (dispatch: Dispatch) => {
-    const response = await authService.siginIn(email, password);
+    try {
+      const response = await authService.siginIn(email, password);
 
-    if (response.status === 400) {
-      throw new Error(response.status.toString());
+      const userData = response.data;
+
+      await dispatch({type: authActionTypes.SIGNIN, userData});
+      await saveAuthData(userData.user, userData['x-user-jwt']);
+    } catch (err: any) {
+      if (err.status === 400) {
+        throw new Error(err.status.toString());
+      }
     }
-
-    const userData = response.data;
-
-    await dispatch({type: authActionTypes.SIGNIN, userData});
-    await saveAuthData(userData.user, userData['x-user-jwt']);
   };
 };
 
 export const signup = (data: SignUpRequest) => {
   return async (dispatch: Dispatch) => {
-    const response = await authService.signUp(data);
+    try {
+      const response = await authService.signUp(data);
 
-    if (response.status === 400) {
-      throw new Error(response.status.toString());
+      const userData = response.data;
+
+      await dispatch({type: authActionTypes.SIGNUP, userData});
+      await saveAuthData(userData.user, userData['x-user-jwt']);
+
+      return userData;
+    } catch (err: any) {
+      if (err.status === 400) {
+        throw new Error(err.status.toString());
+      }
+      if (err.status === 409) {
+        throw new Error(err.status + ': account already exists');
+      }
     }
-    if (response.status === 409) {
-      throw new Error(response.status + ': account already exists');
-    }
-
-    const userData = response.data;
-
-    await dispatch({type: authActionTypes.SIGNUP, userData});
-    await saveAuthData(userData.user, userData['x-user-jwt']);
-
-    return userData;
   };
 };
 
 export const updateUserData = (newUserObj: Partial<User>) => {
   const request = {...newUserObj};
   return async (dispatch: Dispatch) => {
-    const response = await userService.updateUserData(request);
+    try {
+      const response = await userService.updateUserData(request);
 
-    if (response.status === 400) {
-      throw new Error(response.status.toString());
+      const userData = response.data;
+      await dispatch({
+        type: authActionTypes.UPDATE_USER_DATA,
+        newUserObj: newUserObj,
+      });
+      await saveAuthData(userData.user, userData['x-user-jwt']);
+
+      return userData;
+    } catch (err: any) {
+      if (err.status === 400) {
+        throw new Error(err.status.toString());
+      }
     }
-
-    const userData = response.data;
-    await dispatch({
-      type: authActionTypes.UPDATE_USER_DATA,
-      newUserObj: newUserObj,
-    });
-    await saveAuthData(userData.user, userData['x-user-jwt']);
-
-    return userData;
   };
 };
 
@@ -145,7 +155,7 @@ export const getUserDataFromAPI = () => {
   };
 };
 
-export const logout = (dispatch: Dispatch) => {
+export const logout = (dispatch: Dispatch<any>) => {
   removeAuthData();
   dispatch(clearAutocomplete());
   dispatch(resetBasket());

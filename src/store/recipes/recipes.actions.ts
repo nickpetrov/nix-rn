@@ -44,17 +44,18 @@ export const getRecipeById = (id: string) => {
 
 export const updateRecipe = (recipe: UpdateRecipeProps) => {
   return async (dispatch: Dispatch) => {
-    const response = await recipesService.updateRecipe(recipe);
-    const result = response.data;
-
-    if (result.name) {
-      dispatch({
-        type: recipesActionTypes.UPDATE_OR_CREATE_RECIPE,
-        recipe: result,
-      });
-      return result;
-    } else {
-      throw response;
+    try {
+      const response = await recipesService.updateRecipe(recipe);
+      const result = response.data;
+      if (result.name) {
+        dispatch({
+          type: recipesActionTypes.UPDATE_OR_CREATE_RECIPE,
+          recipe: result,
+        });
+        return result;
+      }
+    } catch (err) {
+      throw err;
     }
   };
 };
@@ -81,21 +82,23 @@ export const copyRecipe = (
   clonedRecipeIndex: number,
 ) => {
   return async (dispatch: Dispatch) => {
-    const response = await recipesService.createRecipe(recipe);
+    try {
+      const response = await recipesService.createRecipe(recipe);
 
-    const result = response.data;
-    // if (__DEV__) {
-    //   console.log('update or create recipes', result);
-    // }
-    if (result.name) {
-      dispatch({
-        type: recipesActionTypes.COPY_RECIPE,
-        payload: result,
-        clonedRecipeIndex,
-      });
-      return result;
-    } else {
-      throw response;
+      const result = response.data;
+      // if (__DEV__) {
+      //   console.log('update or create recipes', result);
+      // }
+      if (result.name) {
+        dispatch({
+          type: recipesActionTypes.COPY_RECIPE,
+          payload: result,
+          clonedRecipeIndex,
+        });
+        return result;
+      }
+    } catch (err: any) {
+      throw err;
     }
   };
 };

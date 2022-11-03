@@ -1,12 +1,10 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
   root: {
-    flex: 1,
+    flexGrow: 1,
+    backgroundColor: '#fff',
   },
   field: {
     marginRight: 15,
@@ -28,6 +26,7 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   footer: {
+    marginTop: 10,
     flexDirection: 'row',
   },
   btnContainer: {
@@ -43,5 +42,58 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     width: '50%',
   },
-  input: {},
+  input: {
+    flexGrow: 0,
+    minWidth: 40,
+    maxWidth: 40,
+    paddingHorizontal: 0,
+  },
+  labelContainerStyle: {
+    paddingHorizontal: 0,
+  },
+  labelContainerStyleFull: {
+    flex: 1,
+    paddingHorizontal: 0,
+    width: 'auto',
+  },
+  selectIcon: {
+    color: Colors.Secondary,
+    alignSelf: 'center',
+    marginLeft: 10,
+    top: -2,
+  },
+  inputIcon: {
+    color: Colors.Secondary,
+  },
+  unit: {
+    color: '#000',
+    width: 'auto',
+    flex: 1,
+    paddingHorizontal: 0,
+  },
+  saveBtnContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    width: 50,
+  },
+  saveBtn: {
+    backgroundColor: Colors.Primary,
+    padding: 8,
+    borderRadius: 20,
+  },
+  saveBtnText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  errorStyles: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    fontSize: 14,
+    color: Colors.Red,
+  },
+  modalLabel: {
+    paddingHorizontal: 5,
+  },
 });

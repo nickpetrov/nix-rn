@@ -95,7 +95,11 @@ const PreferencesNavigation = () => {
           headerTitle: 'Preferences',
         }}
       />
-      <Stack.Screen name={Routes.Profile} component={ProfileScreen} />
+      <Stack.Screen
+        name={Routes.Profile}
+        component={ProfileScreen}
+        options={{headerTitle: 'My Track Profile'}}
+      />
       <Stack.Screen
         name={Routes.DailyCalories}
         component={DailyCaloriesScreen}

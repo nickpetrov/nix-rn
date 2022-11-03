@@ -37,9 +37,14 @@ interface NixInputProps extends TextInputProps {
   style?: {
     [key: string]: string | number;
   };
+  errorStyles?: {
+    [key: string]: string | number;
+  };
   required?: boolean;
   emptyLabel?: boolean;
   withoutErorrText?: boolean;
+  column?: boolean;
+  children?: React.ReactNode;
 }
 
 export const NixInput: React.FC<NixInputProps> = ({
@@ -58,6 +63,9 @@ export const NixInput: React.FC<NixInputProps> = ({
   subLabel,
   labelContainerStyle,
   withoutErorrText,
+  column,
+  children,
+  errorStyles,
   ...props
 }) => {
   const inputRef: React.RefObject<TextInput> = useRef(null);
@@ -69,43 +77,52 @@ export const NixInput: React.FC<NixInputProps> = ({
   };
   return (
     <>
-      <TouchableWithoutFeedback
-        style={[styles.root, rootStyles && rootStyles]}
-        onPress={handleFocus}>
-        <View style={styles.inputWrapper}>
-          <View
-            style={[
-              styles.labelContainer,
-              labelContainerStyle && labelContainerStyle,
-            ]}>
-            {subLabel && <Text style={styles.subLabel}>{subLabel}</Text>}
-            {label !== undefined && (
-              <Text style={[styles.label, labelStyle && labelStyle]}>
-                {label && label}
-                {required && <Text style={styles.red}>*</Text>}
+      <TouchableWithoutFeedback onPress={handleFocus}>
+        <View style={[styles.root, rootStyles && rootStyles]}>
+          <View style={[styles.inputWrapper, column && styles.column]}>
+            <View
+              style={[
+                styles.labelContainer,
+                labelContainerStyle && labelContainerStyle,
+                column && styles.labelColumn,
+              ]}>
+              {subLabel && <Text style={styles.subLabel}>{subLabel}</Text>}
+              {label !== undefined && (
+                <Text style={[styles.label, labelStyle && labelStyle]}>
+                  {label && label}
+                  {required && <Text style={styles.red}>*</Text>}
+                </Text>
+              )}
+            </View>
+            <TextInput
+              ref={inputRef}
+              style={[
+                styles.input,
+                style && style,
+                column && styles.inputColumn,
+                !!error && styles.errorInput,
+              ]}
+              onChangeText={onChangeText}
+              placeholder={placeholder}
+              value={value}
+              keyboardType={props.keyboardType}
+              {...props}
+            />
+            {unit !== undefined && (
+              <Text style={[styles.unit, unitStyle && unitStyle]}>
+                {unit && unit}
               </Text>
             )}
+            {unitValue && <Text style={styles.unitValue}>{unitValue}</Text>}
+            {children && children}
           </View>
-          <TextInput
-            ref={inputRef}
-            style={[styles.input, style && style, !!error && styles.errorInput]}
-            onChangeText={onChangeText}
-            placeholder={placeholder}
-            value={value}
-            keyboardType={props.keyboardType}
-            {...props}
-          />
-          {unit !== undefined && (
-            <Text style={[styles.unit, unitStyle && unitStyle]}>
-              {unit && unit}
+          {error && !withoutErorrText && (
+            <Text style={[styles.errorText, errorStyles && errorStyles]}>
+              {error}
             </Text>
           )}
-          {unitValue && <Text style={styles.unitValue}>{unitValue}</Text>}
         </View>
       </TouchableWithoutFeedback>
-      {error && !withoutErorrText && (
-        <Text style={styles.errorText}>{error}</Text>
-      )}
     </>
   );
 };

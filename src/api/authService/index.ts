@@ -23,6 +23,13 @@ const authService = {
       ...data,
     });
   },
+  requestUpdatePassword(email: string) {
+    return apiClient.get('auth/updatePassword', {
+      params: {
+        email,
+      },
+    });
+  },
 };
 
 export default authService;

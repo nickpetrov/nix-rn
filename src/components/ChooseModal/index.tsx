@@ -52,7 +52,7 @@ const ChooseModal: React.FC<ChooseModalProps> = ({
           )}
           <View style={styles.content}>
             {text && <Text style={styles.modalText}>{text}</Text>}
-            {children && children}
+            {children && <View>{children}</View>}
             <View style={styles.footer}>
               {btns.map((btn, index: number) => {
                 return (

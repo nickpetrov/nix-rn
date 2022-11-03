@@ -1,22 +1,28 @@
 // utils
 import React, {useState, useEffect, useRef} from 'react';
-import * as yup from 'yup';
 import moment from 'moment-timezone';
+import _ from 'lodash';
 
 // components
-import {View, Text, ScrollView} from 'react-native';
+import {View, TouchableOpacity, Text, TextInput} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {Formik, Field, FormikProps} from 'formik';
-import {NixInputField} from 'components/NixInputField';
+import {Formik, FormikProps} from 'formik';
 import {NixButton} from 'components/NixButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import ModalSelector from 'react-native-modal-selector';
+import {NixInput} from 'components/NixInput';
+import ChooseModal from 'components/ChooseModal';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 // actions
 import * as userActions from 'store/auth/auth.actions';
+import {setInfoMessage} from 'store/base/base.actions';
+
+// services
+import authService from 'api/authService';
 
 // helpres
 import {difference} from 'helpers/difference';
@@ -31,7 +37,9 @@ import {styles} from './ProfileScreen.styles';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {User} from 'store/auth/auth.types';
-import ModalSelector from 'react-native-modal-selector';
+
+// validation
+import {validationSchema} from './validation';
 
 interface ProfileScreenProps {
   navigation: NativeStackNavigationProp<
@@ -55,31 +63,19 @@ interface FormikDataProps {
 }
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
+  const netInfo = useNetInfo();
   const userData = useSelector(state => state.auth.userData);
-
-  const [firstName] = useState(userData.first_name);
-  const [lastName] = useState(userData.last_name || undefined);
-  const [timezone, setTimezone] = useState(userData.timezone);
+  const dispatch = useDispatch();
+  const formRef = useRef<FormikProps<FormikDataProps>>(null);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [resetPassPopup, setResetPassPopup] = useState(false);
+  const [changeEmailPopup, setChangeEmailPopup] = useState(false);
+  const [oldEmail, setOldEmail] = useState(userData.email || '');
+  const [email, setEmail] = useState('');
   const [timezoneList, setTimezoneList] = useState<
     {label: string; value: string}[]
   >([]);
-  const [measureSystem, setMeasureSystem] = useState(userData.measure_system);
-  const [weight_kg, setWeightKg] = useState(String(userData.weight_kg));
-  const [weight_lb, setWeightLb] = useState(
-    String(Math.round(parseFloat(userData.weight_kg) * 2.20462)),
-  );
-  const [height_cm] = useState(String(userData.height_cm));
-  const [height_ft] = useState(
-    String(Math.floor(parseFloat(userData.height_cm) / 30.48)),
-  );
-  const [height_in] = useState(
-    String((parseFloat(userData.height_cm) % 30.48) / 2.54),
-  );
-  const [birth_year] = useState(userData.birth_year);
-  const [age] = useState(String(moment().year() - userData.birth_year));
-
-  const dispatch = useDispatch();
-  const formRef = useRef<FormikProps<FormikDataProps>>(null);
+  const cmToinches = userData.height_cm * 0.393701;
 
   useEffect(() => {
     const timezones = moment.tz.names().map(tz => {
@@ -91,57 +87,67 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     setTimezoneList(timezones);
   }, []);
 
-  const preferencesValidationSchema = yup.object().shape({
-    // first_name: yup
-    //   .string()
-    //   .required('First Name is required')
-    //   .min(2, ({ min }) => `First Name must be at least ${min} characters`),
-    // last_name: yup
-    //   .string()
-    //   .min(2, ({ min }) => `First Name must be at least ${min} characters`),
-    // timezone: yup
-    //   .string()
-    //   .required('Timezone is required'),
-    // measure_system: yup
-    //   .string()
-    //   .required('Measure System is required'),
-    // weight: yup
-    //   .string()
-    //   .required('Weight is required')
-    //   .min(2, ({ min }) => `First Name must be at least ${min} characters`),
-    // height: yup
-    //   .string()
-    //   .required('First Name is required')
-    //   .min(2, ({ min }) => `First Name must be at least ${min} characters`),
-    // age: yup
-    //   .string()
-    //   .required('First Name is required')
-    //   .min(2, ({ min }) => `First Name must be at least ${min} characters`),
-  });
-
-  useEffect(() => {
-    if (measureSystem === 1) {
+  const changeValueByMetric = (
+    measure_system: number,
+    values: FormikDataProps,
+    setFieldValue: (
+      field: string,
+      value: any,
+      shouldValidate?: boolean,
+    ) => void,
+  ) => {
+    if (measure_system === 1) {
       //convert imperial to metric
       const kgFromLbs = String(
-        Math.round(parseFloat(String(weight_lb)) / 2.20462),
+        _.round((values.weight_lb ? +values.weight_lb : 0) / 2.20462, 1),
       );
-      setWeightKg(kgFromLbs);
-      if (formRef.current?.values.weight_kg) {
-        formRef.current.setFieldValue('weight_kg', kgFromLbs);
-        // formRef.current.values.weight_kg = kgFromLbs;
-      }
+      setFieldValue('weight_kg', kgFromLbs);
+
+      const new_height =
+        _.round(
+          (values.height_ft ? +values.height_ft : 0) * 30.48 +
+            (values.height_in ? +values.height_in : 0) * 2.54,
+          2,
+        ) + '';
+      setFieldValue('height_cm', new_height);
     } else {
       //convert metric to imperial
-      const lbFromKg = String(Math.round(parseFloat(weight_kg) * 2.20462));
-      setWeightLb(lbFromKg);
-      if (formRef.current?.values.weight_lb) {
-        formRef.current.setFieldValue('weight_lb', lbFromKg);
-        // formRef.current.values.weight_lb = lbFromKg;
+      const lbFromKg = String(
+        _.round((values.weight_kg ? +values.weight_kg : 0) * 2.20462, 1),
+      );
+      setFieldValue('weight_lb', lbFromKg);
+
+      let ft = 0;
+      let inch = _.round(
+        (values.height_cm ? +values.height_cm : 0) * 0.393701,
+        2,
+      );
+
+      if (inch > 12) {
+        ft = _.floor(inch / 12);
+        inch -= ft * 12;
+      } else {
+        ft = 0;
       }
+      ft = _.round(ft, 2);
+      inch = _.round(inch, 2);
+      setFieldValue('height_ft', ft + '');
+      setFieldValue('height_in', inch + '');
     }
-  }, [measureSystem, weight_lb, weight_kg, formRef]);
+  };
 
   const submitHandler = (values: FormikDataProps) => {
+    if (!netInfo.isConnected) {
+      dispatch(
+        setInfoMessage({
+          title: 'Not available in offline mode.',
+          btnText: 'Ok',
+        }),
+      );
+      return;
+    }
+
+    setLoadingSubmit(true);
     const newUserData = {
       ...values,
       weight_kg: +values.weight_kg,
@@ -179,262 +185,434 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       delete newUserData.height_in;
       delete newUserData.age;
 
-      dispatch(userActions.updateUserData(newUserData as Partial<User>)).then(
-        () => {
-          navigation.navigate(Routes.Dashboard);
-        },
-      );
+      dispatch(userActions.updateUserData(newUserData as Partial<User>))
+        .then(() => {
+          setLoadingSubmit(false);
+          navigation.goBack();
+        })
+        .catch(() => {
+          setLoadingSubmit(false);
+        });
     }
   };
 
   const FormikInitValues: FormikDataProps = {
-    first_name: firstName,
-    last_name: lastName,
-    timezone: timezone,
-    measure_system: measureSystem,
-    weight_kg,
-    height_cm,
-    height_ft,
-    height_in: String(Math.round(parseFloat(String(height_in)))),
-    weight_lb,
-    birth_year,
-    age: age,
+    first_name: userData.first_name,
+    last_name: userData.last_name || '',
+    timezone: userData.timezone,
+    measure_system: userData.measure_system,
+    weight_kg: String(userData.weight_kg),
+    height_cm: String(userData.height_cm),
+    height_ft: String(_.floor(cmToinches / 12)),
+    height_in: String(_.round(cmToinches % 12, 2)),
+    weight_lb: String(_.round(userData.weight_kg * 2.20462, 1)),
+    birth_year: userData.birth_year + '',
+    age: String(moment().year() - userData.birth_year),
+  };
+
+  const handleResetPass = () => {
+    authService
+      .requestUpdatePassword(email)
+      .then(() => {
+        setResetPassPopup(false);
+        setOldEmail('');
+        dispatch(
+          setInfoMessage({
+            title: 'Success',
+            text: 'Thanks! Please check your email to continue.',
+          }),
+        );
+      })
+      .catch(err => {
+        setResetPassPopup(false);
+        setOldEmail('');
+        if (err.data.message === 'No user matched') {
+          dispatch(
+            setInfoMessage({
+              title: 'Error',
+              text: 'Something’s not right. Please reach us at support@nutritionix.com.',
+            }),
+          );
+        }
+      });
+  };
+  const handleChangeEmail = () => {
+    if (!email || !oldEmail) {
+      setChangeEmailPopup(false);
+      setOldEmail(userData.email || '');
+      setEmail('');
+      dispatch(
+        setInfoMessage({
+          title: 'Error',
+          text: 'Both fields are required',
+        }),
+      );
+      return;
+    } else if (email === oldEmail) {
+      setChangeEmailPopup(false);
+      setOldEmail(userData.email || '');
+      setEmail('');
+      dispatch(
+        setInfoMessage({
+          title: 'Error',
+          text: 'New email address is the same.',
+        }),
+      );
+      return;
+    }
+    dispatch(userActions.updateUserData({email})).then(() => {
+      setChangeEmailPopup(false);
+      setOldEmail(email);
+      setEmail('');
+      dispatch(
+        setInfoMessage({
+          title: 'Success',
+          text: 'Your email has been changed',
+        }),
+      );
+    });
   };
 
   return (
-    <KeyboardAwareScrollView style={styles.scrollView}>
-      <View style={styles.root}>
-        <ScrollView>
-          <Formik
-            initialValues={FormikInitValues}
-            innerRef={formRef}
-            onSubmit={values => submitHandler(values)}
-            validationSchema={preferencesValidationSchema}
-            validateOnMount>
-            {({handleSubmit, setFieldValue, values, isValid, dirty}) => {
-              return (
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.root}
+      enableOnAndroid={true}
+      enableAutomaticScroll={true}>
+      <Formik
+        initialValues={FormikInitValues}
+        innerRef={formRef}
+        onSubmit={values => submitHandler(values)}
+        validationSchema={validationSchema}
+        validateOnBlur>
+        {({
+          handleChange,
+          isValid,
+          handleSubmit,
+          handleBlur,
+          setFieldValue,
+          values,
+          errors,
+        }) => {
+          return (
+            <View style={{flex: 1}}>
+              <NixInput
+                label="First Name"
+                placeholder="First Name"
+                column
+                value={values.first_name}
+                onChangeText={handleChange('first_name')}
+                onBlur={handleBlur('first_name')}
+                autoCapitalize="none"
+                error={errors.first_name}
+                errorStyles={styles.errorStyles}
+              />
+              <NixInput
+                label="Last Name"
+                placeholder="Last Name"
+                column
+                value={values.last_name}
+                onChangeText={handleChange('last_name')}
+                onBlur={handleBlur('last_name')}
+                autoCapitalize="none"
+                error={errors.last_name}
+                errorStyles={styles.errorStyles}
+              />
+              <ModalSelector
+                data={timezoneList}
+                initValue={userData.measure_system + ''}
+                onChange={option => {
+                  setFieldValue('timezone', option.value);
+                  // setTimezone(option.value);
+                }}
+                listType="FLATLIST"
+                keyExtractor={(item: {label: string; value: string}) =>
+                  item.value
+                }>
+                <NixInput
+                  label="Time Zone"
+                  style={{textAlign: 'right'}}
+                  labelContainerStyle={styles.labelContainerStyle}
+                  value={values.timezone}
+                  onChangeText={handleChange('timezone')}
+                  onBlur={handleBlur('timezone')}
+                  autoCapitalize="none">
+                  <FontAwesome
+                    name={'sort-down'}
+                    size={15}
+                    style={styles.selectIcon}
+                  />
+                </NixInput>
+              </ModalSelector>
+              <ModalSelector
+                data={[
+                  {
+                    label: 'Metric',
+                    value: 1,
+                  },
+                  {
+                    label: 'Imperial (US)',
+                    value: 0,
+                  },
+                ]}
+                initValue={values.measure_system + ''}
+                onChange={option => {
+                  if (+option.value !== +values.measure_system) {
+                    changeValueByMetric(option.value, values, setFieldValue);
+                  }
+                  setFieldValue('measure_system', option.value);
+                }}
+                listType="FLATLIST"
+                keyExtractor={(item: {label: string; value: number}) =>
+                  String(item.value)
+                }>
+                <NixInput
+                  label="Measure system"
+                  style={{textAlign: 'right'}}
+                  labelContainerStyle={styles.labelContainerStyle}
+                  value={
+                    values.measure_system === 1 ? 'Metric' : 'Imperial (US)'
+                  }
+                  onChangeText={handleChange('measure_system')}
+                  onBlur={handleBlur('measure_system')}
+                  autoCapitalize="none">
+                  <FontAwesome
+                    name={'sort-down'}
+                    size={15}
+                    style={styles.selectIcon}
+                  />
+                </NixInput>
+              </ModalSelector>
+              {values.measure_system === 1 ? (
                 <>
-                  <Field
-                    component={NixInputField}
-                    name="first_name"
-                    label="First Name"
+                  <NixInput
+                    label="Weight"
+                    placeholder="kg"
+                    labelContainerStyle={styles.labelContainerStyleFull}
                     style={styles.input}
-                    leftComponent={
-                      <FontAwesome
-                        name={'user'}
-                        size={30}
-                        style={styles.field}
-                      />
-                    }
-                    autoCapitalize="none"
-                  />
-                  <Field
-                    component={NixInputField}
-                    name="last_name"
-                    label="Last Name"
-                    style={styles.input}
-                    leftComponent={
-                      <FontAwesome
-                        name={'user'}
-                        size={30}
-                        style={styles.field}
-                      />
-                    }
-                    autoCapitalize="none"
-                  />
-                  <ModalSelector
-                    data={timezoneList}
-                    initValue={timezone}
-                    onChange={option => {
-                      setFieldValue('timezone', option.value);
-                      setTimezone(option.value);
-                    }}
-                    listType="FLATLIST"
-                    keyExtractor={(item: {label: string; value: string}) =>
-                      item.value
-                    }>
-                    <Field
-                      component={NixInputField}
-                      name="timezone"
-                      label="Tome Zone"
-                      style={styles.input}
-                      leftComponent={
-                        <FontAwesome
-                          name={'clock-o'}
-                          size={30}
-                          style={styles.field}
-                        />
-                      }
-                      disabled
-                    />
-                  </ModalSelector>
-                  <ModalSelector
-                    data={[
-                      {
-                        label: 'Metric',
-                        value: 1,
-                      },
-                      {
-                        label: 'Imperial',
-                        value: 0,
-                      },
-                    ]}
-                    initValue={measureSystem + ''}
-                    onChange={option => {
-                      setFieldValue('measure_system', option.value);
-                      setMeasureSystem(option.value);
-                    }}
-                    listType="FLATLIST"
-                    keyExtractor={(item: {label: string; value: number}) =>
-                      String(item.value)
-                    }>
-                    <Field
-                      component={NixInputField}
-                      value={
-                        values.measure_system === 1 ? 'Metric' : 'Imperial'
-                      }
-                      name="measure_system"
-                      label="Measure system"
-                      style={styles.input}
-                      leftComponent={
-                        <FontAwesome5
-                          name={'ruler-vertical'}
-                          size={30}
-                          style={styles.field}
-                        />
-                      }
-                      disabled
-                    />
-                  </ModalSelector>
-                  {measureSystem === 1 ? (
-                    <>
-                      <Field
-                        component={NixInputField}
-                        name="weight_kg"
-                        label="Weight"
-                        style={styles.input}
-                        leftComponent={
-                          <FontAwesome5
-                            name={'weight-hanging'}
-                            size={30}
-                            style={styles.field}
-                          />
-                        }
-                        rightComponent={<Text>kg</Text>}
-                        autoCapitalize="none"
-                        keyboardType="numeric"
-                      />
-                      <Field
-                        component={NixInputField}
-                        name="height_cm"
-                        label="Height"
-                        style={styles.input}
-                        leftComponent={
-                          <FontAwesome5
-                            name={'ruler-vertical'}
-                            size={30}
-                            style={styles.field}
-                          />
-                        }
-                        autoCapitalize="none"
-                        rightComponent={<Text>cm</Text>}
-                        keyboardType="numeric"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <Field
-                        component={NixInputField}
-                        name="weight_lb"
-                        label="Weight"
-                        style={styles.input}
-                        leftComponent={
-                          <FontAwesome5
-                            name={'weight-hanging'}
-                            size={30}
-                            style={styles.field}
-                          />
-                        }
-                        rightComponent={<Text>lbs</Text>}
-                        autoCapitalize="none"
-                        keyboardType="numeric"
-                      />
-                      <Field
-                        component={NixInputField}
-                        name="height_ft"
-                        label="Height"
-                        style={styles.input}
-                        leftComponent={
-                          <FontAwesome5
-                            name={'ruler-vertical'}
-                            size={30}
-                            style={styles.field}
-                          />
-                        }
-                        rightComponent={<Text>ft</Text>}
-                        autoCapitalize="none"
-                        keyboardType="numeric"
-                      />
-                      <Field
-                        component={NixInputField}
-                        name="height_in"
-                        label="Height"
-                        style={styles.input}
-                        leftComponent={
-                          <FontAwesome5
-                            name={'ruler-vertical'}
-                            size={30}
-                            style={styles.field}
-                          />
-                        }
-                        rightComponent={<Text>in</Text>}
-                        autoCapitalize="none"
-                        keyboardType="numeric"
-                      />
-                    </>
-                  )}
-                  <Field
-                    component={NixInputField}
-                    name="age"
-                    label="Age"
-                    style={styles.input}
-                    leftComponent={
-                      <FontAwesome
-                        name={'calendar'}
-                        size={30}
-                        style={styles.field}
-                      />
-                    }
-                    autoCapitalize="none"
+                    value={values.weight_kg}
+                    unit="kg"
+                    unitStyle={styles.unit}
+                    onChangeText={handleChange('weight_kg')}
+                    onBlur={handleBlur('weight_kg')}
                     keyboardType="numeric"
-                    onValueChange={(newVal: number) => {
-                      setFieldValue('birth_year', moment().year() - newVal);
-                    }}
-                  />
-                  <View style={styles.footer}>
-                    <View style={styles.btnContainer}>
-                      <NixButton title="Reset Password" />
-                    </View>
-                    <View style={styles.btnContainer}>
-                      <NixButton title="Change email" />
-                    </View>
-                  </View>
-                  <View style={styles.submitContainer}>
-                    <View style={styles.submitBtn}>
-                      <NixButton
-                        title="Sumbit"
-                        onPress={handleSubmit}
-                        type="primary"
-                        disabled={!isValid || !dirty}
-                      />
-                    </View>
-                  </View>
+                    autoCapitalize="none"
+                    error={errors.weight_kg}
+                    errorStyles={styles.errorStyles}>
+                    <FontAwesome
+                      name={'edit'}
+                      size={15}
+                      style={styles.inputIcon}
+                    />
+                  </NixInput>
+                  <NixInput
+                    label="Height"
+                    labelContainerStyle={styles.labelContainerStyleFull}
+                    style={styles.input}
+                    value={values.height_cm + ''}
+                    unit="cm"
+                    unitStyle={styles.unit}
+                    onChangeText={handleChange('height_cm')}
+                    onBlur={handleBlur('height_cm')}
+                    keyboardType="numeric"
+                    autoCapitalize="none"
+                    placeholder="cm"
+                    error={errors.height_cm}
+                    errorStyles={styles.errorStyles}>
+                    <FontAwesome
+                      name={'edit'}
+                      size={15}
+                      style={styles.inputIcon}
+                    />
+                  </NixInput>
                 </>
-              );
-            }}
-          </Formik>
-        </ScrollView>
-      </View>
+              ) : (
+                <>
+                  <NixInput
+                    label="Weight"
+                    labelContainerStyle={styles.labelContainerStyleFull}
+                    style={styles.input}
+                    value={values.weight_lb || ''}
+                    unit="lbs"
+                    unitStyle={styles.unit}
+                    onChangeText={handleChange('weight_lb')}
+                    onBlur={handleBlur('weight_lb')}
+                    keyboardType="numeric"
+                    autoCapitalize="none"
+                    placeholder="lbs."
+                    error={errors.weight_lb}
+                    errorStyles={styles.errorStyles}>
+                    <FontAwesome
+                      name={'edit'}
+                      size={15}
+                      style={styles.inputIcon}
+                    />
+                  </NixInput>
+                  <NixInput
+                    label="Height"
+                    labelContainerStyle={styles.labelContainerStyleFull}
+                    style={styles.input}
+                    value={values.height_ft || ''}
+                    unit="ft"
+                    unitStyle={styles.unit}
+                    onChangeText={handleChange('height_ft')}
+                    onBlur={handleBlur('height_ft')}
+                    keyboardType="numeric"
+                    autoCapitalize="none"
+                    placeholder="ft."
+                    error={errors.height_ft}
+                    errorStyles={styles.errorStyles}>
+                    <FontAwesome
+                      name={'edit'}
+                      size={15}
+                      style={styles.inputIcon}
+                    />
+                  </NixInput>
+                  <NixInput
+                    label=""
+                    labelContainerStyle={styles.labelContainerStyleFull}
+                    style={styles.input}
+                    value={values.height_in || ''}
+                    unit="in"
+                    unitStyle={styles.unit}
+                    onChangeText={handleChange('height_in')}
+                    onBlur={handleBlur('height_in')}
+                    keyboardType="numeric"
+                    autoCapitalize="none"
+                    placeholder="in."
+                    error={errors.height_in}
+                    errorStyles={styles.errorStyles}>
+                    <FontAwesome
+                      name={'edit'}
+                      size={15}
+                      style={styles.inputIcon}
+                    />
+                  </NixInput>
+                </>
+              )}
+              <NixInput
+                label="Age"
+                labelContainerStyle={styles.labelContainerStyleFull}
+                style={styles.input}
+                value={values.age || ''}
+                unit="years"
+                unitStyle={styles.unit}
+                onChangeText={(newVal: string) => {
+                  setFieldValue('birth_year', moment().year() - +newVal);
+                  setFieldValue('age', newVal);
+                }}
+                onBlur={handleBlur('age')}
+                keyboardType="numeric"
+                autoCapitalize="none"
+                placeholder=""
+                error={errors.age}
+                errorStyles={styles.errorStyles}>
+                <FontAwesome name={'edit'} size={15} style={styles.inputIcon} />
+              </NixInput>
+              <View style={styles.footer}>
+                <View style={styles.btnContainer}>
+                  <NixButton
+                    title="Reset Password"
+                    type="outline"
+                    onPress={() => setResetPassPopup(true)}
+                  />
+                </View>
+                <View style={styles.btnContainer}>
+                  <NixButton
+                    title="Change email"
+                    type="outline"
+                    onPress={() => setChangeEmailPopup(true)}
+                  />
+                </View>
+              </View>
+              {isValid && (
+                <View style={styles.saveBtnContainer}>
+                  <TouchableOpacity
+                    style={styles.saveBtn}
+                    onPress={handleSubmit}
+                    disabled={!isValid || loadingSubmit}>
+                    <Text style={styles.saveBtnText}>Save</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          );
+        }}
+      </Formik>
+      <ChooseModal
+        modalVisible={changeEmailPopup}
+        hideModal={() => {
+          setChangeEmailPopup(false);
+          setOldEmail('');
+          setEmail('');
+        }}
+        title="Email change"
+        btns={[
+          {
+            type: 'primary',
+            title: 'Sumbit',
+            onPress: () => {
+              handleChangeEmail();
+            },
+            disabled: loadingSubmit,
+          },
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => {
+              setChangeEmailPopup(false);
+              setOldEmail(userData.email || '');
+              setEmail('');
+            },
+          },
+        ]}>
+        <View style={{marginBottom: 10}}>
+          <Text style={styles.modalLabel}>Old Email</Text>
+          <TextInput
+            placeholder="Old Email"
+            value={oldEmail}
+            onChangeText={(v: string) => setOldEmail(v)}
+          />
+          <Text style={styles.modalLabel}>New Email</Text>
+          <TextInput
+            placeholder="New Email"
+            value={email}
+            onChangeText={(v: string) => setEmail(v)}
+          />
+        </View>
+      </ChooseModal>
+      <ChooseModal
+        modalVisible={resetPassPopup}
+        hideModal={() => {
+          setResetPassPopup(false);
+          setOldEmail('');
+        }}
+        title="Please type your email"
+        btns={[
+          {
+            type: 'primary',
+            title: 'Sumbit',
+            onPress: () => {
+              handleResetPass();
+            },
+            disabled: loadingSubmit || !email,
+          },
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => {
+              setResetPassPopup(false);
+              setOldEmail('');
+            },
+          },
+        ]}>
+        <TextInput
+          placeholder="What is your email address?"
+          value={email}
+          onChangeText={(v: string) => setEmail(v)}
+          autoCapitalize="none"
+          textContentType="emailAddress"
+        />
+      </ChooseModal>
     </KeyboardAwareScrollView>
   );
 };

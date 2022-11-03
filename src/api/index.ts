@@ -42,7 +42,7 @@ apiClient.interceptors.response.use(
     if (__DEV__) {
       console.log('API Response error:', error);
     }
-    return error.response;
+    throw error.response;
   },
 );
 

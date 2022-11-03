@@ -13,6 +13,9 @@ export const styles = StyleSheet.create({
     borderBottomColor: Colors.LightGray,
     borderBottomWidth: 1,
   },
+  column: {
+    flexDirection: 'column',
+  },
   labelContainer: {
     width: '30%',
     paddingHorizontal: 10,
@@ -48,5 +51,13 @@ export const styles = StyleSheet.create({
   unitValue: {
     width: '20%',
     textAlign: 'right',
+  },
+  labelColumn: {
+    paddingHorizontal: 0,
+    width: '100%',
+  },
+  inputColumn: {
+    paddingHorizontal: 0,
+    width: '100%',
   },
 });
