@@ -138,4 +138,11 @@ export const styles = StyleSheet.create({
   infoCircleIcon: {
     color: Colors.Gray6,
   },
+  updateCalorieMessage: {
+    color: 'green',
+    textAlign: 'center',
+    fontWeight: '500',
+    alignSelf: 'center',
+    padding: 5,
+  },
 });

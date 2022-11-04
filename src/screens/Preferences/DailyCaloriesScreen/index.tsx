@@ -1,5 +1,5 @@
 // utils
-import React, {useState, useRef, useLayoutEffect} from 'react';
+import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
 import moment from 'moment-timezone';
 import _ from 'lodash';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -72,6 +72,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
   const userData = useSelector(state => state.auth.userData);
   const [validOnChange, setValidOnChange] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [updateCalorieMessage, setUpdateCalorieMessage] = useState('');
   const dispatch = useDispatch();
   const formRef = useRef<FormikProps<FormikDataProps>>(null);
 
@@ -179,12 +180,22 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
     dispatch(authActions.updateUserData(newUserData as Partial<User>))
       .then(() => {
         setLoadingSubmit(false);
+        setUpdateCalorieMessage('Updated');
         navigation.navigate(Routes.Dashboard);
       })
-      .catch(() => {
+      .catch(err => {
+        setUpdateCalorieMessage(err.data?.message || 'Error');
         setLoadingSubmit(false);
       });
   };
+
+  useEffect(() => {
+    if (updateCalorieMessage) {
+      setTimeout(() => {
+        setUpdateCalorieMessage('');
+      }, 3000);
+    }
+  }, [updateCalorieMessage]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -583,6 +594,11 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                 keyboardType="numeric"
               />
             </View>
+            {!!updateCalorieMessage && (
+              <Text style={styles.updateCalorieMessage}>
+                {updateCalorieMessage}
+              </Text>
+            )}
             <View style={styles.disclaimer}>
               <Text style={styles.disclaimerText}>
                 <Text style={{fontWeight: 'bold'}}>Disclaimer: </Text>
