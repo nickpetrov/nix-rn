@@ -24,10 +24,16 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   shadow: {
-    shadowColor: '#171717',
-    shadowOffset: {width: 5, height: 5},
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+
+    elevation: 2,
+    backgroundColor: '#fff',
   },
   elevation: {
     elevation: 5,

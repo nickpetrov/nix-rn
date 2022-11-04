@@ -10,7 +10,7 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import {SvgUri} from 'react-native-svg';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -21,8 +21,7 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // styles
 import {styles} from './ConnectedAppsScreen.styles';
-
-const {uri} = Image.resolveAssetSource(require('assets/fitbit.svg'));
+import {Colors} from 'constants/Colors';
 
 interface ConnectedAppsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -38,24 +37,32 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
     <SafeAreaView style={styles.root}>
       <TouchableWithoutFeedback
         onPress={() => navigation.navigate(Routes.FitbitSync)}>
-        <View style={styles.iconContainer}>
-          <SvgUri uri={uri} width="80" height="28" preserveAspectRatio="none" />
+        <View style={styles.item}>
+          <View style={styles.left}>
+            <Image style={styles.image} source={require('assets/fitbit.png')} />
+            <Text style={styles.text}>Fitbit</Text>
+          </View>
+          <Ionicons name="chevron-forward" color={Colors.Gray6} size={30} />
         </View>
       </TouchableWithoutFeedback>
       {Platform.OS === 'ios' ? (
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate(Routes.HealthkitSync)}>
-          <View style={styles.healthContainer}>
-            <View style={styles.imageContainer}>
-              <Image
+          <View style={styles.item}>
+            <View style={styles.left}>
+              <Ionicons
+                name="ios-medical-outline"
+                color={Colors.Gray6}
+                size={30}
                 style={styles.image}
-                source={require('assets/AppleHealth.png')}
               />
+              <Text style={styles.text}>Healthkit</Text>
             </View>
-            <Text style={styles.text}>Healthkit</Text>
+            <Ionicons name="chevron-forward" color={Colors.Gray6} size={30} />
           </View>
         </TouchableWithoutFeedback>
       ) : null}
+      <Text style={styles.note}>More integrations coming soon.</Text>
     </SafeAreaView>
   );
 };

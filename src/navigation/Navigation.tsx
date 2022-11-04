@@ -64,29 +64,34 @@ import {
 const Stack = createNativeStackNavigator<StackNavigatorParamList>();
 const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
 
-const ConnectedAppsNavigation = () => {
-  return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen
-        name={Routes.List}
-        component={ConnectedAppsScreen}
-        options={{headerTitle: 'Connected Apps'}}
-      />
-      <Stack.Screen name={Routes.FitbitSync} component={FitbitSyncScreen} />
-      <Stack.Screen
-        name={Routes.HealthkitSync}
-        component={HealthkitSyncScreen}
-      />
-    </Stack.Navigator>
-  );
-};
-
 const LoggedInNavigationOptions = () => ({
   header: (props: any) => <NavigationHeader {...props} />,
   BackButtonstyles: {
     padding: 0,
   },
 });
+
+const ConnectedAppsNavigation = () => {
+  return (
+    <Stack.Navigator screenOptions={LoggedInNavigationOptions}>
+      <Stack.Screen
+        name={Routes.List}
+        component={ConnectedAppsScreen}
+        options={{headerTitle: 'Connected Apps'}}
+      />
+      <Stack.Screen
+        name={Routes.FitbitSync}
+        component={FitbitSyncScreen}
+        options={{headerTitle: 'Fitbit'}}
+      />
+      <Stack.Screen
+        name={Routes.HealthkitSync}
+        component={HealthkitSyncScreen}
+        options={{headerTitle: 'HealthKit'}}
+      />
+    </Stack.Navigator>
+  );
+};
 
 const PreferencesNavigation = () => {
   return (
@@ -113,7 +118,9 @@ const PreferencesNavigation = () => {
       <Stack.Screen
         name={Routes.ConnectedApps}
         component={ConnectedAppsNavigation}
-        options={{headerTitle: 'Connected Apps'}}
+        options={{
+          headerShown: false,
+        }}
       />
       <Stack.Screen
         name={Routes.Notifications}
