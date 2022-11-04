@@ -20,12 +20,6 @@ import {SvgUri} from 'react-native-svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixButton} from 'components/NixButton';
 
-// hooks
-import {useDispatch} from 'hooks';
-
-// actions
-import {logout} from 'store/auth/auth.actions';
-
 // constants
 import {Routes} from 'navigation/Routes';
 
@@ -39,7 +33,6 @@ const {uri} = Image.resolveAssetSource(require('assets/images/logo2.svg'));
 
 export const SideMenu: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
-  const dispatch = useDispatch();
 
   const menuItems: Array<{
     icon: string;
@@ -229,8 +222,7 @@ export const SideMenu: React.FC = () => {
         ))}
         <TouchableWithoutFeedback
           onPress={() => {
-            logout(dispatch);
-            navigation.navigate(Routes.LoginScreens, {screen: Routes.Login});
+            navigation.navigate(Routes.Logout);
           }}>
           <View style={styles.menuItemWrapper}>
             <View style={styles.iconWrapper}>

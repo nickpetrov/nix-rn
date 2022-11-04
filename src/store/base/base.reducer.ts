@@ -1,5 +1,4 @@
 // utils
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Platform} from 'react-native';
 import {
   getModel,
@@ -12,27 +11,13 @@ import {
 import {AnyAction} from 'redux';
 import {baseActionTypes, BaseState} from './base.types';
 
-const getAgreedToUsePhotoFromStorage = () => {
-  let agreedToUsePhoto = false;
-  AsyncStorage.getItem('agreedToUsePhoto').then(data => {
-    if (data) {
-      const agreedToUsePhotoStorage = JSON.parse(data);
-      if (agreedToUsePhotoStorage) {
-        agreedToUsePhoto = agreedToUsePhotoStorage;
-      }
-    }
-  });
-
-  return agreedToUsePhoto;
-};
-
 let manufacturer = '';
 getManufacturer().then(m => {
   manufacturer = m;
 });
 
 const initialState: BaseState = {
-  agreedToUsePhoto: getAgreedToUsePhotoFromStorage(),
+  agreedToUsePhoto: false,
   agreementPopup: false,
   deviceInfo: {
     version: getVersion(),
@@ -49,6 +34,9 @@ const initialState: BaseState = {
     lastRunDate: null,
     runCounter: 0,
     popupShown: 0,
+  },
+  groceryAgentPreferences: {
+    volunteer: false,
   },
 };
 
@@ -71,9 +59,15 @@ export default (
       return {...state, askForReview: action.payload};
     case baseActionTypes.MERGE_REVIEW_CHECK: {
       const newReviewCheck = {...state.reviewCheck, ...action.payload};
-      AsyncStorage.setItem('reviewCheck', JSON.stringify(newReviewCheck));
       return {...state, reviewCheck: newReviewCheck};
     }
+    case baseActionTypes.TOGGLE_GROCERY_AGENT_PREFERENCES:
+      return {
+        ...state,
+        groceryAgentPreferences: {
+          volunteer: !state.groceryAgentPreferences.volunteer,
+        },
+      };
     case baseActionTypes.CLEAR:
       return initialState;
     default:

@@ -53,6 +53,9 @@ interface BarcodeScannerScreenProps {
 
 export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
   React.memo(({navigation, route}) => {
+    const volunteer = useSelector(
+      state => state.base.groceryAgentPreferences.volunteer,
+    );
     const [picture, setPicture] = useState<PhotoFile | null>(null);
     const userData = useSelector(state => state.auth.userData);
     const force_photo_upload = route.params?.force_photo_upload;
@@ -184,11 +187,8 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
               foods &&
               (force_photo_upload ||
                 userData.grocery_agent ||
-                /* (check when add GroceryAgentScreen)  &&
-          !!(
-            $rootScope.groceryAgentPreferences &&
-            $rootScope.groceryAgentPreferences.volunteer
-          ) */ Math.floor(
+                volunteer ||
+                Math.floor(
                   Math.random() *
                     grocery_photo_upload.user_volunteering_multiplicator,
                 ) === 0)
@@ -232,7 +232,15 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
         // add firebase analitics
         // AnalyticsService.trackEvent("foodlog_barcode", barcode);
       }
-    }, [barcode, dispatch, navigation, force_photo_upload, userData, route]);
+    }, [
+      barcode,
+      dispatch,
+      navigation,
+      force_photo_upload,
+      userData,
+      route,
+      volunteer,
+    ]);
 
     const requestPermission = useCallback(async () => {
       const status = await Camera.requestCameraPermission();

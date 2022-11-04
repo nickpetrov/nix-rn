@@ -1,12 +1,11 @@
 // utils
 import React, {useEffect} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // components
 import {SafeAreaView, ActivityIndicator} from 'react-native';
 
 // hooks
-import {useDispatch} from 'hooks';
+import {useDispatch, useSelector} from 'hooks';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -15,13 +14,10 @@ import {Routes} from 'navigation/Routes';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 // actions
-import {getUserDataFromAPI, setUserJwt} from 'store/auth/auth.actions';
-import {mergeBasketFromStorage} from 'store/basket/basket.actions';
+import {updateReviewCheckAfterComeBack} from 'store/base/base.actions';
 
 // types
-import {BasketState} from 'store/basket/basket.types';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {getReviewCheckFromStorage} from 'store/base/base.actions';
 
 interface StartupScreenProps {
   navigation: NativeStackNavigationProp<
@@ -32,42 +28,16 @@ interface StartupScreenProps {
 
 export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
+  const userJWT = useSelector(state => state.auth.userJWT);
 
   useEffect(() => {
-    const authenticate = async () => {
-      const authData = await AsyncStorage.getItem('authData');
-      if (!authData) {
-        navigation.navigate(Routes.LoginScreens);
-      } else {
-        const {userJWT} = JSON.parse(authData);
-        if (!userJWT) {
-          navigation.navigate(Routes.LoginScreens);
-        } else {
-          await dispatch(setUserJwt(userJWT));
-          await dispatch(getUserDataFromAPI());
-
-          //get basekt from storage
-
-          const getBasketFromStorage = async () => {
-            let basket = await AsyncStorage.getItem('basket');
-            if (!basket) {
-              return;
-            } else {
-              const newBasket: BasketState = JSON.parse(basket);
-              dispatch(mergeBasketFromStorage(newBasket));
-            }
-          };
-          getBasketFromStorage();
-
-          //get checkReview from storage
-          dispatch(getReviewCheckFromStorage());
-
-          navigation.navigate(Routes.LoggedIn);
-        }
-      }
-    };
-    authenticate();
-  }, [dispatch, navigation]);
+    if (!userJWT) {
+      navigation.navigate(Routes.LoginScreens);
+    } else {
+      navigation.navigate(Routes.LoggedIn);
+      dispatch(updateReviewCheckAfterComeBack());
+    }
+  }, [dispatch, navigation, userJWT]);
 
   return (
     <SafeAreaView

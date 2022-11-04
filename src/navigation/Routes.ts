@@ -35,4 +35,5 @@ export enum Routes {
   LoginScreens = 'LoginScreens',
   Camera = 'Camera',
   WebView = 'WebView',
+  Logout = 'Logout',
 }

@@ -103,7 +103,7 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     } else {
       navigation.navigate(Routes.Dashboard);
     }
-    dispatch(setInfoMessage(infoMessage));
+    dispatch(setInfoMessage({title: infoMessage}));
   };
 
   const uploadPhotos = async () => {

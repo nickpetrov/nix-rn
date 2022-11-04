@@ -74,14 +74,14 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
           <Text>Grocery Agent Preferences</Text>
         </View>
       </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback
+      {/* <TouchableWithoutFeedback
         onPress={() => {
           navigation.navigate(Routes.DeveloperSettings);
         }}>
         <View style={styles.menuItem}>
           <Text>Developer settings</Text>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback> */}
       <Text style={styles.version}>
         Version: {appVersion}({buildNumber})
       </Text>

@@ -1,5 +1,4 @@
 // utils
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {v4 as uuidv4} from 'uuid';
 import _ from 'lodash';
 import moment from 'moment-timezone';
@@ -21,26 +20,6 @@ import {RootState} from '../index';
 import {FoodProps} from 'store/userLog/userLog.types';
 import recipesService from 'api/recipeService';
 import baseService from 'api/baseService';
-
-const saveBasketToStorage = (basket: Partial<BasketState>) => {
-  AsyncStorage.getItem('basket').then(data => {
-    let prevData = data ? JSON.parse(data) : {};
-    let newFoods = prevData?.foods ? [...prevData?.foods] : [];
-
-    //TODO check when we will have time case when foods not array(if it possible left it if not -> refactoring)
-    if (typeof basket?.foods === 'object') {
-      newFoods = newFoods.concat(basket.foods);
-    } else if (basket.foods) {
-      newFoods.push(basket.foods);
-    }
-
-    AsyncStorage.setItem('basket', JSON.stringify({...prevData, ...basket}));
-  });
-};
-
-const resetBasketStorage = () => {
-  AsyncStorage.removeItem('basket');
-};
 
 // add by name
 export const addFoodToBasket = (query: string) => {
@@ -65,7 +44,6 @@ export const addFoodToBasket = (query: string) => {
           basketId: uuidv4(),
         };
       });
-      saveBasketToStorage({foods: foods});
       dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: foods});
       return foods;
     } catch (err: any) {
@@ -89,7 +67,6 @@ export const addFoodToBasketById = (id: string) => {
       }
       food.consumed_at = moment().format();
       food.basketId = uuidv4();
-      saveBasketToStorage({foods: [food]});
       dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]});
       return [food];
     } catch (err: any) {
@@ -264,37 +241,11 @@ export const addBrandedFoodToBasket = (id: string) => {
 };
 
 export const deleteFoodFromBasket = (id: string) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
-    const oldFoods = useState().basket.foods;
-    let newFoods = [...oldFoods];
-    newFoods = newFoods.filter(item => item.basketId !== id);
-    let newBasket;
-    if (newFoods.length === 1) {
-      newBasket = {
-        foods: newFoods,
-        recipeName: '',
-        servings: '1',
-        isSingleFood: false,
-        recipeBrand: '',
-      };
-      dispatch({
-        type: basketActionTypes.MERGE_BASKET,
-        payload: {
-          recipeName: '',
-          servings: '1',
-          isSingleFood: false,
-          recipeBrand: '',
-        },
-      });
-    } else {
-      newBasket = {foods: newFoods};
-    }
-    saveBasketToStorage(newBasket);
+  return async (dispatch: Dispatch) => {
     dispatch({type: basketActionTypes.DELETE_FOOD_FROM_BASKET, id});
   };
 };
 export const mergeBasket = (basket: Partial<BasketState>) => {
-  saveBasketToStorage(basket);
   return {type: basketActionTypes.MERGE_BASKET, payload: basket};
 };
 export const mergeBasketFromStorage = (basket: BasketState) => {
@@ -306,14 +257,12 @@ export const updateFoodAtBasket = (foodObj: FoodProps, index: number) => {
     const oldFoods = useState().basket.foods;
     const newFoods = [...oldFoods];
     newFoods[index] = foodObj;
-    saveBasketToStorage({foods: newFoods});
     dispatch({type: basketActionTypes.UPDATE_BASKET_FOODS, foods: newFoods});
   };
 };
 
 export const reset = () => {
   return async (dispatch: Dispatch) => {
-    resetBasketStorage();
     dispatch({type: basketActionTypes.RESET});
   };
 };

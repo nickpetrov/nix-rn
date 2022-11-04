@@ -6,15 +6,17 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Settings} from 'react-native-fbsdk-next';
 import SplashScreen from 'react-native-splash-screen';
 import MainContent from 'components/MainContent';
+import {PersistGate} from 'redux-persist/integration/react';
 
 //for work uuid
 import 'react-native-get-random-values';
 
 // store
-import {store} from 'store';
+import {persistor, store} from 'store';
 
 // styles
 import {styles} from './App.styles';
+import LoadIndicator from 'components/LoadIndicator';
 
 Settings.initializeSDK();
 
@@ -28,11 +30,13 @@ const App = () => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <Provider store={store}>
-        <SafeAreaView style={styles.container}>
-          <NavigationContainer>
-            <MainContent />
-          </NavigationContainer>
-        </SafeAreaView>
+        <PersistGate loading={<LoadIndicator />} persistor={persistor}>
+          <SafeAreaView style={styles.container}>
+            <NavigationContainer>
+              <MainContent />
+            </NavigationContainer>
+          </SafeAreaView>
+        </PersistGate>
       </Provider>
     </GestureHandlerRootView>
   );

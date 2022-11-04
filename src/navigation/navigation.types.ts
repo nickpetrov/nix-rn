@@ -86,6 +86,7 @@ export interface StackNavigatorParamList extends ParamListBase {
     new_product?: boolean;
   };
   [Routes.Stats]: undefined;
+  [Routes.Logout]: undefined;
   [Routes.Camera]: {barcode: string; picType: number};
 }
 

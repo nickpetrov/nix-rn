@@ -6,9 +6,13 @@ import {
   DrawerNavigationProp,
 } from '@react-navigation/drawer';
 
+// hooks
+import {useSelector} from 'hooks/useRedux';
+
 // components
 import {SideMenu} from './components/SideMenu';
 import DrawerButton from 'components/DrawerButton';
+import {NavigationHeader} from 'components/NavigationHeader';
 
 // screens
 import {LoginScreen, SigninScreen, SignupScreen} from 'screens/Auth';
@@ -44,6 +48,9 @@ import {
   PreferencesMenuScreen,
 } from 'screens/Preferences';
 
+import WebViewScreen from 'screens/LoggedIn/WebViewScreen';
+import LogoutScreen from 'screens/LoggedIn/LogoutScreen';
+
 // constants
 import {Routes} from './Routes';
 
@@ -53,8 +60,6 @@ import {
   DrawerNavigatorParamList,
   StackNavigatorParamList,
 } from './navigation.types';
-import {NavigationHeader} from 'components/NavigationHeader';
-import WebViewScreen from 'screens/LoggedIn/WebViewScreen';
 
 const Stack = createNativeStackNavigator<StackNavigatorParamList>();
 const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
@@ -116,6 +121,7 @@ const PreferencesNavigation = () => {
       />
       <Stack.Screen
         name={Routes.GroceryAgentSettings}
+        options={{headerTitle: 'Grocery Agent Preferences'}}
         component={GroceryAgentSettingsScreen}
       />
       <Stack.Screen
@@ -261,6 +267,13 @@ const LoggedInNavigation = ({
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name={Routes.Logout}
+        component={LogoutScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -316,6 +329,7 @@ const LoginNavigation = () => {
 };
 
 export const Navigation = () => {
+  const isSignedIn = useSelector(state => !!state.auth.userJWT);
   return (
     <Stack.Navigator
     // screenOptions={{ ...TransitionPresets.FadeFromBottomAndroid }}
@@ -325,16 +339,19 @@ export const Navigation = () => {
         component={StartupScreen}
         options={{headerShown: false}}
       />
-      <Stack.Screen
-        name={Routes.LoginScreens}
-        component={LoginNavigation}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name={Routes.LoggedIn}
-        component={SideDrawerNavigation}
-        options={{headerShown: false}}
-      />
+      {!isSignedIn ? (
+        <Stack.Screen
+          name={Routes.LoginScreens}
+          component={LoginNavigation}
+          options={{headerShown: false}}
+        />
+      ) : (
+        <Stack.Screen
+          name={Routes.LoggedIn}
+          component={SideDrawerNavigation}
+          options={{headerShown: false}}
+        />
+      )}
     </Stack.Navigator>
   );
 };
