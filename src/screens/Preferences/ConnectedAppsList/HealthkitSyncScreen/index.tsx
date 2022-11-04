@@ -8,6 +8,8 @@ import AppleHealthKit, {
   HealthKitPermissions,
 } from 'react-native-health';
 import ModalSelector from 'react-native-modal-selector';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {NixInput} from 'components/NixInput';
 
 // hooks
 // import {useSelector} from 'hooks/useRedux';
@@ -125,113 +127,151 @@ export const HealthkitSyncScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.root}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Healthkit</Text>
-      </View>
+      <ModalSelector
+        data={[
+          {
+            label: 'Push',
+            value: 'push',
+            key: 'push',
+          },
+          {
+            label: 'Off',
+            value: 'off',
+            key: 'off',
+          },
+        ]}
+        style={{marginBottom: 10}}
+        initValue={syncOptions.nutrition}
+        onChange={option => {
+          setSyncOptions(prev => ({...prev, nutrition: option.value}));
+          adjustSync('nutrition');
+        }}
+        listType="FLATLIST"
+        keyExtractor={(item: {label: string; value: string}) => item.value}>
+        <View style={styles.pickerContainer}>
+          <NixInput
+            label="Nutrition"
+            style={{textAlign: 'right'}}
+            labelContainerStyle={styles.labelContainerStyle}
+            value={
+              syncOptions.nutrition.charAt(0).toUpperCase() +
+              syncOptions.nutrition.slice(1)
+            }
+            onChangeText={() => {}}
+            onBlur={() => {}}
+            autoCapitalize="none">
+            <FontAwesome
+              name={'sort-down'}
+              size={15}
+              style={styles.selectIcon}
+            />
+          </NixInput>
+        </View>
+      </ModalSelector>
+      <ModalSelector
+        data={[
+          {
+            label: 'Push',
+            value: 'push',
+            key: 'push',
+          },
+          {
+            label: 'Pull',
+            value: 'pull',
+            key: 'pull',
+          },
+          {
+            label: 'Off',
+            value: 'off',
+            key: 'off',
+          },
+        ]}
+        style={{marginBottom: 10}}
+        initValue={syncOptions.weight}
+        onChange={option => {
+          setSyncOptions(prev => ({...prev, weight: option.value}));
+          adjustSync('weight');
+        }}
+        listType="FLATLIST"
+        keyExtractor={(item: {label: string; value: string}) => item.value}>
+        <View style={styles.pickerContainer}>
+          <NixInput
+            label="Weight"
+            style={{textAlign: 'right'}}
+            labelContainerStyle={styles.labelContainerStyle}
+            value={
+              syncOptions.weight.charAt(0).toUpperCase() +
+              syncOptions.weight.slice(1)
+            }
+            onChangeText={() => {}}
+            onBlur={() => {}}
+            autoCapitalize="none">
+            <FontAwesome
+              name={'sort-down'}
+              size={15}
+              style={styles.selectIcon}
+            />
+          </NixInput>
+        </View>
+      </ModalSelector>
+      <ModalSelector
+        data={[
+          {
+            label: 'Push',
+            value: 'push',
+            key: 'push',
+          },
+          {
+            label: 'Pull',
+            value: 'pull',
+            key: 'pull',
+          },
+          {
+            label: 'Off',
+            value: 'off',
+            key: 'off',
+          },
+        ]}
+        initValue={syncOptions.exercise}
+        onChange={option => {
+          setSyncOptions(prev => ({...prev, exercise: option.value}));
+          adjustSync('exercise');
+        }}
+        listType="FLATLIST"
+        keyExtractor={(item: {label: string; value: string}) => item.value}>
+        <View style={styles.pickerContainer}>
+          <NixInput
+            label="Exercise Calories"
+            style={{textAlign: 'right'}}
+            labelContainerStyle={styles.labelContainerStyle}
+            value={
+              syncOptions.exercise.charAt(0).toUpperCase() +
+              syncOptions.exercise.slice(1)
+            }
+            onChangeText={() => {}}
+            onBlur={() => {}}
+            autoCapitalize="none">
+            <FontAwesome
+              name={'sort-down'}
+              size={15}
+              style={styles.selectIcon}
+            />
+          </NixInput>
+        </View>
+      </ModalSelector>
 
-      <View>
-        <ModalSelector
-          data={[
-            {
-              label: 'Push',
-              value: 'push',
-              key: 'push',
-            },
-            {
-              label: 'Off',
-              value: 'off',
-              key: 'off',
-            },
-          ]}
-          initValue={syncOptions.nutrition}
-          onChange={option => {
-            setSyncOptions(prev => ({...prev, nutrition: option.value}));
-            adjustSync('nutrition');
-          }}
-          listType="FLATLIST"
-          keyExtractor={(item: {label: string; value: string}) => item.value}>
-          <View style={styles.pickerContainer}>
-            <Text style={styles.label}>Nutrition:</Text>
-            <Text>
-              {syncOptions.nutrition.charAt(0).toUpperCase() +
-                syncOptions.nutrition.slice(1)}
-            </Text>
-          </View>
-        </ModalSelector>
-        <ModalSelector
-          data={[
-            {
-              label: 'Push',
-              value: 'push',
-              key: 'push',
-            },
-            {
-              label: 'Pull',
-              value: 'pull',
-              key: 'pull',
-            },
-            {
-              label: 'Off',
-              value: 'off',
-              key: 'off',
-            },
-          ]}
-          initValue={syncOptions.weight}
-          onChange={option => {
-            setSyncOptions(prev => ({...prev, weight: option.value}));
-            adjustSync('weight');
-          }}
-          listType="FLATLIST"
-          keyExtractor={(item: {label: string; value: string}) => item.value}>
-          <View style={styles.pickerContainer}>
-            <Text style={styles.label}>Weight:</Text>
-            <Text>
-              {syncOptions.weight.charAt(0).toUpperCase() +
-                syncOptions.weight.slice(1)}
-            </Text>
-          </View>
-        </ModalSelector>
-        <ModalSelector
-          data={[
-            {
-              label: 'Push',
-              value: 'push',
-              key: 'push',
-            },
-            {
-              label: 'Pull',
-              value: 'pull',
-              key: 'pull',
-            },
-            {
-              label: 'Off',
-              value: 'off',
-              key: 'off',
-            },
-          ]}
-          initValue={syncOptions.exercise}
-          onChange={option => {
-            setSyncOptions(prev => ({...prev, exercise: option.value}));
-            adjustSync('exercise');
-          }}
-          listType="FLATLIST"
-          keyExtractor={(item: {label: string; value: string}) => item.value}>
-          <View style={styles.pickerContainer}>
-            <Text style={styles.label}>Exercise Calories:</Text>
-            <Text>
-              {syncOptions.exercise.charAt(0).toUpperCase() +
-                syncOptions.exercise.slice(1)}
-            </Text>
-          </View>
-        </ModalSelector>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>About Push &amp; Pull</Text>
+      <View style={styles.footer}>
+        <View style={styles.footerHeader}>
+          <Text style={styles.footerTitle}>About Push &amp; Pull</Text>
+        </View>
+        <View style={styles.footerContent}>
           <Text style={styles.footerText}>How does Push work?</Text>
           <Text>
             Nutritionix sends data you enter into an approved 3rd party app.
           </Text>
-          <Text style={styles.footerText}>How does Pull work?</Text>
+          <Text style={[styles.footerText, styles.mt20]}>
+            How does Pull work?
+          </Text>
           <Text>
             Nutritionix will pull-in the data you have stored in other services.
             Use this option when a 3rd party app is the summary source of this
