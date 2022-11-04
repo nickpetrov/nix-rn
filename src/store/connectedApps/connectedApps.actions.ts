@@ -16,6 +16,7 @@ export const fitbitSign = () => {
           type: connectedAppsActionTypes.FITBIT_SIGN,
           payload: result.state,
         });
+        return result.state;
       }
     } catch (err: any) {
       throw err;

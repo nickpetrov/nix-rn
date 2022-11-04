@@ -5,5 +5,5 @@ export enum connectedAppsActionTypes {
 }
 
 export interface ConnectionAppsState {
-  nutritionSyncState: string | null;
+  fitbitSync: string | null;
 }

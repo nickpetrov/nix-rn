@@ -20,7 +20,12 @@ interface WebViewScreenProps {
 const WebViewScreen: React.FC<WebViewScreenProps> = ({route}) => {
   return (
     <SafeAreaView style={styles.root}>
-      <WebView style={styles.webView} source={{uri: route.params.url}} />
+      <WebView
+        style={styles.webView}
+        source={{uri: route.params.url}}
+        onMessage={route.params.onMessage}
+        onNavigationStateChange={route.params.onNavigationStateChange}
+      />
     </SafeAreaView>
   );
 };

@@ -44,6 +44,8 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.TrackFoods]: undefined;
   [Routes.WebView]: {
     url: string;
+    onMessage?: (data: any) => void;
+    onNavigationStateChange?: (data: any) => void;
   };
   [Routes.BarcodeScanner]:
     | {

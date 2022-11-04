@@ -6,7 +6,7 @@ import {
 import {AnyAction} from 'redux';
 
 const initialState: ConnectionAppsState = {
-  nutritionSyncState: null,
+  fitbitSync: null,
 };
 
 export default (
@@ -15,9 +15,9 @@ export default (
 ) => {
   switch (action.type) {
     case connectedAppsActionTypes.FITBIT_SIGN:
-      return {...state, nutritionSyncState: action.payload};
+      return {...state, fitbitSync: action.payload};
     case connectedAppsActionTypes.FITBIT_UNLINK:
-      return {...state, nutritionSyncState: null};
+      return {...state, fitbitSync: null};
     case connectedAppsActionTypes.CLEAR:
       return initialState;
     default:

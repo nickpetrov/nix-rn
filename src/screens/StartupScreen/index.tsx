@@ -12,6 +12,7 @@ import {Routes} from 'navigation/Routes';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {getUserDataFromAPI} from 'store/auth/auth.actions';
 
 // actions
 import {updateReviewCheckAfterComeBack} from 'store/base/base.actions';
@@ -35,6 +36,7 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
       navigation.navigate(Routes.LoginScreens);
     } else {
       navigation.navigate(Routes.LoggedIn);
+      dispatch(getUserDataFromAPI());
       dispatch(updateReviewCheckAfterComeBack());
     }
   }, [dispatch, navigation, userJWT]);

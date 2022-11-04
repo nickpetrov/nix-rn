@@ -1,34 +1,45 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   root: {
     backgroundColor: '#fff',
     flex: 1,
-  },
-  header: {
-    padding: 15,
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    padding: 10,
   },
   pickerContainer: {
-    flexDirection: 'row',
     borderWidth: 1,
-    borderColor: '#666',
-    margin: 10,
-    padding: 5,
-    borderRadius: 10,
-  },
-  picker: {
-    flex: 1,
-  },
-  label: {
-    marginHorizontal: 10,
+    borderColor: Colors.LightGray,
+    borderRadius: 4,
   },
   footer: {
-    padding: 10,
+    borderWidth: 1,
+    borderRadius: 4,
+    overflow: 'hidden',
+    borderColor: Colors.LightGray,
     marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    backgroundColor: '#fff',
+    elevation: 2,
+  },
+  footerHeader: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: Colors.BgGray,
+  },
+  footerContent: {
+    padding: 10,
+    paddingBottom: 15,
+  },
+  footerTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   footerText: {
     fontWeight: 'bold',
@@ -36,5 +47,17 @@ export const styles = StyleSheet.create({
   webView: {
     width: '100%',
     flex: 1,
+  },
+  selectIcon: {
+    color: Colors.Secondary,
+    alignSelf: 'center',
+    marginLeft: 10,
+    top: -2,
+  },
+  labelContainerStyle: {
+    paddingHorizontal: 0,
+  },
+  mt20: {
+    marginTop: 20,
   },
 });
