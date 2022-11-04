@@ -45,7 +45,7 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
           <Ionicons name="chevron-forward" color={Colors.Gray6} size={30} />
         </View>
       </TouchableWithoutFeedback>
-      {Platform.OS !== 'ios' ? (
+      {Platform.OS === 'ios' ? (
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate(Routes.HealthkitSync)}>
           <View style={styles.item}>
