@@ -1,21 +1,25 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   root: {
-    padding: 10,
+    flex: 1,
+    backgroundColor: '#fff',
   },
   item: {
-    marginBottom: 16,
-  },
-  switchContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.LightGray,
+  },
+  left: {
+    flex: 1,
   },
   switch: {
-    marginRight: 10,
+    // marginRight: 10,
   },
-  text: {
-    fontSize: 18,
+  title: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });

@@ -6,7 +6,7 @@ import {View, Text, TextInputProps} from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 // styles
-import {Colors} from 'constants';
+import {Colors} from 'constants/Colors';
 import {styles} from './NixCheckbox.styles';
 
 // types

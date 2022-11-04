@@ -18,6 +18,7 @@ import * as userActions from 'store/auth/auth.actions';
 
 // styles
 import {styles} from './NotificationsScreen.styles';
+import {Colors} from 'constants/Colors';
 
 export const NotificationsScreen: React.FC = () => {
   const dispatch = useDispatch();
@@ -61,35 +62,43 @@ export const NotificationsScreen: React.FC = () => {
 
   return (
     <View style={styles.root}>
-      {/* <Button title="Press me" onPress={() => changeHandler()} /> */}
-
       <View style={styles.item}>
-        <View style={styles.switchContainer}>
+        <View style={styles.left}>
+          <Text style={styles.title}>Weekday Push Notifications</Text>
+          <Text>
+            If enabled, we send a push alert at 9PM on any weekday (Mon-Fri)
+            when you forget to log your foods.
+          </Text>
+        </View>
+        <View>
           <Switch
             value={weekday}
             onChange={() => setWeekday(previousState => !previousState)}
             style={styles.switch}
+            trackColor={{false: Colors.LightGray, true: Colors.LightGreen}}
+            thumbColor={'#fff'}
+            ios_backgroundColor="#fff"
           />
-          <Text style={styles.text}>Weekday Push Notifications</Text>
         </View>
-        <Text>
-          If enabled, we send a push alert at 9PM on any weekday (Mon-Fri) when
-          you forget to log your foods.
-        </Text>
       </View>
       <View style={styles.item}>
-        <View style={styles.switchContainer}>
+        <View style={styles.left}>
+          <Text style={styles.title}>Weekend Push Notifications</Text>
+          <Text>
+            If enabled, we send a push alert at 9PM on any weekend (Sat-Sun)
+            when you forget to log your foods.
+          </Text>
+        </View>
+        <View>
           <Switch
             value={weekend}
             onChange={() => setWeekend(previousState => !previousState)}
             style={styles.switch}
+            trackColor={{false: Colors.LightGray, true: Colors.LightGreen}}
+            thumbColor={'#fff'}
+            ios_backgroundColor="#fff"
           />
-          <Text style={styles.text}>Weekend Push Notifications</Text>
         </View>
-        <Text>
-          If enabled, we send a push alert at 9PM on any weekend (Sat-Sun) when
-          you forget to log your foods.
-        </Text>
       </View>
     </View>
   );
