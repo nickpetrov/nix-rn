@@ -78,50 +78,52 @@ export const NixInput: React.FC<NixInputProps> = ({
   return (
     <>
       <TouchableWithoutFeedback onPress={handleFocus}>
-        <View style={[styles.root, rootStyles && rootStyles]}>
-          <View style={[styles.inputWrapper, column && styles.column]}>
-            <View
-              style={[
-                styles.labelContainer,
-                labelContainerStyle && labelContainerStyle,
-                column && styles.labelColumn,
-              ]}>
-              {subLabel && <Text style={styles.subLabel}>{subLabel}</Text>}
-              {label !== undefined && (
-                <Text style={[styles.label, labelStyle && labelStyle]}>
-                  {label && label}
-                  {required && <Text style={styles.red}>*</Text>}
+        <>
+          <View style={[styles.root, rootStyles && rootStyles]}>
+            <View style={[styles.inputWrapper, column && styles.column]}>
+              <View
+                style={[
+                  styles.labelContainer,
+                  labelContainerStyle && labelContainerStyle,
+                  column && styles.labelColumn,
+                ]}>
+                {subLabel && <Text style={styles.subLabel}>{subLabel}</Text>}
+                {label !== undefined && (
+                  <Text style={[styles.label, labelStyle && labelStyle]}>
+                    {label && label}
+                    {required && <Text style={styles.red}>*</Text>}
+                  </Text>
+                )}
+              </View>
+              <TextInput
+                ref={inputRef}
+                style={[
+                  styles.input,
+                  style && style,
+                  column && styles.inputColumn,
+                  !!error && styles.errorInput,
+                ]}
+                onChangeText={onChangeText}
+                placeholder={placeholder}
+                value={value}
+                keyboardType={props.keyboardType}
+                {...props}
+              />
+              {unit !== undefined && (
+                <Text style={[styles.unit, unitStyle && unitStyle]}>
+                  {unit && unit}
                 </Text>
               )}
+              {unitValue && <Text style={styles.unitValue}>{unitValue}</Text>}
+              {children && children}
             </View>
-            <TextInput
-              ref={inputRef}
-              style={[
-                styles.input,
-                style && style,
-                column && styles.inputColumn,
-                !!error && styles.errorInput,
-              ]}
-              onChangeText={onChangeText}
-              placeholder={placeholder}
-              value={value}
-              keyboardType={props.keyboardType}
-              {...props}
-            />
-            {unit !== undefined && (
-              <Text style={[styles.unit, unitStyle && unitStyle]}>
-                {unit && unit}
-              </Text>
-            )}
-            {unitValue && <Text style={styles.unitValue}>{unitValue}</Text>}
-            {children && children}
           </View>
           {error && !withoutErorrText && (
             <Text style={[styles.errorText, errorStyles && errorStyles]}>
               {error}
             </Text>
           )}
-        </View>
+        </>
       </TouchableWithoutFeedback>
     </>
   );

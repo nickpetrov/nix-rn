@@ -66,6 +66,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const netInfo = useNetInfo();
   const userData = useSelector(state => state.auth.userData);
   const dispatch = useDispatch();
+  const [validOnChange, setValidOnChange] = useState(false);
   const formRef = useRef<FormikProps<FormikDataProps>>(null);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [resetPassPopup, setResetPassPopup] = useState(false);
@@ -283,7 +284,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         innerRef={formRef}
         onSubmit={values => submitHandler(values)}
         validationSchema={validationSchema}
-        validateOnBlur>
+        validateOnBlur={validOnChange}
+        validateOnChange={validOnChange}>
         {({
           handleChange,
           isValid,
@@ -408,12 +410,15 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                     label="Height"
                     labelContainerStyle={styles.labelContainerStyleFull}
                     style={styles.input}
-                    value={values.height_cm + ''}
+                    value={_.round(+values.height_cm) + ''}
                     unit="cm"
                     unitStyle={styles.unit}
-                    onChangeText={handleChange('height_cm')}
+                    onChangeText={newVal => {
+                      const val = newVal.replace(/[^0-9]/g, '');
+                      setFieldValue('height_cm', val);
+                    }}
                     onBlur={handleBlur('height_cm')}
-                    keyboardType="numeric"
+                    keyboardType="number-pad"
                     autoCapitalize="none"
                     placeholder="cm"
                     error={errors.height_cm}
@@ -451,12 +456,17 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                     label="Height"
                     labelContainerStyle={styles.labelContainerStyleFull}
                     style={styles.input}
-                    value={values.height_ft || ''}
+                    value={
+                      values.height_ft ? _.round(+values.height_ft) + '' : ''
+                    }
                     unit="ft"
                     unitStyle={styles.unit}
-                    onChangeText={handleChange('height_ft')}
+                    onChangeText={newVal => {
+                      const val = newVal.replace(/[^0-9]/g, '');
+                      setFieldValue('height_ft', val);
+                    }}
                     onBlur={handleBlur('height_ft')}
-                    keyboardType="numeric"
+                    keyboardType="number-pad"
                     autoCapitalize="none"
                     placeholder="ft."
                     error={errors.height_ft}
@@ -471,12 +481,17 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                     label=""
                     labelContainerStyle={styles.labelContainerStyleFull}
                     style={styles.input}
-                    value={values.height_in || ''}
+                    value={
+                      values.height_in ? _.round(+values.height_in) + '' : ''
+                    }
                     unit="in"
                     unitStyle={styles.unit}
-                    onChangeText={handleChange('height_in')}
+                    onChangeText={newVal => {
+                      const val = newVal.replace(/[^0-9]/g, '');
+                      setFieldValue('height_in', val);
+                    }}
                     onBlur={handleBlur('height_in')}
-                    keyboardType="numeric"
+                    keyboardType="number-pad"
                     autoCapitalize="none"
                     placeholder="in."
                     error={errors.height_in}
@@ -497,11 +512,12 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 unit="years"
                 unitStyle={styles.unit}
                 onChangeText={(newVal: string) => {
-                  setFieldValue('birth_year', moment().year() - +newVal);
-                  setFieldValue('age', newVal);
+                  const val = newVal.replace(/[^0-9]/g, '');
+                  setFieldValue('birth_year', moment().year() - +val);
+                  setFieldValue('age', val);
                 }}
                 onBlur={handleBlur('age')}
-                keyboardType="numeric"
+                keyboardType="number-pad"
                 autoCapitalize="none"
                 placeholder=""
                 error={errors.age}
@@ -528,7 +544,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 <View style={styles.saveBtnContainer}>
                   <TouchableOpacity
                     style={styles.saveBtn}
-                    onPress={handleSubmit}
+                    onPress={() => {
+                      setValidOnChange(true);
+                      handleSubmit();
+                    }}
                     disabled={!isValid || loadingSubmit}>
                     <Text style={styles.saveBtnText}>Save</Text>
                   </TouchableOpacity>
