@@ -31,7 +31,7 @@ export const HealthkitSyncScreen: React.FC = () => {
 
   const toggleHKNutrition = (nutrition: string) => {
     if (nutrition === 'off') {
-      db.transaction((tx: Transaction) => {
+      db?.transaction((tx: Transaction) => {
         tx.executeSql(
           'DROP TABLE hkdata',
           [],
@@ -43,7 +43,7 @@ export const HealthkitSyncScreen: React.FC = () => {
       // AnalyticsService.trackEvent('HealthKit nutrition sync', 'disable');
     } else {
       //create tables on toggle on; shouldnt exist if toggle off
-      db.transaction((tx: Transaction) => {
+      db?.transaction((tx: Transaction) => {
         tx.executeSql(
           'CREATE TABLE hkdata (id INTEGER PRIMARY KEY, response TEXT)',
           [],
@@ -111,7 +111,7 @@ export const HealthkitSyncScreen: React.FC = () => {
 
   function toggleHKWeight(weight: string) {
     if (weight === 'off') {
-      db.transaction((tx: Transaction) => {
+      db?.transaction((tx: Transaction) => {
         tx.executeSql(
           'DROP TABLE hkdata_weight',
           [],
@@ -144,7 +144,7 @@ export const HealthkitSyncScreen: React.FC = () => {
         }
       });
     } else {
-      db.transaction((tx: Transaction) => {
+      db?.transaction((tx: Transaction) => {
         tx.executeSql(
           'CREATE TABLE hkdata_weight (id INTEGER PRIMARY KEY, response TEXT)',
           [],
@@ -181,7 +181,7 @@ export const HealthkitSyncScreen: React.FC = () => {
 
   const toggleHKExercise = (exercise: string) => {
     if (exercise === 'off') {
-      db.transaction((tx: Transaction) => {
+      db?.transaction((tx: Transaction) => {
         tx.executeSql(
           'DROP TABLE hkdata_exercise',
           [],
@@ -215,7 +215,7 @@ export const HealthkitSyncScreen: React.FC = () => {
         }
       });
     } else {
-      db.transaction((tx: Transaction) => {
+      db?.transaction((tx: Transaction) => {
         tx.executeSql(
           'CREATE TABLE hkdata_exercise (id INTEGER PRIMARY KEY, response TEXT)',
           [],

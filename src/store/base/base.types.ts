@@ -1,3 +1,4 @@
+import SQLite from 'react-native-sqlite-storage';
 export enum baseActionTypes {
   SET_USER_AGREED_TO_USE_PHOTO = 'SET_USER_AGREED_TO_USE_PHOTO',
   DISPLAY_AGREEMENT_POPUP = 'DISPLAY_AGREEMENT_POPUP',
@@ -39,7 +40,7 @@ export type BaseState = {
   groceryAgentPreferences: {
     volunteer: boolean;
   };
-  db: null | any;
+  db: null | SQLite.SQLiteDatabase;
 };
 
 export type BugReportType = {

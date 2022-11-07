@@ -29,10 +29,7 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 // styles
 import {styles} from './ConnectedAppsScreen.styles';
 import {Transaction, ResultSet} from 'react-native-sqlite-storage';
-import appleHealthKit, {
-  HealthPermission,
-  HealthStatusCode,
-} from 'react-native-health';
+import appleHealthKit, {HealthPermission} from 'react-native-health';
 
 interface ConnectedAppsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -46,7 +43,6 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
 }) => {
   const dispatch = useDispatch();
   const db = useSelector(state => state.base.db);
-  console.log('db', db);
   useEffect(() => {
     if (Platform.OS === 'ios') {
       const attrs_to_check = [
@@ -98,7 +94,8 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
         appleHealthKit.getAuthStatus(permissions, (err, results) => {
           console.log(err, results);
           if (
-            results.permissions.write[0] === HealthStatusCode.SharingAuthorized
+            // HealthStatusCode.SharingAuthorized = 2 - some error on ios when use HealthStatusCode.SharingAuthorized
+            results.permissions.write[0] === 2
           ) {
             if (attr === appleHealthKit.Constants.Permissions.BodyMass) {
               turnOffWeightHKSync = false;
@@ -115,7 +112,7 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
           if (index === attrs_to_check.length - 1) {
             if (turnOffNutritionHKSync) {
               dispatch(mergeHKSyncOptions({nutrition: 'off'}));
-              db.transaction((tx: Transaction) => {
+              db?.transaction((tx: Transaction) => {
                 tx.executeSql(
                   'DROP TABLE hkdata',
                   [],
@@ -132,7 +129,7 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
             }
             if (turnOffExcerciseHKSync) {
               dispatch(mergeHKSyncOptions({exercise: 'off'}));
-              db.transaction((tx: Transaction) => {
+              db?.transaction((tx: Transaction) => {
                 tx.executeSql(
                   'DROP TABLE hkdata_exercise',
                   [],
@@ -148,7 +145,7 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
             }
             if (turnOffWeightHKSync) {
               dispatch(mergeHKSyncOptions({weight: 'off'}));
-              db.transaction((tx: Transaction) => {
+              db?.transaction((tx: Transaction) => {
                 tx.executeSql(
                   'DROP TABLE hkdata_weight',
                   [],

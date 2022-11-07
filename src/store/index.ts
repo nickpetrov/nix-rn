@@ -62,13 +62,13 @@ export const persistor = persistStore(store, null, () => {
   const newUserJwt = store.getState().auth.userJWT;
   apiClient.defaults.headers.common['x-user-jwt'] = newUserJwt;
   const db = store.getState().base.db;
-  if (!db) {
+  if (!db?.transaction) {
     store.dispatch(
       setDB(
         SQLite.openDatabase(
           {
             name: 'track_db',
-            createFromLocation: 1,
+            // createFromLocation: 1,
             location: Platform.OS === 'ios' ? 'default' : 'Shared',
           },
           () => {

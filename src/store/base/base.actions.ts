@@ -5,6 +5,7 @@ import moment from 'moment-timezone';
 import {Dispatch} from 'redux';
 import {baseActionTypes, InfoMessageType, ReviewCheckType} from './base.types';
 import {RootState} from '../index';
+import SQLite from 'react-native-sqlite-storage';
 
 export const setAgreedToUsePhoto = (agreedToUsePhoto: boolean) => {
   return async (dispatch: Dispatch) => {
@@ -50,7 +51,7 @@ export const showAgreementPopup = () => {
     type: baseActionTypes.DISPLAY_AGREEMENT_POPUP,
   };
 };
-export const setDB = (db: any) => {
+export const setDB = (db: SQLite.SQLiteDatabase) => {
   return {
     type: baseActionTypes.SET_DB,
     payload: db,
