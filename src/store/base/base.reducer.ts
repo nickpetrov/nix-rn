@@ -38,6 +38,7 @@ const initialState: BaseState = {
   groceryAgentPreferences: {
     volunteer: false,
   },
+  db: null,
 };
 
 export default (
@@ -68,6 +69,8 @@ export default (
           volunteer: !state.groceryAgentPreferences.volunteer,
         },
       };
+    case baseActionTypes.SET_DB:
+      return {...state, db: action.payload};
     case baseActionTypes.CLEAR:
       return initialState;
     default:

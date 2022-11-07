@@ -5,6 +5,7 @@ export enum baseActionTypes {
   TOGGLE_ASK_FOR_REVIEW = 'TOGGLE_ASK_FOR_REVIEW',
   MERGE_REVIEW_CHECK = 'MERGE_REVIEW_CHECK',
   TOGGLE_GROCERY_AGENT_PREFERENCES = 'TOGGLE_GROCERY_AGENT_PREFERENCES',
+  SET_DB = 'SET_DB',
   CLEAR = 'CLEAR',
 }
 
@@ -38,6 +39,7 @@ export type BaseState = {
   groceryAgentPreferences: {
     volunteer: boolean;
   };
+  db: null | any;
 };
 
 export type BugReportType = {

@@ -50,6 +50,12 @@ export const showAgreementPopup = () => {
     type: baseActionTypes.DISPLAY_AGREEMENT_POPUP,
   };
 };
+export const setDB = (db: any) => {
+  return {
+    type: baseActionTypes.SET_DB,
+    payload: db,
+  };
+};
 
 export const setInfoMessage = (data: InfoMessageType | null) => {
   return {

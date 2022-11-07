@@ -12,8 +12,15 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+// hooks
+import {useDispatch, useSelector} from 'hooks/useRedux';
+
+// actions
+import {mergeHKSyncOptions} from 'store/connectedApps/connectedApps.actions';
+
 // constants
 import {Routes} from 'navigation/Routes';
+import {Colors} from 'constants/Colors';
 
 //types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -21,8 +28,11 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // styles
 import {styles} from './ConnectedAppsScreen.styles';
-import {Colors} from 'constants/Colors';
-import appleHealthKit, {HealthPermission} from 'react-native-health';
+import {Transaction, ResultSet} from 'react-native-sqlite-storage';
+import appleHealthKit, {
+  HealthPermission,
+  HealthStatusCode,
+} from 'react-native-health';
 
 interface ConnectedAppsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -34,6 +44,9 @@ interface ConnectedAppsScreenProps {
 export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
   navigation,
 }) => {
+  const dispatch = useDispatch();
+  const db = useSelector(state => state.base.db);
+  console.log('db', db);
   useEffect(() => {
     if (Platform.OS === 'ios') {
       const attrs_to_check = [
@@ -84,45 +97,76 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
         };
         appleHealthKit.getAuthStatus(permissions, (err, results) => {
           console.log(err, results);
-          // if (res === 'authorized') {
-          //   if (attr === 'HKQuantityTypeIdentifierBodyMass') {
-          //     turnOffWeightHKSync = false;
-          //   } else if (attr === 'HKQuantityTypeIdentifierActiveEnergyBurned') {
-          //     turnOffExcerciseHKSync = false;
-          //   } else {
-          //     turnOffNutritionHKSync = false;
-          //   }
-          // }
+          if (
+            results.permissions.write[0] === HealthStatusCode.SharingAuthorized
+          ) {
+            if (attr === appleHealthKit.Constants.Permissions.BodyMass) {
+              turnOffWeightHKSync = false;
+            } else if (
+              attr === appleHealthKit.Constants.Permissions.ActiveEnergyBurned
+            ) {
+              turnOffExcerciseHKSync = false;
+            } else {
+              turnOffNutritionHKSync = false;
+            }
+          }
           // //check if it's last attribute in the list and check for options that sould be disabled.
 
-          // if (index === attrs_to_check.length - 1) {
-          //   if (turnOffNutritionHKSync) {
-          //     $rootScope.hk.nutrition = 'off';
-          //     $cordovaSQLite.execute(window.db, 'DROP TABLE hkdata');
-          //     AnalyticsService.trackEvent(
-          //       'HealthKit nutrition sync',
-          //       'disable',
-          //     );
-          //   }
-          //   if (turnOffExcerciseHKSync) {
-          //     $rootScope.hk.exercise = 'off';
-          //     $cordovaSQLite.execute(window.db, 'DROP TABLE hkdata_exercise');
-          //     AnalyticsService.trackEvent('HealthKit exercise sync', 'disable');
-          //   }
-          //   if (turnOffWeightHKSync) {
-          //     $rootScope.hk.weight = 'off';
-          //     $cordovaSQLite.execute(window.db, 'DROP TABLE hkdata_weight');
-          //     AnalyticsService.trackEvent('HealthKit weight sync', 'disable');
-          //   }
-          //   window.localStorage.setItem(
-          //     'healthkit',
-          //     angular.toJson($rootScope.hk),
-          //   );
-          // }
+          if (index === attrs_to_check.length - 1) {
+            if (turnOffNutritionHKSync) {
+              dispatch(mergeHKSyncOptions({nutrition: 'off'}));
+              db.transaction((tx: Transaction) => {
+                tx.executeSql(
+                  'DROP TABLE hkdata',
+                  [],
+                  (transaction: Transaction, res: ResultSet) => {
+                    console.log('query DROP TABLE hkdata completed', res);
+                  },
+                );
+              });
+
+              // AnalyticsService.trackEvent(
+              //   'HealthKit nutrition sync',
+              //   'disable',
+              // );
+            }
+            if (turnOffExcerciseHKSync) {
+              dispatch(mergeHKSyncOptions({exercise: 'off'}));
+              db.transaction((tx: Transaction) => {
+                tx.executeSql(
+                  'DROP TABLE hkdata_exercise',
+                  [],
+                  (transaction: Transaction, res: ResultSet) => {
+                    console.log(
+                      'query DROP TABLE hkdata_exercise completed',
+                      res,
+                    );
+                  },
+                );
+              });
+              // AnalyticsService.trackEvent('HealthKit exercise sync', 'disable');
+            }
+            if (turnOffWeightHKSync) {
+              dispatch(mergeHKSyncOptions({weight: 'off'}));
+              db.transaction((tx: Transaction) => {
+                tx.executeSql(
+                  'DROP TABLE hkdata_weight',
+                  [],
+                  (transaction: Transaction, res: ResultSet) => {
+                    console.log(
+                      'query DROP TABLE hkdata_weight completed',
+                      res,
+                    );
+                  },
+                );
+              });
+              // AnalyticsService.trackEvent('HealthKit weight sync', 'disable');
+            }
+          }
         });
       });
     }
-  }, []);
+  }, [dispatch, db]);
   return (
     <SafeAreaView style={styles.root}>
       <TouchableWithoutFeedback
