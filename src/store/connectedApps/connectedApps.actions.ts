@@ -1,6 +1,9 @@
 import {Dispatch} from 'redux';
 import connectedAppsService from 'api/connectedAppsService';
-import {connectedAppsActionTypes} from './connectedApps.types';
+import {
+  connectedAppsActionTypes,
+  hkSyncOptionsProps,
+} from './connectedApps.types';
 
 export const fitbitSign = () => {
   return async (dispatch: Dispatch) => {
@@ -40,5 +43,14 @@ export const fitbitUnlink = () => {
     } catch (err) {
       throw err;
     }
+  };
+};
+
+export const mergeHKSyncOptions = (options: Partial<hkSyncOptionsProps>) => {
+  return async (dispatch: Dispatch) => {
+    dispatch({
+      type: connectedAppsActionTypes.MERGE_HK_SYNC_OPTIONS,
+      payload: options,
+    });
   };
 };

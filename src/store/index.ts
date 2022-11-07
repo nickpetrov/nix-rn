@@ -34,6 +34,10 @@ const basePersist = {
   storage: AsyncStorage,
   whitelist: ['agreedToUsePhoto', 'groceryAgentPreferences'],
 };
+const connectedAppsPersist = {
+  key: 'connectedApps',
+  storage: AsyncStorage,
+};
 
 const rootReducer = combineReducers({
   auth: persistReducer(authPersist, authReducer),
@@ -44,7 +48,7 @@ const rootReducer = combineReducers({
   foods: foodsReducer,
   recipes: recipesReducer,
   customFoods: customFoodsReducer,
-  connectedApps: connectedAppsReducer,
+  connectedApps: persistReducer(connectedAppsPersist, connectedAppsReducer),
   coach: coachReducer,
   base: persistReducer(basePersist, baseReducer),
 });

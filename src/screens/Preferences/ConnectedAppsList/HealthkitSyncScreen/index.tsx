@@ -1,5 +1,5 @@
 // utils
-import React, {useState} from 'react';
+import React from 'react';
 
 // components
 import {View, Text, SafeAreaView} from 'react-native';
@@ -12,7 +12,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixInput} from 'components/NixInput';
 
 // hooks
-// import {useSelector} from 'hooks/useRedux';
+import {useSelector, useDispatch} from 'hooks/useRedux';
+
+// actions
+import {mergeHKSyncOptions} from 'store/connectedApps/connectedApps.actions';
 
 // styles
 import {styles} from './HealthkitSyncScreen.styles';
@@ -22,12 +25,8 @@ export const HealthkitSyncScreen: React.FC = () => {
   // const fitbitSync = userData.oauths.filter(
   //   item => item.provider == 'healthkit',
   // )[0];
-  const [syncOptions, setSyncOptions] = useState({
-    // three choices: push/pull/off
-    nutrition: 'off',
-    weight: 'off',
-    exercise: 'off',
-  });
+  const dispatch = useDispatch();
+  const syncOptions = useSelector(state => state.connectedApps.hkSyncOptions);
 
   const adjustSync = (option: string) => {
     console.log(syncOptions);
@@ -74,7 +73,7 @@ export const HealthkitSyncScreen: React.FC = () => {
         console.log(results);
       });
     });
-    //create tables on toggle on; shouldnt exist if toggle off
+    //с; shouldnt exist if toggle off
     // $cordovaSQLite
     //   .execute(window.db, 'CREATE TABLE hkdata (id INTEGER PRIMARY KEY, response TEXT)');
 
@@ -143,7 +142,7 @@ export const HealthkitSyncScreen: React.FC = () => {
         style={{marginBottom: 10}}
         initValue={syncOptions.nutrition}
         onChange={option => {
-          setSyncOptions(prev => ({...prev, nutrition: option.value}));
+          dispatch(mergeHKSyncOptions({nutrition: option.value}));
           adjustSync('nutrition');
         }}
         listType="FLATLIST"
@@ -189,7 +188,7 @@ export const HealthkitSyncScreen: React.FC = () => {
         style={{marginBottom: 10}}
         initValue={syncOptions.weight}
         onChange={option => {
-          setSyncOptions(prev => ({...prev, weight: option.value}));
+          dispatch(mergeHKSyncOptions({weight: option.value}));
           adjustSync('weight');
         }}
         listType="FLATLIST"
@@ -234,7 +233,7 @@ export const HealthkitSyncScreen: React.FC = () => {
         ]}
         initValue={syncOptions.exercise}
         onChange={option => {
-          setSyncOptions(prev => ({...prev, exercise: option.value}));
+          dispatch(mergeHKSyncOptions({exercise: option.value}));
           adjustSync('exercise');
         }}
         listType="FLATLIST"
