@@ -410,6 +410,8 @@ PODS:
     - ReactCommon/turbomodule/core
   - react-native-splash-screen (3.3.0):
     - React-Core
+  - react-native-sqlite-storage (6.0.1):
+    - React-Core
   - react-native-voice (3.2.4):
     - React-Core
   - react-native-webview (11.23.0):
@@ -597,6 +599,7 @@ DEPENDENCIES:
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
+  - react-native-sqlite-storage (from `../node_modules/react-native-sqlite-storage`)
   - "react-native-voice (from `../node_modules/@react-native-voice/voice`)"
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -726,6 +729,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-splash-screen:
     :path: "../node_modules/react-native-splash-screen"
+  react-native-sqlite-storage:
+    :path: "../node_modules/react-native-sqlite-storage"
   react-native-voice:
     :path: "../node_modules/@react-native-voice/voice"
   react-native-webview:
@@ -847,6 +852,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: 668e62d9caec81e005c1ea400fa1f55ebf6ffe4a
   react-native-safe-area-context: deca3b734e6ad82df91bd6e68f3eb48bbb96b758
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
+  react-native-sqlite-storage: 6df009b8b67fe34c57c5fd06ee8fff7669fece6d
   react-native-voice: f94012019bd485dead7e8f43d2efa554333be30a
   react-native-webview: c09ea739796b91286ae1f581d2db536b48c33911
   React-perflogger: 77947e49d84e31eb87d454d4ef327542dcfeaebc
