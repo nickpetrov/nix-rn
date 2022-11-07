@@ -17,10 +17,10 @@ import {
   loggingOptionsProps,
   userLogActionTypes,
   WeightProps,
+  WaterLogProps,
 } from './userLog.types';
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
-import {WaterLogProps} from './userLog.types';
 import {Asset} from 'react-native-image-picker';
 import {setInfoMessage} from '../base/base.actions';
 
@@ -237,6 +237,45 @@ export const getUserExerciseslog = (
           type: userLogActionTypes.GET_USER_EXERCISES_LOG,
           exercises: result.exercises,
         });
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+};
+
+export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
+  return async (dispatch: Dispatch<any>) => {
+    try {
+      const response = await userLogService.addExerciseLog(exercises);
+
+      const result = response.data;
+
+      if (result.exercises.length) {
+        dispatch({
+          type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
+          exercises: result.exercises,
+        });
+        dispatch(refreshUserLogTotals());
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+};
+export const updateExistExercisesToLog = (exercises: ExerciseProps[]) => {
+  return async (dispatch: Dispatch<any>) => {
+    try {
+      const response = await userLogService.updateExerciseLog(exercises);
+
+      const result = response.data;
+
+      if (result.exercises.length) {
+        dispatch({
+          type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
+          exercises: result.exercises,
+        });
+        dispatch(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;

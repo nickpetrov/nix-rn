@@ -3,10 +3,7 @@ import React from 'react';
 
 // components
 import {View, Text, SafeAreaView} from 'react-native';
-import AppleHealthKit, {
-  HealthPermission,
-  HealthKitPermissions,
-} from 'react-native-health';
+import appleHealthKit, {HealthPermission} from 'react-native-health';
 import ModalSelector from 'react-native-modal-selector';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixInput} from 'components/NixInput';
@@ -15,113 +12,253 @@ import {NixInput} from 'components/NixInput';
 import {useSelector, useDispatch} from 'hooks/useRedux';
 
 // actions
-import {mergeHKSyncOptions} from 'store/connectedApps/connectedApps.actions';
+import {
+  mergeHKSyncOptions,
+  pullExerciseFromHK,
+  pullWeightsFromHK,
+} from 'store/connectedApps/connectedApps.actions';
 
 // styles
 import {styles} from './HealthkitSyncScreen.styles';
 
+// types
+import {ResultSet, Transaction} from 'react-native-sqlite-storage';
+
 export const HealthkitSyncScreen: React.FC = () => {
-  // const userData = useSelector(state => state.auth.userData);
-  // const fitbitSync = userData.oauths.filter(
-  //   item => item.provider == 'healthkit',
-  // )[0];
+  const db = useSelector(state => state.base.db);
   const dispatch = useDispatch();
   const syncOptions = useSelector(state => state.connectedApps.hkSyncOptions);
 
-  const adjustSync = (option: string) => {
-    console.log(syncOptions);
-    let permissions: HealthKitPermissions = {
-      permissions: {
-        read: [],
-        write: [],
-      },
-    };
-    // if (syncOptions.nutrition == 'off') {
-    //   // $cordovaSQLite
-    //   //   .execute(window.db, 'DROP TABLE hkdata');
-    // } else {
-    if (option === 'nutrition') {
-      /* Permission options */
-    } else if (option === 'weight') {
-      permissions = {
+  const toggleHKNutrition = (nutrition: string) => {
+    if (nutrition === 'off') {
+      db.transaction((tx: Transaction) => {
+        tx.executeSql(
+          'DROP TABLE hkdata',
+          [],
+          (transaction: Transaction, res: ResultSet) => {
+            console.log('query DROP TABLE hkdata completed', res);
+          },
+        );
+      });
+      // AnalyticsService.trackEvent('HealthKit nutrition sync', 'disable');
+    } else {
+      //create tables on toggle on; shouldnt exist if toggle off
+      db.transaction((tx: Transaction) => {
+        tx.executeSql(
+          'CREATE TABLE hkdata (id INTEGER PRIMARY KEY, response TEXT)',
+          [],
+          (transaction: Transaction, res: ResultSet) => {
+            console.log(
+              'query CREATE TABLE hkdata (id INTEGER PRIMARY KEY, response TEXT) completed',
+              res,
+            );
+          },
+        );
+      });
+
+      const hk_types = [
+        appleHealthKit.Constants.Permissions.EnergyConsumed,
+        appleHealthKit.Constants.Permissions.Caffeine,
+        appleHealthKit.Constants.Permissions.Calcium,
+        appleHealthKit.Constants.Permissions.Carbohydrates,
+        appleHealthKit.Constants.Permissions.Cholesterol,
+        appleHealthKit.Constants.Permissions.Copper,
+        appleHealthKit.Constants.Permissions.FatMonounsaturated,
+        appleHealthKit.Constants.Permissions.FatPolyunsaturated,
+        appleHealthKit.Constants.Permissions.FatSaturated,
+        appleHealthKit.Constants.Permissions.FatTotal,
+        appleHealthKit.Constants.Permissions.Fiber,
+        appleHealthKit.Constants.Permissions.Iron,
+        appleHealthKit.Constants.Permissions.Magnesium,
+        appleHealthKit.Constants.Permissions.Manganese,
+        appleHealthKit.Constants.Permissions.Niacin,
+        appleHealthKit.Constants.Permissions.PantothenicAcid,
+        appleHealthKit.Constants.Permissions.Phosphorus,
+        appleHealthKit.Constants.Permissions.Potassium,
+        appleHealthKit.Constants.Permissions.Protein,
+        appleHealthKit.Constants.Permissions.Riboflavin,
+        appleHealthKit.Constants.Permissions.Sodium,
+        appleHealthKit.Constants.Permissions.Sugar,
+        appleHealthKit.Constants.Permissions.Thiamin,
+        appleHealthKit.Constants.Permissions.VitaminB6,
+        appleHealthKit.Constants.Permissions.VitaminA,
+        appleHealthKit.Constants.Permissions.VitaminC,
+        appleHealthKit.Constants.Permissions.VitaminD,
+        appleHealthKit.Constants.Permissions.VitaminE,
+        appleHealthKit.Constants.Permissions.Zinc,
+      ];
+
+      const permissions = {
+        permissions: {
+          read: hk_types as HealthPermission[],
+          write: hk_types as HealthPermission[],
+        },
+      };
+
+      appleHealthKit.initHealthKit(permissions, (error, results) => {
+        /* Called after we receive a response from the system */
+        if (error) {
+          console.log(error);
+          console.log('failed to request HK nutrition auth');
+        } else {
+          // AnalyticsService.trackEvent('HealthKit nutrition sync', 'enable');
+          console.log('results', results);
+          console.log('successfully requested HK nutrition auth');
+        }
+      });
+    }
+  };
+
+  function toggleHKWeight(weight: string) {
+    if (weight === 'off') {
+      db.transaction((tx: Transaction) => {
+        tx.executeSql(
+          'DROP TABLE hkdata_weight',
+          [],
+          (transaction: Transaction, res: ResultSet) => {
+            console.log('query DROP TABLE hkdata_weight completed', res);
+          },
+        );
+      });
+      // AnalyticsService.trackEvent('HealthKit weight sync', 'disable');
+    } else if (weight === 'pull') {
+      const permissions = {
         permissions: {
           read: [
-            AppleHealthKit.Constants.Permissions.Weight,
+            appleHealthKit.Constants.Permissions.BodyMass,
           ] as HealthPermission[],
           write: [
-            AppleHealthKit.Constants.Permissions.Weight,
+            appleHealthKit.Constants.Permissions.BodyMass,
           ] as HealthPermission[],
         },
       };
-    } else if (option === 'exercise') {
-    }
-
-    AppleHealthKit.initHealthKit(permissions, error => {
-      /* Called after we receive a response from the system */
-      if (error) {
-        console.log('[ERROR] Cannot grant permissions!');
-      }
-
-      /* Can now read or write to HealthKit */
-
-      const options = {
-        startDate: new Date(2020, 1, 1).toISOString(),
-      };
-
-      AppleHealthKit.getWeightSamples(options, (callbackError, results) => {
-        /* Samples are now collected from HealthKit */
-        console.log(results);
+      appleHealthKit.initHealthKit(permissions, error => {
+        /* Called after we receive a response from the system */
+        if (error) {
+          console.log(error);
+          console.log('failed to request HK weight auth');
+        } else {
+          // AnalyticsService.trackEvent('HealthKit pull weight sync', 'enable');
+          dispatch(pullWeightsFromHK());
+          console.log('successfully requested HK weight auth');
+        }
       });
-    });
-    //с; shouldnt exist if toggle off
-    // $cordovaSQLite
-    //   .execute(window.db, 'CREATE TABLE hkdata (id INTEGER PRIMARY KEY, response TEXT)');
+    } else {
+      db.transaction((tx: Transaction) => {
+        tx.executeSql(
+          'CREATE TABLE hkdata_weight (id INTEGER PRIMARY KEY, response TEXT)',
+          [],
+          (transaction: Transaction, res: ResultSet) => {
+            console.log(
+              'query CREATE TABLE hkdata_weight (id INTEGER PRIMARY KEY, response TEXT) completed',
+              res,
+            );
+          },
+        );
+      });
+      const permissions = {
+        permissions: {
+          read: [
+            appleHealthKit.Constants.Permissions.BodyMass,
+          ] as HealthPermission[],
+          write: [
+            appleHealthKit.Constants.Permissions.BodyMass,
+          ] as HealthPermission[],
+        },
+      };
+      appleHealthKit.initHealthKit(permissions, (error, results) => {
+        /* Called after we receive a response from the system */
+        if (error) {
+          console.log(error);
+          console.log('failed to request HK weight auth');
+        } else {
+          // AnalyticsService.trackEvent('HealthKit push weight sync', 'enable');
+          console.log('successfully requested HK weight auth', results);
+        }
+      });
+    }
+  }
 
-    //   const hk_types = [
-    //     'HKQuantityTypeIdentifierDietaryEnergyConsumed',
-    //     'HKQuantityTypeIdentifierDietaryCaffeine',
-    //     'HKQuantityTypeIdentifierDietaryCalcium',
-    //     'HKQuantityTypeIdentifierDietaryCarbohydrates',
-    //     'HKQuantityTypeIdentifierDietaryCholesterol',
-    //     'HKQuantityTypeIdentifierDietaryCopper',
-    //     'HKQuantityTypeIdentifierDietaryFatMonounsaturated',
-    //     'HKQuantityTypeIdentifierDietaryFatPolyunsaturated',
-    //     'HKQuantityTypeIdentifierDietaryFatSaturated',
-    //     'HKQuantityTypeIdentifierDietaryFatTotal',
-    //     'HKQuantityTypeIdentifierDietaryFiber',
-    //     'HKQuantityTypeIdentifierDietaryIron',
-    //     'HKQuantityTypeIdentifierDietaryMagnesium',
-    //     'HKQuantityTypeIdentifierDietaryManganese',
-    //     'HKQuantityTypeIdentifierDietaryNiacin',
-    //     'HKQuantityTypeIdentifierDietaryPantothenicAcid',
-    //     'HKQuantityTypeIdentifierDietaryPhosphorus',
-    //     'HKQuantityTypeIdentifierDietaryPotassium',
-    //     'HKQuantityTypeIdentifierDietaryProtein',
-    //     'HKQuantityTypeIdentifierDietaryRiboflavin',
-    //     'HKQuantityTypeIdentifierDietarySodium',
-    //     'HKQuantityTypeIdentifierDietarySugar',
-    //     'HKQuantityTypeIdentifierDietaryThiamin',
-    //     'HKQuantityTypeIdentifierDietaryVitaminB6',
-    //     'HKQuantityTypeIdentifierDietaryVitaminA',
-    //     'HKQuantityTypeIdentifierDietaryVitaminC',
-    //     'HKQuantityTypeIdentifierDietaryVitaminD',
-    //     'HKQuantityTypeIdentifierDietaryVitaminE',
-    //     'HKQuantityTypeIdentifierDietaryZinc'
-    //   ];
+  const toggleHKExercise = (exercise: string) => {
+    if (exercise === 'off') {
+      db.transaction((tx: Transaction) => {
+        tx.executeSql(
+          'DROP TABLE hkdata_exercise',
+          [],
+          (transaction: Transaction, res: ResultSet) => {
+            console.log('query DROP TABLE hkdata_exercise completed', res);
+          },
+        );
+      });
+      // AnalyticsService.trackEvent('HealthKit exercise sync', 'disable');
+    } else if (exercise === 'pull') {
+      const permissions = {
+        permissions: {
+          read: [
+            appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
+          ] as HealthPermission[],
+          write: [
+            appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
+          ] as HealthPermission[],
+        },
+      };
+      appleHealthKit.initHealthKit(permissions, error => {
+        /* Called after we receive a response from the system */
+        if (error) {
+          console.log(error);
+          console.log('failed to request HK exercise auth');
+        } else {
+          // AnalyticsService.trackEvent('HealthKit pull exercise sync', 'enable');
+          console.log('successfully requested HK exercise auth');
+          console.log('here');
+          dispatch(pullExerciseFromHK());
+        }
+      });
+    } else {
+      db.transaction((tx: Transaction) => {
+        tx.executeSql(
+          'CREATE TABLE hkdata_exercise (id INTEGER PRIMARY KEY, response TEXT)',
+          [],
+          (transaction: Transaction, res: ResultSet) => {
+            console.log(
+              'query CREATE TABLE hkdata_exercise (id INTEGER PRIMARY KEY, response TEXT) completed',
+              res,
+            );
+          },
+        );
+      });
+      const permissions = {
+        permissions: {
+          read: [
+            appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
+          ] as HealthPermission[],
+          write: [
+            appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
+          ] as HealthPermission[],
+        },
+      };
+      appleHealthKit.initHealthKit(permissions, error => {
+        /* Called after we receive a response from the system */
+        if (error) {
+          console.log(error);
+          console.log('failed to request HK exercise auth');
+        } else {
+          // AnalyticsService.trackEvent('HealthKit push exercise sync', 'enable');
+          console.log('successfully requested HK exercise auth');
+        }
+      });
+    }
+  };
 
-    //   window.plugins.healthkit.requestAuthorization({
-    //     readTypes : hk_types,
-    //     writeTypes: hk_types
-    //   },
-    //   function() {
-    //     AnalyticsService.trackEvent('HealthKit nutrition sync', 'enable');
-    //     console.log('successfully requested HK nutrition auth');
-    //   },
-    //   function(err) {
-    //     console.log(angular.toJson(err));
-    //     console.log('failed to request HK nutrition auth');
-    //   });
-    // }
+  const adjustSync = (option: string, value: string) => {
+    if (option === 'nutrition') {
+      toggleHKNutrition(value);
+    } else if (option === 'weight') {
+      toggleHKWeight(value);
+    } else if (option === 'exercise') {
+    } else {
+      toggleHKExercise(value);
+    }
   };
 
   return (
@@ -143,7 +280,7 @@ export const HealthkitSyncScreen: React.FC = () => {
         initValue={syncOptions.nutrition}
         onChange={option => {
           dispatch(mergeHKSyncOptions({nutrition: option.value}));
-          adjustSync('nutrition');
+          adjustSync('nutrition', option.value);
         }}
         listType="FLATLIST"
         keyExtractor={(item: {label: string; value: string}) => item.value}>
@@ -189,7 +326,7 @@ export const HealthkitSyncScreen: React.FC = () => {
         initValue={syncOptions.weight}
         onChange={option => {
           dispatch(mergeHKSyncOptions({weight: option.value}));
-          adjustSync('weight');
+          adjustSync('weight', option.value);
         }}
         listType="FLATLIST"
         keyExtractor={(item: {label: string; value: string}) => item.value}>
@@ -234,7 +371,7 @@ export const HealthkitSyncScreen: React.FC = () => {
         initValue={syncOptions.exercise}
         onChange={option => {
           dispatch(mergeHKSyncOptions({exercise: option.value}));
-          adjustSync('exercise');
+          adjustSync('exercise', option.value);
         }}
         listType="FLATLIST"
         keyExtractor={(item: {label: string; value: string}) => item.value}>
