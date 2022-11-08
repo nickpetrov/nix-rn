@@ -21,8 +21,8 @@ import {
 // styles
 import {styles} from './HealthkitSyncScreen.styles';
 
-// types
-import {ResultSet, Transaction} from 'react-native-sqlite-storage';
+// helpers
+import {SQLexecute} from 'helpers/sqlite';
 
 export const HealthkitSyncScreen: React.FC = () => {
   const db = useSelector(state => state.base.db);
@@ -31,29 +31,13 @@ export const HealthkitSyncScreen: React.FC = () => {
 
   const toggleHKNutrition = (nutrition: string) => {
     if (nutrition === 'off') {
-      db?.transaction((tx: Transaction) => {
-        tx.executeSql(
-          'DROP TABLE hkdata',
-          [],
-          (transaction: Transaction, res: ResultSet) => {
-            console.log('query DROP TABLE hkdata completed', res);
-          },
-        );
-      });
+      SQLexecute({db, query: 'DROP TABLE hkdata'});
       // AnalyticsService.trackEvent('HealthKit nutrition sync', 'disable');
     } else {
       //create tables on toggle on; shouldnt exist if toggle off
-      db?.transaction((tx: Transaction) => {
-        tx.executeSql(
-          'CREATE TABLE hkdata (id INTEGER PRIMARY KEY, response TEXT)',
-          [],
-          (transaction: Transaction, res: ResultSet) => {
-            console.log(
-              'query CREATE TABLE hkdata (id INTEGER PRIMARY KEY, response TEXT) completed',
-              res,
-            );
-          },
-        );
+      SQLexecute({
+        db,
+        query: 'CREATE TABLE hkdata (id INTEGER PRIMARY KEY, response TEXT)',
       });
 
       const hk_types = [
@@ -111,15 +95,7 @@ export const HealthkitSyncScreen: React.FC = () => {
 
   function toggleHKWeight(weight: string) {
     if (weight === 'off') {
-      db?.transaction((tx: Transaction) => {
-        tx.executeSql(
-          'DROP TABLE hkdata_weight',
-          [],
-          (transaction: Transaction, res: ResultSet) => {
-            console.log('query DROP TABLE hkdata_weight completed', res);
-          },
-        );
-      });
+      SQLexecute({db, query: 'DROP TABLE hkdata_weight'});
       // AnalyticsService.trackEvent('HealthKit weight sync', 'disable');
     } else if (weight === 'pull') {
       const permissions = {
@@ -144,17 +120,10 @@ export const HealthkitSyncScreen: React.FC = () => {
         }
       });
     } else {
-      db?.transaction((tx: Transaction) => {
-        tx.executeSql(
+      SQLexecute({
+        db,
+        query:
           'CREATE TABLE hkdata_weight (id INTEGER PRIMARY KEY, response TEXT)',
-          [],
-          (transaction: Transaction, res: ResultSet) => {
-            console.log(
-              'query CREATE TABLE hkdata_weight (id INTEGER PRIMARY KEY, response TEXT) completed',
-              res,
-            );
-          },
-        );
       });
       const permissions = {
         permissions: {
@@ -181,15 +150,7 @@ export const HealthkitSyncScreen: React.FC = () => {
 
   const toggleHKExercise = (exercise: string) => {
     if (exercise === 'off') {
-      db?.transaction((tx: Transaction) => {
-        tx.executeSql(
-          'DROP TABLE hkdata_exercise',
-          [],
-          (transaction: Transaction, res: ResultSet) => {
-            console.log('query DROP TABLE hkdata_exercise completed', res);
-          },
-        );
-      });
+      SQLexecute({db, query: 'DROP TABLE hkdata_exercise'});
       // AnalyticsService.trackEvent('HealthKit exercise sync', 'disable');
     } else if (exercise === 'pull') {
       const permissions = {
@@ -215,17 +176,10 @@ export const HealthkitSyncScreen: React.FC = () => {
         }
       });
     } else {
-      db?.transaction((tx: Transaction) => {
-        tx.executeSql(
+      SQLexecute({
+        db,
+        query:
           'CREATE TABLE hkdata_exercise (id INTEGER PRIMARY KEY, response TEXT)',
-          [],
-          (transaction: Transaction, res: ResultSet) => {
-            console.log(
-              'query CREATE TABLE hkdata_exercise (id INTEGER PRIMARY KEY, response TEXT) completed',
-              res,
-            );
-          },
-        );
       });
       const permissions = {
         permissions: {

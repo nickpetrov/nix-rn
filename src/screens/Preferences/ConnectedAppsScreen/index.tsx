@@ -28,8 +28,10 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // styles
 import {styles} from './ConnectedAppsScreen.styles';
-import {Transaction, ResultSet} from 'react-native-sqlite-storage';
 import appleHealthKit, {HealthPermission} from 'react-native-health';
+
+// helpers
+import {SQLexecute} from 'helpers/sqlite';
 
 interface ConnectedAppsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -112,15 +114,7 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
           if (index === attrs_to_check.length - 1) {
             if (turnOffNutritionHKSync) {
               dispatch(mergeHKSyncOptions({nutrition: 'off'}));
-              db?.transaction((tx: Transaction) => {
-                tx.executeSql(
-                  'DROP TABLE hkdata',
-                  [],
-                  (transaction: Transaction, res: ResultSet) => {
-                    console.log('query DROP TABLE hkdata completed', res);
-                  },
-                );
-              });
+              SQLexecute({db, query: 'DROP TABLE hkdata'});
 
               // AnalyticsService.trackEvent(
               //   'HealthKit nutrition sync',
@@ -129,34 +123,12 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
             }
             if (turnOffExcerciseHKSync) {
               dispatch(mergeHKSyncOptions({exercise: 'off'}));
-              db?.transaction((tx: Transaction) => {
-                tx.executeSql(
-                  'DROP TABLE hkdata_exercise',
-                  [],
-                  (transaction: Transaction, res: ResultSet) => {
-                    console.log(
-                      'query DROP TABLE hkdata_exercise completed',
-                      res,
-                    );
-                  },
-                );
-              });
+              SQLexecute({db, query: 'DROP TABLE hkdata_exercise'});
               // AnalyticsService.trackEvent('HealthKit exercise sync', 'disable');
             }
             if (turnOffWeightHKSync) {
               dispatch(mergeHKSyncOptions({weight: 'off'}));
-              db?.transaction((tx: Transaction) => {
-                tx.executeSql(
-                  'DROP TABLE hkdata_weight',
-                  [],
-                  (transaction: Transaction, res: ResultSet) => {
-                    console.log(
-                      'query DROP TABLE hkdata_weight completed',
-                      res,
-                    );
-                  },
-                );
-              });
+              SQLexecute({db, query: 'DROP TABLE hkdata_weight'});
               // AnalyticsService.trackEvent('HealthKit weight sync', 'disable');
             }
           }
