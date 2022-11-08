@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* nutritionxTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* nutritionxTests.m */; };
 		0C80B921A6F3F58F76C31292 /* libPods-nutritionx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-nutritionx.a */; };
+		0FA04594291954BE00A45F50 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FA04593291954BE00A45F50 /* HealthKit.framework */; };
 		0FABB10028D4F384004F02DD /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FABB0FF28D4F384004F02DD /* hermes.xcframework */; };
 		0FC7F4D028E217C9008B25BB /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 0FC7F4CF28E217C9008B25BB /* main.jsbundle */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
@@ -33,6 +34,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* nutritionxTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = nutritionxTests.m; sourceTree = "<group>"; };
 		0F176BF128D863A700DB2AB6 /* nutritionx.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = nutritionx.entitlements; path = nutritionx/nutritionx.entitlements; sourceTree = "<group>"; };
+		0FA04593291954BE00A45F50 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		0FABB0FF28D4F384004F02DD /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
 		0FC7F4CF28E217C9008B25BB /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* nutritionx.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nutritionx.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0FA04594291954BE00A45F50 /* HealthKit.framework in Frameworks */,
 				0C80B921A6F3F58F76C31292 /* libPods-nutritionx.a in Frameworks */,
 				0FABB10028D4F384004F02DD /* hermes.xcframework in Frameworks */,
 			);
@@ -106,6 +109,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0FA04593291954BE00A45F50 /* HealthKit.framework */,
 				0FABB0FF28D4F384004F02DD /* hermes.xcframework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				5DCACB8F33CDC322A6C60F78 /* libPods-nutritionx.a */,
