@@ -256,7 +256,6 @@ export const HealthkitSyncScreen: React.FC = () => {
     } else if (option === 'weight') {
       toggleHKWeight(value);
     } else if (option === 'exercise') {
-    } else {
       toggleHKExercise(value);
     }
   };
