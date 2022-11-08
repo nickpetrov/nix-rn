@@ -25,7 +25,7 @@ function getLastExerciseSync(db: SQLiteDatabase | null) {
       deferred.reject(err);
     },
   });
-
+  console.log('getLastExerciseSync');
   return deferred.promise;
 }
 
@@ -94,6 +94,8 @@ function reconcileHKExercise(
   db: SQLiteDatabase | null,
   exerciseLog: ExerciseProps[],
 ) {
+  console.log('exercise_data', exercise_data);
+  console.log('exerciseLog', exerciseLog);
   // These are the last 7 days we want to match
   const syncDates = getLastXDaysDates(7);
   let daysToSync: string[] = [];
@@ -206,6 +208,7 @@ function syncExercise(db: SQLiteDatabase | null, exerciseLog: ExerciseProps[]) {
           });
         });
       } else {
+        console.log('add result exercise');
         reconcileHKExercise(result.resp, result.id, db, exercises);
       }
     })
