@@ -10,8 +10,6 @@ import appleHealthKit, {
 } from 'react-native-health';
 import {WeightProps} from 'store/userLog/userLog.types';
 
-let unit = 'metric';
-
 //should always only be one row in table
 function getLastWeightSync(db: SQLiteDatabase | null) {
   const deferred = Q.defer();
@@ -40,8 +38,8 @@ function addWeightToHK(weights: WeightProps[]) {
     const deferred = Q.defer();
     promises.push(deferred.promise);
     const sample = {
-      unit: unit === 'metric' ? ('kg' as HealthUnit) : ('lb' as HealthUnit),
-      value: unit === 'metric' ? weight.kg : _.round(weight.kg * 2.20462, 2),
+      unit: 'gram' as HealthUnit,
+      value: weight.kg * 1000,
       date: moment(weight.timestamp).format(),
     } as HealthValueOptions;
     console.log('weight sample', sample);
@@ -180,11 +178,7 @@ function reconcileHKWeight(
   }
 }
 
-function syncWeight(
-  measure_system: number,
-  db: SQLiteDatabase | null,
-  weightsLog: WeightProps[],
-) {
+function syncWeight(db: SQLiteDatabase | null, weightsLog: WeightProps[]) {
   const syncDates = getLastXDaysDates(7);
   const weights = weightsLog.map(item => ({
     ...item,
@@ -199,7 +193,6 @@ function syncWeight(
     console.log('dont sync');
     return;
   }
-  unit = measure_system === 1 ? 'metric' : 'imperial';
   getLastWeightSync(db)
     .then(function (result: any) {
       // if result set is empty, push all to hk; else determine what to push

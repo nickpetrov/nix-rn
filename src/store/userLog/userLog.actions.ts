@@ -140,9 +140,8 @@ export const getUserWeightlog = (
         });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
-          const measure_system = useState().auth.userData.measure_system;
           const db = useState().base.db;
-          syncWeight(measure_system, db, result.weights);
+          syncWeight(db, result.weights);
         }
       }
     } catch (error) {
@@ -165,10 +164,9 @@ export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
         });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
-          const measure_system = useState().auth.userData.measure_system;
           const oldWeights = useState().userLog.weights;
           const db = useState().base.db;
-          syncWeight(measure_system, db, oldWeights.concat(result.weights));
+          syncWeight(db, oldWeights.concat(result.weights));
         }
         dispatch(refreshUserLogTotals());
       }
@@ -224,11 +222,9 @@ export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
         });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
-          const measure_system = useState().auth.userData.measure_system;
           const oldWeights = useState().userLog.weights;
           const db = useState().base.db;
           syncWeight(
-            measure_system,
             db,
             oldWeights.filter(item => !deletedIds.includes(item.id)),
           );
