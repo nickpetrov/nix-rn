@@ -65,11 +65,11 @@ const getLastHKSync = (db: SQLiteDatabase | null) => {
 };
 
 function deleteFromHK(days: string[]) {
-  var delete_samples: any = [];
-  var promises: any = [];
+  let delete_samples: any = [];
+  const promises: any = [];
   _.forEach(days, function (day) {
     _.map(atr_ids, function (arr) {
-      var sample = {
+      const sample = {
         startDate: new Date(day).toDateString(),
         endDate: new Date(new Date(day).setHours(23, 59, 59)).toDateString(), //end of day
         sampleType: arr[0],
@@ -78,7 +78,7 @@ function deleteFromHK(days: string[]) {
     });
   });
   _.forEach(delete_samples, function () {
-    var deferred = Q.defer();
+    const deferred = Q.defer();
     promises.push(deferred.promise);
 
     // no ability to deleteSamples at this library
@@ -152,14 +152,14 @@ const addToHK = (days: string[], foods: FoodProps[]) => {
   _.forEach(days, function (day) {
     const deferred = Q.defer();
     promises.push(deferred.promise);
-    var samples = createSample(day, foods);
+    const samples = createSample(day, foods);
     if (samples.length === 0) {
       deferred.resolve('success');
       return deferred.promise;
     }
-    var correlation = {
-      startDate: new Date(day), //beginning of day
-      endDate: new Date(new Date(day).setHours(23, 59, 59)), //end of day
+    const correlation = {
+      startDate: moment(day).format(), //beginning of day
+      endDate: moment(moment(day).endOf('day')).format(), //end of day
       metadata: {day: day},
       correlationType: 'HKCorrelationTypeIdentifierFood',
       samples: samples,
@@ -273,9 +273,9 @@ function healthkitSync(foods: FoodProps[], db: SQLiteDatabase | null) {
     return;
   }
   syncInProgress = true;
-  var syncDates = getLastXDaysDates(7);
+  const syncDates = getLastXDaysDates(7);
   //do not sync days outside the last 7 days
-  var should_sync = _.difference(
+  const should_sync = _.difference(
     foods.map(item => item.consumed_at),
     syncDates,
   ).length;

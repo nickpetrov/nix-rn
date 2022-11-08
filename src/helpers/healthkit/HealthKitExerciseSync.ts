@@ -9,13 +9,13 @@ import appleHealthKit from 'react-native-health';
 
 //should always only be one row in table
 function getLastExerciseSync(db: SQLiteDatabase | null) {
-  var deferred = Q.defer();
+  const deferred = Q.defer();
   SQLexecute({
     db,
     query: 'SELECT * FROM hkdata_exercise',
     callback: result => {
       if (result.rows.length == 1) {
-        var res = SQLgetById(result);
+        const res = SQLgetById(result);
         deferred.resolve({resp: JSON.parse(res.response), id: res.id});
       } else {
         deferred.resolve('');
@@ -65,8 +65,8 @@ function addExerciseToHK(days: string[], exerciseLog: ExerciseProps[]) {
         promises.push(deferred.promise);
         const sample = {
           sampleType: appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
-          startDate: new Date(exercise.timestamp).toDateString(),
-          endDate: new Date(new Date(day).setHours(23, 59, 59)).toDateString(),
+          startDate: moment(exercise.timestamp).format(),
+          endDate: moment(moment(day).endOf('day')).format(),
           amount: exercise.nf_calories,
           unit: 'kcal',
         };
@@ -95,9 +95,9 @@ function reconcileHKExercise(
   exerciseLog: ExerciseProps[],
 ) {
   // These are the last 7 days we want to match
-  var syncDates = getLastXDaysDates(7);
-  var daysToSync: string[] = [];
-  var day_difference = _.difference(
+  const syncDates = getLastXDaysDates(7);
+  let daysToSync: string[] = [];
+  const day_difference = _.difference(
     syncDates,
     exercise_data.map(item => item.timestamp),
   );
@@ -107,12 +107,12 @@ function reconcileHKExercise(
 
   _.forEach(exercise_data, function (exercise) {
     //outside the scope of 7 days
-    var match_arr;
+    let match_arr;
     if (syncDates.indexOf(exercise.timestamp) === -1) {
       return;
     } else {
-      var hkExercises = exercise_data;
-      var apiExercises = exerciseLog.filter(
+      const hkExercises = exercise_data;
+      const apiExercises = exerciseLog.filter(
         item => item.timestamp === exercise.timestamp,
       );
       // used to determine deletes. bit arr to store which indices in hk array are matched.
@@ -122,7 +122,7 @@ function reconcileHKExercise(
       //first check for exercises in api exercises that are not in hk
       _.forEach(apiExercises, function (api_exercise) {
         //index of matched exercise in hkexercises
-        var match = _.findIndex(hkExercises, function (exer) {
+        const match = _.findIndex(hkExercises, function (exer) {
           return api_exercise.id == exer.id;
         });
 

@@ -115,7 +115,7 @@ function reconcileHKWeight(
       return;
     } else {
       hkWeights = weight_data;
-      var apiWeights = weightsLog.filter(
+      const apiWeights = weightsLog.filter(
         (item: WeightProps) => item.timestamp === weight.timestamp,
       );
       // used to determine deletes. bit arr to store which indices in hk array are matched.
