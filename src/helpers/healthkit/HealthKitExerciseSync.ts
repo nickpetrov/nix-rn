@@ -176,7 +176,7 @@ function syncExercise(db: SQLiteDatabase | null, exerciseLog: ExerciseProps[]) {
   const syncDates = getLastXDaysDates(7);
   const exercises = exerciseLog.map(item => ({
     ...item,
-    timestamp: moment(item.timestamp).format('ddd, MM/DD/YY'),
+    timestamp: moment(item.timestamp).format('YYYY-MM-DD'),
   }));
   //do not sync days outside the last 7 days
   const should_sync = _.difference(

@@ -54,7 +54,7 @@ export const getLastXDaysDates = (days: number, offset?: number) => {
   var dates = [],
     toDay = moment().subtract(offset, 'days');
   for (var i = 0; i < days; i++) {
-    var date = toDay.format('ddd, MM/DD/YY');
+    var date = toDay.format('YYYY-MM-DD');
     dates.push(date);
     toDay.subtract(1, 'day');
   }
