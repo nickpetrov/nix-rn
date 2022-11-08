@@ -4,6 +4,7 @@ import Q from 'q';
 import {SQLexecute, SQLgetById} from 'helpers/sqlite';
 import {SQLiteDatabase} from 'react-native-sqlite-storage';
 import {ExerciseProps} from 'store/userLog/userLog.types';
+import moment from 'moment-timezone';
 
 //should always only be one row in table
 function getLastExerciseSync(db: SQLiteDatabase | null) {
@@ -171,10 +172,14 @@ function reconcileHKExercise(
 }
 
 function syncExercise(db: SQLiteDatabase | null, exerciseLog: ExerciseProps[]) {
-  var syncDates = getLastXDaysDates(7);
+  const syncDates = getLastXDaysDates(7);
+  const exercises = exerciseLog.map(item => ({
+    ...item,
+    timestamp: moment(item.timestamp).format('ddd, MM/DD/YY'),
+  }));
   //do not sync days outside the last 7 days
-  var should_sync = _.difference(
-    exerciseLog.map(item => item.timestamp),
+  const should_sync = _.difference(
+    exercises.map(item => item.timestamp),
     syncDates,
   ).length;
   if (should_sync == syncDates.length) {
@@ -190,17 +195,17 @@ function syncExercise(db: SQLiteDatabase | null, exerciseLog: ExerciseProps[]) {
 
         deleteExerciseFromHK(syncDates).then(function () {
           console.log('Delete all exercise sample success');
-          addExerciseToHK(syncDates, exerciseLog).then(function () {
+          addExerciseToHK(syncDates, exercises).then(function () {
             console.log('updating hk exercise sqlite');
             SQLexecute({
               db,
               query: 'INSERT INTO hkdata_exercise (response) VALUES (?)',
-              params: [JSON.stringify(exerciseLog)],
+              params: [JSON.stringify(exercises)],
             });
           });
         });
       } else {
-        reconcileHKExercise(result.resp, result.id, db, exerciseLog);
+        reconcileHKExercise(result.resp, result.id, db, exercises);
       }
     })
     .catch(function (err) {

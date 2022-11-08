@@ -103,11 +103,7 @@ function reconcileHKWeight(
   _.forEach(day_difference, function (day) {
     addArr.push.apply(
       addArr,
-      weightsLog.filter(
-        (item: WeightProps) =>
-          moment(item.timestamp).format('YYYY-MM-DD') ===
-          moment(day).format('YYYY-MM-DD'),
-      ),
+      weightsLog.filter((item: WeightProps) => item.timestamp === day),
     );
   });
 
@@ -120,9 +116,7 @@ function reconcileHKWeight(
     } else {
       hkWeights = weight_data;
       var apiWeights = weightsLog.filter(
-        (item: WeightProps) =>
-          moment(item.timestamp).format('YYYY-MM-DD') ===
-          moment(weight.timestamp).format('YYYY-MM-DD'),
+        (item: WeightProps) => item.timestamp === weight.timestamp,
       );
       // used to determine deletes. bit arr to store which indices in hk array are matched.
       // ones that are not matched need to be deleted from hk
@@ -191,10 +185,14 @@ function syncWeight(
   db: SQLiteDatabase | null,
   weightsLog: WeightProps[],
 ) {
-  var syncDates = getLastXDaysDates(7);
+  const syncDates = getLastXDaysDates(7);
+  const weights = weightsLog.map(item => ({
+    ...item,
+    timestamp: moment(item.timestamp).format('ddd, MM/DD/YY'),
+  }));
   // do not sync days outside the last 7 days
-  var should_sync = _.difference(
-    Object.keys(weightsLog.map(item => item.timestamp)),
+  const should_sync = _.difference(
+    weights.map(item => item.timestamp),
     syncDates,
   ).length;
   if (should_sync == syncDates.length) {
@@ -208,16 +206,16 @@ function syncWeight(
       if (!result) {
         console.log('adding all weight');
 
-        addWeightToHK(weightsLog).then(function () {
+        addWeightToHK(weights).then(function () {
           console.log('updating hk weight sqlite');
           SQLexecute({
             db,
             query: 'INSERT INTO hkdata_weight (response) VALUES (?)',
-            params: [JSON.stringify(weightsLog)],
+            params: [JSON.stringify(weights)],
           });
         });
       } else {
-        reconcileHKWeight(result.resp, result.id, weightsLog, db);
+        reconcileHKWeight(result.resp, result.id, weights, db);
       }
     })
     .catch(function (err) {
