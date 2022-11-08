@@ -44,7 +44,7 @@ function addWeightToHK(weights: WeightProps[]) {
       value: unit === 'metric' ? weight.kg : _.round(weight.kg * 2.20462, 2),
       date: moment(weight.timestamp).format(),
     } as HealthValueOptions;
-
+    console.log('weight sample', sample);
     appleHealthKit.saveWeight(sample, err => {
       if (err) {
         console.log('add weight sample err', err);
