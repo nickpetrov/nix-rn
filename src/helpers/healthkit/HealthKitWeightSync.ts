@@ -42,7 +42,7 @@ function addWeightToHK(weights: WeightProps[]) {
     const sample = {
       unit: unit === 'metric' ? ('kg' as HealthUnit) : ('lb' as HealthUnit),
       value: unit === 'metric' ? weight.kg : _.round(weight.kg * 2.20462, 2),
-      date: new Date(weight.timestamp),
+      date: moment(weight.timestamp).format(),
     } as HealthValueOptions;
 
     appleHealthKit.saveWeight(sample, err => {
@@ -64,8 +64,8 @@ function deleteWeightFromHK(weights: WeightProps[]) {
     const deferred = Q.defer();
     promises.push(deferred.promise);
     const sample = {
-      startDate: new Date(new Date(weight.timestamp).getTime() - 1000),
-      endDate: new Date(new Date(weight.timestamp).getTime() + 1000),
+      startDate: moment(moment(weight.timestamp).valueOf() - 1000).format(),
+      endDate: moment(moment(weight.timestamp).valueOf() + 1000).format(),
       sampleType: 'HKQuantityTypeIdentifierBodyMass',
     };
     console.log('sample', sample);

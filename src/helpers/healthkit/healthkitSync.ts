@@ -70,8 +70,8 @@ function deleteFromHK(days: string[]) {
   _.forEach(days, function (day) {
     _.map(atr_ids, function (arr) {
       const sample = {
-        startDate: new Date(day).toDateString(),
-        endDate: new Date(new Date(day).setHours(23, 59, 59)).toDateString(), //end of day
+        startDate: moment(day).format(),
+        endDate: moment(moment(day).endOf('day')).format(), //end of day
         sampleType: arr[0],
       };
       delete_samples.push(sample);
@@ -129,8 +129,8 @@ const createSample = (day: string, foods: FoodProps[]) => {
   let hkSample: any = [];
   _.forEach(sample_dict, function (id_dict) {
     const sample = {
-      startDate: new Date(day), //beginning of day
-      endDate: new Date(new Date(day).setHours(23, 59, 59)), //end of day
+      startDate: moment(day).format(), //beginning of day
+      endDate: moment(moment(day).endOf('day')).format(), //end of day
       sampleType: id_dict.hk,
       unit: id_dict.unit,
       amount: id_dict.value,

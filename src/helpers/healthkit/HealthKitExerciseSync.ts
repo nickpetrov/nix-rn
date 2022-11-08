@@ -36,10 +36,10 @@ function deleteExerciseFromHK(days: string[]) {
     promises.push(deferred.promise);
     const sample = {
       sampleType: 'HKQuantityTypeIdentifierActiveEnergyBurned',
-      startDate: new Date(day).toDateString(),
-      endDate: new Date(new Date(day).setHours(23, 59, 59)).toDateString(), //end of day
+      startDate: moment(day).format(),
+      endDate: moment(moment(day).endOf('day')).format(), //end of day
     };
-    console.log(sample);
+    console.log('sample', sample);
     // window.plugins.healthkit.deleteSamples(
     //   sample,
     //   function (value) {
