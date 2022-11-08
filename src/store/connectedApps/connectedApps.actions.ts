@@ -75,7 +75,7 @@ export const pullWeightsFromHK = () => {
         new Date().getTime() - 7 * 24 * 60 * 60 * 1000,
       ).toDateString(), // 7 days ago
       endDate: new Date().toDateString(), // now
-      unit: HealthUnit.gram,
+      unit: 'gram' as HealthUnit,
     };
     appleHealthKit.getWeightSamples(
       options,
@@ -198,7 +198,7 @@ export const pullExerciseFromHK = () => {
         new Date().getTime() - 7 * 24 * 60 * 60 * 1000,
       ).toDateString(), // 7 days ago
       endDate: new Date().toDateString(), // now
-      unit: HealthUnit.kilocalorie,
+      unit: 'kilocalorie' as HealthUnit,
     };
     appleHealthKit.getActiveEnergyBurned(
       options,
