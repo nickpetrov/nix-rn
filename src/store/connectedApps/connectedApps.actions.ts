@@ -89,10 +89,8 @@ export const pullWeightsFromHK = () => {
           }));
           const weightsLog = useState().userLog.weights;
           let api_timestamps: Array<string> = [];
-          _.forEach(weightsLog, function (day) {
-            _.forEach(day.weights, function (weightObj) {
-              api_timestamps.push(moment.utc(weightObj.timestamp).format());
-            });
+          _.forEach(weightsLog, function (weightObj) {
+            api_timestamps.push(moment.utc(weightObj.timestamp).format());
           });
           const hk_weights_to_add: Array<Omit<WeightProps, 'id'>> = [];
           _.forEach(weightsFromHK, function (hkObj) {
@@ -122,13 +120,10 @@ export const addOrUpdateHKExercise = (
     let add_arr: ExerciseProps[] = [];
     let update_arr: ExerciseProps[] = [];
     _.forEach(Object.keys(add_update_map), function (day) {
-      var add_data = {} as ExerciseProps;
-      var ts;
-      if (
-        exerciseLog &&
-        exerciseLog[day] &&
-        exerciseLog[day].exercises.length === 0
-      ) {
+      let add_data = {} as ExerciseProps;
+      let ts;
+      const exercisesByDay = exerciseLog.filter(item => item.timestamp === day);
+      if (exercisesByDay && exercisesByDay && exercisesByDay.length === 0) {
         ts = moment(day, 'ddd, MM/DD/YY').format();
         add_data = {
           tag_id: 939,
@@ -141,9 +136,9 @@ export const addOrUpdateHKExercise = (
         } as ExerciseProps;
         add_arr.push(add_data);
       } else {
-        if (exerciseLog && exerciseLog[day]) {
+        if (exercisesByDay) {
           let found = false;
-          _.forEach(exerciseLog[day].exercises, function (ex) {
+          _.forEach(exercisesByDay, function (ex) {
             // log already has HK, so update
             if (ex.name === 'HealthKit Exercise Total') {
               found = true;

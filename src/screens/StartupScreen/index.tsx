@@ -2,7 +2,7 @@
 import React, {useEffect} from 'react';
 
 // components
-import {SafeAreaView, ActivityIndicator} from 'react-native';
+import {SafeAreaView, ActivityIndicator, Platform} from 'react-native';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks';
@@ -10,14 +10,16 @@ import {useDispatch, useSelector} from 'hooks';
 // constants
 import {Routes} from 'navigation/Routes';
 
+// actions
+import {getUserDataFromAPI} from 'store/auth/auth.actions';
+import {updateReviewCheckAfterComeBack} from 'store/base/base.actions';
+import {
+  pullExerciseFromHK,
+  pullWeightsFromHK,
+} from 'store/connectedApps/connectedApps.actions';
+
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {getUserDataFromAPI} from 'store/auth/auth.actions';
-
-// actions
-import {updateReviewCheckAfterComeBack} from 'store/base/base.actions';
-
-// types
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 interface StartupScreenProps {
@@ -30,6 +32,7 @@ interface StartupScreenProps {
 export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
   const userJWT = useSelector(state => state.auth.userJWT);
+  const hkSyncOptions = useSelector(state => state.connectedApps.hkSyncOptions);
 
   useEffect(() => {
     if (!userJWT) {
@@ -38,8 +41,22 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
       navigation.navigate(Routes.LoggedIn);
       dispatch(getUserDataFromAPI());
       dispatch(updateReviewCheckAfterComeBack());
+      if (Platform.OS === 'ios') {
+        if (hkSyncOptions.weight === 'pull') {
+          dispatch(pullWeightsFromHK());
+        }
+        if (hkSyncOptions.exercise === 'pull') {
+          dispatch(pullExerciseFromHK());
+        }
+      }
     }
-  }, [dispatch, navigation, userJWT]);
+  }, [
+    dispatch,
+    navigation,
+    userJWT,
+    hkSyncOptions.exercise,
+    hkSyncOptions.weight,
+  ]);
 
   return (
     <SafeAreaView

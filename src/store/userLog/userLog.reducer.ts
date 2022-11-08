@@ -19,7 +19,10 @@ const initialState: UserLogState = {
   selectedDate: moment().format('YYYY-MM-DD'),
 };
 
-export default (state: UserLogState = initialState, action: AnyAction) => {
+export default (
+  state: UserLogState = initialState,
+  action: AnyAction,
+): UserLogState => {
   switch (action.type) {
     case userLogActionTypes.GET_USER_FOODLOG:
       return {...state, foods: action.foodLog};

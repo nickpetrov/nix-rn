@@ -104,7 +104,9 @@ const createSample = (day: string, foods: FoodProps[]) => {
 
   //all foods for a day that needs to be updated
   const day_foods = foods.filter(
-    item => moment(item.consumed_at).format('YYYY-MM-DD') === day,
+    item =>
+      moment(item.consumed_at).format('YYYY-MM-DD') ===
+      moment(day).format('YYYY-MM-DD'),
   );
   _.forEach(day_foods, function (food) {
     _.map(food.full_nutrients, function (nutr_obj) {
@@ -201,7 +203,9 @@ const reconcileHK = (
     } else {
       const hkFoods = dayObj.foods;
       const apiFoods = foods.filter(
-        item => moment(item.consumed_at).format('YYYY-MM-DD') === day,
+        item =>
+          moment(item.consumed_at).format('YYYY-MM-DD') ===
+          moment(day).format('YYYY-MM-DD'),
       );
       // used to determine deletes. bit arr to store which indices in hk array are matched.
       // ones that are not matched need to be deleted from hk
@@ -271,7 +275,10 @@ function healthkitSync(foods: FoodProps[], db: SQLiteDatabase | null) {
   syncInProgress = true;
   var syncDates = getLastXDaysDates(7);
   //do not sync days outside the last 7 days
-  var should_sync = _.difference(Object.keys(foods), syncDates).length;
+  var should_sync = _.difference(
+    foods.map(item => item.consumed_at),
+    syncDates,
+  ).length;
   if (should_sync == syncDates.length) {
     console.log('dont sync');
     return;

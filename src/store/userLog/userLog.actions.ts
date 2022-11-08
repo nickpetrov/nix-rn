@@ -23,6 +23,10 @@ import {Dispatch} from 'redux';
 import {RootState} from '../index';
 import {Asset} from 'react-native-image-picker';
 import {setInfoMessage} from '../base/base.actions';
+import healthkitSync from 'helpers/healthkit/healthkitSync';
+import {Platform} from 'react-native';
+import syncWeight from 'helpers/healthkit/HealthKitWeightSync';
+import syncExercise from 'helpers/healthkit/HealthKitExerciseSync';
 
 export const getDayTotals = (
   beginDate: string,
@@ -92,6 +96,11 @@ export const getUserFoodlog = (
         });
       }
       const beginDateSelected = useState().userLog.selectedDate;
+      const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+      if (hkSyncOptions.nutrition === 'push' && Platform.OS === 'ios') {
+        const db = useState().base.db;
+        healthkitSync(userFoodlog.foods, db);
+      }
 
       dispatch(getDayTotals(beginDateSelected, endDate, timezone));
     } catch (error) {
@@ -129,6 +138,12 @@ export const getUserWeightlog = (
           type: userLogActionTypes.GET_USER_WEIGHT_LOG,
           weights: result.weights,
         });
+        const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+        if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
+          const measure_system = useState().auth.userData.measure_system;
+          const db = useState().base.db;
+          syncWeight(measure_system, db, result.weights);
+        }
       }
     } catch (error) {
       throw error;
@@ -137,7 +152,7 @@ export const getUserWeightlog = (
 };
 
 export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     try {
       const response = await userLogService.addWeightlog(weights);
 
@@ -148,6 +163,13 @@ export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
           type: userLogActionTypes.ADD_WEIGHT_LOG,
           weights: result.weights,
         });
+        const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+        if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
+          const measure_system = useState().auth.userData.measure_system;
+          const oldWeights = useState().userLog.weights;
+          const db = useState().base.db;
+          syncWeight(measure_system, db, oldWeights.concat(result.weights));
+        }
         dispatch(refreshUserLogTotals());
       }
     } catch (error) {
@@ -157,7 +179,7 @@ export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
 };
 
 export const updateWeightlog = (weights: Array<WeightProps>) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     try {
       const response = await userLogService.updateWeightlog(weights);
 
@@ -168,6 +190,19 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
           type: userLogActionTypes.UPDATE_WEIGHT_LOG,
           weights: result.weights,
         });
+        const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+        if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
+          const oldWeights = useState().userLog.exercises;
+          const newWeights = oldWeights.map((item: ExerciseProps) => {
+            if (item.id === result.weights[0].id) {
+              return result.weights[0];
+            } else {
+              return item;
+            }
+          });
+          const db = useState().base.db;
+          syncExercise(db, newWeights);
+        }
         dispatch(refreshUserLogTotals());
       }
     } catch (error) {
@@ -177,15 +212,27 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
 };
 
 export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     try {
       const response = await userLogService.deleteWeightFromLog(weights);
 
       if (response.status === 200) {
+        const deletedIds = weights.map(item => item.id);
         dispatch({
           type: userLogActionTypes.DELETE_WEIGHT_FROM_LOG,
           weights: weights.map(item => item.id),
         });
+        const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+        if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
+          const measure_system = useState().auth.userData.measure_system;
+          const oldWeights = useState().userLog.weights;
+          const db = useState().base.db;
+          syncWeight(
+            measure_system,
+            db,
+            oldWeights.filter(item => !deletedIds.includes(item.id)),
+          );
+        }
         dispatch(refreshUserLogTotals());
       }
     } catch (error) {
@@ -194,15 +241,25 @@ export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
   };
 };
 export const deleteExerciseFromLog = (exercises: Array<{id: string}>) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     try {
       const response = await userLogService.deleteExerciseFromLog(exercises);
 
       if (response.status === 200) {
+        const deletedExercisesIds = exercises.map(item => item.id);
         dispatch({
           type: userLogActionTypes.DELETE_EXERCISE_FROM_LOG,
-          exercises: exercises.map(item => item.id),
+          exercises: deletedExercisesIds,
         });
+        const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+        if (hkSyncOptions.exercise === 'push' && Platform.OS === 'ios') {
+          const oldExercises = useState().userLog.exercises;
+          const db = useState().base.db;
+          syncExercise(
+            db,
+            oldExercises.filter(item => !deletedExercisesIds.includes(item.id)),
+          );
+        }
         dispatch(refreshUserLogTotals());
       }
     } catch (error) {
@@ -237,6 +294,11 @@ export const getUserExerciseslog = (
           type: userLogActionTypes.GET_USER_EXERCISES_LOG,
           exercises: result.exercises,
         });
+        const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+        if (hkSyncOptions.exercise === 'push' && Platform.OS === 'ios') {
+          const db = useState().base.db;
+          syncExercise(db, result.exercises);
+        }
       }
     } catch (error) {
       throw error;
@@ -245,7 +307,7 @@ export const getUserExerciseslog = (
 };
 
 export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     try {
       const response = await userLogService.addExerciseLog(exercises);
 
@@ -256,6 +318,12 @@ export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
           type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
           exercises: result.exercises,
         });
+        const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+        if (hkSyncOptions.exercise === 'push' && Platform.OS === 'ios') {
+          const oldExercises = useState().userLog.exercises;
+          const db = useState().base.db;
+          syncExercise(db, oldExercises.concat(result.exercises));
+        }
         dispatch(refreshUserLogTotals());
       }
     } catch (error) {
@@ -264,7 +332,7 @@ export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
   };
 };
 export const updateExistExercisesToLog = (exercises: ExerciseProps[]) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     try {
       const response = await userLogService.updateExerciseLog(exercises);
 
@@ -275,6 +343,19 @@ export const updateExistExercisesToLog = (exercises: ExerciseProps[]) => {
           type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
           exercises: result.exercises,
         });
+        const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+        if (hkSyncOptions.exercise === 'push' && Platform.OS === 'ios') {
+          const oldExercises = useState().userLog.exercises;
+          const newExercises = oldExercises.map((item: ExerciseProps) => {
+            if (item.id === result.exercises[0].id) {
+              return result.exercises[0];
+            } else {
+              return item;
+            }
+          });
+          const db = useState().base.db;
+          syncExercise(db, newExercises);
+        }
         dispatch(refreshUserLogTotals());
       }
     } catch (error) {
