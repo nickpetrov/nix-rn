@@ -70,8 +70,8 @@ function deleteFromHK(days: string[]) {
   _.forEach(days, function (day) {
     _.map(atr_ids, function (arr) {
       var sample = {
-        startDate: new Date(day),
-        endDate: new Date(new Date(day).setHours(23, 59, 59)), //end of day
+        startDate: new Date(day).toDateString(),
+        endDate: new Date(new Date(day).setHours(23, 59, 59)).toDateString(), //end of day
         sampleType: arr[0],
       };
       delete_samples.push(sample);

@@ -5,6 +5,7 @@ import {SQLexecute, SQLgetById} from 'helpers/sqlite';
 import {SQLiteDatabase} from 'react-native-sqlite-storage';
 import {ExerciseProps} from 'store/userLog/userLog.types';
 import moment from 'moment-timezone';
+import appleHealthKit from 'react-native-health';
 
 //should always only be one row in table
 function getLastExerciseSync(db: SQLiteDatabase | null) {
@@ -35,8 +36,8 @@ function deleteExerciseFromHK(days: string[]) {
     promises.push(deferred.promise);
     const sample = {
       sampleType: 'HKQuantityTypeIdentifierActiveEnergyBurned',
-      startDate: new Date(day),
-      endDate: new Date(new Date(day).setHours(23, 59, 59)), //end of day
+      startDate: new Date(day).toDateString(),
+      endDate: new Date(new Date(day).setHours(23, 59, 59)).toDateString(), //end of day
     };
     console.log(sample);
     // window.plugins.healthkit.deleteSamples(
@@ -63,9 +64,9 @@ function addExerciseToHK(days: string[], exerciseLog: ExerciseProps[]) {
         const deferred = Q.defer();
         promises.push(deferred.promise);
         const sample = {
-          sampleType: 'HKQuantityTypeIdentifierActiveEnergyBurned',
-          startDate: new Date(exercise.timestamp),
-          endDate: new Date(new Date(day).setHours(23, 59, 59)),
+          sampleType: appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
+          startDate: new Date(exercise.timestamp).toDateString(),
+          endDate: new Date(new Date(day).setHours(23, 59, 59)).toDateString(),
           amount: exercise.nf_calories,
           unit: 'kcal',
         };
