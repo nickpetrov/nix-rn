@@ -40,8 +40,6 @@ function addWeightToHK(weights: WeightProps[]) {
     const sample = {
       unit: 'kg' as HealthUnit,
       value: weight.kg,
-      startDate: moment(weight.timestamp).format(),
-      endDate: moment(weight.timestamp).format(),
       date: moment(weight.timestamp).format(),
     } as HealthValueOptions;
     console.log('weight sample', sample);
