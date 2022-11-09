@@ -38,8 +38,8 @@ function addWeightToHK(weights: WeightProps[]) {
     const deferred = Q.defer();
     promises.push(deferred.promise);
     const sample = {
-      unit: 'gram' as HealthUnit,
-      value: weight.kg * 1000,
+      unit: 'kg' as HealthUnit,
+      value: weight.kg,
       date: moment(weight.timestamp).format(),
     } as HealthValueOptions;
     console.log('weight sample', sample);
@@ -182,7 +182,7 @@ function syncWeight(db: SQLiteDatabase | null, weightsLog: WeightProps[]) {
   const syncDates = getLastXDaysDates(7);
   const weights = weightsLog.map(item => ({
     ...item,
-    timestamp: moment(item.timestamp).format('ddd, MM/DD/YY'),
+    timestamp: moment(item.timestamp).format('YYYY-MM-DD'),
   }));
   // do not sync days outside the last 7 days
   const should_sync = _.difference(

@@ -1,14 +1,21 @@
 // utils
 import moment from 'moment-timezone';
 import {batch} from 'react-redux';
+import {Platform} from 'react-native';
 
 //helpers
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import * as timeHelper from 'helpers/time.helpers';
+import healthkitSync from 'helpers/healthkit/healthkitSync';
+import syncWeight from 'helpers/healthkit/HealthKitWeightSync';
+import syncExercise from 'helpers/healthkit/HealthKitExerciseSync';
 
 // services
 import userLogService from 'api/userLogService';
 import baseService from 'api/baseService';
+
+// actions
+import {setInfoMessage} from '../base/base.actions';
 
 // types
 import {
@@ -22,11 +29,6 @@ import {
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
 import {Asset} from 'react-native-image-picker';
-import {setInfoMessage} from '../base/base.actions';
-import healthkitSync from 'helpers/healthkit/healthkitSync';
-import {Platform} from 'react-native';
-import syncWeight from 'helpers/healthkit/HealthKitWeightSync';
-import syncExercise from 'helpers/healthkit/HealthKitExerciseSync';
 
 export const getDayTotals = (
   beginDate: string,
