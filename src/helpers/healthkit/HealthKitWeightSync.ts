@@ -182,7 +182,7 @@ function syncWeight(db: SQLiteDatabase | null, weightsLog: WeightProps[]) {
   const syncDates = getLastXDaysDates(7);
   const weights = weightsLog.map(item => ({
     ...item,
-    timestamp: moment(item.timestamp).format('YYYY-MM-DD'),
+    timestamp: moment(item.timestamp).format(),
   }));
   // do not sync days outside the last 7 days
   const should_sync = _.difference(
