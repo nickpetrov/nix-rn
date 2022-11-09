@@ -192,8 +192,8 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
         });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
-          const oldWeights = useState().userLog.exercises;
-          const newWeights = oldWeights.map((item: ExerciseProps) => {
+          const oldWeights = useState().userLog.weights;
+          const newWeights = oldWeights.map((item: WeightProps) => {
             if (item.id === result.weights[0].id) {
               return result.weights[0];
             } else {
@@ -201,7 +201,7 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
             }
           });
           const db = useState().base.db;
-          syncExercise(db, newWeights);
+          syncWeight(db, newWeights);
         }
         dispatch(refreshUserLogTotals());
       }
