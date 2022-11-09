@@ -2,12 +2,26 @@
 import React, {useState, useEffect, useCallback} from 'react';
 
 // components
-import {View, TextInput, TouchableWithoutFeedback} from 'react-native';
+import {
+  View,
+  TextInput,
+  TouchableWithoutFeedback,
+  Text,
+  Platform,
+  Linking,
+} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Voice from '@react-native-voice/voice';
 
+// hooks
+import {useDispatch, useSelector} from 'hooks/useRedux';
+
+// actions
+import {setIsVoiceDisclaimerVisible} from 'store/base/base.actions';
+
 // styles
 import {styles} from './VoiceInput.styles';
+import ChooseModal from 'components/ChooseModal';
 
 interface VoiceRecognitionControlsProps {
   onPress: () => void;
@@ -15,6 +29,7 @@ interface VoiceRecognitionControlsProps {
   style?: {
     [key: string]: string | number;
   };
+  text?: string;
 }
 const VoiceRecognitionControls: React.FC<
   VoiceRecognitionControlsProps
@@ -26,7 +41,10 @@ const VoiceRecognitionControls: React.FC<
         onPress={() => {
           props.onPress();
         }}>
-        <FontAwesome name={props.iconName} size={20} style={{color: '#666'}} />
+        <View style={styles.voiceRecognitionControlsIconView}>
+          <FontAwesome name={props.iconName} size={20} color="#fff" />
+          {props.text && <Text>{props.text}</Text>}
+        </View>
       </TouchableWithoutFeedback>
     </View>
   );
@@ -39,6 +57,7 @@ interface VoiceInputProps {
   value: string;
   onChangeText: (v: string) => void;
   placeholder: string;
+  withDisclaymore?: boolean;
 }
 
 const VoiceInput: React.FC<VoiceInputProps> = ({
@@ -46,15 +65,15 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
   onChangeText,
   placeholder,
   style,
+  withDisclaymore,
 }) => {
-  // const [pitch, setPitch] = useState('');
-  // const [error, setError] = useState('');
-  // const [end, setEnd] = useState('');
-  // const [started, setStarted] = useState('');
-  // const [results, setResults] = useState([]);
-  // const [partialResults, setPartialResults] = useState([]);
+  const dispatch = useDispatch();
+  const hideVoiceRecognitionDisclaimer = useSelector(
+    state => state.base.hideVoiceRecognitionDisclaimer,
+  );
   const [speechRecognitionInProgress, setSpeechRecognitionInProgress] =
     useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   const onSpeechStart = (e: any) => {
     //Invoked when .start() is called without error
@@ -70,33 +89,45 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
     // setEnd('√');
   };
 
-  const onSpeechError = (e: any) => {
+  const onSpeechError = useCallback((err: any) => {
     //Invoked when an error occurs.
-    console.log('onSpeechError: ', e);
+    console.log('onSpeechError: ', err);
     setSpeechRecognitionInProgress(false);
     // setError(JSON.stringify(e.error));
-  };
+    if (!Voice.isAvailable()) {
+      setShowPopup(true);
+    }
+  }, []);
 
   const onSpeechResults = useCallback(
     (e: any) => {
       //Invoked when SpeechRecognizer is finished recognizing
       console.log('onSpeechResults: ', e);
-      // setResults(e.value);
       onChangeText(e.value[0]);
+      setSpeechRecognitionInProgress(false);
     },
     [onChangeText],
   );
 
-  const onSpeechPartialResults = (e: any) => {
+  const onSpeechPartialResults = useCallback((e: any) => {
     //Invoked when any results are computed
     console.log('onSpeechPartialResults: ', e);
-    // setPartialResults(e.value);
-  };
+    // onChangeText(value + e.value[0]);
+  }, []);
 
   const onSpeechVolumeChanged = (e: any) => {
     //Invoked when pitch that is recognized changed
     console.log('onSpeechVolumeChanged: ', e);
-    // setPitch(e.value);
+  };
+
+  const showDisclaimer = () => {
+    if (Platform.OS !== 'android') {
+      return;
+    }
+    if (hideVoiceRecognitionDisclaimer) {
+      return;
+    }
+    dispatch(setIsVoiceDisclaimerVisible(true));
   };
 
   useEffect(() => {
@@ -112,23 +143,15 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
       //destroy the process after switching the screen
       Voice.destroy().then(Voice.removeAllListeners);
     };
-  }, [onSpeechResults]);
+  }, [onSpeechResults, onSpeechPartialResults, onSpeechError]);
 
   const startRecognizing = async () => {
-    // setPitch('');
-    // setError('');
-    // setEnd('');
-    // setStarted('');
-    // setResults([]);
-    // setPartialResults([]);
-
     try {
       await Voice.start('en-US', {
         RECOGNIZER_ENGINE: 'services',
         EXTRA_PARTIAL_RESULTS: true,
       });
     } catch (e) {
-      //eslint-disable-next-line
       console.error('start voice', e);
     }
   };
@@ -138,7 +161,6 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
       console.log('here');
       await Voice.stop();
     } catch (e) {
-      //eslint-disable-next-line
       console.error(e);
     }
   };
@@ -147,38 +169,68 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
     try {
       await Voice.cancel();
       onChangeText('');
+      if (withDisclaymore) {
+        showDisclaimer();
+      }
     } catch (e) {
-      //eslint-disable-next-line
       console.error(e);
     }
   };
 
   return (
-    <View style={styles.voiceContainer}>
-      <TextInput
-        style={[styles.input, style]}
-        multiline
-        numberOfLines={4}
-        value={value}
-        onChangeText={onChangeText}
-        placeholder={placeholder}
-      />
-      {speechRecognitionInProgress ? (
-        <>
-          <VoiceRecognitionControls onPress={stopRecognizing} iconName="stop" />
-          <VoiceRecognitionControls
-            onPress={cancelRecognizing}
-            iconName="ban"
-            style={{right: 60}}
-          />
-        </>
-      ) : (
-        <VoiceRecognitionControls
-          onPress={startRecognizing}
-          iconName="microphone"
+    <>
+      <View style={styles.voiceContainer}>
+        <TextInput
+          style={[styles.input, style]}
+          multiline
+          numberOfLines={4}
+          value={value}
+          onChangeText={onChangeText}
+          placeholder={placeholder}
         />
-      )}
-    </View>
+        {speechRecognitionInProgress ? (
+          <>
+            <VoiceRecognitionControls
+              onPress={stopRecognizing}
+              iconName="stop"
+            />
+            <VoiceRecognitionControls
+              onPress={cancelRecognizing}
+              iconName="ban"
+              style={{right: 50}}
+            />
+          </>
+        ) : (
+          <VoiceRecognitionControls
+            onPress={startRecognizing}
+            iconName="microphone"
+          />
+        )}
+      </View>
+      <ChooseModal
+        modalVisible={showPopup}
+        hideModal={() => setShowPopup(false)}
+        title="Voice recognition error"
+        subtitle="You're almost there! To use this feature, download and setup Google Voice Search, and then restart the app. To get Google Voice Search from the Play Market now, click 'Download'"
+        btns={[
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => setShowPopup(false),
+          },
+          {
+            type: 'primary',
+            title: 'Download',
+            onPress: () => {
+              setShowPopup(false);
+              Linking.openURL(
+                'market://details?id=com.google.android.googlequicksearchbox',
+              );
+            },
+          },
+        ]}
+      />
+    </>
   );
 };
 

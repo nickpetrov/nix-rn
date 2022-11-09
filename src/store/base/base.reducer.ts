@@ -39,6 +39,8 @@ const initialState: BaseState = {
     volunteer: false,
   },
   db: null,
+  isVoiceDisclaimerVisible: false,
+  hideVoiceRecognitionDisclaimer: false,
 };
 
 export default (
@@ -71,6 +73,10 @@ export default (
       };
     case baseActionTypes.SET_DB:
       return {...state, db: action.payload};
+    case baseActionTypes.SET_HIDE_VOICE_DISCLAYMORE:
+      return {...state, hideVoiceRecognitionDisclaimer: action.payload};
+    case baseActionTypes.SET_IS_VOICE_DISCLAYMORE_VISIBLE:
+      return {...state, isVoiceDisclaimerVisible: action.payload};
     case baseActionTypes.CLEAR:
       return initialState;
     default:

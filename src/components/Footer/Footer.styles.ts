@@ -3,7 +3,7 @@ import {Colors} from 'constants/Colors';
 
 export const styles = StyleSheet.create({
   root: {
-    backgroundColor: '#444',
+    backgroundColor: Colors.Gray4,
   },
   footer: {
     height: 45,

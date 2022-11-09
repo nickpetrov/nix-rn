@@ -1,16 +1,23 @@
 // utils
 import React, {useState} from 'react';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 // components
-import {View, Text} from 'react-native';
+import {View, Text, Linking, TouchableOpacity} from 'react-native';
 import {NixButton} from 'components/NixButton';
 import VoiceInput from 'components/VoiceInput';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 // hooks
-import {useDispatch} from 'hooks/useRedux';
+import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
 import * as basketActions from 'store/basket/basket.actions';
+import {
+  setHideVoiceDisclaimer,
+  setInfoMessage,
+  setIsVoiceDisclaimerVisible,
+} from 'store/base/base.actions';
 
 // styles
 import {styles} from './NaturalForm.styles';
@@ -21,6 +28,7 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
+import {Colors} from 'constants/Colors';
 
 interface NaturalFormProps {
   navigation: NativeStackNavigationProp<
@@ -30,7 +38,12 @@ interface NaturalFormProps {
 }
 
 const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
+  const netInfo = useNetInfo();
+  const isVoiceDisclaimerVisible = useSelector(
+    state => state.base.isVoiceDisclaimerVisible,
+  );
   const [naturalQuery, setNaturalQuery] = useState('');
+  const [hideDisclaymore, setHideDisclaymore] = useState(false);
   const dispatch = useDispatch();
   const [randomPlaceholderIndex] = useState(Math.floor(Math.random() * 9));
 
@@ -48,15 +61,55 @@ const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
   const handleQueryChange = (text: string) => setNaturalQuery(text);
 
   const sendNaturalQuery = async () => {
-    dispatch(basketActions.addFoodToBasket(naturalQuery)).then(foodsToAdd => {
+    if (!netInfo.isConnected) {
       dispatch(
-        basketActions.mergeBasket({
-          meal_type: foodsToAdd[0].meal_type,
-          consumed_at: foodsToAdd[0].consumed_at,
+        setInfoMessage({
+          title: 'This feature is not available in offline mode',
+          btnText: 'Ok',
         }),
       );
-      navigation.replace(Routes.Basket);
-    });
+      return;
+    }
+    if (!naturalQuery) {
+      dispatch(
+        setInfoMessage({
+          title: 'Please enter some foods to continue',
+          btnText: 'Ok',
+        }),
+      );
+      return;
+    }
+    dispatch(basketActions.addFoodToBasket(naturalQuery))
+      .then(foodsToAdd => {
+        dispatch(
+          basketActions.mergeBasket({
+            meal_type: foodsToAdd[0].meal_type,
+            consumed_at: foodsToAdd[0].consumed_at,
+          }),
+        );
+        navigation.replace(Routes.Basket);
+      })
+      .catch(err => {
+        dispatch(
+          setInfoMessage({
+            title: err.data.message + ' for:',
+            text: naturalQuery,
+            btnText: 'Ok',
+          }),
+        );
+      });
+  };
+
+  const goToGooglePlayMarket = () => {
+    Linking.openURL(
+      'market://details?id=com.google.android.googlequicksearchbox',
+    );
+  };
+  const disclaymoreClose = () => {
+    dispatch(setIsVoiceDisclaimerVisible(false));
+    if (hideDisclaymore) {
+      dispatch(setHideVoiceDisclaimer(false));
+    }
   };
   return (
     <View style={styles.root}>
@@ -66,22 +119,66 @@ const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
           onChangeText={handleQueryChange}
           placeholder={placeholderText[randomPlaceholderIndex]}
           style={styles.voiceInput}
+          withDisclaymore
         />
         <View style={styles.btnContainer}>
           <NixButton
+            iconName="ios-add-circle-outline"
+            iosIcon
+            iconStyles={styles.addIcon}
             title="Add to Basket"
             type="primary"
             onPress={sendNaturalQuery}
           />
         </View>
-        <View>
-          <Text>How does Freeform work?</Text>
-          <Text>Type or speak freeform text in the box above.</Text>
-          <Text>
+        {isVoiceDisclaimerVisible && (
+          <View style={styles.disclaymore}>
+            <Text style={styles.disclaymoreText}>
+              * If you are experiencing trouble with the Google Voice
+              recognition service, please uninstall the Google Voice Search app
+              and{' '}
+              <Text
+                onPress={goToGooglePlayMarket}
+                style={styles.disclaymoreLink}>
+                click here
+              </Text>{' '}
+              to download the latest version from the Play Store.
+            </Text>
+            <View style={styles.disclaymoreFooter}>
+              <View style={styles.disclaymoreCheckbox}>
+                <BouncyCheckbox
+                  size={20}
+                  fillColor={Colors.Info}
+                  unfillColor="#FFFFFF"
+                  isChecked={hideDisclaymore}
+                  onPress={checked => {
+                    setHideDisclaymore(checked);
+                  }}
+                  textContainerStyle={{marginLeft: 5}}
+                  textStyle={{
+                    color: '#000',
+                    fontSize: 10,
+                    textDecorationLine: 'none',
+                  }}
+                  text="Do not show this message again."
+                />
+              </View>
+              <TouchableOpacity onPress={disclaymoreClose}>
+                <Text style={styles.disclaymoreClose}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+        <View style={styles.footer}>
+          <Text style={styles.footerTitle}>How does Freeform work?</Text>
+          <Text style={styles.footerText}>
+            Type or speak freeform text in the box above.
+          </Text>
+          <Text style={styles.footerText}>
             Freeform is fueled by our state-of-the-art Natural Language
             Processing technology to accurately determine what you ate.
           </Text>
-          <Text>
+          <Text style={styles.footerText}>
             After you add foods to the Basket, you will have a chance to review
             the foods, change the time you ate them, and change serving sizes
             before adding to your food log.

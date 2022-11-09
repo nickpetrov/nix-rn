@@ -7,6 +7,8 @@ export enum baseActionTypes {
   MERGE_REVIEW_CHECK = 'MERGE_REVIEW_CHECK',
   TOGGLE_GROCERY_AGENT_PREFERENCES = 'TOGGLE_GROCERY_AGENT_PREFERENCES',
   SET_DB = 'SET_DB',
+  SET_IS_VOICE_DISCLAYMORE_VISIBLE = 'SET_IS_VOICE_DISCLAYMORE_VISIBLE',
+  SET_HIDE_VOICE_DISCLAYMORE = 'SET_HIDE_VOICE_DISCLAYMORE',
   CLEAR = 'CLEAR',
 }
 
@@ -41,6 +43,8 @@ export type BaseState = {
     volunteer: boolean;
   };
   db: null | SQLite.SQLiteDatabase;
+  isVoiceDisclaimerVisible: boolean;
+  hideVoiceRecognitionDisclaimer: boolean;
 };
 
 export type BugReportType = {

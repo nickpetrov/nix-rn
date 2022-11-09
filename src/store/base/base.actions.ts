@@ -81,3 +81,15 @@ export const toggleGroceryAgentPreferences = () => {
     type: baseActionTypes.TOGGLE_GROCERY_AGENT_PREFERENCES,
   };
 };
+export const setIsVoiceDisclaimerVisible = (value: boolean) => {
+  return {
+    type: baseActionTypes.SET_IS_VOICE_DISCLAYMORE_VISIBLE,
+    payload: value,
+  };
+};
+export const setHideVoiceDisclaimer = (value: boolean) => {
+  return {
+    type: baseActionTypes.SET_HIDE_VOICE_DISCLAYMORE,
+    payload: value,
+  };
+};

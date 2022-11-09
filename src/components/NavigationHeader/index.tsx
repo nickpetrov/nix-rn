@@ -33,6 +33,7 @@ interface NavigationHeaderProps {
   headerRight?: React.ReactNode;
   headerLeft?: React.ReactNode;
   headerTitle?: string;
+  withAutoComplete?: boolean;
 }
 
 export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
@@ -43,6 +44,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   headerLeft,
   headerRight,
   headerTitle,
+  withAutoComplete,
 }) => {
   const searchValue = useSelector(state => state.autoComplete.searchValue);
   const dispatch = useDispatch();
@@ -72,7 +74,8 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
       {headerLeft ? headerLeft : back && <BackButton navigation={navigation} />}
       {route.name === Routes.Dashboard ||
       route.name === Routes.Autocomplete ||
-      route.name === Routes.Basket ? (
+      route.name === Routes.Basket ||
+      withAutoComplete ? (
         <View style={styles.autocompleteWrapper}>
           <TextInput
             ref={inputRef}

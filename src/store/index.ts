@@ -35,7 +35,12 @@ const baskePersist = {
 const basePersist = {
   key: 'base',
   storage: AsyncStorage,
-  whitelist: ['agreedToUsePhoto', 'groceryAgentPreferences', 'db'],
+  whitelist: [
+    'agreedToUsePhoto',
+    'groceryAgentPreferences',
+    'db',
+    'hideVoiceRecognitionDisclaimer',
+  ],
 };
 const connectedAppsPersist = {
   key: 'connectedApps',
