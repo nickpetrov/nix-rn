@@ -160,6 +160,7 @@ export interface FoodProps {
   locale: string;
   region: number;
   brand_name_item_name?: string;
+  brand_id?: string;
   brand_type?: number;
   uuid?: string;
   common_type?: string | null;
@@ -176,6 +177,8 @@ export interface FoodProps {
     original_input?: string;
     is_raw_food?: boolean;
   };
+  item_name?: string;
+  _id?: string;
 }
 
 export interface UserLogState {

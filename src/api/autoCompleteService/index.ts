@@ -1,7 +1,7 @@
 import apiClient from 'api';
 export interface InstantQueryDataProps {
   query: string;
-  brand_ids?: Array<number>;
+  brand_ids?: Array<string>;
   self?: boolean;
   common?: boolean;
   branded?: boolean;

@@ -5,7 +5,7 @@ import {batch} from 'react-redux';
 // components
 import {View, TextInput, Alert} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
-import FoodItem from './FoodItem';
+import RestaurantFoodItem from 'components/RestaurantFoodItem';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -103,9 +103,9 @@ const Grocery: React.FC<GroceryProps> = ({navigation}) => {
               data={groceries}
               keyExtractor={item => item.food_name}
               renderItem={({item}) => (
-                <FoodItem
+                <RestaurantFoodItem
                   onPress={() => addFoodToBasket(item)}
-                  foodObj={item}
+                  food={item}
                 />
               )}
               onEndReached={() => handleEndOfScroll()}

@@ -1,6 +1,6 @@
 import userLogService from 'api/userLogService';
 import {Dispatch} from 'redux';
-import {foodsActionTypes} from './foods.types';
+import {foodsActionTypes, TrackTabs} from './foods.types';
 import {RootState} from '../index';
 import baseService from 'api/baseService';
 import autoCompleteService, {
@@ -10,6 +10,8 @@ import moment from 'moment-timezone';
 import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {addExistFoodToBasket} from 'store/basket/basket.actions';
 import {grocery_photo_upload} from 'config/index';
+import nixService from 'api/nixService';
+import {FoodProps} from 'store/userLog/userLog.types';
 
 export const getFoodInfo = (beginDate: string, endDate: string) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
@@ -204,7 +206,7 @@ export const getRestorants = () => {
       if (result) {
         dispatch({
           type: foodsActionTypes.GET_RESTORANTS,
-          restaurants: result,
+          restaurants: result.filter(item => item.name),
         });
       }
     } catch (error) {
@@ -225,7 +227,7 @@ export const getRestorantsWithCalc = () => {
       if (result) {
         dispatch({
           type: foodsActionTypes.GET_RESTORANTS_WITH_CALC,
-          restaurantsWithCalc: result,
+          restaurantsWithCalc: result.filter(item => item.proper_brand_name),
         });
       }
     } catch (error) {
@@ -239,9 +241,9 @@ export const getRestorantsFoods = (data: InstantQueryDataProps) => {
       const response = await autoCompleteService.getTrackInstant(data);
 
       const result = response.data;
-      // if (__DEV__) {
-      //   console.log('restaurants foods', result.branded);
-      // }
+      if (__DEV__) {
+        console.log('restaurants foods', result.branded);
+      }
       if (result.branded && result.branded.length) {
         dispatch({
           type: foodsActionTypes.GET_RESTORANTS_FOODS,
@@ -251,5 +253,50 @@ export const getRestorantsFoods = (data: InstantQueryDataProps) => {
     } catch (error) {
       throw error;
     }
+  };
+};
+export const getNixRestorantsFoods = (
+  query: string,
+  brand_id: string,
+  start?: number,
+  step?: number,
+) => {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await nixService.getRestaurantFoods(
+        query,
+        brand_id,
+        start,
+        step,
+      );
+
+      const result = response.data;
+      if (__DEV__) {
+        console.log('nix restaurants foods', result);
+      }
+      if (result && result.hits && result.hits.length) {
+        dispatch({
+          type: foodsActionTypes.GET_NIX_RESTORANTS_FOODS,
+          restaurantFoods: result.hits.map(
+            (item: {fields: FoodProps}) => item.fields,
+          ),
+          nixRestaurantFoodsTotal: result.total,
+        });
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+};
+
+export const setTrackTab = (tab: TrackTabs) => {
+  return {
+    type: foodsActionTypes.SET_TRACK_TAB,
+    payload: tab,
+  };
+};
+export const clearRestaurantsFoods = () => {
+  return {
+    type: foodsActionTypes.CLEAR_RESTORANTS_FOODS,
   };
 };

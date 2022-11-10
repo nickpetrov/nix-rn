@@ -1,5 +1,5 @@
 //types
-import {foodsActionTypes, FoodsState} from './foods.types';
+import {foodsActionTypes, FoodsState, TrackTabs} from './foods.types';
 import {AnyAction} from 'redux';
 
 const initialState: FoodsState = {
@@ -16,6 +16,8 @@ const initialState: FoodsState = {
   restaurants: [],
   restaurantsWithCalc: [],
   restaurantFoods: [],
+  currentTrackTab: TrackTabs.FREEFORM,
+  nixRestaurantFoodsTotal: 0,
 };
 
 export default (
@@ -44,6 +46,16 @@ export default (
       return {...state, restaurantsWithCalc: action.restaurantsWithCalc};
     case foodsActionTypes.GET_RESTORANTS_FOODS:
       return {...state, restaurantFoods: action.restaurantFoods};
+    case foodsActionTypes.GET_NIX_RESTORANTS_FOODS:
+      return {
+        ...state,
+        restaurantFoods: state.restaurantFoods.concat(action.restaurantFoods),
+        nixRestaurantFoodsTotal: action.nixRestaurantFoodsTotal,
+      };
+    case foodsActionTypes.SET_TRACK_TAB:
+      return {...state, currentTrackTab: action.payload};
+    case foodsActionTypes.CLEAR_RESTORANTS_FOODS:
+      return {...state, restaurantFoods: [], nixRestaurantFoodsTotal: 0};
     case foodsActionTypes.CLEAR:
       return initialState;
     default:

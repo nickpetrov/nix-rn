@@ -213,6 +213,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
       header: (props: any) => (
         <NavigationHeader
           {...props}
+          withAutoComplete
           headerRight={
             <BasketButton
               icon="shopping-basket"

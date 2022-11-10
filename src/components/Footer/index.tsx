@@ -6,6 +6,7 @@ import {View, SafeAreaView, Image} from 'react-native';
 import FooterItem from './FooterItem';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {SvgUri} from 'react-native-svg';
+import MealBuilder from 'components/MealBuilder';
 
 // styles
 import {styles} from './Footer.styles';
@@ -28,6 +29,7 @@ interface FooterProps {
     StackNavigatorParamList,
     Routes.Dashboard | Routes.Stats | Routes.Suggested | Routes.TrackFoods
   >;
+  withMealBuilder?: boolean;
 }
 
 const Footer: React.FC<FooterProps> = props => {
@@ -39,6 +41,7 @@ const Footer: React.FC<FooterProps> = props => {
 
   return (
     <SafeAreaView style={[styles.root, props.style]}>
+      {props.withMealBuilder && <MealBuilder />}
       <View style={{...styles.footer, ...hideFooterStyle}}>
         <FooterItem
           title="Dashboard"

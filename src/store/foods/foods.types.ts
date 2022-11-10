@@ -11,6 +11,9 @@ export enum foodsActionTypes {
   GET_RESTORANTS = 'GET_RESTORANTS',
   GET_RESTORANTS_FOODS = 'GET_RESTORANTS_FOODS',
   GET_RESTORANTS_WITH_CALC = 'GET_RESTORANTS_WITH_CALC',
+  SET_TRACK_TAB = 'SET_TRACK_TAB',
+  GET_NIX_RESTORANTS_FOODS = 'GET_NIX_RESTORANTS_FOODS',
+  CLEAR_RESTORANTS_FOODS = 'CLEAR_RESTORANTS_FOODS',
   CLEAR = 'CLEAR',
 }
 
@@ -33,15 +36,22 @@ export interface RestaurantsProps {
   id: string;
   logo: string;
   name: string;
-  proper_brand_name: string;
-  brand_id: string;
-  brand_logo: string;
 }
 
-export interface RestaurantsWithCalcProps extends RestaurantsProps {
+export interface RestaurantsWithCalcProps {
+  brand_id: string;
   brand_keywords: string;
-  desktop_calculator_url: string;
-  mobile_calculator_url: string;
+  brand_logo: string;
+  desktop_calculator_url: string | null;
+  mobile_calculator_url: string | null;
+  proper_brand_name: string;
+}
+
+export enum TrackTabs {
+  FREEFORM = 'Freeform',
+  RESTAURANTS = 'Restaurants',
+  GROCERY = 'Grocery',
+  HISTORY = 'History',
 }
 
 export interface FoodsState {
@@ -54,4 +64,6 @@ export interface FoodsState {
   restaurants: Array<RestaurantsProps>;
   restaurantsWithCalc: Array<RestaurantsWithCalcProps>;
   restaurantFoods: Array<FoodProps>;
+  currentTrackTab: TrackTabs;
+  nixRestaurantFoodsTotal: number;
 }

@@ -6,14 +6,27 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    maxWidth: '100%',
+    justifyContent: 'space-between',
     padding: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#bbb',
+    borderBottomColor: Colors.LightGray,
+  },
+  left: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '80%',
+  },
+  right: {},
+  name: {
+    fontSize: 12,
+  },
+  brandName: {
+    fontSize: 11,
+    color: Colors.Gray9,
   },
   caloriesValue: {
     color: Colors.Primary,
-    fontSize: 16,
+    fontSize: 18,
   },
   foodThumb: {
     width: 40,
@@ -23,8 +36,10 @@ export const styles = StyleSheet.create({
   imageContainer: {
     marginRight: 8,
   },
-  textContainer: {
-    flexGrow: 10,
-    maxWidth: '75%',
+  textContainer: {},
+  textCal: {
+    textAlign: 'right',
+    fontSize: 12,
+    color: Colors.Gray8,
   },
 });

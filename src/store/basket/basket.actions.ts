@@ -79,13 +79,48 @@ export const addFoodToBasketById = (id: string) => {
 export const addExistFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
   return async (dispatch: Dispatch, useState: () => RootState) => {
     const timezone = useState().auth.userData.timezone;
-    const newFoods = foods.map(item => ({
-      ...item,
-      consumed_at:
-        moment().format('YYYY-MM-DDTHH:mm:ss') +
-        moment.tz(timezone).format('Z'),
-      basketId: uuidv4(),
-    }));
+    const newFoods = foods.map(item => {
+      if (!item.full_nutrients && !item.alt_measures) {
+        item = nixApiDataUtilites.convertV1ItemToTrackFood(item);
+        if (!item.alt_measures) {
+          if (item.serving_weight_grams) {
+            item.alt_measures = [
+              {
+                measure: item.serving_unit as string,
+                qty: item.serving_qty as number,
+                seq: null,
+                serving_weight: item.serving_weight_grams,
+              },
+              {
+                measure: 'g',
+                qty: 1,
+                seq: 104,
+                serving_weight: 1,
+              },
+            ];
+          }
+        }
+      } else {
+        delete item.id;
+      }
+
+      if (!item.serving_qty) {
+        item.serving_qty = 1;
+      } else {
+        item.serving_qty = +item.serving_qty.toFixed(2);
+      }
+
+      if (!item.serving_unit) {
+        item.serving_unit = 'Serving';
+      }
+      return {
+        ...item,
+        consumed_at:
+          moment().format('YYYY-MM-DDTHH:mm:ss') +
+          moment.tz(timezone).format('Z'),
+        basketId: uuidv4(),
+      };
+    });
     dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: newFoods});
     return newFoods;
   };

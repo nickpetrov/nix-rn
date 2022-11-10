@@ -115,8 +115,9 @@ const MainContent = () => {
         btn={{
           type: 'blue',
           title: infoMessage?.btnText ? infoMessage?.btnText : 'Close',
-        }}
-      />
+        }}>
+        {infoMessage?.child && infoMessage?.child}
+      </InfoModal>
       <ChooseModal
         modalVisible={showRatePopup}
         hideModal={() => setShowRatePopup(false)}

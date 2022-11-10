@@ -1,13 +1,21 @@
 // utils
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {FullOptions, Searcher} from 'fast-fuzzy';
 import {batch} from 'react-redux';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 
 // components
-import {View, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  SectionList,
+  SectionListData,
+  Linking,
+} from 'react-native';
 import RestaurantItem from './RestaurantItem/intex';
 import RestaurantFoods from './RestaurantFoods';
-import {FlatList} from 'react-native-gesture-handler';
+import {NixButton} from 'components/NixButton';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -15,18 +23,24 @@ import {useDebounce} from 'use-debounce';
 
 // actions
 import {getRestorants, getRestorantsWithCalc} from 'store/foods/foods.actions';
+import {setInfoMessage} from 'store/base/base.actions';
+
+// services
+import baseService from 'api/baseService';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-
-// constants
-import {Routes} from 'navigation/Routes';
-import {styles} from './Restaurants.styles';
 import {
   RestaurantsProps,
   RestaurantsWithCalcProps,
 } from 'store/foods/foods.types';
+
+// constants
+import {Routes} from 'navigation/Routes';
+
+// styles
+import {styles} from './Restaurants.styles';
 
 interface RestaurantsComponentProps {
   navigation: NativeStackNavigationProp<
@@ -35,23 +49,61 @@ interface RestaurantsComponentProps {
   >;
 }
 
+enum RestorantTypes {
+  RESTORANTS = 'restaurants',
+  RESTORANTS_WITH_CALC = 'restaurantsWithCalc',
+}
+
 const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
+  const netInfo = useNetInfo();
   const dispatch = useDispatch();
   const {restaurants, restaurantsWithCalc} = useSelector(state => state.foods);
+  const [limit, setLimit] = useState(50);
   const [restaurantQuery, setRestaurantQuery] = useState('');
-  const [value] = useDebounce(restaurantQuery, 1000);
+  const [searchValue] = useDebounce(restaurantQuery, 1000);
   const [restaurantsList, setRestaurantsList] = useState<
-    Array<RestaurantsProps | RestaurantsWithCalcProps>
+    Array<RestaurantsProps>
+  >([]);
+  const [restaurantsListWithCalc, setRestaurantsListWithCalc] = useState<
+    Array<RestaurantsWithCalcProps>
   >([]);
   const [filteredRestaurantsList, setFilteredRestaurantsList] = useState<
     Array<RestaurantsProps>
   >([]);
+  const [filteredRestaurantsListWithCalc, setFilteredRestaurantsListWithCalc] =
+    useState<Array<RestaurantsWithCalcProps>>([]);
 
   const [restaurantSearcher, setRestaurantSearcher] =
     useState<Searcher<RestaurantsProps, FullOptions<RestaurantsProps>>>();
+  const [restaurantWithCalcSearcher, setRestaurantWithCalcSearcher] =
+    useState<
+      Searcher<RestaurantsWithCalcProps, FullOptions<RestaurantsWithCalcProps>>
+    >();
 
-  const [selectedRestaurant, setSelectedRestaurant] =
-    useState<RestaurantsProps>();
+  const sections = useMemo(() => {
+    return [
+      {
+        key: RestorantTypes.RESTORANTS_WITH_CALC,
+        data: filteredRestaurantsListWithCalc.filter(
+          item => !!item.mobile_calculator_url,
+        ),
+      },
+      {
+        key: RestorantTypes.RESTORANTS,
+        data: filteredRestaurantsList.slice(0, limit),
+      },
+    ] as readonly SectionListData<
+      RestaurantsProps | RestaurantsWithCalcProps,
+      {
+        key: RestorantTypes;
+        data: RestaurantsProps[] | RestaurantsWithCalcProps[];
+      }
+    >[];
+  }, [filteredRestaurantsList, filteredRestaurantsListWithCalc, limit]);
+
+  const [selectedRestaurant, setSelectedRestaurant] = useState<
+    RestaurantsProps | RestaurantsWithCalcProps | null
+  >(null);
 
   useEffect(() => {
     batch(() => {
@@ -61,14 +113,10 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    setRestaurantsList(prev => {
-      const newArr = prev.concat(restaurants).sort(a => {
-        let textA = a.name
-          ? a.name.toUpperCase()
-          : a.proper_brand_name.toUpperCase();
-        let textB = a.name
-          ? a.name.toUpperCase()
-          : a.proper_brand_name.toUpperCase();
+    setRestaurantsList(() => {
+      const newArr = restaurants.sort((a, b) => {
+        let textA = a.name.toUpperCase();
+        let textB = b.name.toUpperCase();
         return textA < textB ? -1 : textA > textB ? 1 : 0;
       });
       return newArr;
@@ -76,75 +124,241 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
   }, [restaurants]);
 
   useEffect(() => {
-    setRestaurantsList(prev => {
-      const newArr = prev.concat(restaurantsWithCalc).sort(a => {
-        let textA = a.name
-          ? a.name.toUpperCase()
-          : a.proper_brand_name.toUpperCase();
-        let textB = a.name
-          ? a.name.toUpperCase()
-          : a.proper_brand_name.toUpperCase();
+    setRestaurantsListWithCalc(() => {
+      const newArr = restaurantsWithCalc.sort((a, b) => {
+        let textA = a.proper_brand_name.toUpperCase();
+        let textB = b.proper_brand_name.toUpperCase();
         return textA < textB ? -1 : textA > textB ? 1 : 0;
       });
       return newArr;
     });
   }, [restaurantsWithCalc]);
 
+  // searcher for restaurantsList
   useEffect(() => {
     const filteredList =
-      restaurantSearcher && restaurantsList.length && value.length
-        ? restaurantSearcher.search(value)
+      restaurantSearcher && restaurantsList.length && searchValue.length
+        ? restaurantSearcher.search(searchValue)
         : restaurantsList;
     setFilteredRestaurantsList(filteredList);
-  }, [value, restaurantSearcher, restaurantsList]);
+  }, [searchValue, restaurantSearcher, restaurantsList]);
 
   useEffect(() => {
-    setFilteredRestaurantsList(restaurantsList);
+    // setFilteredRestaurantsList(restaurantsList);
     setRestaurantSearcher(
       new Searcher(restaurantsList, {
-        keySelector: obj => obj?.proper_brand_name || obj?.name,
+        keySelector: obj => obj.name,
         threshold: 1,
       }),
     );
   }, [restaurantsList]);
 
+  // searcher for restaurantsListWithCalc
+  useEffect(() => {
+    const filteredList =
+      restaurantWithCalcSearcher &&
+      restaurantsListWithCalc.length &&
+      searchValue.length
+        ? restaurantWithCalcSearcher.search(searchValue)
+        : restaurantsListWithCalc;
+    setFilteredRestaurantsListWithCalc(filteredList);
+  }, [searchValue, restaurantWithCalcSearcher, restaurantsListWithCalc]);
+
+  useEffect(() => {
+    // setFilteredRestaurantsListWithCalc(restaurantsListWithCalc);
+    setRestaurantWithCalcSearcher(
+      new Searcher(restaurantsListWithCalc, {
+        keySelector: obj => obj.proper_brand_name,
+        threshold: 1,
+      }),
+    );
+  }, [restaurantsListWithCalc]);
+
+  useEffect(() => {
+    NetInfo.fetch().then(state => {
+      if (state.isConnected == false) {
+        dispatch(
+          setInfoMessage({
+            title: 'This feature is not available in offline mode',
+            btnText: 'Ok',
+          }),
+        );
+      }
+    });
+  }, [dispatch, netInfo]);
+
+  useEffect(
+    () =>
+      navigation.addListener('beforeRemove', e => {
+        if (!selectedRestaurant) {
+          // If we don't have unsaved changes, then we don't need to do anything
+          return;
+        }
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        // Prompt the user before leaving the screen
+        setSelectedRestaurant(null);
+      }),
+    [navigation, selectedRestaurant],
+  );
+
   const showRestaurant = (
     restaurant: RestaurantsProps | RestaurantsWithCalcProps,
   ) => {
+    if (!netInfo.isConnected) {
+      dispatch(
+        setInfoMessage({
+          title: 'This feature is not available in offline mode',
+          btnText: 'Ok',
+        }),
+      );
+      return;
+    }
     setSelectedRestaurant(restaurant);
   };
 
+  const requestRestaurant = () => {
+    const bugReportData = {
+      feedback: `Request missing restaurant. Restaurant name: '+${searchValue}+'.`,
+      type: 2,
+    };
+    baseService
+      .sendBugReport(bugReportData)
+      .then(() => {
+        setRestaurantQuery('');
+        dispatch(
+          setInfoMessage({
+            title: 'Thank you!',
+            text: 'Your feedback has been queued up with our registered dietitian team, and will be reviewed shortly.',
+          }),
+        );
+      })
+      .catch(() => {
+        dispatch(
+          setInfoMessage({
+            title: 'Error',
+            child: (
+              <Text>
+                'There was an error with your submission, please email us at{' '}
+                <Text
+                  style={styles.link}
+                  onPress={() =>
+                    Linking.openURL('mailto:support@nutritionix.com')
+                  }>
+                  support@nutritionix.com
+                </Text>{' '}
+                to report this problem.'
+              </Text>
+            ),
+          }),
+        );
+      });
+  };
   return (
     <View style={styles.root}>
       {!selectedRestaurant ? (
-        <View style={styles.container}>
-          <>
-            <View>
-              <TextInput
-                placeholder={'Search All Restaurans'}
-                style={styles.input}
-                value={restaurantQuery}
-                onChangeText={text => setRestaurantQuery(text)}
-              />
-            </View>
-            <View>
-              <FlatList
-                data={filteredRestaurantsList}
-                extraData={value}
-                keyExtractor={item => item.id || item.brand_id}
-                renderItem={({item}) => (
-                  <RestaurantItem
-                    isWithCalc={!!item.brand_id}
-                    name={item.name || item.proper_brand_name}
-                    logo={item.logo || item.brand_logo}
-                    onPress={() => {
-                      showRestaurant(item);
-                    }}
-                  />
-                )}
-              />
-            </View>
-          </>
+        <View>
+          <View style={styles.container}>
+            <TextInput
+              placeholder={'Search All Restaurans'}
+              style={styles.input}
+              value={restaurantQuery}
+              onChangeText={text => setRestaurantQuery(text)}
+            />
+          </View>
+          <View>
+            <SectionList
+              listKey="restaurantsList"
+              sections={sections}
+              keyExtractor={item =>
+                (item as RestaurantsProps)?.id ||
+                (item as RestaurantsWithCalcProps)?.brand_id
+              }
+              data={filteredRestaurantsList}
+              extraData={searchValue}
+              renderSectionHeader={({section}) => {
+                if (
+                  section.key === RestorantTypes.RESTORANTS &&
+                  section.data.length
+                ) {
+                  return (
+                    <View style={styles.sectionHeader}>
+                      <Text style={styles.sectionHeaderTitle}>
+                        Additional restaurants:
+                      </Text>
+                    </View>
+                  );
+                } else if (section.data.length) {
+                  return (
+                    <View style={styles.sectionHeader}>
+                      <Text style={styles.sectionHeaderTitle}>
+                        Restaurants with Nutrition Calculator available:
+                      </Text>
+                    </View>
+                  );
+                } else {
+                  return null;
+                }
+              }}
+              renderItem={({item, section}) => {
+                if (section.key === RestorantTypes.RESTORANTS) {
+                  return (
+                    <RestaurantItem
+                      isWithCalc={false}
+                      name={(item as RestaurantsProps).name}
+                      logo={(item as RestaurantsProps).logo}
+                      onPress={() => {
+                        showRestaurant(item);
+                      }}
+                    />
+                  );
+                } else if (
+                  section.key === RestorantTypes.RESTORANTS_WITH_CALC
+                ) {
+                  return (
+                    <RestaurantItem
+                      isWithCalc={true}
+                      name={
+                        (item as RestaurantsWithCalcProps).proper_brand_name
+                      }
+                      logo={(item as RestaurantsWithCalcProps).brand_logo}
+                      onPress={() => {
+                        showRestaurant(item);
+                      }}
+                    />
+                  );
+                } else {
+                  return null;
+                }
+              }}
+              renderSectionFooter={({section}) => {
+                if (
+                  section.key === RestorantTypes.RESTORANTS &&
+                  !section.data.length
+                ) {
+                  return (
+                    <View style={styles.emptyContainer}>
+                      <View style={styles.empty}>
+                        <Text style={styles.emptyText}>Nothing found.</Text>
+                        <NixButton
+                          title="Submit a missing restaurant"
+                          type="primary"
+                          onPress={requestRestaurant}
+                        />
+                      </View>
+                    </View>
+                  );
+                } else {
+                  return null;
+                }
+              }}
+              onEndReached={() => {
+                if (restaurants.length < limit) {
+                  setLimit(prev => prev + 50);
+                }
+              }}
+            />
+          </View>
         </View>
       ) : (
         <RestaurantFoods

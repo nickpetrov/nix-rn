@@ -5,7 +5,7 @@ import {batch} from 'react-redux';
 // components
 import {View, TextInput} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
-import FoodItem from '../Grocery/FoodItem';
+import FoodItem from '../../RestaurantFoodItem';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';

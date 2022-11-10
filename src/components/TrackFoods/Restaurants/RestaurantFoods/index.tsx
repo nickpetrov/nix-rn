@@ -12,8 +12,7 @@ import {
   FlatList,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FoodItem from '../../Grocery/FoodItem';
-import {WebView} from 'react-native-webview';
+import RestaurantFoodItem from 'components/RestaurantFoodItem';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -25,6 +24,8 @@ import nixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 // actions
 import * as basketActions from 'store/basket/basket.actions';
 import {
+  clearRestaurantsFoods,
+  getNixRestorantsFoods,
   getRestorantsFoods,
   // getRestorantsFoodsFromOldApi,
 } from 'store/foods/foods.actions';
@@ -39,66 +40,88 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './RestaurantFoods.styles';
+import {
+  RestaurantsProps,
+  RestaurantsWithCalcProps,
+} from 'store/foods/foods.types';
+import {NixButton} from 'components/NixButton';
+import baseService from 'api/baseService';
+import {Linking} from 'react-native';
+import {setInfoMessage} from 'store/base/base.actions';
 
 interface RestaurantFoodsProps {
-  restaurant: any;
+  restaurant: RestaurantsProps | RestaurantsWithCalcProps;
   navigation: NativeStackNavigationProp<
     StackNavigatorParamList,
     Routes.TrackFoods
   >;
 }
 
-const RestaurantFoods: React.FC<RestaurantFoodsProps> = props => {
+const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
+  restaurant,
+  navigation,
+}) => {
   const dispatch = useDispatch();
-  const brand_id = props.restaurant.id || props.restaurant.brand_id;
-  const calcUrl = props.restaurant.mobile_calculator_url || '';
+  const brand_id =
+    (restaurant as RestaurantsProps).id ||
+    (restaurant as RestaurantsWithCalcProps).brand_id;
+  const calcUrl =
+    (restaurant as RestaurantsWithCalcProps).mobile_calculator_url || '';
   const restaurantFoods = useSelector(state => state.foods.restaurantFoods);
+  const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
-  const [value] = useDebounce(query, 1000);
-  const [showCalculator, setShowCalculator] = useState(false);
-  const brandName = props.restaurant.name || props.restaurant.proper_brand_name;
+  const maxHits = useSelector(state => state.foods.nixRestaurantFoodsTotal);
+  const limit = 20;
+  const [offset, setOffset] = useState(0);
+  const [searchValue] = useDebounce(query, 1000);
+  const brandName =
+    (restaurant as RestaurantsProps).name ||
+    (restaurant as RestaurantsWithCalcProps).proper_brand_name;
 
   useEffect(() => {
-    dispatch(
-      getRestorantsFoods({
-        query: '',
-        brand_ids: [brand_id],
-        self: false,
-        common: false,
-        detailed: true,
-        branded_type: 1,
-      }),
-    );
+    setLoading(true);
+    dispatch(getNixRestorantsFoods('', brand_id))
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(err => {
+        setLoading(false);
+        console.log(err);
+      });
+    return () => {
+      dispatch(clearRestaurantsFoods());
+    };
   }, [dispatch, brand_id]);
 
   useEffect(() => {
-    if (value.length > 1) {
+    if (searchValue.length > 1) {
       dispatch(
         getRestorantsFoods({
-          query: value,
+          query: searchValue,
           brand_ids: [brand_id],
           self: false,
           common: false,
           detailed: true,
           branded_type: 1,
         }),
-      );
+      ).catch(err => console.log(err));
     }
-  }, [dispatch, value, brand_id]);
+  }, [dispatch, searchValue, brand_id]);
 
   const addFoodToBasket = (food: FoodProps) => {
-    let aggregatedFood = food;
-
-    batch(() => {
-      dispatch(
-        basketActions.mergeBasket({
-          meal_type: aggregatedFood.meal_type,
-          consumed_at: aggregatedFood.consumed_at as string,
-        }),
-      );
-      dispatch(basketActions.addExistFoodToBasket([aggregatedFood]));
-    });
-    props.navigation.replace(Routes.Basket);
+    if (food.nix_item_id) {
+      dispatch(basketActions.addBrandedFoodToBasket(food.nix_item_id));
+    } else {
+      batch(() => {
+        dispatch(
+          basketActions.mergeBasket({
+            meal_type: food.meal_type,
+            consumed_at: food.consumed_at as string,
+          }),
+        );
+        dispatch(basketActions.addExistFoodToBasket([food]));
+      });
+    }
   };
 
   const handleMessageFromWebView = (data: any) => {
@@ -115,68 +138,155 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = props => {
     }
   };
 
+  const requestItem = () => {
+    const bugReportData = {
+      feedback: `Request missing item. Restaurant name: '+${brandName}+'. Item name: '+${searchValue}+'.`,
+      type: 2,
+    };
+    baseService
+      .sendBugReport(bugReportData)
+      .then(() => {
+        setQuery('');
+        dispatch(
+          setInfoMessage({
+            title: 'Thank you!',
+            text: 'Your feedback has been queued up with our registered dietitian team, and will be reviewed shortly.',
+          }),
+        );
+      })
+      .catch(() => {
+        dispatch(
+          setInfoMessage({
+            title: 'Error',
+            child: (
+              <Text>
+                'There was an error with your submission, please email us at{' '}
+                <Text
+                  style={styles.link}
+                  onPress={() =>
+                    Linking.openURL('mailto:support@nutritionix.com')
+                  }>
+                  support@nutritionix.com
+                </Text>{' '}
+                to report this problem.'
+              </Text>
+            ),
+          }),
+        );
+      });
+  };
+
   return (
     <View style={styles.root}>
-      {!showCalculator ? (
-        <View style={styles.container}>
-          <View>
-            <TextInput
-              placeholder={`Search ${brandName} Foods`}
-              style={styles.input}
-              value={query}
-              onChangeText={text => setQuery(text)}
-            />
-          </View>
-          {calcUrl.length ? (
-            <TouchableWithoutFeedback onPress={() => setShowCalculator(true)}>
-              <View style={styles.content}>
-                <Image
-                  style={styles.contentImage}
-                  source={{uri: props.restaurant.brand_logo}}
-                  resizeMode="contain"
-                />
-                <View style={styles.contentContainer}>
-                  <Text style={styles.contentInput}>Launch</Text>
-                  <Text style={styles.contentInput}>Nutrition</Text>
-                  <Text style={styles.contentInput}>Calculator</Text>
-                </View>
-                <FontAwesome
-                  name="calculator"
-                  size={40}
-                  color="#6ca6e8"
-                  style={styles.icon}
-                />
-                <FontAwesome
-                  name="angle-right"
-                  size={30}
-                  color="#a1a1a1"
-                  style={styles.icon}
-                />
-              </View>
-            </TouchableWithoutFeedback>
-          ) : null}
-          <View>
-            <FlatList
-              data={restaurantFoods}
-              keyExtractor={item => item.food_name}
-              renderItem={({item}) => (
-                <FoodItem
-                  onPress={() => addFoodToBasket(item)}
-                  foodObj={item}
-                />
-              )}
-            />
-          </View>
-        </View>
-      ) : (
-        <View style={{flex: 1}}>
-          <WebView
-            onMessage={data => handleMessageFromWebView(data)}
-            // style={{ width: '100%' }}
-            source={{uri: calcUrl + '?embed'}}
+      <View style={styles.container}>
+        <View>
+          <TextInput
+            placeholder={`Search ${brandName} Foods`}
+            style={styles.input}
+            value={query}
+            onChangeText={text => setQuery(text)}
           />
         </View>
-      )}
+        <FlatList
+          data={[]}
+          renderItem={() => null}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={() => {
+            return (
+              <>
+                {calcUrl.length ? (
+                  <TouchableWithoutFeedback
+                    onPress={() =>
+                      navigation.navigate(Routes.WebView, {
+                        title: brandName,
+                        close: true,
+                        withFooter: true,
+                        url: calcUrl + '?embed',
+                        onMessage: data => handleMessageFromWebView(data),
+                      })
+                    }>
+                    <View style={styles.content}>
+                      <Image
+                        style={styles.contentImage}
+                        source={{
+                          uri:
+                            (restaurant as RestaurantsWithCalcProps)
+                              .brand_logo || '',
+                        }}
+                        resizeMode="contain"
+                      />
+                      <View style={styles.contentContainer}>
+                        <Text style={styles.contentInput}>Launch</Text>
+                        <Text style={styles.contentInput}>Nutrition</Text>
+                        <Text style={styles.contentInput}>Calculator</Text>
+                      </View>
+                      <FontAwesome
+                        name="calculator"
+                        size={40}
+                        color="#6ca6e8"
+                        style={styles.icon}
+                      />
+                      <FontAwesome
+                        name="chevron-right"
+                        size={30}
+                        color="#52a256"
+                      />
+                    </View>
+                  </TouchableWithoutFeedback>
+                ) : null}
+              </>
+            );
+          }}
+          ListFooterComponent={() => {
+            return (
+              <View style={styles.restaurants}>
+                <FlatList
+                  data={restaurantFoods}
+                  showsVerticalScrollIndicator={false}
+                  keyExtractor={(item, index) =>
+                    item._id || item.item_name || `${item.brand_name}-${index}`
+                  }
+                  renderItem={({item}) => (
+                    <RestaurantFoodItem
+                      onPress={() => addFoodToBasket(item)}
+                      food={item}
+                    />
+                  )}
+                  ListEmptyComponent={() => (
+                    <>
+                      {!loading ? (
+                        <View style={styles.emptyContainer}>
+                          <View style={styles.empty}>
+                            <Text style={styles.emptyText}>Nothing found.</Text>
+                            <NixButton
+                              title={`Request a missing item for ${brandName}`}
+                              type="primary"
+                              onPress={requestItem}
+                            />
+                          </View>
+                        </View>
+                      ) : null}
+                    </>
+                  )}
+                  onEndReached={() => {
+                    if (!searchValue.length && offset + limit < maxHits) {
+                      setOffset(prev => prev + limit);
+                      dispatch(
+                        getNixRestorantsFoods(
+                          '',
+                          brand_id,
+                          offset + limit,
+                          limit,
+                        ),
+                      ).catch(err => console.log(err));
+                    }
+                  }}
+                />
+              </View>
+            );
+          }}
+        />
+      </View>
     </View>
   );
 };

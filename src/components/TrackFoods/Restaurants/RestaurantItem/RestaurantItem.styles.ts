@@ -1,22 +1,24 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   root: {
     flexDirection: 'row',
-    padding: 2,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderBottomWidth: 1,
-    borderBottomColor: '#666',
+    borderBottomColor: Colors.LightGray,
     alignItems: 'center',
   },
   image: {
-    width: 40,
-    height: 40,
-    margin: 5,
+    width: 30,
+    height: 30,
+    marginRight: 5,
   },
   text: {
     flex: 1,
   },
   icon: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
   },
 });

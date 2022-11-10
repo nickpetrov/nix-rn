@@ -72,10 +72,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   return (
     <View style={styles.header}>
       {headerLeft ? headerLeft : back && <BackButton navigation={navigation} />}
-      {route.name === Routes.Dashboard ||
-      route.name === Routes.Autocomplete ||
-      route.name === Routes.Basket ||
-      withAutoComplete ? (
+      {withAutoComplete && (
         <View style={styles.autocompleteWrapper}>
           <TextInput
             ref={inputRef}
@@ -106,7 +103,8 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
             />
           ) : null}
         </View>
-      ) : (
+      )}
+      {!withAutoComplete && (
         <View style={styles.titleContainer}>
           <Text style={[styles.title, smallSize]}>
             {headerTitle ? headerTitle : title}

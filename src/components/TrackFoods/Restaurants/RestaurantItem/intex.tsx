@@ -4,6 +4,7 @@ import React from 'react';
 // components
 import {View, Text, TouchableWithoutFeedback, Image} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // styles
 import {styles} from './RestaurantItem.styles';
@@ -28,16 +29,16 @@ const RestaurantItem: React.FC<RestaurantItemProps> = props => {
         {props.isWithCalc ? (
           <FontAwesome
             name="calculator"
-            size={30}
+            size={20}
             color="#6ca6e8"
             style={styles.icon}
           />
         ) : null}
-        <FontAwesome
-          name="angle-right"
-          size={30}
-          color="#a1a1a1"
+        <Ionicons
           style={styles.icon}
+          name="ios-chevron-forward"
+          color="#a1a1a1"
+          size={25}
         />
       </View>
     </TouchableWithoutFeedback>

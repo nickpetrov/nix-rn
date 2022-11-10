@@ -202,6 +202,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       header: (props: any) => (
         <NavigationHeader
           {...props}
+          withAutoComplete
           headerRight={
             <BasketButton
               icon="shopping-basket"

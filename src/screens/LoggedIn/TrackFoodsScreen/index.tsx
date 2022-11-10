@@ -1,5 +1,5 @@
 // utils
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useLayoutEffect, useEffect} from 'react';
 
 // components
 import {View, Text, TouchableWithoutFeedback} from 'react-native';
@@ -10,10 +10,12 @@ import Restaurants from 'components/TrackFoods/Restaurants/intex';
 import History from 'components/TrackFoods/History';
 import BasketButton from 'components/BasketButton';
 import {NavigationHeader} from 'components/NavigationHeader';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // hooks
-import {useSelector} from 'hooks/useRedux';
+import {useSelector, useDispatch} from 'hooks/useRedux';
+
+// actions
+import {setTrackTab} from 'store/foods/foods.actions';
 
 // styles
 import {styles} from './TrackFoodsScreen.styles';
@@ -21,13 +23,10 @@ import {styles} from './TrackFoodsScreen.styles';
 // constants
 import {Routes} from 'navigation/Routes';
 
-// helpres
-import NixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
-
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {FoodProps, NutrientProps} from 'store/userLog/userLog.types';
+import {TrackTabs} from 'store/foods/foods.types';
 
 interface TrackFoodsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -39,25 +38,12 @@ interface TrackFoodsScreenProps {
 export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
   navigation,
 }) => {
-  const basketFoods = useSelector(state => state.basket.foods);
-  const [activeTab, setActiveTab] = useState('Freeform');
-  let totalCalories = 0;
-  basketFoods.map((food: FoodProps) => {
-    food = {
-      ...food,
-      ...NixHelpers.convertFullNutrientsToNfAttributes(food?.full_nutrients),
-    };
+  const dispatch = useDispatch();
+  const activeTab = useSelector(state => state.foods.currentTrackTab);
 
-    totalCalories +=
-      food.nf_calories ||
-      food?.full_nutrients?.filter(
-        (item: NutrientProps) => item.attr_id === 208,
-      )[0].value;
-  });
-
-  const changeActiveTab = (tabName: string) => {
+  const changeActiveTab = (tabName: TrackTabs) => {
     if (activeTab !== tabName) {
-      setActiveTab(tabName);
+      dispatch(setTrackTab(tabName));
     }
   };
 
@@ -67,14 +53,20 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
 
   const getHeaderTitle = (tabToCheck: string) => {
     switch (tabToCheck) {
-      case 'Restaurants':
+      case TrackTabs.RESTAURANTS:
         return 'Restaurants';
-      case 'Grocery':
+      case TrackTabs.GROCERY:
         return 'Grocery brands';
       default:
         return null;
     }
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(setTrackTab(TrackTabs.FREEFORM));
+    };
+  }, [dispatch]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -89,7 +81,9 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
             />
           }
           headerTitle={getHeaderTitle(activeTab)}
-          withAutoComplete={activeTab === 'Freeform' || activeTab === 'History'}
+          withAutoComplete={
+            activeTab === TrackTabs.FREEFORM || activeTab === TrackTabs.HISTORY
+          }
         />
       ),
     });
@@ -99,89 +93,39 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
     <View style={styles.layout}>
       <View style={styles.container}>
         <View style={styles.tabs}>
-          <TouchableWithoutFeedback
-            onPress={() => {
-              changeActiveTab('Freeform');
-            }}>
-            <View
-              style={{
-                ...styles.tab,
-                borderBottomWidth: isActiveTab('Freeform') ? 2 : 0,
-                opacity: isActiveTab('Freeform') ? 1 : 0.5,
+          {Object.values(TrackTabs).map(item => (
+            <TouchableWithoutFeedback
+              key={item}
+              onPress={() => {
+                changeActiveTab(item);
               }}>
-              <Text style={styles.tabText}>Freeform</Text>
-            </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPress={() => {
-              changeActiveTab('Restaurants');
-            }}>
-            <View
-              style={{
-                ...styles.tab,
-                borderBottomWidth: isActiveTab('Restaurants') ? 2 : 0,
-                opacity: isActiveTab('Restaurants') ? 1 : 0.5,
-              }}>
-              <Text style={styles.tabText}>Restaurants</Text>
-            </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPress={() => {
-              changeActiveTab('Grocery');
-            }}>
-            <View
-              style={{
-                ...styles.tab,
-                borderBottomWidth: isActiveTab('Grocery') ? 2 : 0,
-                opacity: isActiveTab('Grocery') ? 1 : 0.5,
-              }}>
-              <Text style={styles.tabText}>Grocery</Text>
-            </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPress={() => {
-              changeActiveTab('History');
-            }}>
-            <View
-              style={{
-                ...styles.tab,
-                borderBottomWidth: isActiveTab('History') ? 2 : 0,
-                opacity: isActiveTab('History') ? 1 : 0.5,
-              }}>
-              <Text style={styles.tabText}>History</Text>
-            </View>
-          </TouchableWithoutFeedback>
+              <View
+                style={{
+                  ...styles.tab,
+                  borderBottomWidth: isActiveTab(item) ? 2 : 0,
+                  opacity: isActiveTab(item) ? 1 : 0.5,
+                }}>
+                <Text style={styles.tabText}>{item}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          ))}
         </View>
-        {activeTab === 'Freeform' ? (
+        {activeTab === TrackTabs.FREEFORM ? (
           <NaturalForm navigation={navigation} />
-        ) : activeTab === 'Restaurants' ? (
+        ) : activeTab === TrackTabs.RESTAURANTS ? (
           <Restaurants navigation={navigation} />
-        ) : activeTab === 'Grocery' ? (
+        ) : activeTab === TrackTabs.GROCERY ? (
           <Grocery navigation={navigation} />
         ) : (
           <History navigation={navigation} />
         )}
       </View>
-      {basketFoods.length && (
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate(Routes.Basket)}>
-          <View style={styles.mealBuilder}>
-            <Text style={styles.mealBuilderTilte}>
-              Review{' '}
-              <Text style={styles.mealBuilderQty}>{basketFoods.length}</Text>{' '}
-              Foods
-            </Text>
-            <View style={styles.mealBuilderRight}>
-              <Text style={styles.mealBuilderQty}>
-                {totalCalories.toFixed(0)}
-                <Text style={styles.mealBuilderCal}>cal</Text>
-              </Text>
-              <Ionicons name="chevron-forward" color="#fff" size={30} />
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      )}
-      <Footer hide={false} navigation={navigation} style={styles.footer} />
+      <Footer
+        hide={false}
+        navigation={navigation}
+        style={styles.footer}
+        withMealBuilder
+      />
     </View>
   );
 };
