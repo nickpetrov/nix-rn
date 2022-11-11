@@ -154,19 +154,22 @@ export const getSuggestedFoods = () => {
   };
 };
 
-export const getGroceries = (data: InstantQueryDataProps) => {
+export const getGroceries = (query: string, start?: number, end?: number) => {
   return async (dispatch: Dispatch) => {
     try {
-      const response = await autoCompleteService.getTrackInstant(data);
+      const response = await nixService.getgetGroceryFoods(query, start, end);
 
       const result = response.data;
       // if (__DEV__) {
       //   console.log('groceries', result.branded);
       // }
-      if (result.branded) {
+      if (result) {
         dispatch({
           type: foodsActionTypes.GET_GROCERIES,
-          groceries: result.branded,
+          groceries: result.hits.map(
+            (item: {fields: FoodProps}) => item.fields,
+          ),
+          addValues: !!start,
         });
       }
     } catch (error) {
@@ -298,6 +301,11 @@ export const setTrackTab = (tab: TrackTabs) => {
 export const clearRestaurantsFoods = () => {
   return {
     type: foodsActionTypes.CLEAR_RESTORANTS_FOODS,
+  };
+};
+export const clearGroceryFoods = () => {
+  return {
+    type: foodsActionTypes.CLEAR_GROCERY_FOODS,
   };
 };
 export const setSearchQueryRestaurant = (query: string) => {

@@ -18,7 +18,7 @@ interface GoBackModalProps {
 const GoBackModal: React.FC<GoBackModalProps> = props => {
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={props.show}
       onRequestClose={() => {

@@ -39,7 +39,12 @@ export default (
     case foodsActionTypes.GET_ALL_SUGGESTED_FOOD:
       return {...state, suggested_foods: action.suggested_foods};
     case foodsActionTypes.GET_GROCERIES:
-      return {...state, groceries: action.groceries};
+      return {
+        ...state,
+        groceries: action.addValues
+          ? state.groceries.concat(action.groceries)
+          : action.groceries,
+      };
     case foodsActionTypes.GET_HISTORY_FOODS:
       return {...state, historyFoods: action.historyFoods};
     case foodsActionTypes.GET_RESTORANTS:
@@ -58,6 +63,8 @@ export default (
       return {...state, currentTrackTab: action.payload};
     case foodsActionTypes.CLEAR_RESTORANTS_FOODS:
       return {...state, restaurantFoods: [], nixRestaurantFoodsTotal: 0};
+    case foodsActionTypes.CLEAR_GROCERY_FOODS:
+      return {...state, groceries: []};
     case foodsActionTypes.SET_SELECTED_RESTAURANT:
       return {...state, selectedRestaurant: action.payload};
     case foodsActionTypes.SET_SEARCH_QUERY_RESTAURANT_FOODS:

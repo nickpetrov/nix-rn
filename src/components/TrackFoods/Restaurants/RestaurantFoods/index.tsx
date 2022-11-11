@@ -1,6 +1,7 @@
 // utils
 import React, {useEffect, useState} from 'react';
 import {batch} from 'react-redux';
+import moment from 'moment-timezone';
 
 // components
 import {
@@ -9,15 +10,18 @@ import {
   TouchableWithoutFeedback,
   Image,
   FlatList,
+  Linking,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import RestaurantFoodItem from 'components/RestaurantFoodItem';
+import {NixButton} from 'components/NixButton';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // helpers
 import nixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 // actions
 import * as basketActions from 'store/basket/basket.actions';
@@ -27,25 +31,25 @@ import {
   getRestorantsFoods,
 } from 'store/foods/foods.actions';
 import {setSearchQueryRestaurant} from 'store/foods/foods.actions';
+import {setInfoMessage} from 'store/base/base.actions';
+
+// services
+import baseService from 'api/baseService';
+
+// styles
+import {styles} from './RestaurantFoods.styles';
+
+// constants
+import {Routes} from 'navigation/Routes';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {FoodProps} from 'store/userLog/userLog.types';
-
-// constants
-import {Routes} from 'navigation/Routes';
-
-// styles
-import {styles} from './RestaurantFoods.styles';
 import {
   RestaurantsProps,
   RestaurantsWithCalcProps,
 } from 'store/foods/foods.types';
-import {NixButton} from 'components/NixButton';
-import baseService from 'api/baseService';
-import {Linking} from 'react-native';
-import {setInfoMessage} from 'store/base/base.actions';
 import {SelectedRestaurant} from 'store/foods/foods.types';
 
 interface RestaurantFoodsProps {
@@ -110,19 +114,18 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
   }, [dispatch, searchValue, brand_id]);
 
   const addFoodToBasket = (food: FoodProps) => {
-    if (food.nix_item_id) {
-      dispatch(basketActions.addBrandedFoodToBasket(food.nix_item_id));
-    } else {
-      batch(() => {
-        dispatch(
-          basketActions.mergeBasket({
-            meal_type: food.meal_type,
-            consumed_at: food.consumed_at as string,
-          }),
-        );
+    batch(() => {
+      dispatch(
+        basketActions.mergeBasket({
+          meal_type: food.meal_type || guessMealTypeByTime(moment().hours()),
+        }),
+      );
+      if (food.nix_item_id) {
+        dispatch(basketActions.addBrandedFoodToBasket(food.nix_item_id));
+      } else {
         dispatch(basketActions.addExistFoodToBasket([food]));
-      });
-    }
+      }
+    });
   };
 
   const handleMessageFromWebView = (data: any) => {

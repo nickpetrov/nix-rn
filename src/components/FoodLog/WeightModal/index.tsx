@@ -95,7 +95,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
   return (
     <Modal
       visible={visible}
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       onDismiss={() => setVisible(null)}>
       <KeyboardAvoidingView

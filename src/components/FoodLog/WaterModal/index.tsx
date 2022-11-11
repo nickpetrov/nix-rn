@@ -119,7 +119,7 @@ const WaterModal: React.FC<WaterModalProps> = ({
   return (
     <Modal
       visible={visible}
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       onDismiss={() => setVisible(false)}>
       <KeyboardAvoidingView

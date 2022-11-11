@@ -45,7 +45,7 @@ const RestaurantFoodItem: React.FC<RestaurantFoodItemProps> = ({
               ? food.full_nutrients
                   .filter((item: NutrientProps) => item.attr_id === 208)[0]
                   .value.toFixed(0)
-              : food.nf_calories}
+              : food.nf_calories.toFixed(0)}
           </Text>
           <Text style={styles.textCal}>Cal</Text>
         </View>
