@@ -1,3 +1,4 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -6,7 +7,11 @@ export const styles = StyleSheet.create({
     paddingBottom: 70,
     backgroundColor: '#fff',
   },
-  container: {padding: 8},
+  container: {
+    padding: 8,
+    borderBottomColor: Colors.LightGray,
+    borderBottomWidth: 1,
+  },
   input: {
     width: '100%',
     paddingHorizontal: 8,
@@ -14,5 +19,10 @@ export const styles = StyleSheet.create({
     backgroundColor: '#eee',
     borderRadius: 6,
     marginBottom: 8,
+  },
+  closeBtn: {
+    position: 'absolute',
+    right: 20,
+    top: 18,
   },
 });

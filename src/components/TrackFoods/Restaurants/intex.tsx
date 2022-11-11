@@ -67,7 +67,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
   );
   const [limit, setLimit] = useState(50);
   const [restaurantQuery, setRestaurantQuery] = useState('');
-  const [searchValue] = useDebounce(restaurantQuery, 1000);
+  const [searchValue] = useDebounce(restaurantQuery, 500);
   const [restaurantsList, setRestaurantsList] = useState<
     Array<RestaurantsProps>
   >([]);
@@ -225,7 +225,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
 
   const requestRestaurant = () => {
     const bugReportData = {
-      feedback: `Request missing restaurant. Restaurant name: '+${searchValue}+'.`,
+      feedback: `Request missing restaurant. Restaurant name: ${searchValue}.`,
       type: 2,
     };
     baseService

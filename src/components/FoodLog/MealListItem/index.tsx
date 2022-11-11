@@ -43,6 +43,7 @@ interface MealListItemProps {
   reverse?: boolean;
   withNewLabel?: boolean;
   searchValue?: string;
+  historyTab?: boolean;
 }
 const MealListItem: React.FC<MealListItemProps> = props => {
   const {
@@ -55,6 +56,7 @@ const MealListItem: React.FC<MealListItemProps> = props => {
     searchValue,
     reverse,
     withNewLabel,
+    historyTab,
   } = props;
 
   //reverse - use at recipe screen; display alwayes 1 serving
@@ -88,7 +90,11 @@ const MealListItem: React.FC<MealListItemProps> = props => {
           )}
         <Image
           style={[styles.foodThumb, smallImage && styles.smallImage]}
-          source={{uri: foodObj.photo.thumb}}
+          source={
+            foodObj.photo.thumb
+              ? {uri: foodObj.photo.thumb}
+              : require('assets/gray_nix_apple_small.png')
+          }
           resizeMode={'contain'}
         />
         <View style={[styles.flex1, reverse && styles.columnReverse]}>
@@ -105,8 +111,8 @@ const MealListItem: React.FC<MealListItemProps> = props => {
                 ? '1 Serving'
                 : capitalize(
                     `${foodObj.brand_name ? `${foodObj.brand_name} ` : ''}${
-                      foodObj.serving_qty
-                    } ${foodObj.serving_unit}`,
+                      historyTab && !foodObj.brand_name ? 'Common Food, ' : ''
+                    }${foodObj.serving_qty} ${foodObj.serving_unit}`,
                   )
             }
             style={styles.qty}

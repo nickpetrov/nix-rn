@@ -47,6 +47,8 @@ export default (
       };
     case foodsActionTypes.GET_HISTORY_FOODS:
       return {...state, historyFoods: action.historyFoods};
+    case foodsActionTypes.CLEAR_HISTORY_FOODS:
+      return {...state, historyFoods: []};
     case foodsActionTypes.GET_RESTORANTS:
       return {...state, restaurants: action.restaurants};
     case foodsActionTypes.GET_RESTORANTS_WITH_CALC:

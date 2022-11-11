@@ -25,7 +25,12 @@ const FoodItem: React.FC<FoodItemProps> = ({
     <TouchableHighlight style={[styles.root, style]} onPress={onPress}>
       <View style={styles.container}>
         <View style={styles.left}>
-          <Image source={{uri: image}} style={styles.image} />
+          <Image
+            source={
+              image ? {uri: image} : require('assets/gray_nix_apple_small.png')
+            }
+            style={styles.image}
+          />
           <View style={styles.info}>
             <Text style={styles.serving}>{serving}</Text>
             <Text style={styles.name}>{name}</Text>

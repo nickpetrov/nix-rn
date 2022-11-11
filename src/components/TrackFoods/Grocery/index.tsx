@@ -81,7 +81,7 @@ const Grocery: React.FC<GroceryProps> = () => {
     batch(() => {
       dispatch(
         basketActions.mergeBasket({
-          meal_type: food.meal_type || guessMealTypeByTime(moment().hours()),
+          meal_type: guessMealTypeByTime(moment().hours()),
         }),
       );
       dispatch(basketActions.addExistFoodToBasket([food]));

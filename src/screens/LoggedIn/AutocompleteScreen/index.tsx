@@ -65,7 +65,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   const customFoods = useSelector(state => state.customFoods.foods);
   const recipes = useSelector(state => state.recipes.recipes);
   const searchValue = useSelector(state => state.autoComplete.searchValue);
-  const [searchQuery] = useDebounce(searchValue.trim(), 1000);
+  const [searchQuery] = useDebounce(searchValue.trim(), 500);
   const {selectedDate} = useSelector(state => state.userLog);
   const [suggestedTime, setSuggestedTime] = useState('');
   const [currentTab, setCurrentTab] = useState(searchSections.ALL);

@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: Colors.Gray4,
     padding: 10,
   },
   mealBuilderTilte: {

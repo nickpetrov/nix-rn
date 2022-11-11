@@ -189,7 +189,8 @@ export const getHistoryFoods = (data: InstantQueryDataProps) => {
       if (result.self) {
         dispatch({
           type: foodsActionTypes.GET_HISTORY_FOODS,
-          historyFoods: result.self,
+          // bug where serving_qty in db is null in self foods. filter out these results first
+          historyFoods: result.self.filter(item => item.serving_qty),
         });
       }
     } catch (error) {
@@ -306,6 +307,11 @@ export const clearRestaurantsFoods = () => {
 export const clearGroceryFoods = () => {
   return {
     type: foodsActionTypes.CLEAR_GROCERY_FOODS,
+  };
+};
+export const clearHistoryFoods = () => {
+  return {
+    type: foodsActionTypes.CLEAR_HISTORY_FOODS,
   };
 };
 export const setSearchQueryRestaurant = (query: string) => {

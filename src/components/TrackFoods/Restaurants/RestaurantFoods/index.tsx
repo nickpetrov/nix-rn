@@ -117,7 +117,7 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
     batch(() => {
       dispatch(
         basketActions.mergeBasket({
-          meal_type: food.meal_type || guessMealTypeByTime(moment().hours()),
+          meal_type: guessMealTypeByTime(moment().hours()),
         }),
       );
       if (food.nix_item_id) {
@@ -144,7 +144,7 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
 
   const requestItem = () => {
     const bugReportData = {
-      feedback: `Request missing item. Restaurant name: '+${brandName}+'. Item name: '+${searchValue}+'.`,
+      feedback: `Request missing item. Restaurant name: ${brandName}. Item name: ${searchValue}.`,
       type: 2,
     };
     baseService
