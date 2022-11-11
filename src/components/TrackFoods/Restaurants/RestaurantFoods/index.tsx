@@ -6,7 +6,6 @@ import {batch} from 'react-redux';
 import {
   View,
   Text,
-  TextInput,
   TouchableWithoutFeedback,
   Image,
   FlatList,
@@ -16,7 +15,6 @@ import RestaurantFoodItem from 'components/RestaurantFoodItem';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
-import {useDebounce} from 'use-debounce';
 
 // helpers
 import nixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
@@ -27,8 +25,8 @@ import {
   clearRestaurantsFoods,
   getNixRestorantsFoods,
   getRestorantsFoods,
-  // getRestorantsFoodsFromOldApi,
 } from 'store/foods/foods.actions';
+import {setSearchQueryRestaurant} from 'store/foods/foods.actions';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -48,9 +46,10 @@ import {NixButton} from 'components/NixButton';
 import baseService from 'api/baseService';
 import {Linking} from 'react-native';
 import {setInfoMessage} from 'store/base/base.actions';
+import {SelectedRestaurant} from 'store/foods/foods.types';
 
 interface RestaurantFoodsProps {
-  restaurant: RestaurantsProps | RestaurantsWithCalcProps;
+  restaurant: SelectedRestaurant;
   navigation: NativeStackNavigationProp<
     StackNavigatorParamList,
     Routes.TrackFoods
@@ -58,10 +57,13 @@ interface RestaurantFoodsProps {
 }
 
 const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
-  restaurant,
   navigation,
+  restaurant,
 }) => {
   const dispatch = useDispatch();
+  const searchValue = useSelector(
+    state => state.foods.searchQueryRestaurantFoods,
+  );
   const brand_id =
     (restaurant as RestaurantsProps).id ||
     (restaurant as RestaurantsWithCalcProps).brand_id;
@@ -69,11 +71,10 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
     (restaurant as RestaurantsWithCalcProps).mobile_calculator_url || '';
   const restaurantFoods = useSelector(state => state.foods.restaurantFoods);
   const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState('');
+
   const maxHits = useSelector(state => state.foods.nixRestaurantFoodsTotal);
   const limit = 20;
   const [offset, setOffset] = useState(0);
-  const [searchValue] = useDebounce(query, 1000);
   const brandName =
     (restaurant as RestaurantsProps).name ||
     (restaurant as RestaurantsWithCalcProps).proper_brand_name;
@@ -146,7 +147,7 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
     baseService
       .sendBugReport(bugReportData)
       .then(() => {
-        setQuery('');
+        dispatch(setSearchQueryRestaurant(''));
         dispatch(
           setInfoMessage({
             title: 'Thank you!',
@@ -179,14 +180,6 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
   return (
     <View style={styles.root}>
       <View style={styles.container}>
-        <View>
-          <TextInput
-            placeholder={`Search ${brandName} Foods`}
-            style={styles.input}
-            value={query}
-            onChangeText={text => setQuery(text)}
-          />
-        </View>
         <FlatList
           data={[]}
           renderItem={() => null}

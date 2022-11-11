@@ -23,14 +23,6 @@ export const styles = StyleSheet.create({
     elevation: 3,
     borderRadius: 4,
   },
-  input: {
-    width: '100%',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    backgroundColor: '#eee',
-    borderRadius: 6,
-    marginBottom: 8,
-  },
   content: {
     flexDirection: 'row',
     alignItems: 'center',

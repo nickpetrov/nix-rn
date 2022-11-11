@@ -22,7 +22,12 @@ import {useDispatch, useSelector} from 'hooks/useRedux';
 import {useDebounce} from 'use-debounce';
 
 // actions
-import {getRestorants, getRestorantsWithCalc} from 'store/foods/foods.actions';
+import {
+  getRestorants,
+  getRestorantsWithCalc,
+  setSelectedRestaurant,
+  setSearchQueryRestaurant,
+} from 'store/foods/foods.actions';
 import {setInfoMessage} from 'store/base/base.actions';
 
 // services
@@ -57,7 +62,9 @@ enum RestorantTypes {
 const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
-  const {restaurants, restaurantsWithCalc} = useSelector(state => state.foods);
+  const {restaurants, restaurantsWithCalc, selectedRestaurant} = useSelector(
+    state => state.foods,
+  );
   const [limit, setLimit] = useState(50);
   const [restaurantQuery, setRestaurantQuery] = useState('');
   const [searchValue] = useDebounce(restaurantQuery, 1000);
@@ -101,15 +108,14 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
     >[];
   }, [filteredRestaurantsList, filteredRestaurantsListWithCalc, limit]);
 
-  const [selectedRestaurant, setSelectedRestaurant] = useState<
-    RestaurantsProps | RestaurantsWithCalcProps | null
-  >(null);
-
   useEffect(() => {
     batch(() => {
       dispatch(getRestorants());
       dispatch(getRestorantsWithCalc());
     });
+    return () => {
+      dispatch(setSearchQueryRestaurant(''));
+    };
   }, [dispatch]);
 
   useEffect(() => {
@@ -197,9 +203,9 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
         // Prevent default behavior of leaving the screen
         e.preventDefault();
         // Prompt the user before leaving the screen
-        setSelectedRestaurant(null);
+        dispatch(setSelectedRestaurant(null));
       }),
-    [navigation, selectedRestaurant],
+    [navigation, selectedRestaurant, dispatch],
   );
 
   const showRestaurant = (
@@ -214,7 +220,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
       );
       return;
     }
-    setSelectedRestaurant(restaurant);
+    dispatch(setSelectedRestaurant(restaurant));
   };
 
   const requestRestaurant = () => {

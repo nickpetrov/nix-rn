@@ -1,6 +1,6 @@
 import userLogService from 'api/userLogService';
 import {Dispatch} from 'redux';
-import {foodsActionTypes, TrackTabs} from './foods.types';
+import {foodsActionTypes, SelectedRestaurant, TrackTabs} from './foods.types';
 import {RootState} from '../index';
 import baseService from 'api/baseService';
 import autoCompleteService, {
@@ -298,5 +298,17 @@ export const setTrackTab = (tab: TrackTabs) => {
 export const clearRestaurantsFoods = () => {
   return {
     type: foodsActionTypes.CLEAR_RESTORANTS_FOODS,
+  };
+};
+export const setSearchQueryRestaurant = (query: string) => {
+  return {
+    type: foodsActionTypes.SET_SEARCH_QUERY_RESTAURANT_FOODS,
+    payload: query,
+  };
+};
+export const setSelectedRestaurant = (restaurant: SelectedRestaurant) => {
+  return {
+    type: foodsActionTypes.SET_SELECTED_RESTAURANT,
+    payload: restaurant,
   };
 };

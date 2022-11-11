@@ -14,6 +14,8 @@ export enum foodsActionTypes {
   SET_TRACK_TAB = 'SET_TRACK_TAB',
   GET_NIX_RESTORANTS_FOODS = 'GET_NIX_RESTORANTS_FOODS',
   CLEAR_RESTORANTS_FOODS = 'CLEAR_RESTORANTS_FOODS',
+  SET_SELECTED_RESTAURANT = 'SET_SELECTED_RESTAURANT',
+  SET_SEARCH_QUERY_RESTAURANT_FOODS = 'SET_SEARCH_QUERY_RESTAURANT_FOODS',
   CLEAR = 'CLEAR',
 }
 
@@ -54,6 +56,11 @@ export enum TrackTabs {
   HISTORY = 'History',
 }
 
+export type SelectedRestaurant =
+  | RestaurantsProps
+  | RestaurantsWithCalcProps
+  | null;
+
 export interface FoodsState {
   foodInfo: FoodProps | null;
   foodFindByQRcode: FoodProps | null;
@@ -66,4 +73,6 @@ export interface FoodsState {
   restaurantFoods: Array<FoodProps>;
   currentTrackTab: TrackTabs;
   nixRestaurantFoodsTotal: number;
+  selectedRestaurant: SelectedRestaurant;
+  searchQueryRestaurantFoods: string;
 }

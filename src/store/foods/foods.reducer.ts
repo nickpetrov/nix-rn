@@ -18,6 +18,8 @@ const initialState: FoodsState = {
   restaurantFoods: [],
   currentTrackTab: TrackTabs.FREEFORM,
   nixRestaurantFoodsTotal: 0,
+  selectedRestaurant: null,
+  searchQueryRestaurantFoods: '',
 };
 
 export default (
@@ -56,6 +58,10 @@ export default (
       return {...state, currentTrackTab: action.payload};
     case foodsActionTypes.CLEAR_RESTORANTS_FOODS:
       return {...state, restaurantFoods: [], nixRestaurantFoodsTotal: 0};
+    case foodsActionTypes.SET_SELECTED_RESTAURANT:
+      return {...state, selectedRestaurant: action.payload};
+    case foodsActionTypes.SET_SEARCH_QUERY_RESTAURANT_FOODS:
+      return {...state, searchQueryRestaurantFoods: action.payload};
     case foodsActionTypes.CLEAR:
       return initialState;
     default:
