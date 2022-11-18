@@ -144,7 +144,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         (resp: RecipeProps) => {
           _.forEach(resp.ingredients, function (foodObj) {
             if (foodObj.alt_measures) {
-              var temp = {
+              const temp = {
                 serving_weight: foodObj.serving_weight_grams,
                 seq: null,
                 measure: foodObj.serving_unit,
@@ -224,6 +224,9 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         delete recipeToUpdate.updated_at;
         delete recipeToUpdate.full_nutrients;
         delete recipeToUpdate.serving_weight_grams;
+        if (!recipeToUpdate.directions?.length) {
+          delete recipeToUpdate.directions;
+        }
         return await dispatch(updateRecipe(recipeToUpdate))
           .then(res => {
             setShowSave(false);
@@ -246,7 +249,12 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             }
           });
       } else {
-        return await dispatch(createRecipe(recipe))
+        const recipeToUpdate = _.cloneDeep(recipe);
+        if (!recipeToUpdate.directions?.length) {
+          delete recipeToUpdate.directions;
+        }
+        console.log('recipeToUpdate', recipeToUpdate);
+        return await dispatch(createRecipe(recipeToUpdate))
           .then(res => {
             setShowSave(false);
             setShowSpinner(false);
@@ -315,7 +323,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         if (!!result.foods && result.foods.length) {
           _.forEach(result.foods, function (foodObj) {
             if (foodObj.alt_measures) {
-              var temp = {
+              const temp = {
                 serving_weight: foodObj.serving_weight_grams,
                 seq: null,
                 measure: foodObj.serving_unit,
@@ -350,7 +358,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             if (!!result.foods && result.foods.length) {
               _.forEach(result.foods, function (foodObj) {
                 if (foodObj.alt_measures) {
-                  var temp = {
+                  const temp = {
                     serving_weight: foodObj.serving_weight_grams,
                     seq: null,
                     measure: foodObj.serving_unit,
@@ -619,13 +627,13 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
     const savedRecipe = await saveRecipe(true);
 
     if (savedRecipe) {
-      var recipeToLog = _.cloneDeep(savedRecipe);
+      const recipeToLog = _.cloneDeep(savedRecipe);
 
       // need to do this for top level as well as each ingredient
-      var nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+      const nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
         recipeToLog.full_nutrients,
       );
-      var accepted = [
+      const accepted = [
         'nf_calories',
         'nf_total_fat',
         'nf_saturated_fat',
@@ -638,19 +646,23 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         'nf_potassium',
         'nf_p',
       ];
-      var keep = _.pick(nf, accepted);
+      const keep = _.pick(nf, accepted);
       _.extend(recipeToLog, keep);
 
       _.forEach(recipeToLog.ingredients, function (ingredient) {
-        var ing_nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+        const ing_nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
           ingredient.full_nutrients,
         );
-        var ing_keep = _.pick(ing_nf, accepted);
+        const ing_keep = _.pick(ing_nf, accepted);
         _.extend(ingredient, ing_keep);
       });
 
       //only want to log 1 serving
-      var scaled_recipe = multiply(recipeToLog, 1 / savedRecipe.serving_qty, 1);
+      const scaled_recipe = multiply(
+        recipeToLog,
+        1 / savedRecipe.serving_qty,
+        1,
+      );
 
       dispatch(
         basketActions.addExistFoodToBasket(scaled_recipe.ingredients),

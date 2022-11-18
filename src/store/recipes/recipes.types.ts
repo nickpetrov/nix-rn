@@ -45,6 +45,7 @@ export type UpdateRecipeProps = Omit<
   | 'serving_weight_grams'
   | 'source'
   | 'user_id'
+  | 'directions'
 > &
   Partial<RecipeProps>;
 
