@@ -244,8 +244,8 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
       }
     }
 
-    dispatch(userLogActions.addFoodToLog(adjustedFoods, loggingOptions)).then(
-      () => {
+    dispatch(userLogActions.addFoodToLog(adjustedFoods, loggingOptions))
+      .then(() => {
         dispatch(basketActions.reset());
         setLoadingSubmit(false);
         navigation.navigate(Routes.Dashboard);
@@ -259,8 +259,11 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
         ) {
           dispatch(setAskForReview(true));
         }
-      },
-    );
+      })
+      .catch(err => {
+        setLoadingSubmit(false);
+        console.log(err);
+      });
   };
 
   const handleSubmit = () => {
