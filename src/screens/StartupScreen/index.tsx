@@ -36,9 +36,9 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
 
   useEffect(() => {
     if (!userJWT) {
-      navigation.navigate(Routes.LoginScreens);
+      navigation.replace(Routes.LoginScreens);
     } else {
-      navigation.navigate(Routes.LoggedIn);
+      navigation.replace(Routes.LoggedIn);
       dispatch(getUserDataFromAPI());
       dispatch(updateReviewCheckAfterComeBack());
       if (Platform.OS === 'ios') {
