@@ -33,6 +33,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 2,
     paddingVertical: 0,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0)',
   },
   errorText: {
     fontSize: 10,

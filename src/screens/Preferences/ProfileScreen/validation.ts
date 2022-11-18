@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 export const validationSchema = yup.object().shape({
   first_name: yup.string().required('First Name is required'),
-  last_name: yup.string(),
+  last_name: yup.string().required('Last Name is required'),
   timezone: yup.string().required('Timezone is required'),
   measure_system: yup.string().required('Measure System is required'),
   weight_kg: yup

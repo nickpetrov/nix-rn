@@ -201,6 +201,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 onBlur={handleBlur('daily_kcal')}
                 keyboardType="numeric"
                 placeholder="0"
+                withErrorBorder
                 error={errors.daily_kcal}
                 withoutErorrText
               />
@@ -223,6 +224,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 onBlur={handleBlur('daily_carbs_pct')}
                 keyboardType="numeric"
                 placeholder="0"
+                withErrorBorder
                 error={errors.daily_carbs_pct}
                 withoutErorrText
               />
@@ -245,6 +247,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 onBlur={handleBlur('daily_protein_pct')}
                 keyboardType="numeric"
                 placeholder="0"
+                withErrorBorder
                 error={errors.daily_protein_pct}
                 withoutErorrText
               />
@@ -267,6 +270,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 onBlur={handleBlur('daily_fat_pct')}
                 keyboardType="numeric"
                 placeholder="0"
+                withErrorBorder
                 error={errors.daily_fat_pct}
                 withoutErorrText
               />

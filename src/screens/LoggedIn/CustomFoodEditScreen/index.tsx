@@ -197,7 +197,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
   ) => {
     setFoodObj(prev => {
       const clonedFoodObj = {...prev};
-      clonedFoodObj[fieldName] = parseFloat(newValue) as never;
+      clonedFoodObj[fieldName] = newValue as never;
       return clonedFoodObj;
     });
   };

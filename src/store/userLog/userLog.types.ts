@@ -87,7 +87,7 @@ export interface TotalProps {
   date: string;
   exercises_logged: null;
   foods_logged: number;
-  notes: null;
+  notes: string | null;
   total_cal: number;
   total_cal_burned: number;
   total_carbs: number;

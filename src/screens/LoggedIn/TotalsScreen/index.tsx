@@ -70,7 +70,9 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   const [showMoreNutrients, setShowMoreNutrients] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
   const [dailyKcal, setDailyKcal] = useState(userData.daily_kcal);
-  const [dayNote, setDayNote] = useState(totals.length ? totals[0].note : '');
+  const [dayNote, setDayNote] = useState(
+    totals.length && totals[0].notes ? totals[0].notes : '',
+  );
   const [total, setTotal] = useState<Record<string, any>>({
     item_name: 'Total',
     brand_name: 'Nutritionix',
@@ -130,7 +132,9 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
       )[0];
       if (selectedDayTotals) {
         setDailyKcal(selectedDayTotals.daily_kcal_limit);
-        setDayNote(selectedDayTotals.notes);
+        if (selectedDayTotals.notes) {
+          setDayNote(selectedDayTotals.notes);
+        }
       }
     }
   }, [followDate, totals, clientTotals]);

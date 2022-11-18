@@ -194,6 +194,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         .catch(() => {
           setLoadingSubmit(false);
         });
+    } else {
+      setLoadingSubmit(false);
     }
   };
 
@@ -603,7 +605,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         modalVisible={resetPassPopup}
         hideModal={() => {
           setResetPassPopup(false);
-          setOldEmail('');
+          setEmail('');
         }}
         title="Please type your email"
         btns={[
@@ -620,7 +622,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             title: 'Cancel',
             onPress: () => {
               setResetPassPopup(false);
-              setOldEmail('');
+              setEmail('');
             },
           },
         ]}>
