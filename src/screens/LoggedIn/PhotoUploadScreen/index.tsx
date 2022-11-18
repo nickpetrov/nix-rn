@@ -33,6 +33,7 @@ import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {TouchableOpacity} from 'react-native';
+import {aws_config} from 'config/index';
 
 interface PhotoUploadScreenProps {
   navigation: NativeStackNavigationProp<
@@ -78,15 +79,15 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
   */
 
   AWS.config.credentials = new AWS.Credentials(
-    'AKIAICGAVNR5YBUYKE4A',
-    'g6AqkzfSL5vMm6bjfOPsmmWPopUVOpxoOHxDdvER',
+    aws_config.aws_access_key_id,
+    aws_config.aws_secret_access_key,
   );
-  AWS.config.region = 'us-east-1';
+  AWS.config.region = aws_config.region;
 
   const uploadBucket = new AWS.S3({
     params: {
-      Bucket: 'nix-ios-upload',
-      region: 'us-east-1',
+      Bucket: aws_config.bucket,
+      region: aws_config.region,
     },
   });
 

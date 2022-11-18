@@ -77,7 +77,6 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   route,
 }) => {
   const {agreedToUsePhoto, reviewCheck} = useSelector(state => state.base);
-  const [scanError, setScanError] = useState(false);
   const [deleteteModal, setDeleteteModal] = useState(false);
   const [isUploadPhotoLoading, setIsUploadPhotoLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -141,12 +140,6 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
       ),
     });
   }, [navigation, route]);
-
-  useEffect(() => {
-    if (route.params?.scanError) {
-      setScanError(true);
-    }
-  }, [route.params?.scanError]);
 
   useEffect(() => {
     if (uploadPhoto) {
@@ -677,14 +670,6 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
             </TouchableOpacity>
           </View>
         ) : null}
-        <InfoModal
-          modalVisible={scanError}
-          setModalVisible={() => setScanError(false)}
-          title="Error"
-          text="We scanned an unrecognized QR code, if you are trying to scan a
-        food product barcode, please try to avoid scanning the QR code
-        near the barcode and try scanning this product again"
-        />
       </KeyboardAwareScrollView>
       <BugReportModal
         modalVisible={showBugReport}

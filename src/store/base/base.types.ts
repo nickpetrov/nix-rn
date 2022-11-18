@@ -25,6 +25,8 @@ export type InfoMessageType = {
   text?: string;
   btnText?: string;
   child?: React.ReactNode;
+  loadingType?: boolean;
+  loadTime?: number;
 };
 
 export type BaseState = {

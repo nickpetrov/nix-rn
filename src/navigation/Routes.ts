@@ -8,6 +8,7 @@ export enum Routes {
   ConnectedApps = 'ConnectedApps',
   Notifications = 'Notifications',
   GroceryAgentSettings = 'GroceryAgentSettings',
+  GroceryAgentMode = 'GroceryAgentMode',
   DeveloperSettings = 'DeveloperSettings',
   Dashboard = 'Dashboard',
   Basket = 'Basket',

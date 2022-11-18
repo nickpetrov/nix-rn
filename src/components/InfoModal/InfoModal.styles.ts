@@ -47,4 +47,19 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
+  loadingRoot: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  loadingView: {
+    padding: 20,
+    borderRadius: 5,
+    color: '#fff',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+  },
+  loadingText: {
+    color: '#fff',
+  },
 });

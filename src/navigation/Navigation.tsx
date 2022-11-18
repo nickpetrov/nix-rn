@@ -50,6 +50,7 @@ import {
 
 import WebViewScreen from 'screens/LoggedIn/WebViewScreen';
 import LogoutScreen from 'screens/LoggedIn/LogoutScreen';
+import GroceryAgentModeScreen from 'screens/LoggedIn/GroceryAgentModeScreen';
 
 // constants
 import {Routes} from './Routes';
@@ -272,6 +273,13 @@ const LoggedInNavigation = ({
         component={WebViewScreen}
         options={{
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={Routes.GroceryAgentMode}
+        component={GroceryAgentModeScreen}
+        options={{
+          headerTitle: 'Grocery Agent Mode',
         }}
       />
       <Stack.Screen

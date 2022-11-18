@@ -12,7 +12,6 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Dashboard]:
     | {
         justLoggedIn?: boolean;
-        scanError?: boolean;
       }
     | undefined;
   [Routes.List]: undefined;
@@ -28,7 +27,6 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Basket]:
     | {
         redirectStateKey?: string;
-        scanError?: boolean;
       }
     | undefined;
   [Routes.Food]: {
@@ -92,6 +90,7 @@ export interface StackNavigatorParamList extends ParamListBase {
   };
   [Routes.Stats]: undefined;
   [Routes.Logout]: undefined;
+  [Routes.GroceryAgentMode]: undefined;
   [Routes.Camera]: {barcode: string; picType: number};
 }
 

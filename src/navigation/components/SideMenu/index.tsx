@@ -85,8 +85,7 @@ export const SideMenu: React.FC = () => {
     {
       icon: 'camera',
       title: 'Grocery Agent Mode',
-      to: '',
-      disabled: true,
+      to: Routes.GroceryAgentMode,
     },
   ];
 

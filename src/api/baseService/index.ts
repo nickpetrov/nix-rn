@@ -1,4 +1,5 @@
 import apiClient from 'api';
+import {grocery_photo_upload} from 'config/index';
 import {BugReportType} from 'store/base/base.types';
 import {
   RestaurantsProps,
@@ -75,6 +76,11 @@ const baseService = {
   },
   async sendBugReport(data: BugReportType) {
     return await apiClient.post('feedback', data);
+  },
+  async getGroceryPhotoUploadUPCList() {
+    return await apiClient.get('', {
+      baseURL: grocery_photo_upload.upc_list,
+    });
   },
 };
 

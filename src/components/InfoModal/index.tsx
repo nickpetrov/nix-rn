@@ -17,6 +17,7 @@ interface InfoModalProps {
     type: 'blue' | 'positive' | 'gray';
   };
   children?: React.ReactNode;
+  loadingType?: boolean;
 }
 
 const InfoModal: React.FC<InfoModalProps> = ({
@@ -27,37 +28,57 @@ const InfoModal: React.FC<InfoModalProps> = ({
   subtitle,
   btn,
   children,
+  loadingType,
 }) => {
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
-        setModalVisible();
-      }}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          {title && (
-            <View style={styles.header}>
-              <Text style={styles.title}>{title}</Text>
-              {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
-            </View>
-          )}
-          <View style={styles.content}>
-            {text && <Text style={styles.modalText}>{text}</Text>}
-            {children && children}
-            <View style={styles.btnContainer}>
-              <NixButton
-                title={btn?.title ? btn.title : 'Ok'}
-                type={btn?.type ? btn.type : 'primary'}
-                onPress={() => setModalVisible()}
-              />
+    <>
+      {loadingType ? (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible();
+          }}>
+          <View style={styles.loadingRoot}>
+            <View style={styles.loadingView}>
+              {text && <Text style={styles.loadingText}>{text}</Text>}
+              {children && children}
             </View>
           </View>
-        </View>
-      </View>
-    </Modal>
+        </Modal>
+      ) : (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible();
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              {title && (
+                <View style={styles.header}>
+                  <Text style={styles.title}>{title}</Text>
+                  {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+                </View>
+              )}
+              <View style={styles.content}>
+                {text && <Text style={styles.modalText}>{text}</Text>}
+                {children && children}
+                <View style={styles.btnContainer}>
+                  <NixButton
+                    title={btn?.title ? btn.title : 'Ok'}
+                    type={btn?.type ? btn.type : 'primary'}
+                    onPress={() => setModalVisible()}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+    </>
   );
 };
 

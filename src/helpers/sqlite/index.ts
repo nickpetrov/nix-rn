@@ -14,29 +14,33 @@ interface SQLexecuteProps {
   errorCallback?: (error: SQLError) => void;
 }
 
-export const SQLexecute = ({
+export const SQLexecute = async ({
   db,
   query,
   params,
   callback,
   errorCallback,
-}: SQLexecuteProps) => {
-  if (!db) {
-    return;
-  }
-  db?.transaction((tx: Transaction) => {
-    tx.executeSql(
-      query,
-      params || [],
-      (transaction: Transaction, res: ResultSet) => {
-        console.log(`query ${query} completed`, res);
-        callback && callback(res);
-      },
-      (transaction: Transaction, error: SQLError) => {
-        console.log(`query ${query} error`, error);
-        errorCallback && errorCallback(error);
-      },
-    );
+}: SQLexecuteProps): Promise<ResultSet> => {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      return;
+    }
+    db?.transaction((tx: Transaction) => {
+      tx.executeSql(
+        query,
+        params || [],
+        (transaction: Transaction, res: ResultSet) => {
+          console.log(`query ${query} completed`, res);
+          callback && callback(res);
+          resolve(res);
+        },
+        (transaction: Transaction, error: SQLError) => {
+          console.log(`query ${query} error`, error);
+          errorCallback && errorCallback(error);
+          reject(error);
+        },
+      );
+    });
   });
 };
 

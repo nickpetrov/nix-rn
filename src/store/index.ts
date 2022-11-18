@@ -18,6 +18,7 @@ import customFoodsReducer from './customFoods/customFoods.reducer';
 import connectedAppsReducer from './connectedApps/connectedApps.reducer';
 import coachReducer from './coach/coach.reducer';
 import baseReducer from './base/base.reducer';
+import groceryAgentModeRducer from './groceryAgentMode/groceryAgentMode.reducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiClient from 'api/index';
 import {setDB} from './base/base.actions';
@@ -46,6 +47,10 @@ const connectedAppsPersist = {
   key: 'connectedApps',
   storage: AsyncStorage,
 };
+const groceryAgentModePersist = {
+  key: 'groceryAgentMode',
+  storage: AsyncStorage,
+};
 
 const rootReducer = combineReducers({
   auth: persistReducer(authPersist, authReducer),
@@ -59,6 +64,10 @@ const rootReducer = combineReducers({
   connectedApps: persistReducer(connectedAppsPersist, connectedAppsReducer),
   coach: coachReducer,
   base: persistReducer(basePersist, baseReducer),
+  groceryAgentMode: persistReducer(
+    groceryAgentModePersist,
+    groceryAgentModeRducer,
+  ),
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));

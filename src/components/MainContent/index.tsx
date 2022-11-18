@@ -27,7 +27,6 @@ const MainContent = () => {
   const {agreementPopup, infoMessage, askForReview, reviewCheck} = useSelector(
     state => state.base,
   );
-  const [showPhotoUploadMessage, setShowPhotoUploadMessage] = useState(false);
   const [showRatePopup, setShowRatePopup] = useState(false);
 
   const handleAcceptAgreement = () => {
@@ -37,10 +36,12 @@ const MainContent = () => {
   };
 
   useEffect(() => {
-    if (infoMessage) {
-      setShowPhotoUploadMessage(true);
+    if (infoMessage?.loadTime) {
+      setTimeout(() => {
+        dispatch(setInfoMessage(null));
+      }, infoMessage?.loadTime);
     }
-  }, [infoMessage]);
+  }, [infoMessage, dispatch]);
 
   useEffect(() => {
     if (askForReview) {
@@ -105,11 +106,11 @@ const MainContent = () => {
         text="All meal photos uploaded become public and viewable on Nutritionix.com. No other personal information is shared with the photo. By uploading a photo, you are agreeing to make it public."
       />
       <InfoModal
-        modalVisible={showPhotoUploadMessage}
+        modalVisible={!!infoMessage}
         setModalVisible={() => {
-          setShowPhotoUploadMessage(false);
           dispatch(setInfoMessage(null));
         }}
+        loadingType={infoMessage?.loadingType}
         title={infoMessage?.title || 'Thank you!'}
         text={infoMessage?.text || ''}
         btn={{

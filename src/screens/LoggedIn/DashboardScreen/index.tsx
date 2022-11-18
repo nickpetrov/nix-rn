@@ -36,7 +36,6 @@ import SwipeHiddenButtons from 'components/SwipeHiddenButtons';
 import ChooseModal from 'components/ChooseModal';
 import WeighInListItem from 'components/FoodLog/WeighInListItem';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import InfoModal from 'components/InfoModal';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -78,7 +77,6 @@ interface DashboardScreenProps {
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   navigation,
-  route,
 }) => {
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
@@ -175,7 +173,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   }, [foods, selectedDate, weights, exercises, consumedWater]);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [scanError, setScanError] = useState(false);
   const [excerciseModal, setExcerciseModal] = useState<ExerciseProps | null>(
     null,
   );
@@ -215,12 +212,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       ),
     });
   }, [navigation]);
-
-  useEffect(() => {
-    if (route.params?.scanError) {
-      setScanError(true);
-    }
-  }, [route]);
 
   const getEmptySectionText = (key: string) => {
     let noLoggedDataText = 'No foods logged yet.';
@@ -526,14 +517,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             },
           },
         ]}
-      />
-      <InfoModal
-        modalVisible={scanError}
-        setModalVisible={() => setScanError(false)}
-        title="Error"
-        text="We scanned an unrecognized QR code, if you are trying to scan a
-        food product barcode, please try to avoid scanning the QR code
-        near the barcode and try scanning this product again"
       />
     </View>
   );
