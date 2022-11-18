@@ -146,6 +146,7 @@ export default function NutritionLabel(props: Props) {
         domStorageEnabled
         thirdPartyCookiesEnabled
         allowUniversalAccessFromFileURLs
+        androidHardwareAccelerationDisabled
         onMessage={onMessage}
       />
     </Animated.View>

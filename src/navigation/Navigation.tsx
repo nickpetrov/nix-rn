@@ -244,6 +244,7 @@ const LoggedInNavigation = ({
         component={TotalsScreen}
         options={{
           headerTitle: 'Totals',
+          animation: 'none',
         }}
       />
       <Stack.Screen
