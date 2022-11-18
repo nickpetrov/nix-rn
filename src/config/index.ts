@@ -21,4 +21,4 @@ export const aws_config = {
 };
 
 const APP_FOLDER_NAME = 'nutritionx';
-export const pictureFolder = `${RNFS.PicturesDirectoryPath}/${APP_FOLDER_NAME}`;
+export const pictureFolder = `${RNFS.DocumentDirectoryPath}/${APP_FOLDER_NAME}`;

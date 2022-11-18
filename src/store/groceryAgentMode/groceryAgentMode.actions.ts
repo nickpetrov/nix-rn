@@ -509,17 +509,6 @@ export const syncRecord = (record: RecordType) => {
     .catch(err => console.log('err syncRecord', err));
 };
 
-const getRecordsForSyncWithSyncRecors = () => {
-  let promises: any = [];
-  getRecordsForSync().then(recordsForSync => {
-    return recordsForSync.map(record => {
-      const promise = syncRecord(record);
-      promises.push(promise);
-    });
-  });
-  return Q.all(promises);
-};
-
 export const sequentialSync = () => {
   return async (dispatch: Dispatch<any>) => {
     dispatch(
@@ -528,43 +517,38 @@ export const sequentialSync = () => {
         loadingType: true,
       }),
     );
-    getRecordsForSyncWithSyncRecors()
-      .then(recordsForSync => {
-        return recordsForSync.reduce((promise: any) => {
-          return promise
-            .then(() => {
-              return countRecordsForSyncBarcodes();
-            })
-            .then((count: number) => {
-              dispatch(setBarcodesForSyncCount(count));
-              if (!count) {
-                dispatch(
-                  setInfoMessage({
-                    text: 'Sync is complete! Thanks for being so patient.',
-                    loadingType: true,
-                    loadTime: 2000,
-                  }),
-                );
-              } else {
-                dispatch(
-                  setInfoMessage({
-                    text:
-                      'Please hold while the sync is in progress.' +
-                      count +
-                      ' barcodes left.',
-                    loadingType: true,
-                  }),
-                );
-              }
-            })
-            .catch((error: any) => {
-              console.log(error);
-            });
-        }, Q.when(''));
-      })
-      .then(() => {
-        console.log('end');
-        dispatch(setInfoMessage(null));
-      });
+    getRecordsForSync().then(recordsForSync => {
+      return recordsForSync.map(record => {
+        return syncRecord(record)
+          .then(() => {
+            return countRecordsForSyncBarcodes();
+          })
+          .then((count: number) => {
+            dispatch(setBarcodesForSyncCount(count));
+            if (!count) {
+              dispatch(
+                setInfoMessage({
+                  text: 'Sync is complete! Thanks for being so patient.',
+                  loadingType: true,
+                  loadTime: 2000,
+                }),
+              );
+            } else {
+              dispatch(
+                setInfoMessage({
+                  text:
+                    'Please hold while the sync is in progress.' +
+                    count +
+                    ' barcodes left.',
+                  loadingType: true,
+                }),
+              );
+            }
+          })
+          .catch((error: any) => {
+            console.log(error);
+          });
+      }, Q.when(''));
+    });
   };
 };
