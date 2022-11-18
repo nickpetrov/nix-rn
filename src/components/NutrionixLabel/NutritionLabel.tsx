@@ -99,12 +99,16 @@ export default function NutritionLabel(props: Props) {
             } catch(err) {}
           }, 50);
         });
+        true; // note: this is required, or you'll sometimes get silent failures
       `);
     }
 
     if (!option) {
       setIsLoading(true);
-      webViewRef.current?.injectJavaScript(`$('#nutTable').empty();`);
+      webViewRef.current?.injectJavaScript(`
+      $('#nutTable').empty();
+      true; // note: this is required, or you'll sometimes get silent failures
+      `);
       height.value = withTiming(100, {
         duration: 300,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),

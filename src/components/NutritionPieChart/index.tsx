@@ -87,15 +87,15 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
     : {
         protein_pct: userData.daily_protein_pct,
         protein_progress: Math.round(
-          (piChartPercent[0] / userData.daily_protein_pct) * 100,
+          (piChartPercent[0] / (userData.daily_protein_pct || 0)) * 100,
         ),
         carbohydrate_pct: userData.daily_carbs_pct,
         carbohydrate_progress: Math.round(
-          (piChartPercent[1] / userData.daily_carbs_pct) * 100,
+          (piChartPercent[1] / (userData.daily_carbs_pct || 0)) * 100,
         ),
         fat_pct: userData.daily_fat_pct,
         fat_progress: Math.round(
-          (piChartPercent[2] / userData.daily_fat_pct) * 100,
+          (piChartPercent[2] / (userData.daily_fat_pct || 0)) * 100,
         ),
       };
 
