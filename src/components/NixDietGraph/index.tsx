@@ -25,7 +25,7 @@ import {Routes} from 'navigation/Routes';
 import {styles} from './NixDietGraph.styles';
 
 interface NixDietGraphProps {
-  initialDisplayDate: number;
+  initialDisplayDate: string;
   title: string;
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Stats>;
   target: number;
