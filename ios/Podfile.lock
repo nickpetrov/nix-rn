@@ -494,6 +494,8 @@ PODS:
     - React-Core
   - RNDeviceInfo (10.3.0):
     - React-Core
+  - RNFS (2.20.0):
+    - React-Core
   - RNGestureHandler (2.6.1):
     - React-Core
   - RNReanimated (2.10.0):
@@ -620,6 +622,7 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -771,6 +774,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -873,6 +878,7 @@ SPEC CHECKSUMS:
   RNCMaskedView: 1f6cd0cb5e38ec01960e12fd8f95ecad809f8fbb
   RNCPushNotificationIOS: 089da3b657e1e3d464f38195fd2e3069608ef5af
   RNDeviceInfo: e5dbe9fc01590f4bc5b9dda77e39ff6a39859224
+  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 28ad20bf02257791f7f137b31beef34b9549f54b
   RNReanimated: 60e291d42c77752a0f6d6f358387bdf225a87c6e
   RNScreens: 0df01424e9e0ed7827200d6ed1087ddd06c493f9
