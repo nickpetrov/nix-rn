@@ -72,7 +72,7 @@ export const resetCurrentSession = () => {
     dispatch({type: groceryAgentModeActionTypes.RESET_CURRENT_SESSION});
   };
 };
-export const reset = () => {
+export const resetGroceryAgentMode = () => {
   return async (dispatch: Dispatch) => {
     dispatch({type: groceryAgentModeActionTypes.CLEAR});
   };

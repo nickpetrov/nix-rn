@@ -11,6 +11,8 @@ import {reset as resetBasket} from 'store/basket/basket.actions';
 import {Dispatch} from 'redux';
 import {authActionTypes, SignUpRequest, User} from './auth.types';
 import {batch} from 'react-redux';
+import {resetGroceryAgentMode} from 'store/groceryAgentMode/groceryAgentMode.actions';
+import {resetGrocerySetting} from 'store/base/base.actions';
 
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch) => {
@@ -125,6 +127,8 @@ export const logout = () => {
     batch(() => {
       dispatch(clearAutocomplete());
       dispatch(resetBasket());
+      dispatch(resetGroceryAgentMode());
+      dispatch(resetGrocerySetting());
       dispatch({type: authActionTypes.LOGOUT});
     });
   };

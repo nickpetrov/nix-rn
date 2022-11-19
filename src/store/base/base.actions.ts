@@ -132,3 +132,9 @@ export const initGroceyAgentInfo = () => {
     }
   };
 };
+
+export const resetGrocerySetting = () => {
+  return {
+    type: baseActionTypes.RESET_GROCERY_SETTINGS,
+  };
+};

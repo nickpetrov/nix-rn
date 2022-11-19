@@ -83,6 +83,17 @@ export default (
       return {...state, isVoiceDisclaimerVisible: action.payload};
     case baseActionTypes.SET_GROCERY_AGENT_INFO:
       return {...state, userGroceyAgentInfo: action.payload};
+    case baseActionTypes.RESET_GROCERY_SETTINGS:
+      return {
+        ...state,
+        userGroceyAgentInfo: {
+          grocery_agent: null,
+          lastCheckedTimestamp: 0,
+        },
+        groceryAgentPreferences: {
+          volunteer: false,
+        },
+      };
     case baseActionTypes.CLEAR:
       return initialState;
     default:
