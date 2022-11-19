@@ -29,6 +29,9 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
   navigation,
 }) => {
   const daily_kcal = useSelector(state => state.auth.userData.daily_kcal);
+  const userGroceyAgentInfo = useSelector(
+    state => state.base.userGroceyAgentInfo,
+  );
   const appVersion = getReadableVersion();
   const buildNumber = getBuildNumber();
   return (
@@ -66,14 +69,16 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
           <Text>Notifications</Text>
         </View>
       </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          navigation.navigate(Routes.GroceryAgentSettings);
-        }}>
-        <View style={styles.menuItem}>
-          <Text>Grocery Agent Preferences</Text>
-        </View>
-      </TouchableWithoutFeedback>
+      {userGroceyAgentInfo.grocery_agent && (
+        <TouchableWithoutFeedback
+          onPress={() => {
+            navigation.navigate(Routes.GroceryAgentSettings);
+          }}>
+          <View style={styles.menuItem}>
+            <Text>Grocery Agent Preferences</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      )}
       {/* <TouchableWithoutFeedback
         onPress={() => {
           navigation.navigate(Routes.DeveloperSettings);

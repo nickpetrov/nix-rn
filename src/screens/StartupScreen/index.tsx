@@ -12,7 +12,10 @@ import {Routes} from 'navigation/Routes';
 
 // actions
 import {getUserDataFromAPI} from 'store/auth/auth.actions';
-import {updateReviewCheckAfterComeBack} from 'store/base/base.actions';
+import {
+  initGroceyAgentInfo,
+  updateReviewCheckAfterComeBack,
+} from 'store/base/base.actions';
 import {
   pullExerciseFromHK,
   pullWeightsFromHK,
@@ -41,6 +44,7 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
       navigation.replace(Routes.LoggedIn);
       dispatch(getUserDataFromAPI());
       dispatch(updateReviewCheckAfterComeBack());
+      dispatch(initGroceyAgentInfo());
       if (Platform.OS === 'ios') {
         if (hkSyncOptions.weight === 'pull') {
           dispatch(pullWeightsFromHK());

@@ -20,6 +20,9 @@ import {SvgUri} from 'react-native-svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixButton} from 'components/NixButton';
 
+// hooks
+import {useSelector} from 'hooks/useRedux';
+
 // constants
 import {Routes} from 'navigation/Routes';
 
@@ -33,12 +36,17 @@ const {uri} = Image.resolveAssetSource(require('assets/images/logo2.svg'));
 
 export const SideMenu: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
+  const coach = useSelector(state => state.auth.userData.coach);
+  const userGroceyAgentInfo = useSelector(
+    state => state.base.userGroceyAgentInfo,
+  );
 
-  const menuItems: Array<{
+  let menuItems: Array<{
     icon: string;
     title: string;
     to: string;
     disabled?: boolean;
+    hide?: boolean;
   }> = [
     {
       icon: 'home',
@@ -76,6 +84,7 @@ export const SideMenu: React.FC = () => {
       title: 'Coach Portal',
       to: '',
       disabled: true,
+      hide: !coach || !coach.is_active,
     },
     {
       icon: 'question',
@@ -86,6 +95,7 @@ export const SideMenu: React.FC = () => {
       icon: 'camera',
       title: 'Grocery Agent Mode',
       to: Routes.GroceryAgentMode,
+      hide: !userGroceyAgentInfo.grocery_agent,
     },
   ];
 
@@ -201,24 +211,29 @@ export const SideMenu: React.FC = () => {
     <SafeAreaView style={{flex: 1}}>
       <ScrollView style={{flex: 1, paddingVertical: 20}}>
         {/* Need to manually add items to the sidedrawer */}
-        {menuItems.map((item, index) => (
-          <TouchableWithoutFeedback
-            key={`${index}-${item.title}`}
-            style={styles.menuItemWrapper}
-            disabled={item.disabled}
-            onPress={() => navigation.navigate(item.to)}>
-            <View style={styles.menuItemWrapper}>
-              <View style={styles.iconWrapper}>
-                <FontAwesome
-                  name={item.icon}
-                  size={25}
-                  style={{marginRight: 10}}
-                />
+        {menuItems.map((item, index) => {
+          if (item.hide) {
+            return;
+          }
+          return (
+            <TouchableWithoutFeedback
+              key={`${index}-${item.title}`}
+              style={styles.menuItemWrapper}
+              disabled={item.disabled}
+              onPress={() => navigation.navigate(item.to)}>
+              <View style={styles.menuItemWrapper}>
+                <View style={styles.iconWrapper}>
+                  <FontAwesome
+                    name={item.icon}
+                    size={25}
+                    style={{marginRight: 10}}
+                  />
+                </View>
+                <Text>{item.title}</Text>
               </View>
-              <Text>{item.title}</Text>
-            </View>
-          </TouchableWithoutFeedback>
-        ))}
+            </TouchableWithoutFeedback>
+          );
+        })}
         <TouchableWithoutFeedback
           onPress={() => {
             navigation.navigate(Routes.Logout);

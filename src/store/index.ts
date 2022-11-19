@@ -39,6 +39,7 @@ const basePersist = {
   whitelist: [
     'agreedToUsePhoto',
     'groceryAgentPreferences',
+    'userGroceyAgentInfo',
     'db',
     'hideVoiceRecognitionDisclaimer',
   ],

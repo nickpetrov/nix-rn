@@ -9,6 +9,7 @@ export enum baseActionTypes {
   SET_DB = 'SET_DB',
   SET_IS_VOICE_DISCLAYMORE_VISIBLE = 'SET_IS_VOICE_DISCLAYMORE_VISIBLE',
   SET_HIDE_VOICE_DISCLAYMORE = 'SET_HIDE_VOICE_DISCLAYMORE',
+  SET_GROCERY_AGENT_INFO = 'SET_GROCERY_AGENT_INFO',
   CLEAR = 'CLEAR',
 }
 
@@ -29,6 +30,11 @@ export type InfoMessageType = {
   loadTime?: number;
 };
 
+export type userGroceyAgentInfoProps = {
+  grocery_agent: null | number;
+  lastCheckedTimestamp: number;
+};
+
 export type BaseState = {
   agreedToUsePhoto: boolean;
   agreementPopup: boolean;
@@ -45,6 +51,7 @@ export type BaseState = {
   groceryAgentPreferences: {
     volunteer: boolean;
   };
+  userGroceyAgentInfo: userGroceyAgentInfoProps;
   db: null | SQLite.SQLiteDatabase;
   isVoiceDisclaimerVisible: boolean;
   hideVoiceRecognitionDisclaimer: boolean;

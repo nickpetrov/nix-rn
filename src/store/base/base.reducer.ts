@@ -38,6 +38,10 @@ const initialState: BaseState = {
   groceryAgentPreferences: {
     volunteer: false,
   },
+  userGroceyAgentInfo: {
+    grocery_agent: null,
+    lastCheckedTimestamp: 0,
+  },
   db: null,
   isVoiceDisclaimerVisible: false,
   hideVoiceRecognitionDisclaimer: false,
@@ -77,6 +81,8 @@ export default (
       return {...state, hideVoiceRecognitionDisclaimer: action.payload};
     case baseActionTypes.SET_IS_VOICE_DISCLAYMORE_VISIBLE:
       return {...state, isVoiceDisclaimerVisible: action.payload};
+    case baseActionTypes.SET_GROCERY_AGENT_INFO:
+      return {...state, userGroceyAgentInfo: action.payload};
     case baseActionTypes.CLEAR:
       return initialState;
     default:
