@@ -420,7 +420,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
             <LoadIndicator color="green" />
           ) : (
             <>
-              {!suggestedSection[0].data.length && (
+              {!suggestedSection[0].data.length && !searchQuery && (
                 <View style={styles.showHint}>
                   <FontAwesome name="arrow-up" color="#aaa" size={20} />
                   <Text style={styles.showHintText}>

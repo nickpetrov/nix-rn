@@ -93,7 +93,7 @@ export const updateUserData = (newUserObj: Partial<User>) => {
 
       dispatch({
         type: authActionTypes.UPDATE_USER_DATA,
-        newUserObj: userData,
+        newUserObj: newUserObj,
       });
 
       return userData;
