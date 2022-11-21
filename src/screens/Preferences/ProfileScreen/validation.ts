@@ -9,7 +9,7 @@ export const validationSchema = yup.object().shape({
     .number()
     .typeError('Invalid value')
     .when('measure_system', {
-      is: '1',
+      is: 1,
       then: yup
         .number()
         .typeError('Invalid value')
@@ -19,7 +19,7 @@ export const validationSchema = yup.object().shape({
     .number()
     .typeError('Invalid value')
     .when('measure_system', {
-      is: '0',
+      is: 0,
       then: yup
         .number()
         .typeError('Invalid value')
@@ -29,7 +29,7 @@ export const validationSchema = yup.object().shape({
     .number()
     .typeError('Invalid value')
     .when('measure_system', {
-      is: '1',
+      is: 1,
       then: yup
         .number()
         .typeError('Invalid value')
@@ -39,7 +39,7 @@ export const validationSchema = yup.object().shape({
     .number()
     .typeError('Invalid value')
     .when('measure_system', {
-      is: '0',
+      is: 0,
       then: yup
         .number()
         .typeError('Invalid value')
@@ -49,7 +49,7 @@ export const validationSchema = yup.object().shape({
     .number()
     .typeError('Invalid value')
     .when('measure_system', {
-      is: '0',
+      is: 0,
       then: yup
         .number()
         .typeError('Invalid value')

@@ -160,7 +160,10 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
     }
 
     if (values.age && +values.age !== 0) {
-      newUserData.birth_year = moment().year() - parseInt(values.age);
+      const birth_year = moment().year() - parseInt(values.age);
+      if (birth_year > 0) {
+        newUserData.birth_year = birth_year;
+      }
     }
 
     if (newUserData.measure_system === 0) {
@@ -218,18 +221,20 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
     });
   }, [navigation]);
 
-  const cmToinches = userData.height_cm * 0.393701;
+  const cmToinches = (userData.height_cm || 0) * 0.393701;
   const FormikInitValues: FormikDataProps = {
-    measure_system: userData.measure_system,
-    weight_kg: String(userData.weight_kg),
-    height_cm: String(userData.height_cm),
+    measure_system: userData.measure_system || 0,
+    weight_kg: String(userData.weight_kg || 0),
+    height_cm: String(userData.height_cm || 0),
     height_ft: String(_.floor(cmToinches / 12)),
     height_in: String(_.round(cmToinches % 12, 2)),
-    weight_lb: String(_.round(userData.weight_kg * 2.20462, 1)),
-    gender: userData.gender,
-    birth_year: userData.birth_year + '',
+    weight_lb: String(
+      userData.weight_kg ? _.round(userData.weight_kg * 2.20462, 1) : 0,
+    ),
+    gender: userData.gender || 'female',
+    birth_year: (userData.birth_year || 0) + '',
     daily_kcal: userData.daily_kcal + '',
-    age: moment().year() - userData.birth_year + '',
+    age: moment().year() - (userData.birth_year || 0) + '',
   };
 
   const showDisclaimer = () => {

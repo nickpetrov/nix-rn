@@ -76,7 +76,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const [timezoneList, setTimezoneList] = useState<
     {label: string; value: string}[]
   >([]);
-  const cmToinches = userData.height_cm * 0.393701;
+  const cmToinches = (userData.height_cm || 0) * 0.393701;
 
   useEffect(() => {
     const timezones = moment.tz.names().map(tz => {
@@ -181,12 +181,29 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
       newUserData.measure_system = parseInt(String(newUserData.measure_system));
 
-      delete newUserData.weight_lb;
-      delete newUserData.height_ft;
-      delete newUserData.height_in;
-      delete newUserData.age;
+      const updatedData: Partial<User> = {
+        measure_system: newUserData.measure_system,
+      };
+      if (newUserData.first_name) {
+        updatedData.first_name = newUserData.first_name;
+      }
+      if (newUserData.last_name) {
+        updatedData.last_name = newUserData.last_name;
+      }
+      if (newUserData.timezone) {
+        updatedData.timezone = newUserData.timezone;
+      }
+      if (newUserData.weight_kg) {
+        updatedData.weight_kg = newUserData.weight_kg;
+      }
+      if (newUserData.height_cm) {
+        updatedData.height_cm = newUserData.height_cm;
+      }
+      if (newUserData.birth_year && newUserData.birth_year !== 0) {
+        updatedData.birth_year = newUserData.birth_year;
+      }
 
-      dispatch(userActions.updateUserData(newUserData as Partial<User>))
+      dispatch(userActions.updateUserData(updatedData as Partial<User>))
         .then(() => {
           setLoadingSubmit(false);
           navigation.goBack();
@@ -201,16 +218,18 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
   const FormikInitValues: FormikDataProps = {
     first_name: userData.first_name,
-    last_name: userData.last_name || '',
+    last_name: userData.last_name,
     timezone: userData.timezone,
     measure_system: userData.measure_system,
-    weight_kg: String(userData.weight_kg),
-    height_cm: String(userData.height_cm),
+    weight_kg: String(userData.weight_kg || 0),
+    height_cm: String(userData.height_cm || 0),
     height_ft: String(_.floor(cmToinches / 12)),
     height_in: String(_.round(cmToinches % 12, 2)),
-    weight_lb: String(_.round(userData.weight_kg * 2.20462, 1)),
-    birth_year: userData.birth_year + '',
-    age: String(moment().year() - userData.birth_year),
+    weight_lb: String(
+      userData.weight_kg ? _.round(userData.weight_kg * 2.20462, 1) : 0,
+    ),
+    birth_year: (userData.birth_year || 0) + '',
+    age: String(moment().year() - (userData.birth_year || 0)),
   };
 
   const handleResetPass = () => {
@@ -297,6 +316,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           values,
           errors,
         }) => {
+          console.log('errors', errors);
           return (
             <View style={{flex: 1}}>
               <NixInput
