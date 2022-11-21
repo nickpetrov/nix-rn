@@ -111,7 +111,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
       const {user, email, nonce, identityToken, realUserStatus /* etc */} =
         appleAuthRequestResponse;
 
-        // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+      // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
       fetchAndUpdateCredentialState(appleAuthRequestResponse.user).catch(
         error => console.log(`Error: ${error.code}`),
       );
