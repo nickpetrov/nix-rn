@@ -193,9 +193,13 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
     setLoading(true);
 
     // get suggested foods
-    dispatch(autocompleteActions.showSuggestedFoods(-1)).then(() =>
-      setLoading(false),
-    );
+    dispatch(autocompleteActions.showSuggestedFoods(-1))
+      .then(() => setLoading(false))
+      .catch(err => {
+        // somethime return error with to large data response
+        console.log(err);
+        setLoading(false);
+      });
 
     // ger custom foods
     dispatch(getCustomFoods());
@@ -407,7 +411,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
       }));
     }
   };
-  console.log('sections', sections);
+
   return (
     <View style={styles.root}>
       {netInfo.isConnected ? (
