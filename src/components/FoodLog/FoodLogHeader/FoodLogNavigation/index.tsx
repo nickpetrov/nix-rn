@@ -27,7 +27,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {FoodProps} from 'store/userLog/userLog.types';
 
-let goToTodayCounterTimeout: number;
+let goToTodayCounterTimeout: ReturnType<typeof setTimeout> | undefined;
 
 interface FoodLogNavigationProps {
   foods: Array<FoodProps>;
@@ -43,8 +43,11 @@ const FoodLogNavigation: React.FC<FoodLogNavigationProps> = ({foods}) => {
   // const {scrollDirection} = props;
   const {selectedDate} = useSelector(state => state.userLog);
   const [goToTodayCounter, setGoToTodayCounter] = useState(0);
-  const currDate = timeHelpers.formatDate(selectedDate, 'YYYY-MM-DD', 'MM/DD');
-  let weekDay = timeHelpers.formatDate(selectedDate, 'YYYY-MM-DD', 'dddd');
+  // before, wrong display date
+  // const currDate = timeHelpers.formatDate(selectedDate, 'YYYY-MM-DD', 'MM/DD');
+  // let weekDay = timeHelpers.formatDate(selectedDate, 'YYYY-MM-DD', 'dddd');
+  const currDate = moment(selectedDate).format('MM/DD');
+  let weekDay = moment(selectedDate).format('dddd');
 
   if (
     moment().format('YYYY-MM-DD') ===
