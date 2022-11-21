@@ -124,6 +124,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
       const appleAuthRequestResponse = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
         requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+        user: 'userId',
+        state: 'state',
+        nonce: 'nonce',
       });
 
       console.log('appleAuthRequestResponse', appleAuthRequestResponse);
