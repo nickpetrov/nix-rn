@@ -216,6 +216,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     }
   };
 
+  const age = moment().year() - (userData.birth_year || 0);
   const FormikInitValues: FormikDataProps = {
     first_name: userData.first_name,
     last_name: userData.last_name,
@@ -229,7 +230,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       userData.weight_kg ? _.round(userData.weight_kg * 2.20462, 1) : 0,
     ),
     birth_year: (userData.birth_year || 0) + '',
-    age: String(moment().year() - (userData.birth_year || 0)),
+    age: String(age > 100 ? 30 : age),
   };
 
   const handleResetPass = () => {

@@ -222,6 +222,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
   }, [navigation]);
 
   const cmToinches = (userData.height_cm || 0) * 0.393701;
+  const age = moment().year() - (userData.birth_year || 0);
   const FormikInitValues: FormikDataProps = {
     measure_system: userData.measure_system || 0,
     weight_kg: String(userData.weight_kg || 0),
@@ -234,7 +235,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
     gender: userData.gender || 'female',
     birth_year: (userData.birth_year || 0) + '',
     daily_kcal: userData.daily_kcal + '',
-    age: moment().year() - (userData.birth_year || 0) + '',
+    age: age > 100 ? '30' : age + '',
   };
 
   const showDisclaimer = () => {
