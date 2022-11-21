@@ -166,6 +166,7 @@ const LoggedInNavigation = ({
         component={FoodScreen}
         options={{
           headerTitle: 'Edit Food',
+          animation: 'none',
         }}
       />
       <Stack.Screen
