@@ -320,6 +320,7 @@ const SideDrawerNavigation = () => {
   return (
     <Drawer.Navigator
       // screenOptions={SideDrawerNavigationOptions}
+      initialRouteName={Routes.Home}
       drawerContent={SideMenu}>
       <Drawer.Screen
         name={Routes.Home}
