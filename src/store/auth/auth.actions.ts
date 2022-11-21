@@ -90,10 +90,10 @@ export const updateUserData = (newUserObj: Partial<User>) => {
       const response = await userService.updateUserData(request);
 
       const userData = response.data;
-      apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
+
       dispatch({
         type: authActionTypes.UPDATE_USER_DATA,
-        newUserObj: newUserObj,
+        newUserObj: userData,
       });
 
       return userData;
