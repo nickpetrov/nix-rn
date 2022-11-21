@@ -57,6 +57,7 @@ import {Routes} from './Routes';
 
 // types
 import {ParamListBase} from '@react-navigation/native';
+import {Platform} from 'react-native';
 import {
   DrawerNavigatorParamList,
   StackNavigatorParamList,
@@ -166,7 +167,10 @@ const LoggedInNavigation = ({
         component={FoodScreen}
         options={{
           headerTitle: 'Edit Food',
-          animation: 'none',
+          animation: Platform.select({
+            ios: 'default',
+            android: 'none',
+          }),
         }}
       />
       <Stack.Screen
@@ -245,7 +249,10 @@ const LoggedInNavigation = ({
         component={TotalsScreen}
         options={{
           headerTitle: 'Totals',
-          animation: 'none',
+          animation: Platform.select({
+            ios: 'default',
+            android: 'none',
+          }),
         }}
       />
       <Stack.Screen
