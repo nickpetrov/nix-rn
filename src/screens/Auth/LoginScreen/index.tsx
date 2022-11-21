@@ -4,6 +4,7 @@ import {LoginManager, AccessToken} from 'react-native-fbsdk-next';
 import {
   appleAuth,
   AppleButton,
+  AppleRequestResponse,
 } from '@invertase/react-native-apple-authentication';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
@@ -88,11 +89,30 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
     );
   };
 
-  async function fetchAndUpdateCredentialState(user: string) {
-    const credentialState = await appleAuth.getCredentialStateForUser(user);
+  async function fetchAndUpdateCredentialState(
+    appleAuthRequestResponse: AppleRequestResponse,
+  ) {
+    const credentialState = await appleAuth.getCredentialStateForUser(
+      appleAuthRequestResponse.user,
+    );
     if (credentialState === appleAuth.State.AUTHORIZED) {
       // updateCredentialStateForUser('AUTHORIZED');
       console.log('AUTHORIZED');
+      dispatch(appleLogin(appleAuthRequestResponse))
+        .then(() => {
+          navigation.navigate(Routes.LoggedIn, {
+            screen: Routes.Home,
+            params: {
+              screen: Routes.Dashboard,
+              params: {
+                justLoggedIn: true,
+              },
+            },
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
     } else {
       console.log(credentialState);
     }
@@ -108,35 +128,35 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
 
       console.log('appleAuthRequestResponse', appleAuthRequestResponse);
 
-      const {user, email, nonce, identityToken, realUserStatus /* etc */} =
+      const {user, email, /*nonce, identityToken,*/ realUserStatus /* etc */} =
         appleAuthRequestResponse;
 
       // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
-      fetchAndUpdateCredentialState(appleAuthRequestResponse.user).catch(
-        error => console.log(`Error: ${error.code}`),
+      fetchAndUpdateCredentialState(appleAuthRequestResponse).catch(error =>
+        console.log(`Error: ${error.code}`),
       );
-
-      if (identityToken) {
-        // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
-        console.log(nonce, identityToken);
-        dispatch(appleLogin(appleAuthRequestResponse))
-          .then(() => {
-            navigation.navigate(Routes.LoggedIn, {
-              screen: Routes.Home,
-              params: {
-                screen: Routes.Dashboard,
-                params: {
-                  justLoggedIn: true,
-                },
-              },
-            });
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      } else {
-        // no token - failed sign-in?
-      }
+      // don't know for what that code needed
+      // if (identityToken) {
+      //   // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
+      //   console.log(nonce, identityToken);
+      //   dispatch(appleLogin(appleAuthRequestResponse))
+      //     .then(() => {
+      //       navigation.navigate(Routes.LoggedIn, {
+      //         screen: Routes.Home,
+      //         params: {
+      //           screen: Routes.Dashboard,
+      //           params: {
+      //             justLoggedIn: true,
+      //           },
+      //         },
+      //       });
+      //     })
+      //     .catch(err => {
+      //       console.log(err);
+      //     });
+      // } else {
+      //   // no token - failed sign-in?
+      // }
 
       if (realUserStatus === appleAuth.UserStatus.LIKELY_REAL) {
         console.log("I'm a real person!");

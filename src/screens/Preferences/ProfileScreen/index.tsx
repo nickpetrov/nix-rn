@@ -317,7 +317,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           values,
           errors,
         }) => {
-          console.log('errors', errors);
           return (
             <View style={{flex: 1}}>
               <NixInput
