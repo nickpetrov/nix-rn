@@ -2,15 +2,14 @@
 import React, {useState, useEffect} from 'react';
 
 // components
-import {Field, Formik} from 'formik';
-import {ActivityIndicator, Text, View, SafeAreaView, Image} from 'react-native';
-import {NixInputField} from 'components/NixInputField';
+import {Formik, Field} from 'formik';
+import {Text, View, SafeAreaView, Linking, Switch} from 'react-native';
 import {NixButton} from 'components/NixButton';
-import CountryPicker from 'react-native-country-picker-modal';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {NavigationHeader} from 'components/NavigationHeader';
+import NixCheckbox from 'components/NixCheckbox';
 
 // validation
 import step2ValidationSchema from './validation';
@@ -28,14 +27,13 @@ import baseService from 'api/baseService';
 import {updateUserData} from 'store/auth/auth.actions';
 
 // styles
-import {styles} from '../../Auth/SignupScreen/SignupScreen.styles';
+import {styles} from './CompleteRegistration.styles';
+import {Colors} from 'constants/Colors';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {CountryCodes} from './types';
 import {NutritionType} from 'api/baseService/types';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {NavigationHeader} from 'components/NavigationHeader';
 
 type Props = {
   navigation: NativeStackNavigationProp<
@@ -44,27 +42,17 @@ type Props = {
   >;
 };
 
+type FormikProps = {
+  nutrition_topics: number[];
+  isAgreedTerms: boolean;
+  isConfirmedThirteen: boolean;
+  weekday_reminders_enabled: boolean;
+  weekend_reminders_enabled: boolean;
+};
+
 const CompleteRegistration: React.FC<Props> = ({navigation}) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [errorTextServer, setErrorTextServer] = useState('');
-
-  const showErrorMessage = (errorType: string) => {
-    switch (errorType) {
-      case 'server error':
-        setErrorTextServer(
-          'Something went wrong. Please make sure You have entered valid Email and Password',
-        );
-        break;
-      case 'account exists':
-        setErrorTextServer(
-          'Account with this email already exists. If you experiencing difficulties logging in please use "Forgot Password" feature to recover your password, or ontact our suppotr team at support@nutritionix.com',
-        );
-        break;
-      default:
-        setErrorTextServer('Something went wrong.');
-    }
-  };
 
   const [selectedTopics, setSelectedTopics] = useState<Array<number>>([]);
   const [nutritionTopicsList, setNutritionTopicsList] = useState<
@@ -98,33 +86,40 @@ const CompleteRegistration: React.FC<Props> = ({navigation}) => {
     });
   }, [navigation]);
 
-  const step2Handler = (form: {
-    username: string;
-    country_code: string;
-    nutrition_topics: Array<number>;
-    country: string;
-  }) => {
+  const FormikInitValues: FormikProps = {
+    nutrition_topics: [],
+    isAgreedTerms: false,
+    isConfirmedThirteen: false,
+    weekday_reminders_enabled: false,
+    weekend_reminders_enabled: false,
+  };
+
+  const step2Handler = (form: FormikProps) => {
     if (isLoading) return;
     setIsLoading(true);
     dispatch(
       updateUserData({
-        username: form.username,
-        country_code: form.country_code,
         nutrition_topics: form.nutrition_topics,
+        weekday_reminders_enabled: form.weekday_reminders_enabled ? 1 : 0,
+        weekend_reminders_enabled: form.weekend_reminders_enabled ? 1 : 0,
+        push_enabled:
+          form.weekday_reminders_enabled && form.weekend_reminders_enabled
+            ? 1
+            : 0,
       }),
     )
-      .then(user => {
+      .then(() => {
+        return dispatch(updateUserData({daily_kcal: 2000}));
+      })
+      .then(() => {
         setIsLoading(false);
-        console.log(user);
         navigation.replace(Routes.Dashboard, {
           justLoggedIn: true,
         });
       })
       .catch(err => {
         console.log(err);
-        console.log(err.message);
         setIsLoading(false);
-        showErrorMessage('server error');
       });
   };
 
@@ -136,65 +131,86 @@ const CompleteRegistration: React.FC<Props> = ({navigation}) => {
       style={styles.keyboardView}>
       <SafeAreaView style={styles.loginWrapper}>
         <View style={styles.contentWrapper}>
-          <View style={styles.logo}>
-            <Image
-              style={styles.logoImage}
-              source={require('assets/images/icon.png')}
-              resizeMode="contain"
-            />
-          </View>
-          <Text style={styles.title}>Finish Setup</Text>
-          <Text style={styles.subtitle}>Finish your account setup</Text>
+          <Text style={styles.title}>Optional Settings</Text>
           <Formik
-            initialValues={{
-              username: '',
-              country_code: '820',
-              nutrition_topics: [],
-              country: 'US',
-            }}
+            initialValues={FormikInitValues}
             onSubmit={values => step2Handler(values)}
             validationSchema={step2ValidationSchema}
             validateOnMount>
             {({handleSubmit, isValid, values, setFieldValue}) => (
               <>
-                <Field
-                  component={NixInputField}
-                  name="username"
-                  label="Username"
-                  style={styles.input}
-                  leftComponent={
-                    <FontAwesome
-                      name={'envelope-o'}
-                      size={30}
-                      style={{marginRight: 15, marginBottom: 2, color: '#666'}}
-                    />
-                  }
-                  autoCapitalize="none"
-                />
-
-                <View style={styles.inputWrapper}>
-                  <View>
-                    <CountryPicker
-                      countryCode={values.country as CountryCodes}
-                      withCallingCode={true}
-                      withCountryNameButton={true}
-                      withFilter={true}
-                      onSelect={country => {
-                        setFieldValue('country', country.cca2);
-                        setFieldValue('country_code', country.callingCode[0]);
-                        console.log('country', country);
-                      }}
-                    />
+                <View>
+                  <View style={styles.itemPN}>
+                    <View style={styles.leftPN}>
+                      <Text style={styles.titlePN}>
+                        Weekday Push Notifications
+                      </Text>
+                      <Text>
+                        If enabled, we send a push alert at 9PM on any weekday
+                        (Mon-Fri) when you forget to log your foods.
+                      </Text>
+                    </View>
+                    <View>
+                      <Switch
+                        value={values.weekday_reminders_enabled}
+                        onValueChange={value =>
+                          setFieldValue('weekday_reminders_enabled', value)
+                        }
+                        style={styles.switch}
+                        trackColor={{
+                          false: Colors.LightGray,
+                          true: Colors.LightGreen,
+                        }}
+                        thumbColor={'#fff'}
+                        ios_backgroundColor="#fff"
+                      />
+                    </View>
                   </View>
-                </View>
-                <View style={styles.inputWrapper}>
+                  <View style={styles.itemPN}>
+                    <View style={styles.leftPN}>
+                      <Text style={styles.titlePN}>
+                        Weekend Push Notifications
+                      </Text>
+                      <Text>
+                        If enabled, we send a push alert at 9PM on any weekend
+                        (Sat-Sun) when you forget to log your foods.
+                      </Text>
+                    </View>
+                    <View>
+                      <Switch
+                        value={values.weekend_reminders_enabled}
+                        onValueChange={value =>
+                          setFieldValue('weekend_reminders_enabled', value)
+                        }
+                        style={styles.switch}
+                        trackColor={{
+                          false: Colors.LightGray,
+                          true: Colors.LightGreen,
+                        }}
+                        thumbColor={'#fff'}
+                        ios_backgroundColor="#fff"
+                      />
+                    </View>
+                  </View>
+                  <Text style={styles.selectHeader}>
+                    Which nutrition topics do you follow?
+                  </Text>
                   <SectionedMultiSelect
                     items={nutritionTopicsList}
                     // @ts-ignore
                     IconRenderer={Icon}
                     uniqueKey="id"
                     subKey="children"
-                    selectText="Nutrition Topics"
+                    selectText="Pick Topicks"
+                    styles={{
+                      chipsWrapper: styles.chipsWrapper,
+                      selectToggle: styles.selectToggle,
+                      selectToggleText: styles.selectToggleText,
+                      toggleIcon: {display: 'none'},
+                    }}
+                    selectToggleIconComponent={<></>}
+                    alwaysShowSelectText
+                    modalWithSafeAreaView
                     showDropDowns={false}
                     readOnlyHeadings={true}
                     onSelectedItemsChange={selectedItems => {
@@ -206,22 +222,77 @@ const CompleteRegistration: React.FC<Props> = ({navigation}) => {
                     hideSearch={true}
                   />
                 </View>
-
-                {!isLoading ? (
-                  <View style={{width: '100%'}}>
-                    <NixButton
-                      title="Sumbit"
-                      onPress={handleSubmit}
-                      type="primary"
-                      disabled={!isValid}
-                    />
-                  </View>
-                ) : (
-                  <ActivityIndicator size="small" />
-                )}
-                {!!errorTextServer ? (
-                  <Text style={styles.validationError}>{errorTextServer}</Text>
-                ) : null}
+                <View style={[styles.checkBoxContainer, styles.borderTop]}>
+                  <Field
+                    component={NixCheckbox}
+                    name="isAgreedTerms"
+                    textComponent={
+                      <View style={{paddingHorizontal: 18}}>
+                        <Text style={{fontSize: 14, color: '#757575'}}>
+                          I agree to Nutritionix Track{' '}
+                          <Text
+                            style={styles.link}
+                            onPress={() =>
+                              Linking.openURL(
+                                'https://www.iubenda.com/privacy-policy/7754814',
+                              )
+                            }>
+                            Terms of Service
+                          </Text>{' '}
+                          and{' '}
+                          <Text
+                            style={styles.link}
+                            onPress={() =>
+                              Linking.openURL(
+                                'https://www.nutritionix.com/privacy',
+                              )
+                            }>
+                            Privacy Policy
+                          </Text>
+                        </Text>
+                      </View>
+                    }
+                    size={25}
+                    fillColor={Colors.Primary}
+                    unfillColor="#FFFFFF"
+                    iconStyle={{borderColor: '#666'}}
+                    textStyle={{
+                      textDecorationLine: 'none',
+                    }}
+                  />
+                </View>
+                <View style={styles.checkBoxContainer}>
+                  <Field
+                    component={NixCheckbox}
+                    name="isConfirmedThirteen"
+                    text="I confirm that I am at least 13 years of age."
+                    size={25}
+                    fillColor={Colors.Primary}
+                    unfillColor="#FFFFFF"
+                    iconStyle={{borderColor: '#666'}}
+                    textStyle={{
+                      textDecorationLine: 'none',
+                      fontSize: 14,
+                    }}
+                  />
+                </View>
+                <NixButton
+                  style={{
+                    alignSelf: 'center',
+                    padding: 12,
+                    marginTop: 20,
+                    height: 45,
+                  }}
+                  title="Start Logging Foods!"
+                  onPress={handleSubmit}
+                  type="primary"
+                  disabled={
+                    !isValid ||
+                    isLoading ||
+                    !values.isAgreedTerms ||
+                    !values.isConfirmedThirteen
+                  }
+                />
               </>
             )}
           </Formik>

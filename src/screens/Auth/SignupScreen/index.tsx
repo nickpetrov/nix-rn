@@ -1,10 +1,12 @@
 // utils
-import React, {useState} from 'react';
+import React, {useEffect} from 'react';
 
 // components
-import {View, Image, SafeAreaView} from 'react-native';
+import {View, Image, SafeAreaView, Text} from 'react-native';
 import StepOneForm from './components/StepOneForm';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 // styles
 import {styles} from './SignupScreen.styles';
@@ -20,25 +22,21 @@ interface SignupScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Signup>;
 }
 
-export const SignupScreen: React.FC<SignupScreenProps> = () => {
-  const [errorTextServer, setErrorTextServer] = useState('');
-
-  const showErrorMessage = (errorType: string) => {
-    switch (errorType) {
-      case 'server error':
-        setErrorTextServer(
-          'Something went wrong. Please make sure You have entered valid Email and Password',
-        );
-        break;
-      case 'account exists':
-        setErrorTextServer(
-          'Account with this email already exists. If you experiencing difficulties logging in please use "Forgot Password" feature to recover your password, or ontact our suppotr team at support@nutritionix.com',
-        );
-        break;
-      default:
-        setErrorTextServer('Something went wrong.');
-    }
-  };
+export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
+  useEffect(() => {
+    navigation.setOptions({
+      headerShadowVisible: false,
+      headerTitle: '',
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <View style={styles.backBtn}>
+            <FontAwesome name="angle-left" style={styles.backBtnIcon} />
+            <Text>Back</Text>
+          </View>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   return (
     <KeyboardAwareScrollView
@@ -55,10 +53,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = () => {
               resizeMode="contain"
             />
           </View>
-          <StepOneForm
-            errorTextServer={errorTextServer}
-            showErrorMessage={showErrorMessage}
-          />
+          <StepOneForm />
         </View>
       </SafeAreaView>
     </KeyboardAwareScrollView>

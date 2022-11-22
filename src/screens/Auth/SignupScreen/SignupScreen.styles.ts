@@ -2,21 +2,21 @@ import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
-  loginWrapper: {
-    flex: 1,
-  },
   keyboardView: {
     flexGrow: 1,
+    flexDirection: 'column',
     backgroundColor: '#fff',
-    width: '100%',
+  },
+  loginWrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
   },
   contentWrapper: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flex: 1,
     padding: 16,
   },
   logo: {
+    alignSelf: 'center',
     width: '60%',
     height: 100,
   },
@@ -24,28 +24,16 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  title: {
-    fontSize: 36,
-    fontWeight: '500',
+  backBtn: {
+    backgroundColor: Colors.BgGray,
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 4,
   },
-  subtitle: {
-    fontSize: 18,
-    color: '#000',
-    marginBottom: 30,
-    marginTop: 10,
-  },
-  inputWrapper: {
-    marginHorizontal: 10,
-    marginVertical: 10,
-    paddingHorizontal: 10,
-    width: '100%',
-  },
-  input: {},
-  validationError: {
-    color: 'red',
-    marginVertical: 15,
-  },
-  link: {
-    color: Colors.Info,
+  backBtnIcon: {
+    fontSize: 20,
+    marginRight: 5,
   },
 });

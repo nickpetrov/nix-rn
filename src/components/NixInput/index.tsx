@@ -48,83 +48,95 @@ interface NixInputProps extends TextInputProps {
   children?: React.ReactNode;
 }
 
-export const NixInput: React.FC<NixInputProps> = ({
-  value,
-  onChangeText,
-  label,
-  unit,
-  unitValue,
-  placeholder,
-  error,
-  required,
-  style,
-  rootStyles,
-  unitStyle,
-  labelStyle,
-  subLabel,
-  labelContainerStyle,
-  withoutErorrText,
-  column,
-  children,
-  errorStyles,
-  withErrorBorder,
-  ...props
-}) => {
-  const inputRef: React.RefObject<TextInput> = useRef(null);
+export const NixInput = React.forwardRef<TextInput | null, NixInputProps>(
+  (
+    {
+      value,
+      onChangeText,
+      label,
+      unit,
+      unitValue,
+      placeholder,
+      error,
+      required,
+      style,
+      rootStyles,
+      unitStyle,
+      labelStyle,
+      subLabel,
+      labelContainerStyle,
+      withoutErorrText,
+      column,
+      children,
+      errorStyles,
+      withErrorBorder,
+      ...props
+    },
+    ref,
+  ) => {
+    const inputRef = useRef<TextInput | null>(null);
 
-  const handleFocus = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  };
-  return (
-    <TouchableWithoutFeedback onPress={handleFocus}>
-      <View>
-        <View style={[styles.root, rootStyles && rootStyles]}>
-          <View style={[styles.inputWrapper, column && styles.column]}>
-            <View
-              style={[
-                styles.labelContainer,
-                labelContainerStyle && labelContainerStyle,
-                column && styles.labelColumn,
-              ]}>
-              {subLabel && <Text style={styles.subLabel}>{subLabel}</Text>}
-              {label !== undefined && (
-                <Text style={[styles.label, labelStyle && labelStyle]}>
-                  {label && label}
-                  {required && <Text style={styles.red}>*</Text>}
+    const handleFocus = () => {
+      if (inputRef.current) {
+        inputRef.current?.focus();
+      }
+    };
+
+    return (
+      <TouchableWithoutFeedback onPress={handleFocus}>
+        <View>
+          <View style={[styles.root, rootStyles && rootStyles]}>
+            <View style={[styles.inputWrapper, column && styles.column]}>
+              <View
+                style={[
+                  styles.labelContainer,
+                  labelContainerStyle && labelContainerStyle,
+                  column && styles.labelColumn,
+                ]}>
+                {subLabel && <Text style={styles.subLabel}>{subLabel}</Text>}
+                {label !== undefined && (
+                  <Text style={[styles.label, labelStyle && labelStyle]}>
+                    {label && label}
+                    {required && <Text style={styles.red}>*</Text>}
+                  </Text>
+                )}
+              </View>
+              <TextInput
+                ref={input => {
+                  inputRef.current = input;
+                  if (ref) {
+                    (ref as React.MutableRefObject<TextInput | null>).current =
+                      input;
+                  }
+                }}
+                style={[
+                  styles.input,
+                  style && style,
+                  column && styles.inputColumn,
+                  !!error && withErrorBorder && styles.errorInput,
+                ]}
+                onChangeText={onChangeText}
+                placeholder={placeholder}
+                value={value}
+                keyboardType={props.keyboardType}
+                {...props}
+              />
+              {unit !== undefined && (
+                <Text style={[styles.unit, unitStyle && unitStyle]}>
+                  {unit && unit}
                 </Text>
               )}
+              {unitValue && <Text style={styles.unitValue}>{unitValue}</Text>}
+              {children && children}
             </View>
-            <TextInput
-              ref={inputRef}
-              style={[
-                styles.input,
-                style && style,
-                column && styles.inputColumn,
-                !!error && withErrorBorder && styles.errorInput,
-              ]}
-              onChangeText={onChangeText}
-              placeholder={placeholder}
-              value={value}
-              keyboardType={props.keyboardType}
-              {...props}
-            />
-            {unit !== undefined && (
-              <Text style={[styles.unit, unitStyle && unitStyle]}>
-                {unit && unit}
-              </Text>
-            )}
-            {unitValue && <Text style={styles.unitValue}>{unitValue}</Text>}
-            {children && children}
           </View>
+          {error && !withoutErorrText && (
+            <Text style={[styles.errorText, errorStyles && errorStyles]}>
+              {error}
+            </Text>
+          )}
         </View>
-        {error && !withoutErorrText && (
-          <Text style={[styles.errorText, errorStyles && errorStyles]}>
-            {error}
-          </Text>
-        )}
-      </View>
-    </TouchableWithoutFeedback>
-  );
-};
+      </TouchableWithoutFeedback>
+    );
+  },
+);

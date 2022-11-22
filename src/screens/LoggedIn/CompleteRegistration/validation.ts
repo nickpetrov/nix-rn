@@ -1,11 +1,14 @@
 import * as yup from 'yup';
 
 const step2ValidationSchema = yup.object().shape({
-  username: yup
-    .string()
-    .required('Username is required')
-    .min(2, ({min}) => `First Name must be at least ${min} characters`),
-  country_code: yup.string().required('Country is Required'),
+  isAgreedTerms: yup
+    .bool()
+    .oneOf([true], 'You must accept terms in order to use this app')
+    .required('You must accept terms in order to use this app'),
+  isConfirmedThirteen: yup
+    .bool()
+    .oneOf([true], 'You must be at least 13 years old in order to use this app')
+    .required('You must be at least 13 years old in order to use this app'),
 });
 
 export default step2ValidationSchema;

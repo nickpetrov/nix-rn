@@ -73,12 +73,7 @@ export const signup = (data: SignUpRequest) => {
 
       return userData;
     } catch (err: any) {
-      if (err.status === 400) {
-        throw new Error(err.status.toString());
-      }
-      if (err.status === 409) {
-        throw new Error(err.status + ': account already exists');
-      }
+      throw err;
     }
   };
 };
