@@ -1,3 +1,4 @@
+import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -31,8 +32,21 @@ export const styles = StyleSheet.create({
   subtitle: {
     fontSize: 18,
     color: '#999',
-    marginBottom: 30,
+    marginBottom: 10,
     marginTop: 10,
+  },
+  formikRoot: {
+    flex: 1,
+  },
+  inputs: {
+    borderWidth: 1,
+    borderColor: Colors.LightGray,
+  },
+  inputRoot: {
+    paddingHorizontal: 10,
+  },
+  inputRootWithoutBorder: {
+    borderBottomWidth: 0,
   },
   validationError: {
     color: 'red',
@@ -50,7 +64,7 @@ export const styles = StyleSheet.create({
     color: '#666',
   },
   btns: {
-    width: '100%',
+    flex: 1,
   },
   forgotContainer: {
     flex: 1,
@@ -70,5 +84,17 @@ export const styles = StyleSheet.create({
   },
   webView: {
     flex: 1,
+  },
+  backBtn: {
+    backgroundColor: Colors.BgGray,
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 4,
+  },
+  backBtnIcon: {
+    fontSize: 20,
+    marginRight: 5,
   },
 });

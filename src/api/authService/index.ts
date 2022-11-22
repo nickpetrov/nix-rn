@@ -2,9 +2,12 @@ import apiClient from 'api';
 import {SignUpRequest} from 'store/auth/auth.types';
 
 const authService = {
-  async siginIn(email: string, password: string) {
+  async siginIn(emailOrPhone: string, password: string) {
     return await apiClient.post('auth/signin', {
-      email,
+      email: emailOrPhone.indexOf('@') > -1 ? emailOrPhone : undefined,
+      mobile_number: !(emailOrPhone.indexOf('@') > -1)
+        ? emailOrPhone
+        : undefined,
       password,
     });
   },

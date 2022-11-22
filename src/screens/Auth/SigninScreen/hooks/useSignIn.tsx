@@ -14,25 +14,13 @@ import {Routes} from 'navigation/Routes';
 
 // types
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {setInfoMessage} from 'store/base/base.actions';
 
 export const useSignIn = (
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Signin>,
 ) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [errorTextServer, setErrorTextServer] = useState('');
-
-  const showErrorMessage = (errorType: string) => {
-    switch (errorType) {
-      case 'server error':
-        setErrorTextServer(
-          'Something went wrong. Please make sure You have entered valid Email and Password',
-        );
-        break;
-      default:
-        setErrorTextServer('Something went wrong.');
-    }
-  };
 
   const loginValidationSchema = yup.object().shape({
     email: yup
@@ -48,21 +36,20 @@ export const useSignIn = (
   const loginHandler = (values: {email: string; password: string}) => {
     setIsLoading(true);
     dispatch(signin(values.email, values.password))
-      .then(() => {
-        navigation.navigate(Routes.LoggedIn, {
-          screen: Routes.Home,
-          params: {
-            screen: Routes.Dashboard,
-            params: {
-              justLoggedIn: true,
-            },
-          },
-        });
+      .then(result => {
+        console.log(result);
+        setIsLoading(false);
       })
       .catch(err => {
         console.log(err);
         setIsLoading(false);
-        showErrorMessage('server error');
+        dispatch(
+          setInfoMessage({
+            title: 'Login Failed',
+            text: 'The login credentials you provided do not match our records. Please try again.',
+            btnText: 'Ok',
+          }),
+        );
       });
   };
 
@@ -72,7 +59,6 @@ export const useSignIn = (
 
   return {
     isLoading,
-    errorTextServer,
     loginValidationSchema,
     loginHandler,
     createAccountHandler,

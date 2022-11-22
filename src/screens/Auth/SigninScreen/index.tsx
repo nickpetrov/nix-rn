@@ -1,21 +1,14 @@
 // utils
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 
 // components
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  Image,
-  SafeAreaView,
-  TouchableOpacity,
-} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {Formik, Field} from 'formik';
+import {View, Text, Image, SafeAreaView, TouchableOpacity} from 'react-native';
+import {Formik} from 'formik';
 import {NixButton} from 'components/NixButton';
-import {NixInputField} from 'components/NixInputField';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {WebView} from 'react-native-webview';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {NixInput} from 'components/NixInput';
 
 // hooks
 import {useSignIn} from './hooks/useSignIn';
@@ -36,19 +29,40 @@ interface SigninScreenProps {
 
 export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
   const [showWebView, setShowWebView] = useState(false);
-  const {
-    isLoading,
-    errorTextServer,
-    loginValidationSchema,
-    loginHandler,
-    createAccountHandler,
-  } = useSignIn(navigation);
+  const [validOnChange, setValidOnChange] = useState(false);
+  const {isLoading, loginValidationSchema, loginHandler, createAccountHandler} =
+    useSignIn(navigation);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     navigation.setOptions({
       headerShown: showWebView ? false : true,
+      headerShadowVisible: false,
+      headerTitle: '',
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <View style={styles.backBtn}>
+            <FontAwesome name="angle-left" style={styles.backBtnIcon} />
+            <Text>Back</Text>
+          </View>
+        </TouchableOpacity>
+      ),
     });
   }, [navigation, showWebView]);
+
+  useEffect(
+    () =>
+      navigation.addListener('beforeRemove', e => {
+        if (!showWebView) {
+          // If we don't have unsaved changes, then we don't need to do anything
+          return;
+        }
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        // Prompt the user before leaving the screen
+        setShowWebView(false);
+      }),
+    [navigation, showWebView],
+  );
 
   if (showWebView) {
     return (
@@ -78,72 +92,77 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
             />
           </View>
           <Text style={styles.title}>Track</Text>
-          <Text style={styles.subtitle}>Food Tracker by Nutritionix</Text>
+          <Text style={styles.subtitle}>Food Logging by Nutritionix</Text>
           <Formik
             initialValues={{email: '', password: ''}}
             onSubmit={values => loginHandler(values)}
             validationSchema={loginValidationSchema}
-            validateOnMount>
-            {({handleSubmit, isValid}) => (
-              <>
-                <Field
-                  component={NixInputField}
-                  name="email"
-                  label="Email"
-                  leftComponent={
-                    <FontAwesome
-                      name={'envelope-o'}
-                      size={30}
-                      style={styles.emailField}
-                    />
-                  }
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                />
-                <Field
-                  component={NixInputField}
-                  name="password"
-                  label="Password"
-                  leftComponent={
-                    <FontAwesome
-                      name={'lock'}
-                      size={30}
-                      style={styles.passField}
-                    />
-                  }
-                  autoCapitalize="none"
-                  isPassword
-                  customShowPasswordComponent={<Text>Show</Text>}
-                  customHidePasswordComponent={<Text>Hide</Text>}
-                />
+            validateOnBlur={validOnChange}
+            validateOnChange={validOnChange}>
+            {({
+              handleChange,
+              isValid,
+              handleSubmit,
+              handleBlur,
+              values,
+              errors,
+            }) => (
+              <View style={styles.formikRoot}>
+                <View style={styles.inputs}>
+                  <NixInput
+                    rootStyles={{...styles.inputRoot}}
+                    label="Email"
+                    placeholder="Email"
+                    value={values.email}
+                    onChangeText={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    error={errors.email}
+                    withoutErorrText
+                    withErrorBorder
+                  />
+                  <NixInput
+                    rootStyles={{
+                      ...styles.inputRoot,
+                      ...styles.inputRootWithoutBorder,
+                    }}
+                    label="Password"
+                    placeholder="Password"
+                    value={values.password}
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    autoCapitalize="none"
+                    secureTextEntry={true}
+                    error={errors.password}
+                    withoutErorrText
+                    withErrorBorder
+                  />
+                </View>
                 <TouchableOpacity
                   style={styles.forgotContainer}
                   onPress={() => setShowWebView(true)}>
                   <Text style={styles.forgotText}>Forgot Password?</Text>
                 </TouchableOpacity>
-                {!isLoading ? (
-                  <View style={styles.btns}>
-                    <NixButton
-                      title="Login"
-                      onPress={handleSubmit}
-                      type="primary"
-                      disabled={!isValid}
-                      withMarginTop
-                    />
-                    <NixButton
-                      title="Create Account"
-                      onPress={createAccountHandler}
-                      type="default"
-                      withMarginTop
-                    />
-                  </View>
-                ) : (
-                  <ActivityIndicator size="small" />
-                )}
-                {errorTextServer ? (
-                  <Text style={styles.validationError}>{errorTextServer}</Text>
-                ) : null}
-              </>
+                <View style={styles.btns}>
+                  <NixButton
+                    title="Login"
+                    onPress={() => {
+                      handleSubmit();
+                      setValidOnChange(true);
+                    }}
+                    type="primary"
+                    disabled={!isValid || isLoading}
+                    withMarginTop
+                  />
+                  <NixButton
+                    title="Create Account"
+                    onPress={createAccountHandler}
+                    type="default"
+                    withMarginTop
+                  />
+                </View>
+              </View>
             )}
           </Formik>
         </View>

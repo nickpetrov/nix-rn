@@ -354,16 +354,8 @@ const LoginNavigation = () => {
         component={LoginScreen}
         options={{headerShown: false}}
       />
-      <Stack.Screen
-        name={Routes.Signin}
-        component={SigninScreen}
-        options={{headerTitle: 'Sign in via Email'}}
-      />
-      <Stack.Screen
-        name={Routes.Signup}
-        component={SignupScreen}
-        options={{headerTitle: 'Sign up'}}
-      />
+      <Stack.Screen name={Routes.Signin} component={SigninScreen} />
+      <Stack.Screen name={Routes.Signup} component={SignupScreen} />
     </Stack.Navigator>
   );
 };
