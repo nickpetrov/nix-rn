@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import moment from 'moment-timezone';
 import {useNetInfo} from '@react-native-community/netinfo';
+import SQLite from 'react-native-sqlite-storage';
 
 // components
 import {
@@ -16,6 +17,7 @@ import {
   RefreshControl,
   SectionList,
   TouchableHighlight,
+  Platform,
 } from 'react-native';
 import BasketButton from 'components/BasketButton';
 import Footer from 'components/Footer';
@@ -44,6 +46,7 @@ import useLocalNotification from 'hooks/useLocalNotification';
 // actinos
 import * as userLogActions from 'store/userLog/userLog.actions';
 import {addExistFoodToBasket} from 'store/basket/basket.actions';
+import {setDB} from 'store/base/base.actions';
 
 // constant
 import {Routes} from 'navigation/Routes';
@@ -86,6 +89,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const {foods, totals, selectedDate, weights, exercises} = useSelector(
     state => state.userLog,
   );
+  const db = useSelector(state => state.base.db);
   let rowRefs = new Map<string | mealTypes, Swipeable>();
   const userData = useSelector(state => state.auth.userData);
   const uncompletedProfile =
@@ -212,6 +216,28 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       ),
     });
   }, [navigation]);
+
+  useEffect(() => {
+    if (!db?.transaction) {
+      dispatch(
+        setDB(
+          SQLite.openDatabase(
+            {
+              name: 'track_db',
+              // createFromLocation: 1,
+              location: Platform.OS === 'ios' ? 'default' : 'Shared',
+            },
+            () => {
+              console.log('Re-open connection success!');
+            },
+            error => {
+              console.log('error open db', error);
+            },
+          ),
+        ),
+      );
+    }
+  }, [db, dispatch]);
 
   const getEmptySectionText = (key: string) => {
     let noLoggedDataText = 'No foods logged yet.';

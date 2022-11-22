@@ -3,7 +3,6 @@ import React, {useState} from 'react';
 
 // components
 import {View, Image, SafeAreaView} from 'react-native';
-import StepTwoForm from './components/StepTwoForm';
 import StepOneForm from './components/StepOneForm';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
@@ -21,9 +20,8 @@ interface SignupScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Signup>;
 }
 
-export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
+export const SignupScreen: React.FC<SignupScreenProps> = () => {
   const [errorTextServer, setErrorTextServer] = useState('');
-  const [isStep2, setIsStep2] = useState(false);
 
   const showErrorMessage = (errorType: string) => {
     switch (errorType) {
@@ -57,19 +55,10 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
               resizeMode="contain"
             />
           </View>
-          {!isStep2 ? (
-            <StepOneForm
-              setIsStep2={setIsStep2}
-              errorTextServer={errorTextServer}
-              showErrorMessage={showErrorMessage}
-            />
-          ) : (
-            <StepTwoForm
-              navigation={navigation}
-              errorTextServer={errorTextServer}
-              showErrorMessage={showErrorMessage}
-            />
-          )}
+          <StepOneForm
+            errorTextServer={errorTextServer}
+            showErrorMessage={showErrorMessage}
+          />
         </View>
       </SafeAreaView>
     </KeyboardAwareScrollView>

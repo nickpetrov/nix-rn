@@ -55,4 +55,7 @@ export type User = {
   remote_ids: {};
 };
 
-export type UserData = {userData: User; userJWT: string};
+export type UserData = {
+  userData: User;
+  userJWT: string;
+};

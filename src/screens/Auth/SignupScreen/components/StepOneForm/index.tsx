@@ -13,7 +13,7 @@ import signupValidationSchema from './validation';
 import {useDispatch} from 'hooks';
 
 // actions
-import {setUserJwt, signup} from 'store/auth/auth.actions';
+import {signup} from 'store/auth/auth.actions';
 
 // styles
 import {styles} from '../../SignupScreen.styles';
@@ -24,16 +24,11 @@ import {Colors} from 'constants/Colors';
 import {NixButton} from 'components/NixButton';
 
 type Props = {
-  setIsStep2: (a: boolean) => void;
   showErrorMessage: (error: string) => void;
   errorTextServer: string;
 };
 
-const StepOneForm: React.FC<Props> = ({
-  setIsStep2,
-  showErrorMessage,
-  errorTextServer,
-}) => {
+const StepOneForm: React.FC<Props> = ({showErrorMessage, errorTextServer}) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,11 +49,6 @@ const StepOneForm: React.FC<Props> = ({
       .then(data => {
         setIsLoading(false);
         console.log(data);
-        // show step 2 of registration process
-        setIsStep2(true);
-        setTimeout(() => {
-          dispatch(setUserJwt(data['x-user-jwt']));
-        }, 5000);
       })
       .catch(err => {
         console.log('error signup', err);

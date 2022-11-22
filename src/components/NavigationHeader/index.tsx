@@ -36,6 +36,7 @@ interface NavigationHeaderProps {
   withAutoComplete?: boolean;
   children?: React.ReactNode;
   withoutTitle?: boolean;
+  emptyRight?: boolean;
 }
 
 export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
@@ -49,6 +50,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   withAutoComplete,
   children,
   withoutTitle,
+  emptyRight,
 }) => {
   const searchValue = useSelector(state => state.autoComplete.searchValue);
   const dispatch = useDispatch();
@@ -116,7 +118,11 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
           </Text>
         </View>
       )}
-      {headerRight ? headerRight : <View style={styles.emptyRight}></View>}
+      {headerRight ? (
+        headerRight
+      ) : !emptyRight ? (
+        <View style={styles.emptyRight}></View>
+      ) : null}
     </View>
   );
 };

@@ -5,6 +5,7 @@ import {
   createDrawerNavigator,
   DrawerNavigationProp,
 } from '@react-navigation/drawer';
+import moment from 'moment-timezone';
 
 // hooks
 import {useSelector} from 'hooks/useRedux';
@@ -47,10 +48,10 @@ import {
   HealthkitSyncScreen,
   PreferencesMenuScreen,
 } from 'screens/Preferences';
+import GroceryAgentModeScreen from 'screens/LoggedIn/GroceryAgentModeScreen';
 
 import WebViewScreen from 'screens/LoggedIn/WebViewScreen';
 import LogoutScreen from 'screens/LoggedIn/LogoutScreen';
-import GroceryAgentModeScreen from 'screens/LoggedIn/GroceryAgentModeScreen';
 
 // constants
 import {Routes} from './Routes';
@@ -62,6 +63,7 @@ import {
   DrawerNavigatorParamList,
   StackNavigatorParamList,
 } from './navigation.types';
+import CompleteRegistration from 'screens/LoggedIn/CompleteRegistration';
 
 const Stack = createNativeStackNavigator<StackNavigatorParamList>();
 const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
@@ -146,8 +148,14 @@ const LoggedInNavigation = ({
 }: {
   navigation: DrawerNavigationProp<ParamListBase>;
 }) => {
+  const created_at = useSelector(state => state.auth.userData.created_at);
+  const justCreated = moment().diff(created_at, 'seconds') <= 90;
   return (
-    <Stack.Navigator screenOptions={LoggedInNavigationOptions}>
+    <Stack.Navigator
+      screenOptions={LoggedInNavigationOptions}
+      initialRouteName={
+        justCreated ? Routes.CompleteRegistration : Routes.Dashboard
+      }>
       <Stack.Screen
         name={Routes.Dashboard}
         component={DashboardScreen}
@@ -289,6 +297,13 @@ const LoggedInNavigation = ({
         component={GroceryAgentModeScreen}
         options={{
           headerTitle: 'Grocery Agent Mode',
+        }}
+      />
+      <Stack.Screen
+        name={Routes.CompleteRegistration}
+        component={CompleteRegistration}
+        options={{
+          headerTitle: 'Signup',
         }}
       />
       <Stack.Screen
