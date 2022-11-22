@@ -65,21 +65,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           );
           AccessToken.getCurrentAccessToken().then(data => {
             console.log(data?.accessToken.toString());
-            dispatch(fbLogin(data?.accessToken.toString() || ''))
-              .then(() => {
-                navigation.navigate(Routes.LoggedIn, {
-                  screen: Routes.Home,
-                  params: {
-                    screen: Routes.Dashboard,
-                    params: {
-                      justLoggedIn: true,
-                    },
-                  },
-                });
-              })
-              .catch((err: Error) => {
+            dispatch(fbLogin(data?.accessToken.toString() || '')).catch(
+              (err: Error) => {
                 console.log(err);
-              });
+              },
+            );
           });
         }
       },
@@ -98,21 +88,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
     if (credentialState === appleAuth.State.AUTHORIZED) {
       // updateCredentialStateForUser('AUTHORIZED');
       console.log('AUTHORIZED');
-      dispatch(appleLogin(appleAuthRequestResponse))
-        .then(() => {
-          navigation.navigate(Routes.LoggedIn, {
-            screen: Routes.Home,
-            params: {
-              screen: Routes.Dashboard,
-              params: {
-                justLoggedIn: true,
-              },
-            },
-          });
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      dispatch(appleLogin(appleAuthRequestResponse)).catch(err => {
+        console.log(err);
+      });
     } else {
       console.log(credentialState);
     }
