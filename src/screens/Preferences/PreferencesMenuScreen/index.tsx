@@ -50,7 +50,7 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
         }}>
         <View style={[styles.menuItem, styles.menuItemRow]}>
           <Text>Daily Calorie Preferences</Text>
-          <Text style={styles.cal}>{daily_kcal}</Text>
+          {!!daily_kcal && <Text style={styles.cal}>{daily_kcal}</Text>}
         </View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback

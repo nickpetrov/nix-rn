@@ -125,13 +125,17 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
 
   useEffect(() => {
     if (clientTotals.length) {
-      setDailyKcal(clientTotals[0].daily_kcal_limit);
+      if (clientTotals[0].daily_kcal_limit) {
+        setDailyKcal(clientTotals[0].daily_kcal_limit);
+      }
     } else if (totals.length) {
       const selectedDayTotals = totals.filter(
         (item: TotalProps) => item.date === followDate,
       )[0];
       if (selectedDayTotals) {
-        setDailyKcal(selectedDayTotals.daily_kcal_limit);
+        if (selectedDayTotals.daily_kcal_limit) {
+          setDailyKcal(selectedDayTotals.daily_kcal_limit);
+        }
         if (selectedDayTotals.notes) {
           setDayNote(selectedDayTotals.notes);
         }
@@ -276,7 +280,9 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   }, [foods]);
 
   const updateCalorieLimit = () => {
-    dispatch(userActions.updateUserData({daily_kcal: dailyKcal} as User));
+    dispatch(userActions.updateUserData({daily_kcal: dailyKcal} as User)).catch(
+      err => console.log(err),
+    );
   };
 
   const saveDayNote = () => {
@@ -350,7 +356,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     valueIron: total.nf_iron_dv || 0,
     calorieIntake: userData.daily_kcal,
   };
-
+  console.log('totals', totals);
   return (
     <SafeAreaView style={styles.root}>
       <KeyboardAwareScrollView overScrollMode="never">
@@ -363,7 +369,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
             <View style={styles.dailyContainer}>
               <Text style={styles.dailyText}>Daily Calorie Limit:</Text>
               <TextInput
-                value={dailyKcal + ''}
+                value={dailyKcal ? dailyKcal + '' : ''}
                 onChangeText={text => setDailyKcal(parseInt(text))}
                 keyboardType="number-pad"
                 style={styles.dailyInput}
