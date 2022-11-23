@@ -2,6 +2,7 @@
 import React, {useCallback} from 'react';
 import InAppReview from 'react-native-in-app-review';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {getReadableVersion} from 'react-native-device-info';
 
 // components
 import {
@@ -12,7 +13,6 @@ import {
   TouchableWithoutFeedback,
   Share,
   Linking,
-  Alert,
   Image,
   ScrollView,
 } from 'react-native';
@@ -40,6 +40,7 @@ export const SideMenu: React.FC = () => {
   const userGroceyAgentInfo = useSelector(
     state => state.base.userGroceyAgentInfo,
   );
+  const appVersion = getReadableVersion();
 
   let menuItems: Array<{
     icon: string;
@@ -175,7 +176,7 @@ export const SideMenu: React.FC = () => {
     // Checking if the link is supported for links with custom URL scheme.
     let fbAppUrl = '';
 
-    if (Platform.OS == 'ios') {
+    if (Platform.OS === 'ios') {
       fbAppUrl = 'fb://profile/110659912291888';
     } else {
       fbAppUrl = 'fb://page/110659912291888';
@@ -193,24 +194,13 @@ export const SideMenu: React.FC = () => {
     }
   }, []);
 
-  const openWebUrlHandler = useCallback(async (url: string) => {
-    // Checking if the link is supported for links with custom URL scheme.
-
-    const supported = await Linking.canOpenURL(url);
-
-    if (supported) {
-      // Opening the link with some app, if the URL scheme is "http" the web link should be opened
-      // by some browser in the mobile
-      await Linking.openURL(url);
-    } else {
-      Alert.alert(`Don't know how to open this URL: ${url}`);
-    }
-  }, []);
-
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScrollView style={{flex: 1, paddingVertical: 20}}>
+      <ScrollView style={{flex: 1}}>
         {/* Need to manually add items to the sidedrawer */}
+        <View style={styles.track}>
+          <Text style={styles.trackText}>Track {appVersion}</Text>
+        </View>
         {menuItems.map((item, index) => {
           if (item.hide) {
             return;
@@ -253,41 +243,45 @@ export const SideMenu: React.FC = () => {
           {/*TODO - add redirects for each button*/}
           <Text>Like this app?</Text>
           {/*TODO - conditionally show Google Play or App Store*/}
-          {Platform.OS == 'ios' ? (
-            <NixButton
-              type="primary"
-              title="Rate us on App Store"
-              onPress={() => rateAppHandler()}
-              style={{marginTop: 10}}
-            />
-          ) : (
-            <NixButton
-              type="primary"
-              title="Rate us on Google Play"
-              onPress={() => rateAppHandler()}
-              style={{marginTop: 10}}
-            />
-          )}
           <NixButton
             type="primary"
+            iconName="star"
+            iconStyles={styles.iconStyle}
+            title={
+              Platform.OS === 'ios'
+                ? 'Rate us on App Store'
+                : 'Rate us on Google Play'
+            }
+            onPress={() => {
+              rateAppHandler();
+            }}
+            style={{marginTop: 10}}
+          />
+          <NixButton
+            type="primary"
+            iconName="share-square-o"
+            iconStyles={styles.iconStyle}
             title="Send Track to a friend"
             onPress={() => shareAppHandler()}
             style={{marginTop: 10}}
           />
           <NixButton
             type="primary"
+            iconName="thumbs-up"
+            iconStyles={styles.iconStyle}
             title="Like us on Facebook"
             onPress={() => openFbHandler()}
             style={{marginTop: 10}}
           />
           <TouchableWithoutFeedback
             style={{marginTop: 10}}
-            onPress={() => openWebUrlHandler('https://www.nutritionix.com')}>
+            onPress={() => Linking.openURL('https://www.nutritionix.com')}>
             <View>
               <SvgUri
+                style={{alignSelf: 'center', marginTop: 20}}
                 uri={uri}
-                width="100%"
-                height="50"
+                width="180"
+                height="40"
                 viewBox="0 0 1000 219"
                 preserveAspectRatio="none"
               />

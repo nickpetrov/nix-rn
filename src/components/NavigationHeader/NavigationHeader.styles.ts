@@ -5,11 +5,11 @@ export const styles = StyleSheet.create({
   header: {
     width: '100%',
     height: Platform.OS === 'ios' ? 50 : 50 + (StatusBar?.currentHeight || 0),
+    paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
     alignItems: 'center',
     flexDirection: 'row',
     alignSelf: 'center',
     backgroundColor: Colors.Primary,
-    paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
     paddingHorizontal: 10,
   },
   autocompleteWrapper: {
