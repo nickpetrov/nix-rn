@@ -91,33 +91,32 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
 
       console.log('appleAuthRequestResponse', appleAuthRequestResponse);
 
-      const {user, email, /*nonce, identityToken,*/ realUserStatus /* etc */} =
+      const {user, email, nonce, identityToken, realUserStatus /* etc */} =
         appleAuthRequestResponse;
 
       // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
-      const credentialState = await appleAuth.getCredentialStateForUser(
-        appleAuthRequestResponse.user,
-      );
+      // not used in this app (take look at ionic app)
+      // const credentialState = await appleAuth.getCredentialStateForUser(
+      //   appleAuthRequestResponse.user,
+      // );
+      // if (credentialState === appleAuth.State.AUTHORIZED) {
+      //   console.log('AUTHORIZED');
+      //   dispatch(appleLogin(appleAuthRequestResponse)).catch(err => {
+      //     console.log(err);
+      //   });
+      // } else {
+      //   console.log('NOT AUTHORIZED', credentialState);
+      // }
 
-      if (credentialState === appleAuth.State.AUTHORIZED) {
-        console.log('AUTHORIZED');
+      if (identityToken) {
+        // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
+        console.log(nonce, identityToken);
         dispatch(appleLogin(appleAuthRequestResponse)).catch(err => {
           console.log(err);
         });
       } else {
-        console.log('NOT AUTHORIZED', credentialState);
+        // no token - failed sign-in?
       }
-
-      // if (identityToken) {
-      //   // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
-      //   console.log(nonce, identityToken);
-      //   dispatch(appleLogin(appleAuthRequestResponse))
-      //     .catch(err => {
-      //       console.log(err);
-      //     });
-      // } else {
-      //   // no token - failed sign-in?
-      // }
 
       if (realUserStatus === appleAuth.UserStatus.LIKELY_REAL) {
         console.log("I'm a real person!");
