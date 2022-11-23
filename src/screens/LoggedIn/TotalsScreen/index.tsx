@@ -280,9 +280,11 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   }, [foods]);
 
   const updateCalorieLimit = () => {
-    dispatch(userActions.updateUserData({daily_kcal: dailyKcal} as User)).catch(
-      err => console.log(err),
-    );
+    if (userData.daily_kcal !== dailyKcal) {
+      dispatch(
+        userActions.updateUserData({daily_kcal: dailyKcal} as User),
+      ).catch(err => console.log(err));
+    }
   };
 
   const saveDayNote = () => {
@@ -377,7 +379,6 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
               <View style={styles.dailyBtnContainer}>
                 <NixButton
                   type="primary"
-                  disabled={userData.daily_kcal == dailyKcal ? true : false}
                   title="Save"
                   onPress={() => updateCalorieLimit()}
                   style={styles.dailyBtn}
