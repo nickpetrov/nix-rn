@@ -219,8 +219,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const age = moment().year() - (userData.birth_year || 0);
   const FormikInitValues: FormikDataProps = {
     first_name: userData.first_name,
-    last_name: userData.last_name,
-    timezone: userData.timezone,
+    last_name: userData.last_name || '',
+    timezone: userData.timezone || 'US/Central',
     measure_system: userData.measure_system,
     weight_kg: String(userData.weight_kg || 0),
     height_cm: String(userData.height_cm || 0),

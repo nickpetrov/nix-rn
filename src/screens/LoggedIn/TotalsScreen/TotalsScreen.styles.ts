@@ -81,6 +81,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 7,
     textAlignVertical: 'top',
     borderColor: '#eee',
+    marginBottom: 10,
   },
   row: {
     flexDirection: 'row',

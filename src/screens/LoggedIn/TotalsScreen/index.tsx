@@ -288,7 +288,9 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   };
 
   const saveDayNote = () => {
-    dispatch(logActions.setDayNotes(selectedDate, dayNote));
+    if (dayNote) {
+      dispatch(logActions.setDayNotes(selectedDate, dayNote));
+    }
   };
 
   const handleCopyMeal = () => {
@@ -361,7 +363,12 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.root}>
-      <KeyboardAwareScrollView overScrollMode="never">
+      <KeyboardAwareScrollView
+        overScrollMode="never"
+        enableOnAndroid={true}
+        resetScrollToCoords={{x: 0, y: 0}}
+        extraHeight={200}
+        enableAutomaticScroll={true}>
         <View style={styles.mb10}>
           <NutritionLabel option={labelOptions || defaultOption} />
         </View>
@@ -478,22 +485,20 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
                   />
                 </View>
               </TouchableWithoutFeedback>
-              {showNotes && (
-                <View style={styles.mb10}>
-                  <TextInput
-                    multiline
-                    numberOfLines={5}
-                    style={styles.noteInput}
-                    value={dayNote}
-                    onChangeText={text => setDayNote(text)}
-                    onBlur={() => {
-                      if (totals.length && totals[0].notes !== dayNote) {
-                        saveDayNote();
-                      }
-                    }}
-                  />
-                </View>
-              )}
+              {showNotes ? (
+                <TextInput
+                  multiline
+                  numberOfLines={5}
+                  style={styles.noteInput}
+                  value={dayNote}
+                  onChangeText={text => setDayNote(text)}
+                  onBlur={() => {
+                    if (totals.length && totals[0].notes !== dayNote) {
+                      saveDayNote();
+                    }
+                  }}
+                />
+              ) : null}
             </>
           )}
 
