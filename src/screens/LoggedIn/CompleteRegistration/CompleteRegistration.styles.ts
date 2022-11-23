@@ -84,4 +84,10 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+  inputRoot: {
+    paddingHorizontal: 5,
+  },
+  labelContainer: {
+    width: '20%',
+  },
 });

@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationHeader} from 'components/NavigationHeader';
 import NixCheckbox from 'components/NixCheckbox';
+import {NixInput} from 'components/NixInput';
 
 // validation
 import step2ValidationSchema from './validation';
@@ -18,13 +19,15 @@ import step2ValidationSchema from './validation';
 import {Routes} from 'navigation/Routes';
 
 // hooks
-import {useDispatch} from 'hooks';
+import {useDispatch, useSelector} from 'hooks';
 
 // ssrvices
+import authService from 'api/authService';
 import baseService from 'api/baseService';
 
 // actions
 import {updateUserData} from 'store/auth/auth.actions';
+import {setInfoMessage} from 'store/base/base.actions';
 
 // styles
 import {styles} from './CompleteRegistration.styles';
@@ -48,11 +51,14 @@ type FormikProps = {
   isConfirmedThirteen: boolean;
   weekday_reminders_enabled: boolean;
   weekend_reminders_enabled: boolean;
+  showEmail: boolean;
+  email: string;
 };
 
 const CompleteRegistration: React.FC<Props> = ({navigation}) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const userData = useSelector(state => state.auth.userData);
 
   const [selectedTopics, setSelectedTopics] = useState<Array<number>>([]);
   const [nutritionTopicsList, setNutritionTopicsList] = useState<
@@ -92,35 +98,86 @@ const CompleteRegistration: React.FC<Props> = ({navigation}) => {
     isConfirmedThirteen: false,
     weekday_reminders_enabled: false,
     weekend_reminders_enabled: false,
+    showEmail: !userData.email,
+    email: '',
   };
 
   const step2Handler = (form: FormikProps) => {
-    if (isLoading) return;
     setIsLoading(true);
-    dispatch(
-      updateUserData({
-        nutrition_topics: form.nutrition_topics,
-        weekday_reminders_enabled: form.weekday_reminders_enabled ? 1 : 0,
-        weekend_reminders_enabled: form.weekend_reminders_enabled ? 1 : 0,
-        push_enabled:
-          form.weekday_reminders_enabled && form.weekend_reminders_enabled
-            ? 1
-            : 0,
-      }),
-    )
-      .then(() => {
-        return dispatch(updateUserData({daily_kcal: 2000}));
-      })
-      .then(() => {
-        setIsLoading(false);
-        navigation.replace(Routes.Dashboard, {
-          justLoggedIn: true,
+    if (form.email) {
+      authService
+        .sendEmailVerification(form.email)
+        .then(() => {
+          return dispatch(
+            updateUserData({
+              nutrition_topics: form.nutrition_topics,
+              weekday_reminders_enabled: form.weekday_reminders_enabled ? 1 : 0,
+              weekend_reminders_enabled: form.weekend_reminders_enabled ? 1 : 0,
+              push_enabled:
+                form.weekday_reminders_enabled && form.weekend_reminders_enabled
+                  ? 1
+                  : 0,
+            }),
+          );
+        })
+        .then(() => {
+          return dispatch(updateUserData({daily_kcal: 2000}));
+        })
+        .then(() => {
+          setIsLoading(false);
+          navigation.replace(Routes.Dashboard, {
+            justLoggedIn: true,
+          });
+        })
+        .catch(err => {
+          dispatch(
+            setInfoMessage({
+              title: 'Account Creation Failed',
+              child: (
+                <Text>
+                  An unexpected server error has occured. Please email{' '}
+                  <Text
+                    style={styles.link}
+                    onPress={() =>
+                      Linking.openURL('mailto:support@nutritionix.com')
+                    }>
+                    support@nutritionix.com
+                  </Text>{' '}
+                  and reference the reference code:{' '}
+                  {err.data?.id ? err.data?.id : ''}
+                </Text>
+              ),
+              btnText: 'Ok',
+            }),
+          );
+          setIsLoading(false);
         });
-      })
-      .catch(err => {
-        console.log(err);
-        setIsLoading(false);
-      });
+    } else {
+      dispatch(
+        updateUserData({
+          nutrition_topics: form.nutrition_topics,
+          weekday_reminders_enabled: form.weekday_reminders_enabled ? 1 : 0,
+          weekend_reminders_enabled: form.weekend_reminders_enabled ? 1 : 0,
+          push_enabled:
+            form.weekday_reminders_enabled && form.weekend_reminders_enabled
+              ? 1
+              : 0,
+        }),
+      )
+        .then(() => {
+          return dispatch(updateUserData({daily_kcal: 2000}));
+        })
+        .then(() => {
+          setIsLoading(false);
+          navigation.replace(Routes.Dashboard, {
+            justLoggedIn: true,
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          setIsLoading(false);
+        });
+    }
   };
 
   return (
@@ -137,9 +194,33 @@ const CompleteRegistration: React.FC<Props> = ({navigation}) => {
             onSubmit={values => step2Handler(values)}
             validationSchema={step2ValidationSchema}
             validateOnMount>
-            {({handleSubmit, isValid, values, setFieldValue}) => (
+            {({
+              handleSubmit,
+              isValid,
+              values,
+              setFieldValue,
+              errors,
+              handleChange,
+              handleBlur,
+            }) => (
               <>
                 <View>
+                  {!userData.email && (
+                    <NixInput
+                      rootStyles={styles.inputRoot}
+                      labelContainerStyle={styles.labelContainer}
+                      label="Email"
+                      placeholder="Email"
+                      value={values.email || ''}
+                      onChangeText={handleChange('email')}
+                      onBlur={handleBlur('email')}
+                      autoCapitalize="none"
+                      keyboardType="email-address"
+                      error={errors.email}
+                      withoutErorrText
+                      withErrorBorder
+                    />
+                  )}
                   <View style={styles.itemPN}>
                     <View style={styles.leftPN}>
                       <Text style={styles.titlePN}>
