@@ -34,7 +34,7 @@ export const appleLogin = (apple_user_data: any) => {
   return async (dispatch: Dispatch) => {
     try {
       const response = await authService.appleSignIn(apple_user_data);
-
+      console.log('apple signin res', response);
       const userData = response.data;
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
       dispatch({type: authActionTypes.SIGNIN, userData});

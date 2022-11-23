@@ -4,7 +4,6 @@ import {LoginManager, AccessToken} from 'react-native-fbsdk-next';
 import {
   appleAuth,
   AppleButton,
-  AppleRequestResponse,
 } from '@invertase/react-native-apple-authentication';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
@@ -79,29 +78,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
     );
   };
 
-  async function fetchAndUpdateCredentialState(
-    appleAuthRequestResponse: AppleRequestResponse,
-  ) {
-    const credentialState = await appleAuth.getCredentialStateForUser(
-      appleAuthRequestResponse.user,
-    );
-    if (credentialState === appleAuth.State.AUTHORIZED) {
-      // updateCredentialStateForUser('AUTHORIZED');
-      console.log('AUTHORIZED');
-      dispatch(appleLogin(appleAuthRequestResponse)).catch(err => {
-        console.log(err);
-      });
-    } else {
-      console.log(credentialState);
-    }
-  }
-
   const appleLoginHandler = async () => {
     // start a login request
     try {
       const appleAuthRequestResponse = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
-        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+        requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
         user: 'userId',
         state: 'state',
         nonce: 'nonce',
@@ -113,25 +95,23 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
         appleAuthRequestResponse;
 
       // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
-      fetchAndUpdateCredentialState(appleAuthRequestResponse).catch(error =>
-        console.log(`Error: ${error.code}`),
+      const credentialState = await appleAuth.getCredentialStateForUser(
+        appleAuthRequestResponse.user,
       );
-      // don't know for what that code needed
+
+      if (credentialState === appleAuth.State.AUTHORIZED) {
+        console.log('AUTHORIZED');
+        dispatch(appleLogin(appleAuthRequestResponse)).catch(err => {
+          console.log(err);
+        });
+      } else {
+        console.log('NOT AUTHORIZED', credentialState);
+      }
+
       // if (identityToken) {
       //   // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
       //   console.log(nonce, identityToken);
       //   dispatch(appleLogin(appleAuthRequestResponse))
-      //     .then(() => {
-      //       navigation.navigate(Routes.LoggedIn, {
-      //         screen: Routes.Home,
-      //         params: {
-      //           screen: Routes.Dashboard,
-      //           params: {
-      //             justLoggedIn: true,
-      //           },
-      //         },
-      //       });
-      //     })
       //     .catch(err => {
       //       console.log(err);
       //     });
