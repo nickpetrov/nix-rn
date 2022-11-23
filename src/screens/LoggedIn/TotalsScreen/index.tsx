@@ -356,7 +356,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     valueIron: total.nf_iron_dv || 0,
     calorieIntake: userData.daily_kcal,
   };
-  console.log('totals', totals);
+
   return (
     <SafeAreaView style={styles.root}>
       <KeyboardAwareScrollView overScrollMode="never">
