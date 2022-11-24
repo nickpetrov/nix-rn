@@ -111,7 +111,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     net_carbs: 0,
     totalCalForPieChart: 0,
   });
-
+  const [caloriesInputFocused, setCaloriesInputFocuses] = useState(false);
   const dispatch = useDispatch();
 
   useLayoutEffect(() => {
@@ -366,6 +366,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
       <KeyboardAwareScrollView
         overScrollMode="never"
         enableOnAndroid={true}
+        extraScrollHeight={showNotes && !caloriesInputFocused ? 200 : 0}
         enableAutomaticScroll={true}>
         <View style={styles.mb10}>
           <NutritionLabel option={labelOptions || defaultOption} />
@@ -377,6 +378,8 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
               <Text style={styles.dailyText}>Daily Calorie Limit:</Text>
               <TextInput
                 value={dailyKcal ? dailyKcal + '' : ''}
+                onFocus={() => setCaloriesInputFocuses(true)}
+                onBlur={() => setCaloriesInputFocuses(false)}
                 onChangeText={text => setDailyKcal(parseInt(text))}
                 keyboardType="number-pad"
                 style={styles.dailyInput}
