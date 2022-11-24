@@ -84,15 +84,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
     try {
       const appleAuthRequestResponse = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
-        requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
-        user: 'userId',
-        state: 'state',
-        nonce: 'nonce',
+        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
       });
 
       console.log('appleAuthRequestResponse', appleAuthRequestResponse);
 
-      const {user, email, realUserStatus /* etc */} = appleAuthRequestResponse;
+      const {user, email, realUserStatus, identityToken, /* etc */} = appleAuthRequestResponse;
 
       // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
       // not used in this app (take look at ionic app)
@@ -109,6 +106,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
       // }
 
       // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
+    if(identityToken){
       dispatch(appleLogin(appleAuthRequestResponse)).catch(err => {
         dispatch(
           setInfoMessage({
@@ -119,6 +117,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           }),
         );
       });
+    }
 
       if (realUserStatus === appleAuth.UserStatus.LIKELY_REAL) {
         console.log("I'm a real person!");

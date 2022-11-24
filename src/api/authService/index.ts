@@ -18,7 +18,7 @@ const authService = {
   },
   async appleSignIn(apple_user_data: any) {
     return await apiClient.post('oauth/apple/signin', {
-      apple_user_data,
+      ...apple_user_data,
     });
   },
   async signUp(data: SignUpRequest) {
