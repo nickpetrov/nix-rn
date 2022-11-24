@@ -32,7 +32,6 @@ import {styles} from './LoginScreen.styles';
 
 // types
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {setInfoMessage} from '../../../store/base/base.actions';
 
 interface LoginScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Login>;
@@ -89,35 +88,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
 
       console.log('appleAuthRequestResponse', appleAuthRequestResponse);
 
-      const {user, email, realUserStatus, identityToken, /* etc */} = appleAuthRequestResponse;
-
-      // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
-      // not used in this app (take look at ionic app)
-      // const credentialState = await appleAuth.getCredentialStateForUser(
-      //   appleAuthRequestResponse.user,
-      // );
-      // if (credentialState === appleAuth.State.AUTHORIZED) {
-      //   console.log('AUTHORIZED');
-      //   dispatch(appleLogin(appleAuthRequestResponse)).catch(err => {
-      //     console.log(err);
-      //   });
-      // } else {
-      //   console.log('NOT AUTHORIZED', credentialState);
-      // }
+      const {user, email, realUserStatus, identityToken /* etc */} =
+        appleAuthRequestResponse;
 
       // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
-    if(identityToken){
-      dispatch(appleLogin(appleAuthRequestResponse)).catch(err => {
-        dispatch(
-          setInfoMessage({
-            title: 'Error',
-            text:
-              err.data?.message ||
-              'Oops, something went wrong. Try again later.',
-          }),
-        );
-      });
-    }
+      if (identityToken) {
+        // works only with bundle indetifier from ionic app - сom.nutritionix.nixtrack
+        dispatch(appleLogin(appleAuthRequestResponse)).catch(err => {
+          console.log(err);
+        });
+      }
 
       if (realUserStatus === appleAuth.UserStatus.LIKELY_REAL) {
         console.log("I'm a real person!");
