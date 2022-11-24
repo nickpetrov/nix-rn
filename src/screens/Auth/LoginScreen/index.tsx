@@ -152,7 +152,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
               buttonStyle={AppleButton.Style.BLACK}
               buttonType={AppleButton.Type.SIGN_IN}
               style={styles.appleButton}
-              onPress={appleLoginHandler}
+              onPress={() => appleLoginHandler()}
             />
           ) : null}
           <NixButton
