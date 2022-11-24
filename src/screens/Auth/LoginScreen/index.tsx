@@ -32,6 +32,7 @@ import {styles} from './LoginScreen.styles';
 
 // types
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {setInfoMessage} from '../../../store/base/base.actions';
 
 interface LoginScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Login>;
@@ -91,8 +92,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
 
       console.log('appleAuthRequestResponse', appleAuthRequestResponse);
 
-      const {user, email, nonce, identityToken, realUserStatus /* etc */} =
-        appleAuthRequestResponse;
+      const {user, email, realUserStatus /* etc */} = appleAuthRequestResponse;
 
       // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
       // not used in this app (take look at ionic app)
@@ -108,15 +108,17 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
       //   console.log('NOT AUTHORIZED', credentialState);
       // }
 
-      if (identityToken) {
-        // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
-        console.log(nonce, identityToken);
-        dispatch(appleLogin(appleAuthRequestResponse)).catch(err => {
-          console.log(err);
-        });
-      } else {
-        // no token - failed sign-in?
-      }
+      // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
+      dispatch(appleLogin(appleAuthRequestResponse)).catch(err => {
+        dispatch(
+          setInfoMessage({
+            title: 'Error',
+            text:
+              err.data?.message ||
+              'Oops, something went wrong. Try again later.',
+          }),
+        );
+      });
 
       if (realUserStatus === appleAuth.UserStatus.LIKELY_REAL) {
         console.log("I'm a real person!");

@@ -366,8 +366,6 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
       <KeyboardAwareScrollView
         overScrollMode="never"
         enableOnAndroid={true}
-        resetScrollToCoords={{x: 0, y: 0}}
-        extraHeight={200}
         enableAutomaticScroll={true}>
         <View style={styles.mb10}>
           <NutritionLabel option={labelOptions || defaultOption} />
