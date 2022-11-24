@@ -39,6 +39,7 @@ export const appleLogin = (apple_user_data: any) => {
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
       dispatch({type: authActionTypes.SIGNIN, userData});
     } catch (err: any) {
+      console.log("apple sign-in error", err)
       throw err;
     }
   };
