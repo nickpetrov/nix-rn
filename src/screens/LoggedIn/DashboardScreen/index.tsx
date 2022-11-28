@@ -410,7 +410,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     Complete your profile{' '}
                     <Text
                       style={{color: Colors.Info}}
-                      onPress={() => navigation.navigate(Routes.Profile)}>
+                      onPress={() =>
+                        navigation.navigate(Routes.Preferences, {
+                          screen: Routes.Profile,
+                        })
+                      }>
                       here
                     </Text>{' '}
                     for more accurate exercise tracking

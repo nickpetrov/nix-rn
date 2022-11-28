@@ -71,7 +71,7 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.RecipeDetails]: {
     recipe: RecipeProps | null;
   };
-  [Routes.Preferences]: undefined;
+  [Routes.Preferences]: {screen: string} | undefined;
   [Routes.DailyGoals]: undefined;
   [Routes.Help]: undefined;
   [Routes.Suggested]: undefined;
