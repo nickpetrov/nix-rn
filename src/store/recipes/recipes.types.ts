@@ -7,7 +7,7 @@ export enum recipesActionTypes {
   COPY_RECIPE = 'COPY_RECIPE',
   CREATE_RECIPE = 'CREATE_RECIPE',
   DELETE_RECIPE = 'DELETE_RECIPE',
-  CLEAR = 'CLEAR',
+  RECIPES_CLEAR = 'RECIPES_CLEAR',
 }
 
 export interface RecipeProps {
@@ -81,7 +81,7 @@ export type deleteRecipeAction = {
   payload: string;
 };
 export type clearRecipeAction = {
-  type: recipesActionTypes.CLEAR;
+  type: recipesActionTypes.RECIPES_CLEAR;
 };
 
 export type RecipesActions =

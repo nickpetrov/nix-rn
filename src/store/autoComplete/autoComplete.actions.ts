@@ -46,7 +46,7 @@ export const setSearchValue = (text: string): setSearchValueAcion => {
 };
 
 export const clear = (): autocompleteClearAction => {
-  return {type: autoCompleteActionTypes.CLEAR};
+  return {type: autoCompleteActionTypes.AUTOCOMPLETE_CLEAR};
 };
 
 export const showSuggestedFoods = (mealType: number) => {

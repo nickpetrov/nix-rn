@@ -80,7 +80,7 @@ export const resetCurrentSession = () => {
   };
 };
 export const resetGroceryAgentMode = (): clearGroceryAgentModeAction => {
-  return {type: groceryAgentModeActionTypes.CLEAR};
+  return {type: groceryAgentModeActionTypes.GROCERY_AGENT_MODE_CLEAR};
 };
 
 export const barcodeExistsInExistingBarcodes = async (barcode: string) => {

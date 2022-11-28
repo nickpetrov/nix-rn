@@ -2,7 +2,7 @@ export enum connectedAppsActionTypes {
   FITBIT_SIGN = 'FITBIT_SIGN',
   FITBIT_UNLINK = 'FITBIT_UNLINK',
   MERGE_HK_SYNC_OPTIONS = 'MERGE_HK_SYNC_OPTIONS',
-  CLEAR = 'CLEAR',
+  CONNECTED_APPS_CLEAR = 'CONNECTED_APPS_CLEAR',
 }
 
 export type hkSyncOptionsProps = {
@@ -28,7 +28,7 @@ export type mergeHKSyncOptionsAction = {
   payload: Partial<hkSyncOptionsProps>;
 };
 export type clearConnectedAppsAction = {
-  type: connectedAppsActionTypes.CLEAR;
+  type: connectedAppsActionTypes.CONNECTED_APPS_CLEAR;
 };
 
 export type ConnectedAppsActions =

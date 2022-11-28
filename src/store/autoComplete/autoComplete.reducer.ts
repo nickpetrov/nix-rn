@@ -24,7 +24,7 @@ export default (
       return {...state, suggested: [...action.payload]};
     case autoCompleteActionTypes.SET_SEARCH_VALUE:
       return {...state, searchValue: action.payload};
-    case autoCompleteActionTypes.CLEAR:
+    case autoCompleteActionTypes.AUTOCOMPLETE_CLEAR:
       return initialState;
     default:
       return state;

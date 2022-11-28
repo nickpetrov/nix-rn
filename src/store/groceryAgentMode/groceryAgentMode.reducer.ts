@@ -105,7 +105,7 @@ export default (
         ...state,
         existingBarcodesUpdateTimestamp: action.payload,
       };
-    case groceryAgentModeActionTypes.CLEAR:
+    case groceryAgentModeActionTypes.GROCERY_AGENT_MODE_CLEAR:
       return initialState;
     default:
       return state;

@@ -2,7 +2,7 @@ import {TotalProps} from 'store/userLog/userLog.types';
 
 export enum coachActionTypes {
   GET_CLIENT_TOTTALS = 'GET_CLIENT_TOTTALS',
-  CLEAR = 'CLEAR',
+  COACH_CLEAR = 'COACH_CLEAR',
 }
 
 export interface CoachsState {
@@ -14,7 +14,7 @@ export type getClientTotalsAction = {
   payload: Array<TotalProps>;
 };
 export type clearCoachAction = {
-  type: coachActionTypes.CLEAR;
+  type: coachActionTypes.COACH_CLEAR;
 };
 
 export type CoachActions = getClientTotalsAction | clearCoachAction;

@@ -11,7 +11,7 @@ export enum baseActionTypes {
   SET_HIDE_VOICE_DISCLAYMORE = 'SET_HIDE_VOICE_DISCLAYMORE',
   SET_GROCERY_AGENT_INFO = 'SET_GROCERY_AGENT_INFO',
   RESET_GROCERY_SETTINGS = 'RESET_GROCERY_SETTINGS',
-  CLEAR = 'CLEAR',
+  BASE_CLEAR = 'BASE_CLEAR',
 }
 
 export type ReviewCheckType = {
@@ -66,7 +66,7 @@ export type BugReportType = {
 };
 
 export type baseClearAction = {
-  type: baseActionTypes.CLEAR;
+  type: baseActionTypes.BASE_CLEAR;
 };
 
 export type setUserAgreedToUsePhotoAction = {

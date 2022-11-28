@@ -39,7 +39,7 @@ export default (
     case basketActionTypes.MERGE_BASKET: {
       return {...state, ...action.payload};
     }
-    case basketActionTypes.RESET:
+    case basketActionTypes.BASKET_RESET:
       return initialState;
     default:
       return state;

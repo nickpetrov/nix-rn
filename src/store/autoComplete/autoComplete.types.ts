@@ -4,7 +4,7 @@ export enum autoCompleteActionTypes {
   UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS',
   SHOW_SUGGESTED_FOODS = 'SHOW_SUGGESTED_FOODS',
   SET_SEARCH_VALUE = 'SET_SEARCH_VALUE',
-  CLEAR = 'CLEAR',
+  AUTOCOMPLETE_CLEAR = 'AUTOCOMPLETE_CLEAR',
 }
 
 export enum searchSections {
@@ -73,7 +73,7 @@ export type showSuggestedFoodsAction = {
 };
 
 export type autocompleteClearAction = {
-  type: autoCompleteActionTypes.CLEAR;
+  type: autoCompleteActionTypes.AUTOCOMPLETE_CLEAR;
 };
 
 export type AutoCompleteActions =

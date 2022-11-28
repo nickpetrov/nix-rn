@@ -67,7 +67,7 @@ export default (
       return {...state, selectedRestaurant: action.payload};
     case foodsActionTypes.SET_SEARCH_QUERY_RESTAURANT_FOODS:
       return {...state, searchQueryRestaurantFoods: action.payload};
-    case foodsActionTypes.CLEAR:
+    case foodsActionTypes.FOODS_CLEAR:
       return initialState;
     default:
       return state;

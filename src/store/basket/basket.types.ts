@@ -4,7 +4,7 @@ export enum basketActionTypes {
   DELETE_FOOD_FROM_BASKET = 'DELETE_FOOD_FROM_BASKET',
   MERGE_BASKET = 'MERGE_BASKET',
   UPDATE_BASKET_FOODS = 'UPDATE_BASKET_FOODS',
-  RESET = 'RESET',
+  BASKET_RESET = 'BASKET_RESET',
 }
 
 export enum mealTypes {
@@ -48,7 +48,7 @@ export type updateBasketFoodAction = {
   foods: FoodProps[];
 };
 export type resetBasketAction = {
-  type: basketActionTypes.RESET;
+  type: basketActionTypes.BASKET_RESET;
 };
 
 export type BasketActions =

@@ -5,7 +5,7 @@ export enum groceryAgentModeActionTypes {
   SET_EXISTING_BARCODE_TIMESTAMPE = 'SET_EXISTING_BARCODE_TIMESTAMPE',
   SET_EXIST_BARCODES_COUNT = 'SET_EXIST_BARCODES_COUNT',
   SET_BARCODES_FOR_SYNC_COUNT = 'SET_BARCODES_FOR_SYNC_COUNT',
-  CLEAR = 'CLEAR',
+  GROCERY_AGENT_MODE_CLEAR = 'GROCERY_AGENT_MODE_CLEAR',
 }
 export interface PhotoTemplate {
   photo_name: null | string;
@@ -73,7 +73,7 @@ export type setBarcodesForSyncCountAction = {
   payload: number;
 };
 export type clearGroceryAgentModeAction = {
-  type: groceryAgentModeActionTypes.CLEAR;
+  type: groceryAgentModeActionTypes.GROCERY_AGENT_MODE_CLEAR;
 };
 
 export type GroceryAgentModeActions =

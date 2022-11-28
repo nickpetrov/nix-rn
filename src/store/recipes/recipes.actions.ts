@@ -175,6 +175,6 @@ export const getIngridientsForUpdate = async ({
 
 export const reset = () => {
   return async (dispatch: Dispatch<clearRecipeAction>) => {
-    dispatch({type: recipesActionTypes.CLEAR});
+    dispatch({type: recipesActionTypes.RECIPES_CLEAR});
   };
 };

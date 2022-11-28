@@ -93,7 +93,7 @@ export default (
           volunteer: false,
         },
       };
-    case baseActionTypes.CLEAR:
+    case baseActionTypes.BASE_CLEAR:
       return initialState;
     default:
       return state;

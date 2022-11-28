@@ -28,7 +28,7 @@ export default (
         ...state,
         hkSyncOptions: {...state.hkSyncOptions, ...action.payload},
       };
-    case connectedAppsActionTypes.CLEAR:
+    case connectedAppsActionTypes.CONNECTED_APPS_CLEAR:
       return initialState;
     default:
       return state;

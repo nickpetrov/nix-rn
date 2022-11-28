@@ -16,7 +16,7 @@ export enum foodsActionTypes {
   CLEAR_HISTORY_FOODS = 'CLEAR_HISTORY_FOODS',
   SET_SELECTED_RESTAURANT = 'SET_SELECTED_RESTAURANT',
   SET_SEARCH_QUERY_RESTAURANT_FOODS = 'SET_SEARCH_QUERY_RESTAURANT_FOODS',
-  CLEAR = 'CLEAR',
+  FOODS_CLEAR = 'FOODS_CLEAR',
 }
 
 export interface SuggestedFoodProps {
@@ -145,7 +145,7 @@ export type setSearchQueryRestaurantFoodsAction = {
   payload: string;
 };
 export type clearFoodsAction = {
-  type: foodsActionTypes.CLEAR;
+  type: foodsActionTypes.FOODS_CLEAR;
   payload: string;
 };
 

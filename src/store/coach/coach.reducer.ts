@@ -10,7 +10,7 @@ export default (state: CoachsState = initialState, action: CoachActions) => {
     case coachActionTypes.GET_CLIENT_TOTTALS:
       return {...state, clientTotals: action.payload};
 
-    case coachActionTypes.CLEAR:
+    case coachActionTypes.COACH_CLEAR:
       return initialState;
     default:
       return state;

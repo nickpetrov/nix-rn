@@ -55,7 +55,7 @@ export default (
       );
       return {...state, recipes: newRecipes};
     }
-    case recipesActionTypes.CLEAR:
+    case recipesActionTypes.RECIPES_CLEAR:
       return initialState;
     default:
       return state;

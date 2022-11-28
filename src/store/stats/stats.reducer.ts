@@ -1,6 +1,5 @@
 //types
-import {statsActionTypes, StatsState} from './stats.types';
-import {AnyAction} from 'redux';
+import {StatsActions, statsActionTypes, StatsState} from './stats.types';
 
 const initialState: StatsState = {
   dates: [],
@@ -9,7 +8,7 @@ const initialState: StatsState = {
 
 export default (
   state: StatsState = initialState,
-  action: AnyAction,
+  action: StatsActions,
 ): StatsState => {
   switch (action.type) {
     case statsActionTypes.STATS_GET_DAY_TOTALS:
@@ -24,7 +23,7 @@ export default (
       }
       return {...state, weights: newWeights};
     }
-    case statsActionTypes.CLEAR:
+    case statsActionTypes.STATE_CLEAR:
       return initialState;
     default:
       return state;

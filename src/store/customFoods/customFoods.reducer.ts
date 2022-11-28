@@ -31,7 +31,7 @@ export default (
       const newFoods = state.foods.filter(item => item.id !== action.payload);
       return {...state, foods: newFoods};
     }
-    case customFoodsActionTypes.CLEAR:
+    case customFoodsActionTypes.CUSTOM_FOODS_CLEAR:
       return initialState;
     default:
       return state;

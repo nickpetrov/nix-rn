@@ -323,10 +323,10 @@ export const updateFoodAtBasket = (foodObj: FoodProps, index: number) => {
 
 export const reset = () => {
   return async (dispatch: Dispatch<resetBasketAction>) => {
-    dispatch({type: basketActionTypes.RESET});
+    dispatch({type: basketActionTypes.BASKET_RESET});
   };
 };
 
 export const clearBasket = (): resetBasketAction => {
-  return {type: basketActionTypes.RESET};
+  return {type: basketActionTypes.BASKET_RESET};
 };
