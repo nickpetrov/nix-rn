@@ -1,9 +1,9 @@
 //types
 import {
+  ConnectedAppsActions,
   connectedAppsActionTypes,
   ConnectionAppsState,
 } from './connectedApps.types';
-import {AnyAction} from 'redux';
 
 const initialState: ConnectionAppsState = {
   fitbitSync: null,
@@ -16,7 +16,7 @@ const initialState: ConnectionAppsState = {
 
 export default (
   state: ConnectionAppsState = initialState,
-  action: AnyAction,
+  action: ConnectedAppsActions,
 ) => {
   switch (action.type) {
     case connectedAppsActionTypes.FITBIT_SIGN:

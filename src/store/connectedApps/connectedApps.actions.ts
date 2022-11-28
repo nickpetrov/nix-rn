@@ -2,7 +2,10 @@ import {Dispatch} from 'redux';
 import connectedAppsService from 'api/connectedAppsService';
 import {
   connectedAppsActionTypes,
+  fitbitSignInAction,
+  fitbitUnlinkAction,
   hkSyncOptionsProps,
+  mergeHKSyncOptionsAction,
 } from './connectedApps.types';
 import appleHealthKit, {
   HealthUnit,
@@ -19,7 +22,7 @@ import {
 } from 'store/userLog/userLog.actions';
 
 export const fitbitSign = () => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<fitbitSignInAction>) => {
     try {
       const response = await connectedAppsService.fitbitSign();
 
@@ -41,7 +44,7 @@ export const fitbitSign = () => {
 };
 
 export const fitbitUnlink = () => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<fitbitUnlinkAction>) => {
     try {
       const response = await connectedAppsService.fitbitUnlink();
 
@@ -60,7 +63,7 @@ export const fitbitUnlink = () => {
 };
 
 export const mergeHKSyncOptions = (options: Partial<hkSyncOptionsProps>) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<mergeHKSyncOptionsAction>) => {
     dispatch({
       type: connectedAppsActionTypes.MERGE_HK_SYNC_OPTIONS,
       payload: options,
