@@ -23,6 +23,7 @@ import {resetGrocerySetting} from 'store/base/base.actions';
 import {AppleRequestResponse} from '@invertase/react-native-apple-authentication';
 import {autocompleteClearAction} from 'store/autoComplete/autoComplete.types';
 import {resetGrocerySettingsAction} from 'store/base/base.types';
+import {resetBasketAction} from 'store/basket/basket.types';
 
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch<authAction>) => {
@@ -121,7 +122,11 @@ export const getUserDataFromAPI = () => {
 export const logout = () => {
   return async (
     dispatch: Dispatch<
-      logoutAction | autocompleteClearAction | resetGrocerySettingsAction | any
+      | logoutAction
+      | autocompleteClearAction
+      | resetGrocerySettingsAction
+      | resetBasketAction
+      | any
     >,
   ) => {
     apiClient.defaults.headers.common['x-user-jwt'] = '';

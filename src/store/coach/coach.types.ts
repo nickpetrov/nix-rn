@@ -8,3 +8,13 @@ export enum coachActionTypes {
 export interface CoachsState {
   clientTotals: Array<TotalProps>;
 }
+
+export type getClientTotalsAction = {
+  type: coachActionTypes.GET_CLIENT_TOTTALS;
+  payload: Array<TotalProps>;
+};
+export type clearCoachAction = {
+  type: coachActionTypes.CLEAR;
+};
+
+export type CoachActions = getClientTotalsAction | clearCoachAction;
