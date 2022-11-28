@@ -51,8 +51,7 @@ const Grocery: React.FC<GroceryProps> = () => {
   const [value] = useDebounce(query, 500);
 
   useEffect(() => {
-    // in prod app not displayed it
-    // dispatch(getGroceries('app'));
+    dispatch(getGroceries('app'));
     return () => {
       dispatch(clearGroceryFoods());
     };

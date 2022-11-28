@@ -1,13 +1,14 @@
 //types
-import {foodsActionTypes, FoodsState, TrackTabs} from './foods.types';
-import {AnyAction} from 'redux';
+import {
+  FoodsActions,
+  foodsActionTypes,
+  FoodsState,
+  TrackTabs,
+} from './foods.types';
 
 const initialState: FoodsState = {
-  foodInfo: null,
   //QRcodeScreen
   foodFindByQRcode: null,
-  //CustomFoodScreen
-  custom_foods: [],
   //SuggestedScreen
   suggested_foods: [],
   //TrackScreen
@@ -24,18 +25,13 @@ const initialState: FoodsState = {
 
 export default (
   state: FoodsState = initialState,
-  action: AnyAction,
+  action: FoodsActions,
 ): FoodsState => {
   switch (action.type) {
-    case foodsActionTypes.GET_FOOD_INFO:
-      const stateWithTotals = {...state, foodInfo: action.foodInfo};
-      return stateWithTotals;
     case foodsActionTypes.GET_FOOD_BY_QR_CODE:
       return {...state, foodFindByQRcode: action.foodFindByQRcode};
     case foodsActionTypes.CLEAR_SCANED_FOOD:
       return {...state, foodFindByQRcode: null};
-    case foodsActionTypes.GET_ALL_CUSTOM_FOOD:
-      return {...state, custom_foods: action.custom_foods};
     case foodsActionTypes.GET_ALL_SUGGESTED_FOOD:
       return {...state, suggested_foods: action.suggested_foods};
     case foodsActionTypes.GET_GROCERIES:
