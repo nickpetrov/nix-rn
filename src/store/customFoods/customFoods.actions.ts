@@ -1,12 +1,15 @@
 import {Dispatch} from 'redux';
 import {
   customFoodsActionTypes,
+  deleteCustomFoodsAction,
+  getAllCustomFoodsAction,
   UpdateCustomFoodProps,
+  updateOrCreateCustomFoodsAction,
 } from './customFoods.types';
 import customFoodsService from 'api/customFoodsService';
 
 export const getCustomFoods = (limit?: number, offset?: number) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<getAllCustomFoodsAction>) => {
     try {
       const optionLimit = limit || 300;
       const optionOffset = offset || 0;
@@ -32,7 +35,7 @@ export const getCustomFoods = (limit?: number, offset?: number) => {
 };
 
 export const updateOrCreateCustomFood = (food: UpdateCustomFoodProps) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<updateOrCreateCustomFoodsAction>) => {
     try {
       const response = await customFoodsService.updateOrCreateCustomFoods(food);
 
@@ -70,7 +73,7 @@ export const getCustomFoodById = (id: string) => {
 };
 
 export const deleteCustomFood = (id: string) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<deleteCustomFoodsAction>) => {
     try {
       const response = await customFoodsService.deleteCustomFood(id);
 
