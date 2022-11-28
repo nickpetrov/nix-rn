@@ -51,6 +51,7 @@ import {
   RestaurantsWithCalcProps,
 } from 'store/foods/foods.types';
 import {SelectedRestaurant} from 'store/foods/foods.types';
+import {WebViewMessageEvent} from 'react-native-webview';
 
 interface RestaurantFoodsProps {
   restaurant: SelectedRestaurant;
@@ -128,9 +129,9 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
     });
   };
 
-  const handleMessageFromWebView = (data: any) => {
+  const handleMessageFromWebView = (e: WebViewMessageEvent) => {
     try {
-      const foodObj = JSON.parse(data.nativeEvent.data);
+      const foodObj = JSON.parse(e.nativeEvent.data);
       if (!foodObj.full_nutrients) {
         foodObj.full_nutrients = nixHelpers.buildFullNutrientsArray(foodObj);
       }
