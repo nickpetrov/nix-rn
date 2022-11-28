@@ -38,7 +38,10 @@ import {Routes} from 'navigation/Routes';
 import {styles} from './DailyCaloriesScreen.styles';
 
 // types
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {User} from 'store/auth/auth.types';
 
@@ -202,9 +205,10 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           headerRight={
             <TouchableOpacity
               style={styles.question}

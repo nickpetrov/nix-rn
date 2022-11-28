@@ -34,7 +34,10 @@ import {styles} from './CompleteRegistration.styles';
 import {Colors} from 'constants/Colors';
 
 // types
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {NutritionType} from 'api/baseService/types';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 
@@ -88,7 +91,9 @@ const CompleteRegistration: React.FC<Props> = ({navigation}) => {
 
   useEffect(() => {
     navigation.setOptions({
-      header: (props: any) => <NavigationHeader {...props} emptyRight />,
+      header: (props: NativeStackHeaderProps) => (
+        <NavigationHeader {...props} emptyRight navigation={navigation} />
+      ),
     });
   }, [navigation]);
 

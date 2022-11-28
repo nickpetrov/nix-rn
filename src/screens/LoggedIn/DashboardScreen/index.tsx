@@ -52,7 +52,10 @@ import {setDB} from 'store/base/base.actions';
 import {Routes} from 'navigation/Routes';
 
 // types
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {
@@ -200,9 +203,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           withAutoComplete
           headerRight={
             <BasketButton
@@ -211,7 +215,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               onPress={() => navigation.navigate(Routes.Basket)}
             />
           }
-          headerLeft={<DrawerButton navigation={props.navigation} />}
+          headerLeft={<DrawerButton />}
         />
       ),
     });

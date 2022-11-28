@@ -36,7 +36,10 @@ import {styles} from './TrackFoodsScreen.styles';
 import {Routes} from 'navigation/Routes';
 
 // types
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {
   RestaurantsProps,
@@ -85,7 +88,7 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
       case TrackTabs.GROCERY:
         return 'Grocery brands';
       default:
-        return null;
+        return undefined;
     }
   };
 
@@ -101,9 +104,10 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
         (selectedRestaurant as RestaurantsProps).name ||
         (selectedRestaurant as RestaurantsWithCalcProps).proper_brand_name;
       navigation.setOptions({
-        header: (props: any) => (
+        header: (props: NativeStackHeaderProps) => (
           <NavigationHeader
             {...props}
+            navigation={navigation}
             headerRight={
               <BasketButton
                 icon="shopping-basket"
@@ -132,9 +136,10 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
       });
     } else {
       navigation.setOptions({
-        header: (props: any) => (
+        header: (props: NativeStackHeaderProps) => (
           <NavigationHeader
             {...props}
+            navigation={navigation}
             headerRight={
               <BasketButton
                 icon="shopping-basket"

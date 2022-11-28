@@ -27,7 +27,10 @@ import {Routes} from 'navigation/Routes';
 // helpres
 import {RouteProp} from '@react-navigation/native';
 import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {UpdateCustomFoodProps} from 'store/customFoods/customFoods.types';
 
@@ -215,9 +218,10 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           headerTitle={
             route.params?.food ? 'Edit Custom Food' : 'Create Custom Food'
           }

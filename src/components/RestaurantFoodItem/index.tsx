@@ -6,7 +6,7 @@ import {View, Text, TouchableHighlight} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 // types
-import {NutrientProps} from 'store/userLog/userLog.types';
+import {FoodProps, NutrientProps} from 'store/userLog/userLog.types';
 
 // styles
 import {Colors} from 'constants/Colors';
@@ -14,7 +14,7 @@ import {styles} from './RestaurantFoodItem.styles';
 
 interface RestaurantFoodItemProps {
   onPress: () => void;
-  food: any;
+  food: FoodProps;
 }
 
 const RestaurantFoodItem: React.FC<RestaurantFoodItemProps> = ({
@@ -45,7 +45,9 @@ const RestaurantFoodItem: React.FC<RestaurantFoodItemProps> = ({
               ? food.full_nutrients
                   .filter((item: NutrientProps) => item.attr_id === 208)[0]
                   .value.toFixed(0)
-              : food.nf_calories.toFixed(0)}
+              : food.nf_calories
+              ? food.nf_calories.toFixed(0)
+              : food.nf_calories}
           </Text>
           <Text style={styles.textCal}>Cal</Text>
         </View>

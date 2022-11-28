@@ -1,3 +1,4 @@
+import {AppleRequestResponse} from '@invertase/react-native-apple-authentication';
 import apiClient from 'api';
 import {SignUpRequest} from 'store/auth/auth.types';
 
@@ -16,7 +17,7 @@ const authService = {
       access_token,
     });
   },
-  async appleSignIn(apple_user_data: any) {
+  async appleSignIn(apple_user_data: AppleRequestResponse) {
     return await apiClient.post('oauth/apple/signin', {
       ...apple_user_data,
     });

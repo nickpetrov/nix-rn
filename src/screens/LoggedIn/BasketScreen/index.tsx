@@ -51,7 +51,10 @@ import * as userLogActions from 'store/userLog/userLog.actions';
 import {showAgreementPopup, setAskForReview} from 'store/base/base.actions';
 
 // types
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {
   FoodProps,
   loggingOptionsProps,
@@ -125,9 +128,10 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           withAutoComplete
           headerRight={
             <BasketButton

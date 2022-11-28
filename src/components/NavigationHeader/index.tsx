@@ -4,7 +4,7 @@ import React, {useRef} from 'react';
 // components
 import {View, Text, TextInput} from 'react-native';
 import {BarcodeScanner} from 'components/BarcodeScanner';
-import {getHeaderTitle} from '@react-navigation/elements';
+import {getHeaderTitle, HeaderTitleProps} from '@react-navigation/elements';
 import BackButton from 'components/BackButton';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -18,18 +18,25 @@ import {setSearchValue} from 'store/autoComplete/autoComplete.actions';
 import {styles} from './NavigationHeader.styles';
 
 // types
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-interface NavigationHeaderProps {
+interface NavigationHeaderProps extends NativeStackHeaderProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, any>;
-  route: any;
-  back: boolean;
-  options: any;
+  options: {
+    title?: string | undefined;
+    headerTitle?:
+      | string
+      | ((props: HeaderTitleProps) => React.ReactNode)
+      | undefined;
+  };
   headerRight?: React.ReactNode;
   headerLeft?: React.ReactNode;
   headerTitle?: string;

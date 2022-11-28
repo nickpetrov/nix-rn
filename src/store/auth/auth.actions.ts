@@ -13,6 +13,7 @@ import {authActionTypes, SignUpRequest, User} from './auth.types';
 import {batch} from 'react-redux';
 import {resetGroceryAgentMode} from 'store/groceryAgentMode/groceryAgentMode.actions';
 import {resetGrocerySetting} from 'store/base/base.actions';
+import {AppleRequestResponse} from '@invertase/react-native-apple-authentication';
 
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch) => {
@@ -30,7 +31,7 @@ export const fbLogin = (access_token: string) => {
   };
 };
 
-export const appleLogin = (apple_user_data: any) => {
+export const appleLogin = (apple_user_data: AppleRequestResponse) => {
   return async (dispatch: Dispatch) => {
     try {
       const response = await authService.appleSignIn(apple_user_data);

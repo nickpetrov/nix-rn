@@ -30,7 +30,10 @@ import {Routes} from 'navigation/Routes';
 
 // types
 import {User} from 'store/auth/auth.types';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {setInfoMessage} from 'store/base/base.actions';
@@ -142,9 +145,10 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           headerRight={
             <TouchableOpacity
               style={styles.question}

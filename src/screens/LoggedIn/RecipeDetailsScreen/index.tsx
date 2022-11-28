@@ -47,7 +47,10 @@ import {Routes} from 'navigation/Routes';
 
 // types
 import {Asset} from 'react-native-image-picker';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {RouteProp} from '@react-navigation/native';
 import {RecipeProps, UpdateRecipeProps} from 'store/recipes/recipes.types';
@@ -461,9 +464,10 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           headerTitle={
             route.params?.recipe ? 'Edit Recipe' : 'Create New Recipe'
           }

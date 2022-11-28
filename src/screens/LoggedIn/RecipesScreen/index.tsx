@@ -38,7 +38,10 @@ import {Routes} from 'navigation/Routes';
 
 // types
 import {RecipeProps, UpdateRecipeProps} from 'store/recipes/recipes.types';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {RouteProp} from '@react-navigation/native';
 
@@ -75,9 +78,10 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           headerRight={
             <TouchableOpacity
               style={styles.createNew}

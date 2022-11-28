@@ -140,6 +140,8 @@ export interface FoodProps {
   nf_sugars: number | null;
   nf_total_carbohydrate: number | null;
   nf_total_fat: number | null;
+  nf_serving_size_qty?: number;
+  nf_serving_size_unit?: string;
   nix_brand_id: string | null;
   nix_brand_name: string | null;
   nix_item_id: string | null;
