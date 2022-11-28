@@ -6,6 +6,7 @@ import {
   clearScanedFoodAction,
   foodsActionTypes,
   getAllSuggestedFoodAction,
+  getFoodByQRCodeAction,
   getGroceriesAction,
   getHistoryFoodsAction,
   getNixRestaurantsFoodsAction,
@@ -28,12 +29,15 @@ import {addExistFoodToBasket} from 'store/basket/basket.actions';
 import {grocery_photo_upload} from 'config/index';
 import nixService from 'api/nixService';
 import {FoodProps} from 'store/userLog/userLog.types';
+import {addFoodToBasketAction} from 'store/basket/basket.types';
 
 export const getFoodByQRcode = (
   barcode: string,
   force_photo_upload?: boolean,
 ) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (
+    dispatch: Dispatch<getFoodByQRCodeAction | addFoodToBasketAction>,
+  ) => {
     try {
       const response = await baseService.getFoodByQRcode(barcode);
 
@@ -61,7 +65,7 @@ export const getFoodByQRcode = (
 
         // if barcode scanned from 'report' popup - don't add food to the basket.
         if (!force_photo_upload) {
-          dispatch(addExistFoodToBasket(foods));
+          dispatch<any>(addExistFoodToBasket(foods));
         }
 
         // check if enough time passed to ask user/agent to update food

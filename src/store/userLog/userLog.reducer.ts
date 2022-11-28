@@ -1,11 +1,11 @@
 // utils
 import moment from 'moment';
-import {AnyAction} from 'redux';
 
 // types
-import {authActionTypes} from 'store/auth/auth.types';
+import {authActionTypes, logoutAction} from 'store/auth/auth.types';
 import {
   ExerciseProps,
+  UserLogActions,
   userLogActionTypes,
   UserLogState,
   WeightProps,
@@ -21,7 +21,7 @@ const initialState: UserLogState = {
 
 export default (
   state: UserLogState = initialState,
-  action: AnyAction,
+  action: UserLogActions | logoutAction,
 ): UserLogState => {
   switch (action.type) {
     case userLogActionTypes.GET_USER_FOODLOG:
@@ -55,9 +55,9 @@ export default (
       return {...state, exercises: newExercises};
     }
     case userLogActionTypes.ADD_FOOD_TO_LOG: {
-      const foodToAdd = !action.foodObj.length
-        ? [action.foodObj]
-        : action.foodObj;
+      const foodToAdd = !Array.isArray(action.payload)
+        ? [action.payload]
+        : action.payload;
       return {...state, foods: state.foods.concat(foodToAdd)};
     }
     case userLogActionTypes.UPDATE_FOOD_FROM_LOG: {

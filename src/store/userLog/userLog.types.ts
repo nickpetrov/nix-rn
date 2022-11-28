@@ -197,3 +197,90 @@ export type mealNameProps =
   | foodLogSections.Exercise
   | foodLogSections.Weigh_in
   | foodLogSections.Water;
+
+export type getUserFoodLogAction = {
+  type: userLogActionTypes.GET_USER_FOODLOG;
+  foodLog: Array<FoodProps>;
+};
+export type addFoodToLogAction = {
+  type: userLogActionTypes.ADD_FOOD_TO_LOG;
+  payload: Array<FoodProps> | FoodProps;
+};
+export type updateFoodFromLogAction = {
+  type: userLogActionTypes.UPDATE_FOOD_FROM_LOG;
+  payload: FoodProps;
+};
+export type getDayTotalsUserLogAction = {
+  type: userLogActionTypes.GET_DAY_TOTALS;
+  totals: Array<TotalProps>;
+};
+export type changeSelectedDateAction = {
+  type: userLogActionTypes.CHANGE_SELECTED_DATE;
+  newDate: string;
+};
+export type setDayNotesAction = {
+  type: userLogActionTypes.SET_DAY_NOTES;
+  totals: Array<TotalProps>;
+};
+export type deleteFoodFromLogAction = {
+  type: userLogActionTypes.DELETE_FOOD_FROM_LOG;
+  foodIds: Array<string>;
+};
+export type deleteWeightsFromLogAction = {
+  type: userLogActionTypes.DELETE_WEIGHT_FROM_LOG;
+  weights: Array<string>;
+};
+export type deleteExerciseFromLogAction = {
+  type: userLogActionTypes.DELETE_EXERCISE_FROM_LOG;
+  exercises: Array<string>;
+};
+export type getUserWeightsLogAction = {
+  type: userLogActionTypes.GET_USER_WEIGHT_LOG;
+  weights: Array<WeightProps>;
+};
+export type addWeightToLogAction = {
+  type: userLogActionTypes.ADD_WEIGHT_LOG;
+  weights: Array<WeightProps>;
+};
+export type updateWeightsLogAction = {
+  type: userLogActionTypes.UPDATE_WEIGHT_LOG;
+  weights: Array<WeightProps>;
+};
+export type updateWaterLogAction = {
+  type: userLogActionTypes.UPDATE_WATER_LOG;
+  payload: number;
+};
+export type deleteWaterFromLogAction = {
+  type: userLogActionTypes.DELETE_WATER_FROM_LOG;
+};
+export type getUserExerciseLogAction = {
+  type: userLogActionTypes.GET_USER_EXERCISES_LOG;
+  exercises: Array<ExerciseProps>;
+};
+export type addUserExerciseLogAction = {
+  type: userLogActionTypes.ADD_USER_EXERCISES_LOG;
+  exercises: Array<ExerciseProps>;
+};
+export type updateUserExerciseLogAction = {
+  type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG;
+  exercises: Array<ExerciseProps>;
+};
+
+export type UserLogActions =
+  | getUserFoodLogAction
+  | getDayTotalsUserLogAction
+  | updateFoodFromLogAction
+  | addFoodToLogAction
+  | changeSelectedDateAction
+  | setDayNotesAction
+  | deleteFoodFromLogAction
+  | deleteWeightsFromLogAction
+  | deleteExerciseFromLogAction
+  | getUserWeightsLogAction
+  | addWeightToLogAction
+  | updateWaterLogAction
+  | deleteWaterFromLogAction
+  | getUserExerciseLogAction
+  | addUserExerciseLogAction
+  | updateUserExerciseLogAction
+  | updateWeightsLogAction;

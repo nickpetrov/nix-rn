@@ -6,6 +6,7 @@ import {
   loggingOptionsProps,
   WaterLogProps,
   WeightProps,
+  TotalProps,
 } from 'store/userLog/userLog.types';
 
 const userLogService = {
@@ -29,7 +30,7 @@ const userLogService = {
   async setDayNotes(data: {
     dates: Array<{date: string; notes: string | null}>;
   }) {
-    return await apiClient.put('reports/totals', data);
+    return await apiClient.put<{dates: TotalProps[]}>('reports/totals', data);
   },
   async getUserFoodlog({
     beginDate,
@@ -59,7 +60,7 @@ const userLogService = {
     timezone,
     limit,
   }: getWeightParams) {
-    return await apiClient.get('weight/log', {
+    return await apiClient.get<{weights: WeightProps[]}>('weight/log', {
       params: {
         begin,
         end,
@@ -70,12 +71,12 @@ const userLogService = {
     });
   },
   async addWeightlog(weights: Array<Partial<WeightProps>>) {
-    return await apiClient.post('weight/log', {
+    return await apiClient.post<{weights: WeightProps[]}>('weight/log', {
       weights,
     });
   },
   async updateWeightlog(weights: Array<WeightProps>) {
-    return await apiClient.put('weight/log', {
+    return await apiClient.put<{weights: WeightProps[]}>('weight/log', {
       weights,
     });
   },
@@ -129,7 +130,7 @@ const userLogService = {
     });
   },
   async updateFoodFromLog(foods: Array<FoodProps>) {
-    return await apiClient.put('log', {
+    return await apiClient.put<{foods: FoodProps[]}>('log', {
       foods,
     });
   },
