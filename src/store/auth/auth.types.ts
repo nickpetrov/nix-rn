@@ -2,7 +2,6 @@ export enum authActionTypes {
   SIGNIN = 'SIGNIN',
   SIGNUP = 'SIGNUP',
   UPDATE_USER_DATA = 'UPDATE_USER_DATA',
-  SET_USER_JWT = 'SET_USER_JWT',
   LOGOUT = 'LOGOUT',
   FB_LOGIN = 'FB_LOGIN',
   APPLE_LOGIN = 'APPLE_LOGIN',
@@ -59,3 +58,28 @@ export type UserData = {
   userData: User;
   userJWT: string;
 };
+
+export type AuthResponse = {'x-user-jwt': string; user: User};
+
+export type authActionType = {
+  type:
+    | authActionTypes.SIGNIN
+    | authActionTypes.SIGNUP
+    | authActionTypes.FB_LOGIN
+    | authActionTypes.APPLE_LOGIN;
+  userData: AuthResponse;
+};
+
+export type updateUserActionType = {
+  type: authActionTypes.UPDATE_USER_DATA;
+  newUserObj: Partial<User>;
+};
+
+export type logoutActionType = {
+  type: authActionTypes.LOGOUT;
+};
+
+export type AuthActionTypes =
+  | authActionType
+  | updateUserActionType
+  | logoutActionType;

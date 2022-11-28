@@ -9,14 +9,21 @@ import {reset as resetBasket} from 'store/basket/basket.actions';
 
 // types
 import {Dispatch} from 'redux';
-import {authActionTypes, SignUpRequest, User} from './auth.types';
+import {
+  authActionType,
+  authActionTypes,
+  logoutActionType,
+  SignUpRequest,
+  updateUserActionType,
+  User,
+} from './auth.types';
 import {batch} from 'react-redux';
 import {resetGroceryAgentMode} from 'store/groceryAgentMode/groceryAgentMode.actions';
 import {resetGrocerySetting} from 'store/base/base.actions';
 import {AppleRequestResponse} from '@invertase/react-native-apple-authentication';
 
 export const fbLogin = (access_token: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<authActionType>) => {
     try {
       const response = await authService.fbSignIn(access_token);
 
@@ -32,7 +39,7 @@ export const fbLogin = (access_token: string) => {
 };
 
 export const appleLogin = (apple_user_data: AppleRequestResponse) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<authActionType>) => {
     try {
       const response = await authService.appleSignIn(apple_user_data);
       const userData = response.data;
@@ -45,7 +52,7 @@ export const appleLogin = (apple_user_data: AppleRequestResponse) => {
 };
 
 export const signin = (email: string, password: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<authActionType>) => {
     try {
       const response = await authService.siginIn(email, password);
 
@@ -61,7 +68,7 @@ export const signin = (email: string, password: string) => {
 };
 
 export const signup = (data: SignUpRequest) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<authActionType>) => {
     try {
       const response = await authService.signUp(data);
 
@@ -78,7 +85,7 @@ export const signup = (data: SignUpRequest) => {
 
 export const updateUserData = (newUserObj: Partial<User>) => {
   const request = {...newUserObj};
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<updateUserActionType>) => {
     try {
       const response = await userService.updateUserData(request);
 
@@ -98,13 +105,8 @@ export const updateUserData = (newUserObj: Partial<User>) => {
   };
 };
 
-export const setUserJwt = (newUserJwt: string) => {
-  apiClient.defaults.headers.common['x-user-jwt'] = newUserJwt;
-  return {type: authActionTypes.SET_USER_JWT, newJwt: newUserJwt};
-};
-
 export const getUserDataFromAPI = () => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<updateUserActionType>) => {
     const response = await userService.getUserData();
 
     const result = response.data;
@@ -115,7 +117,7 @@ export const getUserDataFromAPI = () => {
 };
 
 export const logout = () => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<logoutActionType | any>) => {
     apiClient.defaults.headers.common['x-user-jwt'] = '';
     batch(() => {
       dispatch(clearAutocomplete());

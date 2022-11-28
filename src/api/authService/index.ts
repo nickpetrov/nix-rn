@@ -1,10 +1,10 @@
 import {AppleRequestResponse} from '@invertase/react-native-apple-authentication';
 import apiClient from 'api';
-import {SignUpRequest} from 'store/auth/auth.types';
+import {AuthResponse, SignUpRequest} from 'store/auth/auth.types';
 
 const authService = {
   async siginIn(emailOrPhone: string, password: string) {
-    return await apiClient.post('auth/signin', {
+    return await apiClient.post<AuthResponse>('auth/signin', {
       email: emailOrPhone.indexOf('@') > -1 ? emailOrPhone : undefined,
       mobile_number: !(emailOrPhone.indexOf('@') > -1)
         ? emailOrPhone
@@ -13,17 +13,17 @@ const authService = {
     });
   },
   async fbSignIn(access_token: string) {
-    return await apiClient.post('oauth/facebook/signin', {
+    return await apiClient.post<AuthResponse>('oauth/facebook/signin', {
       access_token,
     });
   },
   async appleSignIn(apple_user_data: AppleRequestResponse) {
-    return await apiClient.post('oauth/apple/signin', {
+    return await apiClient.post<AuthResponse>('oauth/apple/signin', {
       ...apple_user_data,
     });
   },
   async signUp(data: SignUpRequest) {
-    return await apiClient.post('auth/signup', {
+    return await apiClient.post<AuthResponse>('auth/signup', {
       ...data,
     });
   },

@@ -1,6 +1,5 @@
 //types
-import {AnyAction} from 'redux';
-import {authActionTypes, UserData} from './auth.types';
+import {AuthActionTypes, authActionTypes, UserData} from './auth.types';
 
 export type AuthState = UserData;
 
@@ -49,7 +48,7 @@ const initialState: AuthState = {
 
 export default (
   state: AuthState = initialState,
-  action: AnyAction,
+  action: AuthActionTypes,
 ): AuthState => {
   switch (action.type) {
     case authActionTypes.UPDATE_USER_DATA:
@@ -58,9 +57,6 @@ export default (
         userData: {...state.userData, ...action.newUserObj},
       };
       return stateWithNewUserData;
-    case authActionTypes.SET_USER_JWT:
-      const stateWithNewJwt = {...state, userJWT: action.newJwt};
-      return stateWithNewJwt;
     case authActionTypes.SIGNIN:
       const stateWithSignedInUser = {
         ...state,

@@ -6,7 +6,7 @@ const userService = {
     return await apiClient.get<User>('me');
   },
   async updateUserData(data: Partial<User>) {
-    return await apiClient.put('me/preferences', {
+    return await apiClient.put<User>('me/preferences', {
       ...data,
     });
   },
