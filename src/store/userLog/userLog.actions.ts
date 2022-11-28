@@ -562,7 +562,7 @@ export const setDayNotes = (targetDate: string, newNotes: string) => {
       dates: [
         {
           date: targetDate,
-          notes: newNotes,
+          notes: newNotes ? newNotes : null,
         },
       ],
     };

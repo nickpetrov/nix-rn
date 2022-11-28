@@ -288,9 +288,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   };
 
   const saveDayNote = () => {
-    if (dayNote) {
-      dispatch(logActions.setDayNotes(selectedDate, dayNote));
-    }
+    dispatch(logActions.setDayNotes(selectedDate, dayNote));
   };
 
   const handleCopyMeal = () => {

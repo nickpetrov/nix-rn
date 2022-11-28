@@ -26,7 +26,9 @@ const userLogService = {
       },
     });
   },
-  async setDayNotes(data: {dates: Array<{date: string; notes: string}>}) {
+  async setDayNotes(data: {
+    dates: Array<{date: string; notes: string | null}>;
+  }) {
     return await apiClient.put('reports/totals', data);
   },
   async getUserFoodlog({
