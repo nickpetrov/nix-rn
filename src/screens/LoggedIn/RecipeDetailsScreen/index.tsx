@@ -831,8 +831,8 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                       }
                       defaultValue={ingredient.metadata?.original_input || ''}
                       // value={ingredient.metadata?.original_input || ''}
-                      onEndEditing={(e: any) => {
-                        saveChangeIngredient(e.nativeEvent.text, index);
+                      onEndEditing={({nativeEvent: {text}}) => {
+                        saveChangeIngredient(text, index);
                       }}
                       style={[styles.input, styles.flex1]}
                     />
