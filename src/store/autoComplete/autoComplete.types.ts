@@ -57,27 +57,27 @@ export interface AutoCompleteState extends SearchResponse {
   searchValue: string;
 }
 
-export type updateSearchResultsActionType = {
+export type updateSearchResultsAction = {
   type: autoCompleteActionTypes.UPDATE_SEARCH_RESULTS;
   payload: SearchResponse;
 };
 
-export type setSearchValueAcionType = {
+export type setSearchValueAcion = {
   type: autoCompleteActionTypes.SET_SEARCH_VALUE;
   payload: string;
 };
 
-export type showSuggestedFoodsActionType = {
+export type showSuggestedFoodsAction = {
   type: autoCompleteActionTypes.SHOW_SUGGESTED_FOODS;
   payload: FoodProps[];
 };
 
-export type autocompleteClearActionType = {
+export type autocompleteClearAction = {
   type: autoCompleteActionTypes.CLEAR;
 };
 
-export type AutoCompleteActionTypes =
-  | updateSearchResultsActionType
-  | setSearchValueAcionType
-  | showSuggestedFoodsActionType
-  | autocompleteClearActionType;
+export type AutoCompleteActions =
+  | updateSearchResultsAction
+  | setSearchValueAcion
+  | showSuggestedFoodsAction
+  | autocompleteClearAction;

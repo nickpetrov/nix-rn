@@ -1,6 +1,6 @@
 //types
 import {
-  AutoCompleteActionTypes,
+  AutoCompleteActions,
   autoCompleteActionTypes,
   AutoCompleteState,
 } from './autoComplete.types';
@@ -15,7 +15,7 @@ const initialState: AutoCompleteState = {
 
 export default (
   state: AutoCompleteState = initialState,
-  action: AutoCompleteActionTypes,
+  action: AutoCompleteActions,
 ): AutoCompleteState => {
   switch (action.type) {
     case autoCompleteActionTypes.UPDATE_SEARCH_RESULTS:

@@ -10,21 +10,21 @@ import {reset as resetBasket} from 'store/basket/basket.actions';
 // types
 import {Dispatch} from 'redux';
 import {
-  authActionType,
+  authAction,
   authActionTypes,
-  logoutActionType,
+  logoutAction,
   SignUpRequest,
-  updateUserActionType,
+  updateUserAction,
   User,
 } from './auth.types';
 import {batch} from 'react-redux';
 import {resetGroceryAgentMode} from 'store/groceryAgentMode/groceryAgentMode.actions';
 import {resetGrocerySetting} from 'store/base/base.actions';
 import {AppleRequestResponse} from '@invertase/react-native-apple-authentication';
-import {autocompleteClearActionType} from 'store/autoComplete/autoComplete.types';
+import {autocompleteClearAction} from 'store/autoComplete/autoComplete.types';
 
 export const fbLogin = (access_token: string) => {
-  return async (dispatch: Dispatch<authActionType>) => {
+  return async (dispatch: Dispatch<authAction>) => {
     try {
       const response = await authService.fbSignIn(access_token);
 
@@ -40,7 +40,7 @@ export const fbLogin = (access_token: string) => {
 };
 
 export const appleLogin = (apple_user_data: AppleRequestResponse) => {
-  return async (dispatch: Dispatch<authActionType>) => {
+  return async (dispatch: Dispatch<authAction>) => {
     try {
       const response = await authService.appleSignIn(apple_user_data);
       const userData = response.data;
@@ -53,7 +53,7 @@ export const appleLogin = (apple_user_data: AppleRequestResponse) => {
 };
 
 export const signin = (email: string, password: string) => {
-  return async (dispatch: Dispatch<authActionType>) => {
+  return async (dispatch: Dispatch<authAction>) => {
     try {
       const response = await authService.siginIn(email, password);
 
@@ -69,7 +69,7 @@ export const signin = (email: string, password: string) => {
 };
 
 export const signup = (data: SignUpRequest) => {
-  return async (dispatch: Dispatch<authActionType>) => {
+  return async (dispatch: Dispatch<authAction>) => {
     try {
       const response = await authService.signUp(data);
 
@@ -86,7 +86,7 @@ export const signup = (data: SignUpRequest) => {
 
 export const updateUserData = (newUserObj: Partial<User>) => {
   const request = {...newUserObj};
-  return async (dispatch: Dispatch<updateUserActionType>) => {
+  return async (dispatch: Dispatch<updateUserAction>) => {
     try {
       const response = await userService.updateUserData(request);
 
@@ -107,7 +107,7 @@ export const updateUserData = (newUserObj: Partial<User>) => {
 };
 
 export const getUserDataFromAPI = () => {
-  return async (dispatch: Dispatch<updateUserActionType>) => {
+  return async (dispatch: Dispatch<updateUserAction>) => {
     const response = await userService.getUserData();
 
     const result = response.data;
@@ -119,7 +119,7 @@ export const getUserDataFromAPI = () => {
 
 export const logout = () => {
   return async (
-    dispatch: Dispatch<logoutActionType | autocompleteClearActionType | any>,
+    dispatch: Dispatch<logoutAction | autocompleteClearAction | any>,
   ) => {
     apiClient.defaults.headers.common['x-user-jwt'] = '';
     batch(() => {

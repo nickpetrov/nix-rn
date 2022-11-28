@@ -61,7 +61,7 @@ export type UserData = {
 
 export type AuthResponse = {'x-user-jwt': string; user: User};
 
-export type authActionType = {
+export type authAction = {
   type:
     | authActionTypes.SIGNIN
     | authActionTypes.SIGNUP
@@ -70,16 +70,13 @@ export type authActionType = {
   userData: AuthResponse;
 };
 
-export type updateUserActionType = {
+export type updateUserAction = {
   type: authActionTypes.UPDATE_USER_DATA;
   newUserObj: Partial<User>;
 };
 
-export type logoutActionType = {
+export type logoutAction = {
   type: authActionTypes.LOGOUT;
 };
 
-export type AuthActionTypes =
-  | authActionType
-  | updateUserActionType
-  | logoutActionType;
+export type AuthActions = authAction | updateUserAction | logoutAction;

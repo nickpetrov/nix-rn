@@ -2,14 +2,14 @@ import autoCompleteService from 'api/autoCompleteService';
 import {Dispatch} from 'redux';
 import {
   autoCompleteActionTypes,
-  showSuggestedFoodsActionType,
-  updateSearchResultsActionType,
+  showSuggestedFoodsAction,
+  updateSearchResultsAction,
 } from './autoComplete.types';
 import _ from 'lodash';
 import {FoodProps} from 'store/userLog/userLog.types';
 
 export const updateSearchResults = (query: string) => {
-  return async (dispatch: Dispatch<updateSearchResultsActionType>) => {
+  return async (dispatch: Dispatch<updateSearchResultsAction>) => {
     try {
       const response = await autoCompleteService.getInstant(query);
 
@@ -48,7 +48,7 @@ export const clear = () => {
 };
 
 export const showSuggestedFoods = (mealType: number) => {
-  return async (dispatch: Dispatch<showSuggestedFoodsActionType>) => {
+  return async (dispatch: Dispatch<showSuggestedFoodsAction>) => {
     try {
       const result = await autoCompleteService.getSuggestedFoods(mealType);
 

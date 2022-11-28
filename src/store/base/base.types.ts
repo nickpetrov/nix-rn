@@ -64,3 +64,9 @@ export type BugReportType = {
   payload?: string;
   metadata?: string;
 };
+
+export type baseClearActionType = {
+  type: baseActionTypes.CLEAR;
+};
+
+export type BaseActionTypes = baseClearActionType;

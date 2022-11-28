@@ -1,5 +1,5 @@
 //types
-import {AuthActionTypes, authActionTypes, UserData} from './auth.types';
+import {AuthActions, authActionTypes, UserData} from './auth.types';
 
 export type AuthState = UserData;
 
@@ -48,7 +48,7 @@ const initialState: AuthState = {
 
 export default (
   state: AuthState = initialState,
-  action: AuthActionTypes,
+  action: AuthActions,
 ): AuthState => {
   switch (action.type) {
     case authActionTypes.UPDATE_USER_DATA:
