@@ -46,10 +46,38 @@ export interface PhotoProps {
 //   consumed_at?: string;
 // }
 
-export interface AutoCompleteState {
-  searchValue: string;
+export type SearchResponse = {
   self: Array<FoodProps>;
   common: Array<FoodProps>;
   branded: Array<FoodProps>;
   suggested: Array<FoodProps>;
+};
+
+export interface AutoCompleteState extends SearchResponse {
+  searchValue: string;
 }
+
+export type updateSearchResultsActionType = {
+  type: autoCompleteActionTypes.UPDATE_SEARCH_RESULTS;
+  payload: SearchResponse;
+};
+
+export type setSearchValueAcionType = {
+  type: autoCompleteActionTypes.SET_SEARCH_VALUE;
+  payload: string;
+};
+
+export type showSuggestedFoodsActionType = {
+  type: autoCompleteActionTypes.SHOW_SUGGESTED_FOODS;
+  payload: FoodProps[];
+};
+
+export type autocompleteClearActionType = {
+  type: autoCompleteActionTypes.CLEAR;
+};
+
+export type AutoCompleteActionTypes =
+  | updateSearchResultsActionType
+  | setSearchValueAcionType
+  | showSuggestedFoodsActionType
+  | autocompleteClearActionType;

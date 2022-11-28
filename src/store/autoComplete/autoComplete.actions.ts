@@ -1,11 +1,15 @@
 import autoCompleteService from 'api/autoCompleteService';
 import {Dispatch} from 'redux';
-import {autoCompleteActionTypes} from './autoComplete.types';
+import {
+  autoCompleteActionTypes,
+  showSuggestedFoodsActionType,
+  updateSearchResultsActionType,
+} from './autoComplete.types';
 import _ from 'lodash';
 import {FoodProps} from 'store/userLog/userLog.types';
 
 export const updateSearchResults = (query: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<updateSearchResultsActionType>) => {
     try {
       const response = await autoCompleteService.getInstant(query);
 
@@ -13,7 +17,7 @@ export const updateSearchResults = (query: string) => {
 
       const selfResults = _.filter(data.self, res => {
         return res.serving_qty;
-      });
+      }) as FoodProps[];
 
       const uniqCommon = _.uniqBy(data.common, (food: FoodProps) => {
         return food.tag_id;
@@ -27,7 +31,7 @@ export const updateSearchResults = (query: string) => {
 
       dispatch({
         type: autoCompleteActionTypes.UPDATE_SEARCH_RESULTS,
-        searchResult,
+        payload: searchResult,
       });
     } catch (err: any) {
       throw new Error(err.message || 'Oops, something go wrong');
@@ -36,7 +40,7 @@ export const updateSearchResults = (query: string) => {
 };
 
 export const setSearchValue = (text: string) => {
-  return {type: autoCompleteActionTypes.SET_SEARCH_VALUE, paylaod: text};
+  return {type: autoCompleteActionTypes.SET_SEARCH_VALUE, payload: text};
 };
 
 export const clear = () => {
@@ -44,7 +48,7 @@ export const clear = () => {
 };
 
 export const showSuggestedFoods = (mealType: number) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<showSuggestedFoodsActionType>) => {
     try {
       const result = await autoCompleteService.getSuggestedFoods(mealType);
 
@@ -57,7 +61,7 @@ export const showSuggestedFoods = (mealType: number) => {
 
       dispatch({
         type: autoCompleteActionTypes.SHOW_SUGGESTED_FOODS,
-        suggestedFoods,
+        payload: suggestedFoods,
       });
     } catch (err: any) {
       throw new Error(err.message || 'Oops, something go wrong');

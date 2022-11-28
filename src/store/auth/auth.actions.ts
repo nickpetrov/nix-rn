@@ -21,6 +21,7 @@ import {batch} from 'react-redux';
 import {resetGroceryAgentMode} from 'store/groceryAgentMode/groceryAgentMode.actions';
 import {resetGrocerySetting} from 'store/base/base.actions';
 import {AppleRequestResponse} from '@invertase/react-native-apple-authentication';
+import {autocompleteClearActionType} from 'store/autoComplete/autoComplete.types';
 
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch<authActionType>) => {
@@ -117,7 +118,9 @@ export const getUserDataFromAPI = () => {
 };
 
 export const logout = () => {
-  return async (dispatch: Dispatch<logoutActionType | any>) => {
+  return async (
+    dispatch: Dispatch<logoutActionType | autocompleteClearActionType | any>,
+  ) => {
     apiClient.defaults.headers.common['x-user-jwt'] = '';
     batch(() => {
       dispatch(clearAutocomplete());
