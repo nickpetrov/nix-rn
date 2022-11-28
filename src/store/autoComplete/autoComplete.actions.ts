@@ -2,6 +2,8 @@ import autoCompleteService from 'api/autoCompleteService';
 import {Dispatch} from 'redux';
 import {
   autoCompleteActionTypes,
+  autocompleteClearAction,
+  setSearchValueAcion,
   showSuggestedFoodsAction,
   updateSearchResultsAction,
 } from './autoComplete.types';
@@ -39,11 +41,11 @@ export const updateSearchResults = (query: string) => {
   };
 };
 
-export const setSearchValue = (text: string) => {
+export const setSearchValue = (text: string): setSearchValueAcion => {
   return {type: autoCompleteActionTypes.SET_SEARCH_VALUE, payload: text};
 };
 
-export const clear = () => {
+export const clear = (): autocompleteClearAction => {
   return {type: autoCompleteActionTypes.CLEAR};
 };
 
