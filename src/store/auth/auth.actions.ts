@@ -5,7 +5,7 @@ import userService from 'api/userService';
 
 //actions
 import {clear as clearAutocomplete} from 'store/autoComplete/autoComplete.actions';
-import {reset as resetBasket} from 'store/basket/basket.actions';
+import {clearBasket} from 'store/basket/basket.actions';
 
 // types
 import {Dispatch} from 'redux';
@@ -24,6 +24,7 @@ import {AppleRequestResponse} from '@invertase/react-native-apple-authentication
 import {autocompleteClearAction} from 'store/autoComplete/autoComplete.types';
 import {resetGrocerySettingsAction} from 'store/base/base.types';
 import {resetBasketAction} from 'store/basket/basket.types';
+import {clearGroceryAgentModeAction} from 'store/groceryAgentMode/groceryAgentMode.types';
 
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch<authAction>) => {
@@ -126,13 +127,13 @@ export const logout = () => {
       | autocompleteClearAction
       | resetGrocerySettingsAction
       | resetBasketAction
-      | any
+      | clearGroceryAgentModeAction
     >,
   ) => {
     apiClient.defaults.headers.common['x-user-jwt'] = '';
     batch(() => {
       dispatch(clearAutocomplete());
-      dispatch(resetBasket());
+      dispatch(clearBasket());
       dispatch(resetGroceryAgentMode());
       dispatch(resetGrocerySetting());
       dispatch({type: authActionTypes.LOGOUT});

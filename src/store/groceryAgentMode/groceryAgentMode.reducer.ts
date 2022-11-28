@@ -1,10 +1,10 @@
 //types
 import {
+  GroceryAgentModeActions,
   groceryAgentModeActionTypes,
   GroceryAgentModeState,
   photoTemplateKeys,
 } from './groceryAgentMode.types';
-import {AnyAction} from 'redux';
 
 const defaultCurrentSession = {
   barcode: null,
@@ -50,7 +50,7 @@ const initialState: GroceryAgentModeState = {
 
 export default (
   state: GroceryAgentModeState = initialState,
-  action: AnyAction,
+  action: GroceryAgentModeActions,
 ): GroceryAgentModeState => {
   switch (action.type) {
     case groceryAgentModeActionTypes.MERGE_CURRENT_SESSION:

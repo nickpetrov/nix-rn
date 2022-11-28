@@ -326,3 +326,7 @@ export const reset = () => {
     dispatch({type: basketActionTypes.RESET});
   };
 };
+
+export const clearBasket = (): resetBasketAction => {
+  return {type: basketActionTypes.RESET};
+};

@@ -47,3 +47,40 @@ export interface GroceryAgentModeState {
   currentSession: CurrentSessionProps;
   existingBarcodesUpdateTimestamp: number;
 }
+
+export type mergeCurrentSessionAction = {
+  type: groceryAgentModeActionTypes.MERGE_CURRENT_SESSION;
+  payload: Partial<CurrentSessionProps>;
+};
+export type setCurrentSessionPhotoByKeyAction = {
+  type: groceryAgentModeActionTypes.SET_CURRENT_SESSION_PHOTO_BY_KEY;
+  key: photoTemplateKeys;
+  payload: Partial<PhotoTemplate>;
+};
+export type resetCurrentSessionAction = {
+  type: groceryAgentModeActionTypes.RESET_CURRENT_SESSION;
+};
+export type setExistingBarcodeTimestampAction = {
+  type: groceryAgentModeActionTypes.SET_EXISTING_BARCODE_TIMESTAMPE;
+  payload: number;
+};
+export type setExistingBarcodeCountAction = {
+  type: groceryAgentModeActionTypes.SET_EXIST_BARCODES_COUNT;
+  payload: number;
+};
+export type setBarcodesForSyncCountAction = {
+  type: groceryAgentModeActionTypes.SET_BARCODES_FOR_SYNC_COUNT;
+  payload: number;
+};
+export type clearGroceryAgentModeAction = {
+  type: groceryAgentModeActionTypes.CLEAR;
+};
+
+export type GroceryAgentModeActions =
+  | mergeCurrentSessionAction
+  | setCurrentSessionPhotoByKeyAction
+  | resetCurrentSessionAction
+  | setExistingBarcodeTimestampAction
+  | setExistingBarcodeCountAction
+  | setBarcodesForSyncCountAction
+  | clearGroceryAgentModeAction;
