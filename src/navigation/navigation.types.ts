@@ -1,6 +1,6 @@
 import {ParamListBase} from '@react-navigation/native';
 import {Routes} from 'navigation/Routes';
-import {WebViewMessageEvent} from 'react-native-webview';
+import {WebViewMessageEvent, WebViewNavigation} from 'react-native-webview';
 import {PictureProps} from 'screens/LoggedIn';
 import {FoodProps} from 'store/userLog/userLog.types';
 import {RecipeProps} from '../store/recipes/recipes.types';
@@ -47,7 +47,9 @@ export interface StackNavigatorParamList extends ParamListBase {
     close?: boolean;
     withFooter?: boolean;
     onMessage?: ((event: WebViewMessageEvent) => void) & ((data: any) => void);
-    onNavigationStateChange?: (data: any) => void;
+    onNavigationStateChange?: ((event: WebViewNavigation) => void) &
+      ((event: WebViewNavigation) => void) &
+      ((data: any) => void);
   };
   [Routes.BarcodeScanner]:
     | {
