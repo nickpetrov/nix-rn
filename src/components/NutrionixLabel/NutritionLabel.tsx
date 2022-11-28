@@ -11,7 +11,7 @@ import {styles} from './NutritionLabel.styles';
 import {round} from 'helpers/nutrionixLabel';
 
 type Props = {
-  option: any;
+  option: Record<string, any>;
 };
 
 const HTML = `

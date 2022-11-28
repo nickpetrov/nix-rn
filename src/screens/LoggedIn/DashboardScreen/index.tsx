@@ -396,7 +396,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               {section.key === foodLogSections.Water && (
                 <TouchableHighlight
                   onPress={() =>
-                    navigation.navigate(Routes.Totals, {foods, type: 'daily'})
+                    navigation.navigate(Routes.Totals, {
+                      foods: foods.filter(
+                        (item: FoodProps) =>
+                          moment(item.consumed_at).format('YYYY-MM-DD') ===
+                          selectedDate,
+                      ),
+                      type: 'daily',
+                    })
                   }>
                   <View style={styles.summary}>
                     <FontAwesome name="pie-chart" color="#666" size={18} />

@@ -19,7 +19,7 @@ export function round(value: number) {
 }
 
 export const defaultOption = {
-  valueCalories: 100,
-  valueServingUnitQuantity: 1,
+  valueCalories: 0,
+  valueServingUnitQuantity: 0,
   showLegacyVersion: false,
 };
