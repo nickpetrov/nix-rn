@@ -1,13 +1,17 @@
 import React, {useEffect} from 'react';
 import {SafeAreaView, LogBox} from 'react-native';
 import {Provider} from 'react-redux';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  NavigationContainerRef,
+} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Settings} from 'react-native-fbsdk-next';
 import SplashScreen from 'react-native-splash-screen';
 import MainContent from 'components/MainContent';
 import {PersistGate} from 'redux-persist/integration/react';
 import * as Sentry from '@sentry/react-native';
+import analytics from '@react-native-firebase/analytics';
 
 //for work uuid
 import 'react-native-get-random-values';
@@ -34,6 +38,7 @@ const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 
 Sentry.init({
   dsn: 'https://a35826b51e0247a7950d1957ea54eb80@o74007.ingest.sentry.io/4504241441538048',
+  // dsn: `https://${process.env.REACT_APP_SENTRY_KEY}.ingest.sentry.io/4504241441538048`,
   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
   // We recommend adjusting this value in production.
   tracesSampleRate: 1.0,
@@ -47,7 +52,9 @@ Sentry.init({
 });
 
 const App = () => {
-  const navigation = React.useRef(null);
+  const navigation =
+    React.useRef<NavigationContainerRef<ReactNavigation.RootParamList>>(null);
+  const routeNameRef = React.useRef<string>();
   useEffect(() => {
     SplashScreen.hide();
   }, []);
@@ -61,6 +68,25 @@ const App = () => {
               onReady={() => {
                 // Register the navigation container with the instrumentation
                 routingInstrumentation.registerNavigationContainer(navigation);
+                // for analytic
+                routeNameRef.current =
+                  navigation?.current?.getCurrentRoute()?.name;
+              }}
+              onStateChange={async () => {
+                const previousRouteName = routeNameRef.current;
+                const currentRouteName =
+                  navigation?.current?.getCurrentRoute()?.name;
+
+                if (previousRouteName !== currentRouteName) {
+                  await analytics().logScreenView({
+                    screen_name: currentRouteName,
+                    screen_class: currentRouteName,
+                  });
+                  Sentry.configureScope(function (scope) {
+                    scope.setExtra('currentView', currentRouteName);
+                  });
+                }
+                routeNameRef.current = currentRouteName;
               }}>
               <MainContent />
             </NavigationContainer>

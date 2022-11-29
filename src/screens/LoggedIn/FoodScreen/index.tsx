@@ -65,6 +65,7 @@ import {MediaType, Asset} from 'react-native-image-picker/lib/typescript/types';
 // styles
 import {styles} from './FoodScreen.styles';
 import {defaultOption} from 'helpers/nutrionixLabel';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface FoodScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Food>;
@@ -153,6 +154,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   }, [navigation, readOnly, showSpinner, showCheck, spin]);
 
   const deleteFromLog = () => {
+    analyticTrackEvent('deletedFood', foodObj.food_name);
     dispatch(deleteFoodFromLog([{id: foodObj?.id || '-1'}])).then(() => {
       setShowDeleteModal(false);
       navigation.navigate(Routes.Dashboard);
@@ -251,6 +253,10 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
         image,
       )
         .then(result => {
+          const photoEventName = foodObj.photo.is_user_uploaded
+            ? 'Changed photo'
+            : 'Custom photo added';
+          analyticTrackEvent(photoEventName, ' ');
           if (result) {
             console.log(result);
             setImage(null);
@@ -278,6 +284,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     }>,
   ) => {
     setShowSpinner(true);
+    analyticTrackEvent('updatedFood', foodObj.food_name);
     dispatch(updateFoodFromlog([foodObj]))
       .then(() => {
         setTimeout(() => setShowSpinner(false), 800);

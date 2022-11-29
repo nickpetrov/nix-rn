@@ -72,6 +72,7 @@ import {mealTypes} from 'store/basket/basket.types';
 // styles
 import {styles} from './DashboardScreen.styles';
 import {Colors} from 'constants/Colors';
+import {analyticSetUserId, analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -199,7 +200,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   useEffect(() => {
     refreshFoodLog();
-  }, [refreshFoodLog]);
+    analyticSetUserId(userData.id);
+  }, [refreshFoodLog, userData.id]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -328,6 +330,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       {
                         type: 'delete',
                         onPress: () => {
+                          analyticTrackEvent('swipe-left', 'swipe-left-delete');
                           setDeleteteModal({
                             items: section.data,
                             mealName: section.key as keyof mealTypes,
@@ -337,6 +340,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       {
                         type: 'copy',
                         onPress: () => {
+                          analyticTrackEvent('swipe-left', 'swipe-left-copy');
                           dispatch(addExistFoodToBasket(section.data)).then(
                             () => {
                               // close all swipes after copy

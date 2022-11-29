@@ -49,6 +49,7 @@ import {Routes} from 'navigation/Routes';
 import {styles} from './AutocompleteScreen.styles';
 import {NixButton} from 'components/NixButton';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface AutocompleteScreenProps {
   navigation: NativeStackNavigationProp<
@@ -304,6 +305,12 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
     }
     dispatch(basketActions.addFoodToBasket(item_name))
       .then(callBackAfterAddFoodToBasket)
+      .then(() => {
+        const naturalEvent = is_freeform
+          ? 'natural_freeform'
+          : 'natural_common';
+        analyticTrackEvent(naturalEvent, item_name);
+      })
       .catch(err => {
         dispatch(
           setInfoMessage({

@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "917428048217",
-    "firebase_url": "https://ionic-track-mobile.firebaseio.com",
-    "project_id": "ionic-track-mobile",
-    "storage_bucket": "ionic-track-mobile.appspot.com"
+    "project_number": "485602608525",
+    "project_id": "nutritionix-track-react-native",
+    "storage_bucket": "nutritionix-track-react-native.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:917428048217:android:be48830fda66b2ad",
+        "mobilesdk_app_id": "1:485602608525:android:48f7ea7739a5f5a5cc29c4",
         "android_client_info": {
-          "package_name": "com.nutritionix.nixtrack"
+          "package_name": "com.nutritionx"
         }
       },
       "oauth_client": [
         {
-          "client_id": "917428048217-ctvc1jvs2bcei1fs2sm95c9k884is82u.apps.googleusercontent.com",
+          "client_id": "485602608525-tddfnk3s1oqiq03i1tkpcvfkre271ict.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD_3I0RCa_lsfsgM9KDTQBG924bADXRuO0"
+          "current_key": "AIzaSyBRrz1aU60XKgMudJ8IGO8zvxL1lVXS4xM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "917428048217-ctvc1jvs2bcei1fs2sm95c9k884is82u.apps.googleusercontent.com",
+              "client_id": "485602608525-tddfnk3s1oqiq03i1tkpcvfkre271ict.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

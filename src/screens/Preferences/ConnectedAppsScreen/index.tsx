@@ -32,6 +32,7 @@ import appleHealthKit, {HealthPermission} from 'react-native-health';
 
 // helpers
 import {SQLexecute} from 'helpers/sqlite';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface ConnectedAppsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -115,21 +116,17 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
             if (turnOffNutritionHKSync) {
               dispatch(mergeHKSyncOptions({nutrition: 'off'}));
               SQLexecute({db, query: 'DROP TABLE hkdata'});
-
-              // AnalyticsService.trackEvent(
-              //   'HealthKit nutrition sync',
-              //   'disable',
-              // );
+              analyticTrackEvent('HealthKit nutrition sync', 'disable');
             }
             if (turnOffExcerciseHKSync) {
               dispatch(mergeHKSyncOptions({exercise: 'off'}));
               SQLexecute({db, query: 'DROP TABLE hkdata_exercise'});
-              // AnalyticsService.trackEvent('HealthKit exercise sync', 'disable');
+              analyticTrackEvent('HealthKit exercise sync', 'disable');
             }
             if (turnOffWeightHKSync) {
               dispatch(mergeHKSyncOptions({weight: 'off'}));
               SQLexecute({db, query: 'DROP TABLE hkdata_weight'});
-              // AnalyticsService.trackEvent('HealthKit weight sync', 'disable');
+              analyticTrackEvent('HealthKit weight sync', 'disable');
             }
           }
         });

@@ -28,6 +28,7 @@ import {setIsVoiceDisclaimerVisible} from 'store/base/base.actions';
 // styles
 import {styles} from './VoiceInput.styles';
 import ChooseModal from 'components/ChooseModal';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface VoiceRecognitionControlsProps {
   onPress: () => void;
@@ -111,6 +112,7 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
       console.log('onSpeechResults: ', e);
       if (e.value) {
         onChangeText(e.value[0]);
+        analyticTrackEvent('voice_logging', e.value[0]);
       }
       setSpeechRecognitionInProgress(false);
     },

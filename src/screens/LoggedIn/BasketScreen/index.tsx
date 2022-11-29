@@ -69,6 +69,7 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './BasketScreen.styles';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface BasketScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Basket>;
@@ -250,6 +251,12 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
 
     dispatch(userLogActions.addFoodToLog(adjustedFoods, loggingOptions))
       .then(() => {
+        if (customPhoto) {
+          analyticTrackEvent('Custom photo added', ' ');
+        }
+        if (isSingleFood) {
+          analyticTrackEvent('Recipe created', 'Created from the basket');
+        }
         dispatch(basketActions.reset());
         setLoadingSubmit(false);
         navigation.navigate(Routes.Dashboard);
@@ -379,9 +386,16 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
               {
                 type: 'delete',
                 onPress: () => {
+                  analyticTrackEvent('swipe-left', 'swipe-left-delete');
                   if (foods.length === 1) {
                     dispatch(basketActions.reset());
                   } else {
+                    if (item._hiddenQuery !== undefined) {
+                      analyticTrackEvent(
+                        'deleted_natural',
+                        `${item.food_name};${item._hiddenQuery},Deleted Natural`,
+                      );
+                    }
                     dispatch(
                       basketActions.deleteFoodFromBasket(item.basketId || '-1'),
                     );

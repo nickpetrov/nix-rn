@@ -46,6 +46,7 @@ import {Routes} from 'navigation/Routes';
 // styles
 import {styles} from './TotalsScreen.styles';
 import {defaultOption} from 'helpers/nutrionixLabel';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface TotalsScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Totals>;
@@ -281,9 +282,14 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
 
   const updateCalorieLimit = () => {
     if (userData.daily_kcal !== dailyKcal) {
-      dispatch(
-        userActions.updateUserData({daily_kcal: dailyKcal} as User),
-      ).catch(err => console.log(err));
+      dispatch(userActions.updateUserData({daily_kcal: dailyKcal} as User))
+        .then(() => {
+          analyticTrackEvent(
+            'changedCalorieLimit',
+            'From ' + userData.daily_kcal + ' to ' + dailyKcal,
+          );
+        })
+        .catch(err => console.log(err));
     }
   };
 
@@ -293,6 +299,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
 
   const handleCopyMeal = () => {
     dispatch(addExistFoodToBasket(foods)).then(() => {
+      analyticTrackEvent('Copy - From Summary', ' ');
       navigation.navigate(Routes.Basket);
     });
   };
@@ -303,7 +310,10 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           id: item.id,
         })),
       ),
-    ).then(() => navigation.goBack());
+    ).then(() => {
+      analyticTrackEvent('Delete - From Summary', ' ');
+      navigation.goBack();
+    });
 
   const labelOptions = {
     textNutritionFacts: '',

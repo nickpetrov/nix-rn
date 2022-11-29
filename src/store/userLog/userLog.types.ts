@@ -181,6 +181,7 @@ export interface FoodProps {
   };
   item_name?: string;
   _id?: string;
+  _hiddenQuery?: string;
 }
 
 export interface UserLogState {

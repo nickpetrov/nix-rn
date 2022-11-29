@@ -29,6 +29,7 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 // constants
 import {Routes} from 'navigation/Routes';
 import {Colors} from 'constants/Colors';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface NaturalFormProps {
   navigation: NativeStackNavigationProp<
@@ -79,6 +80,9 @@ const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
       );
       return;
     }
+
+    analyticTrackEvent('foodlog_natural', naturalQuery);
+
     dispatch(basketActions.addFoodToBasket(naturalQuery))
       .then(foodsToAdd => {
         dispatch(
@@ -88,6 +92,7 @@ const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
           }),
         );
         navigation.replace(Routes.Basket);
+        analyticTrackEvent('natural_addFoodSmart', naturalQuery);
       })
       .catch(err => {
         dispatch(

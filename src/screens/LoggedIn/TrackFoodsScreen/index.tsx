@@ -46,6 +46,7 @@ import {
   RestaurantsWithCalcProps,
   TrackTabs,
 } from 'store/foods/foods.types';
+import {analyticSetUserId} from 'helpers/analytics.ts';
 
 interface TrackFoodsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -58,6 +59,7 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
   navigation,
 }) => {
   const dispatch = useDispatch();
+  const userId = useSelector(state => state.auth.userData.id);
   const {currentTrackTab: activeTab, selectedRestaurant} = useSelector(
     state => state.foods,
   );
@@ -93,10 +95,11 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
   };
 
   useEffect(() => {
+    analyticSetUserId(userId);
     return () => {
       dispatch(setTrackTab(TrackTabs.FREEFORM));
     };
-  }, [dispatch]);
+  }, [dispatch, userId]);
 
   useLayoutEffect(() => {
     if (selectedRestaurant) {

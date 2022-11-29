@@ -44,6 +44,7 @@ import {
 } from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {RouteProp} from '@react-navigation/native';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface RecipesScreenProps {
   navigation: NativeStackNavigationProp<
@@ -194,6 +195,10 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
       clonedRecipe.name = newRecipeName;
       dispatch(copyRecipe(clonedRecipe, clonedRecipeIndex))
         .then(() => {
+          analyticTrackEvent(
+            'Recipe copied',
+            'Copied from the recipes interface',
+          );
           setCopyRecipePopup(false);
           setNewRecipeName('');
           setLoadingCopyRecipe(false);
@@ -207,6 +212,10 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
   const quickLog = (recipe: RecipeProps) => {
     dispatch(basketActions.addRecipeToBasket(recipe.id)).then(
       (scaled_recipe: RecipeProps) => {
+        analyticTrackEvent(
+          'Added recipe to the basket',
+          'Quick log from the My Recipes',
+        );
         dispatch(
           basketActions.mergeBasket({
             isSingleFood: true,

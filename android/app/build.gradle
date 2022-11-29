@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services'
 
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
@@ -285,7 +286,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-
+    implementation platform('com.google.firebase:firebase-bom:31.1.0')
+    implementation 'com.google.firebase:firebase-analytics'
     implementation project(':react-native-vector-icons')
 }
 

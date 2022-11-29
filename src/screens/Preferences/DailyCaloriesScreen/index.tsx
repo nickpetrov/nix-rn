@@ -47,6 +47,7 @@ import {User} from 'store/auth/auth.types';
 
 // validation
 import {validationSchema} from './validation';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface DailyCaloriesScreenProps {
   navigation: NativeStackNavigationProp<
@@ -181,6 +182,13 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
             parseFloat(String(values.height_in)) * 2.54,
         );
       }
+    }
+
+    if (userData.daily_kcal !== newUserData.daily_kcal) {
+      analyticTrackEvent(
+        'changedCalorieLimit',
+        'From ' + userData.daily_kcal + ' to ' + newUserData.daily_kcal,
+      );
     }
 
     dispatch(authActions.updateUserData(newUserData as Partial<User>))

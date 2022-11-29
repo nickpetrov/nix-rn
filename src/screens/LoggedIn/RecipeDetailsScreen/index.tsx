@@ -61,6 +61,7 @@ import {multiply} from 'helpers/multiply';
 
 // styles
 import {styles} from './RecipeDetailsScreen.styles';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface RecipeDetailsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -256,7 +257,6 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         if (!recipeToUpdate.directions?.length) {
           delete recipeToUpdate.directions;
         }
-        console.log('recipeToUpdate', recipeToUpdate);
         return await dispatch(createRecipe(recipeToUpdate))
           .then(res => {
             setShowSave(false);
@@ -264,6 +264,10 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             return res;
           })
           .then(res => {
+            analyticTrackEvent(
+              'Recipe created',
+              'Created from the recipes interface',
+            );
             if (logAfterUpdate) {
               return res;
             } else {
@@ -611,9 +615,15 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           setCopyRecipePopup(false);
           setNewRecipeName('');
           setLoadingCopyRecipe(false);
-          navigation.navigate(Routes.RecipeDetails, {
-            recipe: resCopyRecipe,
-          });
+          if (resCopyRecipe) {
+            navigation.navigate(Routes.RecipeDetails, {
+              recipe: resCopyRecipe,
+            });
+          }
+          analyticTrackEvent(
+            'Recipe copied',
+            'Copied from the edit recipe interface',
+          );
         })
         .catch(err => {
           setLoadingCopyRecipe(false);
@@ -671,6 +681,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       dispatch(
         basketActions.addExistFoodToBasket(scaled_recipe.ingredients),
       ).then(() => {
+        analyticTrackEvent('Added recipe to the basket', ' ');
         dispatch(
           basketActions.mergeBasket({
             isSingleFood: true,
