@@ -7,6 +7,7 @@ import {Settings} from 'react-native-fbsdk-next';
 import SplashScreen from 'react-native-splash-screen';
 import MainContent from 'components/MainContent';
 import {PersistGate} from 'redux-persist/integration/react';
+import * as Sentry from '@sentry/react-native';
 
 //for work uuid
 import 'react-native-get-random-values';
@@ -23,7 +24,30 @@ Settings.initializeSDK();
 // ignore WARNINGS - new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 
+// from ionic
+// Sentry.init({
+//   dsn: 'https://84e7ad3ef0d24d73895d708080289fb3@sentry.io/1212947',
+//   release: 'com.nutritionix.nixtrack-%%VERSION%%' + (__DEV__ ? '-dev' : ''),
+// });
+
+const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+
+Sentry.init({
+  dsn: 'https://a35826b51e0247a7950d1957ea54eb80@o74007.ingest.sentry.io/4504241441538048',
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+  // We recommend adjusting this value in production.
+  tracesSampleRate: 1.0,
+  integrations: [
+    new Sentry.ReactNativeTracing({
+      // Pass instrumentation to be used as `routingInstrumentation`
+      routingInstrumentation,
+      // ...
+    }),
+  ],
+});
+
 const App = () => {
+  const navigation = React.useRef(null);
   useEffect(() => {
     SplashScreen.hide();
   }, []);
@@ -32,7 +56,12 @@ const App = () => {
       <Provider store={store}>
         <PersistGate loading={<LoadIndicator />} persistor={persistor}>
           <SafeAreaView style={styles.container}>
-            <NavigationContainer>
+            <NavigationContainer
+              ref={navigation}
+              onReady={() => {
+                // Register the navigation container with the instrumentation
+                routingInstrumentation.registerNavigationContainer(navigation);
+              }}>
               <MainContent />
             </NavigationContainer>
           </SafeAreaView>
@@ -42,4 +71,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Sentry.wrap(App);

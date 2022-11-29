@@ -1,5 +1,6 @@
 // utils
 import moment from 'moment-timezone';
+import * as Sentry from '@sentry/react-native';
 
 // types
 import {Dispatch} from 'redux';
@@ -22,6 +23,7 @@ import {
 } from './base.types';
 import {RootState} from '../index';
 import SQLite from 'react-native-sqlite-storage';
+import {User} from '../auth/auth.types';
 
 export const setAgreedToUsePhoto = (agreedToUsePhoto: boolean) => {
   return async (dispatch: Dispatch<setUserAgreedToUsePhotoAction>) => {
@@ -162,4 +164,15 @@ export const resetGrocerySetting = (): resetGrocerySettingsAction => {
   return {
     type: baseActionTypes.RESET_GROCERY_SETTINGS,
   };
+};
+
+export const updateSentryContext = (user?: User, jwt?: string) => {
+  Sentry.configureScope(function (scope) {
+    scope.setUser({
+      userData: user ? user : 'Empty',
+      email: user ? user.email : '',
+      id: user ? user.id : '',
+      jwtLength: jwt ? jwt.length : 0,
+    });
+  });
 };

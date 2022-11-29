@@ -2,10 +2,16 @@
 import authService from 'api/authService';
 import apiClient from 'api/index';
 import userService from 'api/userService';
+import {batch} from 'react-redux';
 
 //actions
 import {clear as clearAutocomplete} from 'store/autoComplete/autoComplete.actions';
 import {clearBasket} from 'store/basket/basket.actions';
+import {resetGroceryAgentMode} from 'store/groceryAgentMode/groceryAgentMode.actions';
+import {
+  resetGrocerySetting,
+  updateSentryContext,
+} from 'store/base/base.actions';
 
 // types
 import {Dispatch} from 'redux';
@@ -17,14 +23,12 @@ import {
   updateUserAction,
   User,
 } from './auth.types';
-import {batch} from 'react-redux';
-import {resetGroceryAgentMode} from 'store/groceryAgentMode/groceryAgentMode.actions';
-import {resetGrocerySetting} from 'store/base/base.actions';
 import {AppleRequestResponse} from '@invertase/react-native-apple-authentication';
 import {autocompleteClearAction} from 'store/autoComplete/autoComplete.types';
 import {resetGrocerySettingsAction} from 'store/base/base.types';
 import {resetBasketAction} from 'store/basket/basket.types';
 import {clearGroceryAgentModeAction} from 'store/groceryAgentMode/groceryAgentMode.types';
+import {RootState} from '../index';
 
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch<authAction>) => {
@@ -34,6 +38,7 @@ export const fbLogin = (access_token: string) => {
       const userData = response.data;
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
       dispatch({type: authActionTypes.SIGNIN, userData});
+      updateSentryContext(userData.user, userData['x-user-jwt']);
     } catch (err: any) {
       if (err.status === 400 || err.status === 500) {
         throw new Error(err.status.toString());
@@ -49,6 +54,7 @@ export const appleLogin = (apple_user_data: AppleRequestResponse) => {
       const userData = response.data;
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
       dispatch({type: authActionTypes.SIGNIN, userData});
+      updateSentryContext(userData.user, userData['x-user-jwt']);
     } catch (err: any) {
       throw err;
     }
@@ -63,6 +69,7 @@ export const signin = (email: string, password: string) => {
       const userData = response.data;
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
       dispatch({type: authActionTypes.SIGNIN, userData});
+      updateSentryContext(userData.user, userData['x-user-jwt']);
     } catch (err: any) {
       if (err.status === 400) {
         throw new Error(err.status.toString());
@@ -79,7 +86,7 @@ export const signup = (data: SignUpRequest) => {
       const userData = response.data;
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
       dispatch({type: authActionTypes.SIGNUP, userData});
-
+      updateSentryContext(userData.user, userData['x-user-jwt']);
       return userData;
     } catch (err: any) {
       throw err;
@@ -110,13 +117,22 @@ export const updateUserData = (newUserObj: Partial<User>) => {
 };
 
 export const getUserDataFromAPI = () => {
-  return async (dispatch: Dispatch<updateUserAction>) => {
-    const response = await userService.getUserData();
+  return async (
+    dispatch: Dispatch<updateUserAction>,
+    useState: () => RootState,
+  ) => {
+    const userJWT = useState().auth.userJWT;
+    try {
+      const response = await userService.getUserData();
 
-    const result = response.data;
+      const result = response.data;
 
-    dispatch({type: authActionTypes.UPDATE_USER_DATA, newUserObj: result});
-    return result;
+      dispatch({type: authActionTypes.UPDATE_USER_DATA, newUserObj: result});
+      updateSentryContext(result, userJWT);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
   };
 };
 
