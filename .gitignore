@@ -64,4 +64,4 @@ buck-out/
 /vendor/bundle/
 
 # tokens & secrets
-.env
+src/.env
