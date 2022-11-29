@@ -37,7 +37,8 @@ LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by mes
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 
 Sentry.init({
-  dsn: `https://${process.env.REACT_APP_SENTRY_KEY}.ingest.sentry.io/4504241441538048`,
+  dsn: 'https://a35826b51e0247a7950d1957ea54eb80@o74007.ingest.sentry.io/4504241441538048',
+  // dsn: `https://${process.env.REACT_APP_SENTRY_KEY}.ingest.sentry.io/4504241441538048`,
   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
   // We recommend adjusting this value in production.
   tracesSampleRate: 1.0,
