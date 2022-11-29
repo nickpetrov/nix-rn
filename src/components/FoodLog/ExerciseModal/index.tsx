@@ -100,7 +100,7 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
         <View style={styles.excerciseModal}>
           <View style={styles.excerciseContainer}>
             <View style={styles.excerciseModalHeader}>
-              <Text>{exercise?.id ? 'Edit Exircise' : 'Log Exircises'}</Text>
+              <Text>{exercise?.id ? 'Edit Exercise' : 'Log Exercises'}</Text>
             </View>
             <View style={styles.excerciseModalMain}>
               <VoiceInput
