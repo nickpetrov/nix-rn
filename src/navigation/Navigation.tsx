@@ -1,10 +1,7 @@
 // utils
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {
-  createDrawerNavigator,
-  DrawerNavigationProp,
-} from '@react-navigation/drawer';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import moment from 'moment-timezone';
 
 // hooks
@@ -57,7 +54,6 @@ import LogoutScreen from 'screens/LoggedIn/LogoutScreen';
 import {Routes} from './Routes';
 
 // types
-import {ParamListBase} from '@react-navigation/native';
 import {Platform} from 'react-native';
 import {
   DrawerNavigatorParamList,
@@ -143,11 +139,7 @@ const PreferencesNavigation = () => {
   );
 };
 
-const LoggedInNavigation = ({
-  navigation,
-}: {
-  navigation: DrawerNavigationProp<ParamListBase>;
-}) => {
+const LoggedInNavigation = () => {
   const created_at = useSelector(state => state.auth.userData.created_at);
   const justCreated = moment().diff(created_at, 'seconds') <= 90;
   return (
@@ -160,7 +152,7 @@ const LoggedInNavigation = ({
         name={Routes.Dashboard}
         component={DashboardScreen}
         options={{
-          headerLeft: () => <DrawerButton navigation={navigation} />,
+          headerLeft: () => <DrawerButton />,
         }}
       />
       <Stack.Screen

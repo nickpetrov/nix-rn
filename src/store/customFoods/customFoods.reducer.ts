@@ -1,6 +1,9 @@
 //types
-import {customFoodsActionTypes, CustomFoodsState} from './customFoods.types';
-import {AnyAction} from 'redux';
+import {
+  CustomFoodsActions,
+  customFoodsActionTypes,
+  CustomFoodsState,
+} from './customFoods.types';
 
 const initialState: CustomFoodsState = {
   foods: [],
@@ -8,7 +11,7 @@ const initialState: CustomFoodsState = {
 
 export default (
   state: CustomFoodsState = initialState,
-  action: AnyAction,
+  action: CustomFoodsActions,
 ): CustomFoodsState => {
   switch (action.type) {
     case customFoodsActionTypes.GET_ALL_CUSTOM_FOOD:
@@ -28,7 +31,7 @@ export default (
       const newFoods = state.foods.filter(item => item.id !== action.payload);
       return {...state, foods: newFoods};
     }
-    case customFoodsActionTypes.CLEAR:
+    case customFoodsActionTypes.CUSTOM_FOODS_CLEAR:
       return initialState;
     default:
       return state;

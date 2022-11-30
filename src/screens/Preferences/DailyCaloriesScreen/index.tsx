@@ -38,12 +38,16 @@ import {Routes} from 'navigation/Routes';
 import {styles} from './DailyCaloriesScreen.styles';
 
 // types
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {User} from 'store/auth/auth.types';
 
 // validation
 import {validationSchema} from './validation';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface DailyCaloriesScreenProps {
   navigation: NativeStackNavigationProp<
@@ -180,6 +184,13 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
       }
     }
 
+    if (userData.daily_kcal !== newUserData.daily_kcal) {
+      analyticTrackEvent(
+        'changedCalorieLimit',
+        'From ' + userData.daily_kcal + ' to ' + newUserData.daily_kcal,
+      );
+    }
+
     dispatch(authActions.updateUserData(newUserData as Partial<User>))
       .then(() => {
         setLoadingSubmit(false);
@@ -202,9 +213,10 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           headerRight={
             <TouchableOpacity
               style={styles.question}

@@ -15,7 +15,15 @@ import nixApiDataUtilites, {
 
 // types
 import {Dispatch} from 'redux';
-import {basketActionTypes, BasketState} from './basket.types';
+import {
+  addFoodToBasketAction,
+  basketActionTypes,
+  BasketState,
+  deleteFoodFromBasketAction,
+  mergeBasketAction,
+  resetBasketAction,
+  updateBasketFoodAction,
+} from './basket.types';
 import {RootState} from '../index';
 import {FoodProps} from 'store/userLog/userLog.types';
 import recipesService from 'api/recipeService';
@@ -23,7 +31,7 @@ import baseService from 'api/baseService';
 
 // add by name
 export const addFoodToBasket = (query: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<addFoodToBasketAction>) => {
     try {
       const response = await basketService.getFoodForBasket(query);
 
@@ -54,7 +62,7 @@ export const addFoodToBasket = (query: string) => {
 
 // add by id
 export const addFoodToBasketById = (id: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<addFoodToBasketAction>) => {
     try {
       const response = await autoCompleteService.getFoodById(id);
 
@@ -77,7 +85,10 @@ export const addFoodToBasketById = (id: string) => {
 
 // add exist food
 export const addExistFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<addFoodToBasketAction>,
+    useState: () => RootState,
+  ) => {
     const timezone = useState().auth.userData.timezone;
     const newFoods = foods.map(item => {
       if (!item.full_nutrients && !item.alt_measures) {
@@ -121,14 +132,20 @@ export const addExistFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
         basketId: uuidv4(),
       };
     });
-    dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: newFoods});
+    dispatch({
+      type: basketActionTypes.ADD_FOOD_TO_BASKET,
+      foods: newFoods as FoodProps[],
+    });
     return newFoods;
   };
 };
 
 // add custom food to basket
 export const addCustomFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<addFoodToBasketAction>,
+    useState: () => RootState,
+  ) => {
     const timezone = useState().auth.userData.timezone;
     const newFoods = foods.map(item => {
       const serving_qty = item.serving_qty || 1;
@@ -172,7 +189,10 @@ export const addCustomFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
 
 // add exist food
 export const addRecipeToBasket = (id: string) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<addFoodToBasketAction>,
+    useState: () => RootState,
+  ) => {
     try {
       const response = await recipesService.getRecipeById(id);
       const recipe = response.data;
@@ -242,7 +262,10 @@ export const addRecipeToBasket = (id: string) => {
 
 // add branded food
 export const addBrandedFoodToBasket = (id: string) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<addFoodToBasketAction>,
+    useState: () => RootState,
+  ) => {
     try {
       const response = await baseService.getBrandedFoodsById(id);
       let food = response.data.foods[0];
@@ -276,19 +299,21 @@ export const addBrandedFoodToBasket = (id: string) => {
 };
 
 export const deleteFoodFromBasket = (id: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<deleteFoodFromBasketAction>) => {
     dispatch({type: basketActionTypes.DELETE_FOOD_FROM_BASKET, id});
   };
 };
-export const mergeBasket = (basket: Partial<BasketState>) => {
+export const mergeBasket = (
+  basket: Partial<BasketState>,
+): mergeBasketAction => {
   return {type: basketActionTypes.MERGE_BASKET, payload: basket};
-};
-export const mergeBasketFromStorage = (basket: BasketState) => {
-  return {type: basketActionTypes.MERGE_BASKET_FROM_STORAGE, basket};
 };
 
 export const updateFoodAtBasket = (foodObj: FoodProps, index: number) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<updateBasketFoodAction>,
+    useState: () => RootState,
+  ) => {
     const oldFoods = useState().basket.foods;
     const newFoods = [...oldFoods];
     newFoods[index] = foodObj;
@@ -297,7 +322,11 @@ export const updateFoodAtBasket = (foodObj: FoodProps, index: number) => {
 };
 
 export const reset = () => {
-  return async (dispatch: Dispatch) => {
-    dispatch({type: basketActionTypes.RESET});
+  return async (dispatch: Dispatch<resetBasketAction>) => {
+    dispatch({type: basketActionTypes.BASKET_RESET});
   };
+};
+
+export const clearBasket = (): resetBasketAction => {
+  return {type: basketActionTypes.BASKET_RESET};
 };

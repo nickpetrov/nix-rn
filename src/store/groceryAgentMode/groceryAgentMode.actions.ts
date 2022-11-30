@@ -14,6 +14,13 @@ import {
   photoTemplateKeys,
   PhotoTemplate,
   RecordType,
+  mergeCurrentSessionAction,
+  setCurrentSessionPhotoByKeyAction,
+  resetCurrentSessionAction,
+  setExistingBarcodeTimestampAction,
+  setExistingBarcodeCountAction,
+  setBarcodesForSyncCountAction,
+  clearGroceryAgentModeAction,
 } from './groceryAgentMode.types';
 import baseService from 'api/baseService';
 import Q from 'q';
@@ -24,7 +31,7 @@ import RNFS from 'react-native-fs';
 import {decode} from 'base64-arraybuffer';
 
 export const mergeCurrentSession = (data: Partial<CurrentSessionProps>) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<mergeCurrentSessionAction>) => {
     dispatch({
       type: groceryAgentModeActionTypes.MERGE_CURRENT_SESSION,
       payload: data,
@@ -32,7 +39,7 @@ export const mergeCurrentSession = (data: Partial<CurrentSessionProps>) => {
   };
 };
 export const setExistingBarcodesUpdateTimestamp = (count: number) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<setExistingBarcodeTimestampAction>) => {
     dispatch({
       type: groceryAgentModeActionTypes.SET_EXISTING_BARCODE_TIMESTAMPE,
       payload: count,
@@ -40,7 +47,7 @@ export const setExistingBarcodesUpdateTimestamp = (count: number) => {
   };
 };
 export const setExistBarcodesCount = (count: number) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<setExistingBarcodeCountAction>) => {
     dispatch({
       type: groceryAgentModeActionTypes.SET_EXIST_BARCODES_COUNT,
       payload: count,
@@ -48,7 +55,7 @@ export const setExistBarcodesCount = (count: number) => {
   };
 };
 export const setBarcodesForSyncCount = (count: number) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<setBarcodesForSyncCountAction>) => {
     dispatch({
       type: groceryAgentModeActionTypes.SET_BARCODES_FOR_SYNC_COUNT,
       payload: count,
@@ -59,7 +66,7 @@ export const mergePhotoByKey = (
   key: photoTemplateKeys,
   data: Partial<PhotoTemplate>,
 ) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<setCurrentSessionPhotoByKeyAction>) => {
     dispatch({
       type: groceryAgentModeActionTypes.SET_CURRENT_SESSION_PHOTO_BY_KEY,
       key,
@@ -68,14 +75,12 @@ export const mergePhotoByKey = (
   };
 };
 export const resetCurrentSession = () => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<resetCurrentSessionAction>) => {
     dispatch({type: groceryAgentModeActionTypes.RESET_CURRENT_SESSION});
   };
 };
-export const resetGroceryAgentMode = () => {
-  return async (dispatch: Dispatch) => {
-    dispatch({type: groceryAgentModeActionTypes.CLEAR});
-  };
+export const resetGroceryAgentMode = (): clearGroceryAgentModeAction => {
+  return {type: groceryAgentModeActionTypes.GROCERY_AGENT_MODE_CLEAR};
 };
 
 export const barcodeExistsInExistingBarcodes = async (barcode: string) => {

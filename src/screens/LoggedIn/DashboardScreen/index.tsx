@@ -52,7 +52,10 @@ import {setDB} from 'store/base/base.actions';
 import {Routes} from 'navigation/Routes';
 
 // types
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {
@@ -69,6 +72,7 @@ import {mealTypes} from 'store/basket/basket.types';
 // styles
 import {styles} from './DashboardScreen.styles';
 import {Colors} from 'constants/Colors';
+import {analyticSetUserId, analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -196,13 +200,15 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   useEffect(() => {
     refreshFoodLog();
-  }, [refreshFoodLog]);
+    analyticSetUserId(userData.id);
+  }, [refreshFoodLog, userData.id]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           withAutoComplete
           headerRight={
             <BasketButton
@@ -211,7 +217,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               onPress={() => navigation.navigate(Routes.Basket)}
             />
           }
-          headerLeft={<DrawerButton navigation={props.navigation} />}
+          headerLeft={<DrawerButton />}
         />
       ),
     });
@@ -324,6 +330,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       {
                         type: 'delete',
                         onPress: () => {
+                          analyticTrackEvent('swipe-left', 'swipe-left-delete');
                           setDeleteteModal({
                             items: section.data,
                             mealName: section.key as keyof mealTypes,
@@ -333,6 +340,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       {
                         type: 'copy',
                         onPress: () => {
+                          analyticTrackEvent('swipe-left', 'swipe-left-copy');
                           dispatch(addExistFoodToBasket(section.data)).then(
                             () => {
                               // close all swipes after copy
@@ -392,7 +400,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               {section.key === foodLogSections.Water && (
                 <TouchableHighlight
                   onPress={() =>
-                    navigation.navigate(Routes.Totals, {foods, type: 'daily'})
+                    navigation.navigate(Routes.Totals, {
+                      foods: foods.filter(
+                        (item: FoodProps) =>
+                          moment(item.consumed_at).format('YYYY-MM-DD') ===
+                          selectedDate,
+                      ),
+                      type: 'daily',
+                    })
                   }>
                   <View style={styles.summary}>
                     <FontAwesome name="pie-chart" color="#666" size={18} />
@@ -406,7 +421,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     Complete your profile{' '}
                     <Text
                       style={{color: Colors.Info}}
-                      onPress={() => navigation.navigate(Routes.Profile)}>
+                      onPress={() =>
+                        navigation.navigate(Routes.Preferences, {
+                          screen: Routes.Profile,
+                        })
+                      }>
                       here
                     </Text>{' '}
                     for more accurate exercise tracking

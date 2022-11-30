@@ -4,7 +4,7 @@ export enum autoCompleteActionTypes {
   UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS',
   SHOW_SUGGESTED_FOODS = 'SHOW_SUGGESTED_FOODS',
   SET_SEARCH_VALUE = 'SET_SEARCH_VALUE',
-  CLEAR = 'CLEAR',
+  AUTOCOMPLETE_CLEAR = 'AUTOCOMPLETE_CLEAR',
 }
 
 export enum searchSections {
@@ -46,10 +46,38 @@ export interface PhotoProps {
 //   consumed_at?: string;
 // }
 
-export interface AutoCompleteState {
-  searchValue: string;
+export type SearchResponse = {
   self: Array<FoodProps>;
   common: Array<FoodProps>;
   branded: Array<FoodProps>;
   suggested: Array<FoodProps>;
+};
+
+export interface AutoCompleteState extends SearchResponse {
+  searchValue: string;
 }
+
+export type updateSearchResultsAction = {
+  type: autoCompleteActionTypes.UPDATE_SEARCH_RESULTS;
+  payload: SearchResponse;
+};
+
+export type setSearchValueAcion = {
+  type: autoCompleteActionTypes.SET_SEARCH_VALUE;
+  payload: string;
+};
+
+export type showSuggestedFoodsAction = {
+  type: autoCompleteActionTypes.SHOW_SUGGESTED_FOODS;
+  payload: FoodProps[];
+};
+
+export type autocompleteClearAction = {
+  type: autoCompleteActionTypes.AUTOCOMPLETE_CLEAR;
+};
+
+export type AutoCompleteActions =
+  | updateSearchResultsAction
+  | setSearchValueAcion
+  | showSuggestedFoodsAction
+  | autocompleteClearAction;

@@ -1,6 +1,9 @@
 //types
-import {recipesActionTypes, RecipesState} from './recipes.types';
-import {AnyAction} from 'redux';
+import {
+  RecipesActions,
+  recipesActionTypes,
+  RecipesState,
+} from './recipes.types';
 
 const initialState: RecipesState = {
   recipes: [],
@@ -11,7 +14,7 @@ const initialState: RecipesState = {
 
 export default (
   state: RecipesState = initialState,
-  action: AnyAction,
+  action: RecipesActions,
 ): RecipesState => {
   switch (action.type) {
     case recipesActionTypes.GET_RECIPES: {
@@ -22,7 +25,7 @@ export default (
         ...state,
         recipes: newRecipes,
         offset: action.payload.offset || state.offset,
-        showMore: action.payload.length === state.limit,
+        showMore: action.payload.recipes.length === state.limit,
       };
     }
     case recipesActionTypes.UPDATE_OR_CREATE_RECIPE: {
@@ -52,7 +55,7 @@ export default (
       );
       return {...state, recipes: newRecipes};
     }
-    case recipesActionTypes.CLEAR:
+    case recipesActionTypes.RECIPES_CLEAR:
       return initialState;
     default:
       return state;

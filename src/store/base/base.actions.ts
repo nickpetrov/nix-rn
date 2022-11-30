@@ -1,19 +1,32 @@
 // utils
 import moment from 'moment-timezone';
+import * as Sentry from '@sentry/react-native';
 
 // types
 import {Dispatch} from 'redux';
 import {
   baseActionTypes,
+  displayAgreementPopupAction,
   InfoMessageType,
+  mergeReviewCheckAction,
+  resetGrocerySettingsAction,
   ReviewCheckType,
+  setDBAction,
+  setGroceryAgentInfoAction,
+  setHideVoiceDisclaimoreAction,
+  setInfoMessageAction,
+  setIsVoiceDisclaimoreVisibleAction,
+  setUserAgreedToUsePhotoAction,
+  toggleAskForReviewAction,
+  toggleGroceryAgentPreferenceAction,
   userGroceyAgentInfoProps,
 } from './base.types';
 import {RootState} from '../index';
 import SQLite from 'react-native-sqlite-storage';
+import {User} from '../auth/auth.types';
 
 export const setAgreedToUsePhoto = (agreedToUsePhoto: boolean) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<setUserAgreedToUsePhotoAction>) => {
     dispatch({
       type: baseActionTypes.SET_USER_AGREED_TO_USE_PHOTO,
       payload: agreedToUsePhoto,
@@ -51,48 +64,59 @@ export const updateReviewCheckAfterComeBack = () => {
   };
 };
 
-export const showAgreementPopup = () => {
+export const showAgreementPopup = (): displayAgreementPopupAction => {
   return {
     type: baseActionTypes.DISPLAY_AGREEMENT_POPUP,
   };
 };
-export const setDB = (db: SQLite.SQLiteDatabase) => {
+export const setDB = (db: SQLite.SQLiteDatabase): setDBAction => {
   return {
     type: baseActionTypes.SET_DB,
     payload: db,
   };
 };
 
-export const setInfoMessage = (data: InfoMessageType | null) => {
+export const setInfoMessage = (
+  data: InfoMessageType | null,
+): setInfoMessageAction => {
   return {
     type: baseActionTypes.SET_INFO_MESSAGE,
     payload: data,
   };
 };
-export const setAskForReview = (askForReview: boolean) => {
+export const setAskForReview = (
+  askForReview: boolean,
+): toggleAskForReviewAction => {
   return {
     type: baseActionTypes.TOGGLE_ASK_FOR_REVIEW,
     payload: askForReview,
   };
 };
-export const mergeReviewCheck = (reviewCheck: Partial<ReviewCheckType>) => {
+export const mergeReviewCheck = (
+  reviewCheck: Partial<ReviewCheckType>,
+): mergeReviewCheckAction => {
   return {
     type: baseActionTypes.MERGE_REVIEW_CHECK,
     payload: reviewCheck,
   };
 };
-export const toggleGroceryAgentPreferences = () => {
-  return {
-    type: baseActionTypes.TOGGLE_GROCERY_AGENT_PREFERENCES,
+export const toggleGroceryAgentPreferences =
+  (): toggleGroceryAgentPreferenceAction => {
+    return {
+      type: baseActionTypes.TOGGLE_GROCERY_AGENT_PREFERENCES,
+    };
   };
-};
-export const setIsVoiceDisclaimerVisible = (value: boolean) => {
+export const setIsVoiceDisclaimerVisible = (
+  value: boolean,
+): setIsVoiceDisclaimoreVisibleAction => {
   return {
     type: baseActionTypes.SET_IS_VOICE_DISCLAYMORE_VISIBLE,
     payload: value,
   };
 };
-export const setHideVoiceDisclaimer = (value: boolean) => {
+export const setHideVoiceDisclaimer = (
+  value: boolean,
+): setHideVoiceDisclaimoreAction => {
   return {
     type: baseActionTypes.SET_HIDE_VOICE_DISCLAYMORE,
     payload: value,
@@ -110,7 +134,10 @@ const needToUpdateUserGroceyAgentInfo = (
 };
 
 export const initGroceyAgentInfo = () => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<setGroceryAgentInfoAction>,
+    useState: () => RootState,
+  ) => {
     const userGroceyAgentInfo = useState().base.userGroceyAgentInfo;
     const userData = useState().auth.userData;
     if (
@@ -133,8 +160,19 @@ export const initGroceyAgentInfo = () => {
   };
 };
 
-export const resetGrocerySetting = () => {
+export const resetGrocerySetting = (): resetGrocerySettingsAction => {
   return {
     type: baseActionTypes.RESET_GROCERY_SETTINGS,
   };
+};
+
+export const updateSentryContext = (user?: User, jwt?: string) => {
+  Sentry.configureScope(function (scope) {
+    scope.setUser({
+      userData: user ? user : 'Empty',
+      email: user ? user.email : '',
+      id: user ? user.id : '',
+      jwtLength: jwt ? jwt.length : 0,
+    });
+  });
 };

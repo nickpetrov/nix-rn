@@ -1,7 +1,24 @@
-import userLogService from 'api/userLogService';
 import {Dispatch} from 'redux';
-import {foodsActionTypes, SelectedRestaurant, TrackTabs} from './foods.types';
-import {RootState} from '../index';
+import {
+  clearGroceryFoodsAction,
+  clearHistoryFoodsAction,
+  clearRestaurantsFoodsAction,
+  clearScanedFoodAction,
+  foodsActionTypes,
+  getAllSuggestedFoodAction,
+  getFoodByQRCodeAction,
+  getGroceriesAction,
+  getHistoryFoodsAction,
+  getNixRestaurantsFoodsAction,
+  getRestaurantFoodsAction,
+  getRestaurantsAction,
+  getRestaurantsWithCalcAction,
+  SelectedRestaurant,
+  setSearchQueryRestaurantFoodsAction,
+  setSelectedRestaurantAction,
+  setTrackTabAction,
+  TrackTabs,
+} from './foods.types';
 import baseService from 'api/baseService';
 import autoCompleteService, {
   InstantQueryDataProps,
@@ -12,35 +29,15 @@ import {addExistFoodToBasket} from 'store/basket/basket.actions';
 import {grocery_photo_upload} from 'config/index';
 import nixService from 'api/nixService';
 import {FoodProps} from 'store/userLog/userLog.types';
-
-export const getFoodInfo = (beginDate: string, endDate: string) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
-    const timezone = useState().auth.userData.timezone;
-
-    const response = await userLogService.getTotals({
-      beginDate,
-      endDate,
-      timezone,
-    });
-
-    const data = response.data;
-    // if (__DEV__) {
-    //   console.log('foodInfo', data);
-    // }
-    if (data) {
-      dispatch({
-        type: foodsActionTypes.GET_FOOD_INFO,
-        foodInfo: data || null,
-      });
-    }
-  };
-};
+import {addFoodToBasketAction} from 'store/basket/basket.types';
 
 export const getFoodByQRcode = (
   barcode: string,
   force_photo_upload?: boolean,
 ) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (
+    dispatch: Dispatch<getFoodByQRCodeAction | addFoodToBasketAction>,
+  ) => {
     try {
       const response = await baseService.getFoodByQRcode(barcode);
 
@@ -68,7 +65,7 @@ export const getFoodByQRcode = (
 
         // if barcode scanned from 'report' popup - don't add food to the basket.
         if (!force_photo_upload) {
-          dispatch(addExistFoodToBasket(foods));
+          dispatch<any>(addExistFoodToBasket(foods));
         }
 
         // check if enough time passed to ask user/agent to update food
@@ -108,33 +105,12 @@ export const getFoodByQRcode = (
   };
 };
 
-export const clearSnanedFood = () => {
+export const clearSnanedFood = (): clearScanedFoodAction => {
   return {type: foodsActionTypes.CLEAR_SCANED_FOOD};
 };
 
-export const getAllCustomFoods = () => {
-  return async (dispatch: Dispatch) => {
-    try {
-      const response = await userLogService.getUserWeightlog({});
-
-      const result = response.data;
-      // if (__DEV__) {
-      //   console.log('all custom foods', result.custom_foods);
-      // }
-      if (result.custom_foods) {
-        dispatch({
-          type: foodsActionTypes.GET_ALL_CUSTOM_FOOD,
-          custom_foods: result.custom_foods,
-        });
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
-};
-
 export const getSuggestedFoods = () => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<getAllSuggestedFoodAction>) => {
     try {
       const response = await baseService.getSuggestedFood();
 
@@ -155,7 +131,7 @@ export const getSuggestedFoods = () => {
 };
 
 export const getGroceries = (query: string, start?: number, end?: number) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<getGroceriesAction>) => {
     try {
       const response = await nixService.getgetGroceryFoods(query, start, end);
 
@@ -178,7 +154,7 @@ export const getGroceries = (query: string, start?: number, end?: number) => {
   };
 };
 export const getHistoryFoods = (data: InstantQueryDataProps) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<getHistoryFoodsAction>) => {
     try {
       const response = await autoCompleteService.getTrackInstant(data);
 
@@ -199,7 +175,7 @@ export const getHistoryFoods = (data: InstantQueryDataProps) => {
   };
 };
 export const getRestorants = () => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<getRestaurantsAction>) => {
     try {
       const response = await baseService.getBrandRestorants();
 
@@ -220,7 +196,7 @@ export const getRestorants = () => {
 };
 
 export const getRestorantsWithCalc = () => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<getRestaurantsWithCalcAction>) => {
     try {
       const response = await baseService.getRestorantsWithCalc();
 
@@ -240,7 +216,7 @@ export const getRestorantsWithCalc = () => {
   };
 };
 export const getRestorantsFoods = (data: InstantQueryDataProps) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<getRestaurantFoodsAction>) => {
     try {
       const response = await autoCompleteService.getTrackInstant(data);
 
@@ -265,7 +241,7 @@ export const getNixRestorantsFoods = (
   start?: number,
   step?: number,
 ) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<getNixRestaurantsFoodsAction>) => {
     try {
       const response = await nixService.getRestaurantFoods(
         query,
@@ -293,34 +269,38 @@ export const getNixRestorantsFoods = (
   };
 };
 
-export const setTrackTab = (tab: TrackTabs) => {
+export const setTrackTab = (tab: TrackTabs): setTrackTabAction => {
   return {
     type: foodsActionTypes.SET_TRACK_TAB,
     payload: tab,
   };
 };
-export const clearRestaurantsFoods = () => {
+export const clearRestaurantsFoods = (): clearRestaurantsFoodsAction => {
   return {
     type: foodsActionTypes.CLEAR_RESTORANTS_FOODS,
   };
 };
-export const clearGroceryFoods = () => {
+export const clearGroceryFoods = (): clearGroceryFoodsAction => {
   return {
     type: foodsActionTypes.CLEAR_GROCERY_FOODS,
   };
 };
-export const clearHistoryFoods = () => {
+export const clearHistoryFoods = (): clearHistoryFoodsAction => {
   return {
     type: foodsActionTypes.CLEAR_HISTORY_FOODS,
   };
 };
-export const setSearchQueryRestaurant = (query: string) => {
+export const setSearchQueryRestaurant = (
+  query: string,
+): setSearchQueryRestaurantFoodsAction => {
   return {
     type: foodsActionTypes.SET_SEARCH_QUERY_RESTAURANT_FOODS,
     payload: query,
   };
 };
-export const setSelectedRestaurant = (restaurant: SelectedRestaurant) => {
+export const setSelectedRestaurant = (
+  restaurant: SelectedRestaurant,
+): setSelectedRestaurantAction => {
   return {
     type: foodsActionTypes.SET_SELECTED_RESTAURANT,
     payload: restaurant,

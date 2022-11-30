@@ -1,12 +1,12 @@
 import {Dispatch} from 'redux';
 import coachService from 'api/coachService';
-import {coachActionTypes} from './coach.types';
+import {coachActionTypes, getClientTotalsAction} from './coach.types';
 import {OptionsProps} from 'api/coachService/types';
 import _ from 'lodash';
 import moment from 'moment-timezone';
 
 export const getClientTotals = (options: Partial<OptionsProps>) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<getClientTotalsAction>) => {
     let newOptions = {...options};
     if (_.isEmpty(newOptions)) {
       newOptions = {};
@@ -33,7 +33,7 @@ export const getClientTotals = (options: Partial<OptionsProps>) => {
       if (result.dates) {
         dispatch({
           type: coachActionTypes.GET_CLIENT_TOTTALS,
-          paylaod: result.dates,
+          payload: result.dates,
         });
       }
     } catch (err) {

@@ -8,8 +8,7 @@ import {
 } from 'react-native-device-info';
 
 //types
-import {AnyAction} from 'redux';
-import {baseActionTypes, BaseState} from './base.types';
+import {BaseActions, baseActionTypes, BaseState} from './base.types';
 
 let manufacturer = '';
 getManufacturer().then(m => {
@@ -49,7 +48,7 @@ const initialState: BaseState = {
 
 export default (
   state: BaseState = initialState,
-  action: AnyAction,
+  action: BaseActions,
 ): BaseState => {
   switch (action.type) {
     case baseActionTypes.SET_USER_AGREED_TO_USE_PHOTO:
@@ -94,7 +93,7 @@ export default (
           volunteer: false,
         },
       };
-    case baseActionTypes.CLEAR:
+    case baseActionTypes.BASE_CLEAR:
       return initialState;
     default:
       return state;

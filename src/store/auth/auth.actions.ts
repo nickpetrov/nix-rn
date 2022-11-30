@@ -2,26 +2,43 @@
 import authService from 'api/authService';
 import apiClient from 'api/index';
 import userService from 'api/userService';
+import {batch} from 'react-redux';
 
 //actions
 import {clear as clearAutocomplete} from 'store/autoComplete/autoComplete.actions';
-import {reset as resetBasket} from 'store/basket/basket.actions';
+import {clearBasket} from 'store/basket/basket.actions';
+import {resetGroceryAgentMode} from 'store/groceryAgentMode/groceryAgentMode.actions';
+import {
+  resetGrocerySetting,
+  updateSentryContext,
+} from 'store/base/base.actions';
 
 // types
 import {Dispatch} from 'redux';
-import {authActionTypes, SignUpRequest, User} from './auth.types';
-import {batch} from 'react-redux';
-import {resetGroceryAgentMode} from 'store/groceryAgentMode/groceryAgentMode.actions';
-import {resetGrocerySetting} from 'store/base/base.actions';
+import {
+  authAction,
+  authActionTypes,
+  logoutAction,
+  SignUpRequest,
+  updateUserAction,
+  User,
+} from './auth.types';
+import {AppleRequestResponse} from '@invertase/react-native-apple-authentication';
+import {autocompleteClearAction} from 'store/autoComplete/autoComplete.types';
+import {resetGrocerySettingsAction} from 'store/base/base.types';
+import {resetBasketAction} from 'store/basket/basket.types';
+import {clearGroceryAgentModeAction} from 'store/groceryAgentMode/groceryAgentMode.types';
+import {RootState} from '../index';
 
 export const fbLogin = (access_token: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<authAction>) => {
     try {
       const response = await authService.fbSignIn(access_token);
 
       const userData = response.data;
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
       dispatch({type: authActionTypes.SIGNIN, userData});
+      updateSentryContext(userData.user, userData['x-user-jwt']);
     } catch (err: any) {
       if (err.status === 400 || err.status === 500) {
         throw new Error(err.status.toString());
@@ -30,13 +47,14 @@ export const fbLogin = (access_token: string) => {
   };
 };
 
-export const appleLogin = (apple_user_data: any) => {
-  return async (dispatch: Dispatch) => {
+export const appleLogin = (apple_user_data: AppleRequestResponse) => {
+  return async (dispatch: Dispatch<authAction>) => {
     try {
       const response = await authService.appleSignIn(apple_user_data);
       const userData = response.data;
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
       dispatch({type: authActionTypes.SIGNIN, userData});
+      updateSentryContext(userData.user, userData['x-user-jwt']);
     } catch (err: any) {
       throw err;
     }
@@ -44,13 +62,14 @@ export const appleLogin = (apple_user_data: any) => {
 };
 
 export const signin = (email: string, password: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<authAction>) => {
     try {
       const response = await authService.siginIn(email, password);
 
       const userData = response.data;
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
       dispatch({type: authActionTypes.SIGNIN, userData});
+      updateSentryContext(userData.user, userData['x-user-jwt']);
     } catch (err: any) {
       if (err.status === 400) {
         throw new Error(err.status.toString());
@@ -60,14 +79,14 @@ export const signin = (email: string, password: string) => {
 };
 
 export const signup = (data: SignUpRequest) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<authAction>) => {
     try {
       const response = await authService.signUp(data);
 
       const userData = response.data;
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
       dispatch({type: authActionTypes.SIGNUP, userData});
-
+      updateSentryContext(userData.user, userData['x-user-jwt']);
       return userData;
     } catch (err: any) {
       throw err;
@@ -77,7 +96,7 @@ export const signup = (data: SignUpRequest) => {
 
 export const updateUserData = (newUserObj: Partial<User>) => {
   const request = {...newUserObj};
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<updateUserAction>) => {
     try {
       const response = await userService.updateUserData(request);
 
@@ -97,28 +116,40 @@ export const updateUserData = (newUserObj: Partial<User>) => {
   };
 };
 
-export const setUserJwt = (newUserJwt: string) => {
-  apiClient.defaults.headers.common['x-user-jwt'] = newUserJwt;
-  return {type: authActionTypes.SET_USER_JWT, newJwt: newUserJwt};
-};
-
 export const getUserDataFromAPI = () => {
-  return async (dispatch: Dispatch) => {
-    const response = await userService.getUserData();
+  return async (
+    dispatch: Dispatch<updateUserAction>,
+    useState: () => RootState,
+  ) => {
+    const userJWT = useState().auth.userJWT;
+    try {
+      const response = await userService.getUserData();
 
-    const result = response.data;
+      const result = response.data;
 
-    dispatch({type: authActionTypes.UPDATE_USER_DATA, newUserObj: result});
-    return result;
+      dispatch({type: authActionTypes.UPDATE_USER_DATA, newUserObj: result});
+      updateSentryContext(result, userJWT);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
   };
 };
 
 export const logout = () => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (
+    dispatch: Dispatch<
+      | logoutAction
+      | autocompleteClearAction
+      | resetGrocerySettingsAction
+      | resetBasketAction
+      | clearGroceryAgentModeAction
+    >,
+  ) => {
     apiClient.defaults.headers.common['x-user-jwt'] = '';
     batch(() => {
       dispatch(clearAutocomplete());
-      dispatch(resetBasket());
+      dispatch(clearBasket());
       dispatch(resetGroceryAgentMode());
       dispatch(resetGrocerySetting());
       dispatch({type: authActionTypes.LOGOUT});

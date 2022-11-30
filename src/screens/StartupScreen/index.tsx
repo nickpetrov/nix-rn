@@ -15,6 +15,7 @@ import {getUserDataFromAPI} from 'store/auth/auth.actions';
 import {
   initGroceyAgentInfo,
   updateReviewCheckAfterComeBack,
+  updateSentryContext,
 } from 'store/base/base.actions';
 import {
   pullExerciseFromHK,
@@ -40,6 +41,7 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
   useEffect(() => {
     if (!userJWT) {
       navigation.replace(Routes.LoginScreens);
+      updateSentryContext();
     } else {
       navigation.replace(Routes.LoggedIn);
       dispatch(getUserDataFromAPI());

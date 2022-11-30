@@ -34,6 +34,7 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './WeightModal.styles';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface WeightModalProps {
   visible: boolean;
@@ -61,6 +62,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
     const currentValue =
       measureSystem === 1 ? value : Math.round(parseFloat(value) / 2.20462);
     if (currentValue > 0) {
+      analyticTrackEvent('loggedWeight', currentValue);
       if (weight?.id) {
         dispatch(updateWeightlog([{...weight, kg: +currentValue}])).then(() =>
           setVisible(null),

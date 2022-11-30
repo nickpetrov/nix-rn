@@ -28,6 +28,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {mealTypes} from 'store/basket/basket.types';
 import Swipeable from 'react-native-gesture-handler/lib/typescript/components/Swipeable';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface SwipeFoodLogHiddenItemsProps {
   foodLogSection: foodLogSections;
@@ -85,7 +86,9 @@ const SwipeFoodLogHiddenItems: React.FC<SwipeFoodLogHiddenItemsProps> = ({
     [dispatch],
   );
   const handleDeleteWaterLog = useCallback(() => {
-    dispatch(deleteWaterFromLog());
+    dispatch(deleteWaterFromLog()).then(() => {
+      analyticTrackEvent('deletedWater', ' ');
+    });
   }, [dispatch]);
 
   const getAction = (action: string) => {
@@ -95,17 +98,33 @@ const SwipeFoodLogHiddenItems: React.FC<SwipeFoodLogHiddenItemsProps> = ({
         foodLogSection !== foodLogSections.Weigh_in &&
         foodLogSection !== foodLogSections.Water
       ) {
-        return () => addItemToBasket(sectionItem);
+        return () => {
+          analyticTrackEvent('swipe-left', 'swipe-left-copy');
+          addItemToBasket(sectionItem);
+        };
       }
     } else if (action === 'delete') {
       if (foodLogSection === foodLogSections.Exercise) {
-        return () => handleDeleteExerciseFromLog(sectionItem.id);
+        return () => {
+          analyticTrackEvent('swipe-left', 'swipe-left-delete');
+          handleDeleteExerciseFromLog(sectionItem.id);
+        };
       } else if (foodLogSection === foodLogSections.Weigh_in) {
-        return () => handleDeleteWeightFromLog(sectionItem.id);
+        return () => {
+          analyticTrackEvent('swipe-left', 'swipe-left-delete');
+          handleDeleteWeightFromLog(sectionItem.id);
+        };
       } else if (foodLogSection === foodLogSections.Water) {
-        return () => handleDeleteWaterLog();
+        return () => {
+          analyticTrackEvent('swipe-left', 'swipe-left-delete');
+          handleDeleteWaterLog();
+        };
       } else {
-        return () => handleDeleteFoodFromLog(sectionItem.id);
+        return () => {
+          analyticTrackEvent('swipe-left', 'swipe-left-delete');
+          analyticTrackEvent('deletedFood', sectionItem.food_name);
+          handleDeleteFoodFromLog(sectionItem.id);
+        };
       }
     }
 

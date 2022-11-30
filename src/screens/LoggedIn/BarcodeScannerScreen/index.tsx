@@ -33,6 +33,7 @@ import {
 // styles
 import {styles} from './BarcodeScannerScreen.styles';
 import Scanner from 'components/Scanner';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface BarcodeScannerScreenProps {
   navigation: NativeStackNavigationProp<
@@ -145,9 +146,9 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
               });
             }
           });
-
-        // add firebase analitics
-        // AnalyticsService.trackEvent("foodlog_barcode", barcode);
+      }
+      if (barcode) {
+        analyticTrackEvent('foodlog_barcode', barcode);
       }
     }, [
       barcode,

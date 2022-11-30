@@ -26,6 +26,7 @@ import {TotalProps} from 'store/userLog/userLog.types';
 import {styles} from './WaterModal.styles';
 import {addWaterlog, updateWaterlog} from 'store/userLog/userLog.actions';
 import {Colors} from 'constants/Colors';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface WaterModalProps {
   visible: boolean;
@@ -76,6 +77,8 @@ const WaterModal: React.FC<WaterModalProps> = ({
 
   const handleAdd = (value: number) => {
     if (value) {
+      const unit = measure_system === 1 ? 'L' : 'oz';
+      analyticTrackEvent('addedWater', value + ' ' + unit);
       dispatch(
         addWaterlog([
           {
@@ -91,6 +94,7 @@ const WaterModal: React.FC<WaterModalProps> = ({
   };
   const handleEdit = (value: number) => {
     if (value) {
+      analyticTrackEvent('updatedWater', ' ');
       dispatch(
         updateWaterlog([
           {

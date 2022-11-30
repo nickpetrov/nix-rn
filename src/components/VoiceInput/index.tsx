@@ -11,7 +11,13 @@ import {
   Linking,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Voice from '@react-native-voice/voice';
+import Voice, {
+  SpeechEndEvent,
+  SpeechErrorEvent,
+  SpeechResultsEvent,
+  SpeechStartEvent,
+  SpeechVolumeChangeEvent,
+} from '@react-native-voice/voice';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -22,6 +28,7 @@ import {setIsVoiceDisclaimerVisible} from 'store/base/base.actions';
 // styles
 import {styles} from './VoiceInput.styles';
 import ChooseModal from 'components/ChooseModal';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface VoiceRecognitionControlsProps {
   onPress: () => void;
@@ -75,21 +82,21 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
     useState(false);
   const [showPopup, setShowPopup] = useState(false);
 
-  const onSpeechStart = (e: any) => {
+  const onSpeechStart = (e: SpeechStartEvent) => {
     //Invoked when .start() is called without error
     console.log('onSpeechStart: ', e);
     setSpeechRecognitionInProgress(true);
     // setStarted('√');
   };
 
-  const onSpeechEnd = (e: any) => {
+  const onSpeechEnd = (e: SpeechEndEvent) => {
     //Invoked when SpeechRecognizer stops recognition
     console.log('onSpeechEnd: ', e);
     setSpeechRecognitionInProgress(false);
     // setEnd('√');
   };
 
-  const onSpeechError = useCallback((err: any) => {
+  const onSpeechError = useCallback((err: SpeechErrorEvent) => {
     //Invoked when an error occurs.
     console.log('onSpeechError: ', err);
     setSpeechRecognitionInProgress(false);
@@ -100,22 +107,25 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
   }, []);
 
   const onSpeechResults = useCallback(
-    (e: any) => {
+    (e: SpeechResultsEvent) => {
       //Invoked when SpeechRecognizer is finished recognizing
       console.log('onSpeechResults: ', e);
-      onChangeText(e.value[0]);
+      if (e.value) {
+        onChangeText(e.value[0]);
+        analyticTrackEvent('voice_logging', e.value[0]);
+      }
       setSpeechRecognitionInProgress(false);
     },
     [onChangeText],
   );
 
-  const onSpeechPartialResults = useCallback((e: any) => {
+  const onSpeechPartialResults = useCallback((e: SpeechResultsEvent) => {
     //Invoked when any results are computed
     console.log('onSpeechPartialResults: ', e);
     // onChangeText(value + e.value[0]);
   }, []);
 
-  const onSpeechVolumeChanged = (e: any) => {
+  const onSpeechVolumeChanged = (e: SpeechVolumeChangeEvent) => {
     //Invoked when pitch that is recognized changed
     console.log('onSpeechVolumeChanged: ', e);
   };

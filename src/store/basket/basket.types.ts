@@ -3,9 +3,8 @@ export enum basketActionTypes {
   ADD_FOOD_TO_BASKET = 'ADD_FOOD_TO_BASKET',
   DELETE_FOOD_FROM_BASKET = 'DELETE_FOOD_FROM_BASKET',
   MERGE_BASKET = 'MERGE_BASKET',
-  MERGE_BASKET_FROM_STORAGE = 'MERGE_BASKET_FROM_STORAGE',
   UPDATE_BASKET_FOODS = 'UPDATE_BASKET_FOODS',
-  RESET = 'RESET',
+  BASKET_RESET = 'BASKET_RESET',
 }
 
 export enum mealTypes {
@@ -31,3 +30,30 @@ export interface BasketState {
     is_user_uploaded: boolean;
   } | null;
 }
+
+export type addFoodToBasketAction = {
+  type: basketActionTypes.ADD_FOOD_TO_BASKET;
+  foods: FoodProps[];
+};
+export type deleteFoodFromBasketAction = {
+  type: basketActionTypes.DELETE_FOOD_FROM_BASKET;
+  id: string;
+};
+export type mergeBasketAction = {
+  type: basketActionTypes.MERGE_BASKET;
+  payload: Partial<BasketState>;
+};
+export type updateBasketFoodAction = {
+  type: basketActionTypes.UPDATE_BASKET_FOODS;
+  foods: FoodProps[];
+};
+export type resetBasketAction = {
+  type: basketActionTypes.BASKET_RESET;
+};
+
+export type BasketActions =
+  | addFoodToBasketAction
+  | deleteFoodFromBasketAction
+  | mergeBasketAction
+  | updateBasketFoodAction
+  | resetBasketAction;

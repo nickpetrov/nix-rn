@@ -7,7 +7,7 @@ export enum recipesActionTypes {
   COPY_RECIPE = 'COPY_RECIPE',
   CREATE_RECIPE = 'CREATE_RECIPE',
   DELETE_RECIPE = 'DELETE_RECIPE',
-  CLEAR = 'CLEAR',
+  RECIPES_CLEAR = 'RECIPES_CLEAR',
 }
 
 export interface RecipeProps {
@@ -55,3 +55,39 @@ export interface RecipesState {
   offset: number;
   showMore: boolean;
 }
+
+export type getRecipesAction = {
+  type: recipesActionTypes.GET_RECIPES;
+  payload: {
+    recipes: Array<RecipeProps>;
+    offset: number;
+  };
+};
+export type updateOrCreateRecipesAction = {
+  type: recipesActionTypes.UPDATE_OR_CREATE_RECIPE;
+  recipe: RecipeProps;
+};
+export type copyRecipeAction = {
+  type: recipesActionTypes.COPY_RECIPE;
+  payload: RecipeProps;
+  clonedRecipeIndex: number;
+};
+export type createRecipeAction = {
+  type: recipesActionTypes.CREATE_RECIPE;
+  payload: RecipeProps;
+};
+export type deleteRecipeAction = {
+  type: recipesActionTypes.DELETE_RECIPE;
+  payload: string;
+};
+export type clearRecipeAction = {
+  type: recipesActionTypes.RECIPES_CLEAR;
+};
+
+export type RecipesActions =
+  | getRecipesAction
+  | updateOrCreateRecipesAction
+  | copyRecipeAction
+  | createRecipeAction
+  | deleteRecipeAction
+  | clearRecipeAction;

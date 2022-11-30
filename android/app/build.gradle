@@ -1,4 +1,6 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services'
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
@@ -83,6 +85,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 /**
@@ -284,7 +287,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-
+    implementation platform('com.google.firebase:firebase-bom:31.1.0')
+    implementation 'com.google.firebase:firebase-analytics'
     implementation project(':react-native-vector-icons')
 }
 

@@ -11,7 +11,7 @@ export enum baseActionTypes {
   SET_HIDE_VOICE_DISCLAYMORE = 'SET_HIDE_VOICE_DISCLAYMORE',
   SET_GROCERY_AGENT_INFO = 'SET_GROCERY_AGENT_INFO',
   RESET_GROCERY_SETTINGS = 'RESET_GROCERY_SETTINGS',
-  CLEAR = 'CLEAR',
+  BASE_CLEAR = 'BASE_CLEAR',
 }
 
 export type ReviewCheckType = {
@@ -64,3 +64,63 @@ export type BugReportType = {
   payload?: string;
   metadata?: string;
 };
+
+export type baseClearAction = {
+  type: baseActionTypes.BASE_CLEAR;
+};
+
+export type setUserAgreedToUsePhotoAction = {
+  type: baseActionTypes.SET_USER_AGREED_TO_USE_PHOTO;
+  payload: boolean;
+};
+export type displayAgreementPopupAction = {
+  type: baseActionTypes.DISPLAY_AGREEMENT_POPUP;
+};
+export type setInfoMessageAction = {
+  type: baseActionTypes.SET_INFO_MESSAGE;
+  payload: null | InfoMessageType;
+};
+export type toggleAskForReviewAction = {
+  type: baseActionTypes.TOGGLE_ASK_FOR_REVIEW;
+  payload: boolean;
+};
+export type mergeReviewCheckAction = {
+  type: baseActionTypes.MERGE_REVIEW_CHECK;
+  payload: Partial<ReviewCheckType>;
+};
+export type toggleGroceryAgentPreferenceAction = {
+  type: baseActionTypes.TOGGLE_GROCERY_AGENT_PREFERENCES;
+};
+export type setDBAction = {
+  type: baseActionTypes.SET_DB;
+  payload: SQLite.SQLiteDatabase;
+};
+export type setIsVoiceDisclaimoreVisibleAction = {
+  type: baseActionTypes.SET_IS_VOICE_DISCLAYMORE_VISIBLE;
+  payload: boolean;
+};
+export type setHideVoiceDisclaimoreAction = {
+  type: baseActionTypes.SET_HIDE_VOICE_DISCLAYMORE;
+  payload: boolean;
+};
+export type setGroceryAgentInfoAction = {
+  type: baseActionTypes.SET_GROCERY_AGENT_INFO;
+  payload: userGroceyAgentInfoProps;
+};
+export type resetGrocerySettingsAction = {
+  type: baseActionTypes.RESET_GROCERY_SETTINGS;
+};
+
+export type BaseActions =
+  | setUserAgreedToUsePhotoAction
+  | displayAgreementPopupAction
+  | setInfoMessageAction
+  | toggleAskForReviewAction
+  | mergeReviewCheckAction
+  | toggleGroceryAgentPreferenceAction
+  | setDBAction
+  | setIsVoiceDisclaimoreVisibleAction
+  | setHideVoiceDisclaimoreAction
+  | setGroceryAgentInfoAction
+  | resetGrocerySettingsAction
+  | baseClearAction;

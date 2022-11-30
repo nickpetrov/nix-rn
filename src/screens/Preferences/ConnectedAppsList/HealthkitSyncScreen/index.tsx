@@ -23,6 +23,7 @@ import {styles} from './HealthkitSyncScreen.styles';
 
 // helpers
 import {SQLexecute} from 'helpers/sqlite';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 export const HealthkitSyncScreen: React.FC = () => {
   const db = useSelector(state => state.base.db);
@@ -32,7 +33,7 @@ export const HealthkitSyncScreen: React.FC = () => {
   const toggleHKNutrition = (nutrition: string) => {
     if (nutrition === 'off') {
       SQLexecute({db, query: 'DROP TABLE hkdata'});
-      // AnalyticsService.trackEvent('HealthKit nutrition sync', 'disable');
+      analyticTrackEvent('HealthKit nutrition sync', 'disable');
     } else {
       //create tables on toggle on; shouldnt exist if toggle off
       SQLexecute({
@@ -85,7 +86,7 @@ export const HealthkitSyncScreen: React.FC = () => {
           console.log(error);
           console.log('failed to request HK nutrition auth');
         } else {
-          // AnalyticsService.trackEvent('HealthKit nutrition sync', 'enable');
+          analyticTrackEvent('HealthKit nutrition sync', 'enable');
           console.log('results', results);
           console.log('successfully requested HK nutrition auth');
         }
@@ -96,7 +97,7 @@ export const HealthkitSyncScreen: React.FC = () => {
   function toggleHKWeight(weight: string) {
     if (weight === 'off') {
       SQLexecute({db, query: 'DROP TABLE hkdata_weight'});
-      // AnalyticsService.trackEvent('HealthKit weight sync', 'disable');
+      analyticTrackEvent('HealthKit weight sync', 'disable');
     } else if (weight === 'pull') {
       const permissions = {
         permissions: {
@@ -114,7 +115,7 @@ export const HealthkitSyncScreen: React.FC = () => {
           console.log(error);
           console.log('failed to request HK weight auth');
         } else {
-          // AnalyticsService.trackEvent('HealthKit pull weight sync', 'enable');
+          analyticTrackEvent('HealthKit pull weight sync', 'enable');
           dispatch(pullWeightsFromHK());
           console.log('successfully requested HK weight auth');
         }
@@ -141,7 +142,7 @@ export const HealthkitSyncScreen: React.FC = () => {
           console.log(error);
           console.log('failed to request HK weight auth');
         } else {
-          // AnalyticsService.trackEvent('HealthKit push weight sync', 'enable');
+          analyticTrackEvent('HealthKit push weight sync', 'enable');
           console.log('successfully requested HK weight auth', results);
         }
       });
@@ -151,7 +152,7 @@ export const HealthkitSyncScreen: React.FC = () => {
   const toggleHKExercise = (exercise: string) => {
     if (exercise === 'off') {
       SQLexecute({db, query: 'DROP TABLE hkdata_exercise'});
-      // AnalyticsService.trackEvent('HealthKit exercise sync', 'disable');
+      analyticTrackEvent('HealthKit exercise sync', 'disable');
     } else if (exercise === 'pull') {
       const permissions = {
         permissions: {
@@ -169,7 +170,7 @@ export const HealthkitSyncScreen: React.FC = () => {
           console.log(error);
           console.log('failed to request HK exercise auth');
         } else {
-          // AnalyticsService.trackEvent('HealthKit pull exercise sync', 'enable');
+          analyticTrackEvent('HealthKit pull exercise sync', 'enable');
           console.log('successfully requested HK exercise auth');
           console.log('here');
           dispatch(pullExerciseFromHK());
@@ -197,7 +198,7 @@ export const HealthkitSyncScreen: React.FC = () => {
           console.log(error);
           console.log('failed to request HK exercise auth');
         } else {
-          // AnalyticsService.trackEvent('HealthKit push exercise sync', 'enable');
+          analyticTrackEvent('HealthKit push exercise sync', 'enable');
           console.log('successfully requested HK exercise auth');
         }
       });

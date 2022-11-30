@@ -36,13 +36,17 @@ import {styles} from './TrackFoodsScreen.styles';
 import {Routes} from 'navigation/Routes';
 
 // types
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {
   RestaurantsProps,
   RestaurantsWithCalcProps,
   TrackTabs,
 } from 'store/foods/foods.types';
+import {analyticSetUserId} from 'helpers/analytics.ts';
 
 interface TrackFoodsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -55,6 +59,7 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
   navigation,
 }) => {
   const dispatch = useDispatch();
+  const userId = useSelector(state => state.auth.userData.id);
   const {currentTrackTab: activeTab, selectedRestaurant} = useSelector(
     state => state.foods,
   );
@@ -85,15 +90,16 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
       case TrackTabs.GROCERY:
         return 'Grocery brands';
       default:
-        return null;
+        return undefined;
     }
   };
 
   useEffect(() => {
+    analyticSetUserId(userId);
     return () => {
       dispatch(setTrackTab(TrackTabs.FREEFORM));
     };
-  }, [dispatch]);
+  }, [dispatch, userId]);
 
   useLayoutEffect(() => {
     if (selectedRestaurant) {
@@ -101,9 +107,10 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
         (selectedRestaurant as RestaurantsProps).name ||
         (selectedRestaurant as RestaurantsWithCalcProps).proper_brand_name;
       navigation.setOptions({
-        header: (props: any) => (
+        header: (props: NativeStackHeaderProps) => (
           <NavigationHeader
             {...props}
+            navigation={navigation}
             headerRight={
               <BasketButton
                 icon="shopping-basket"
@@ -132,9 +139,10 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
       });
     } else {
       navigation.setOptions({
-        header: (props: any) => (
+        header: (props: NativeStackHeaderProps) => (
           <NavigationHeader
             {...props}
+            navigation={navigation}
             headerRight={
               <BasketButton
                 icon="shopping-basket"

@@ -47,7 +47,10 @@ import {Routes} from 'navigation/Routes';
 
 // types
 import {Asset} from 'react-native-image-picker';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {RouteProp} from '@react-navigation/native';
 import {RecipeProps, UpdateRecipeProps} from 'store/recipes/recipes.types';
@@ -58,6 +61,7 @@ import {multiply} from 'helpers/multiply';
 
 // styles
 import {styles} from './RecipeDetailsScreen.styles';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface RecipeDetailsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -253,7 +257,6 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         if (!recipeToUpdate.directions?.length) {
           delete recipeToUpdate.directions;
         }
-        console.log('recipeToUpdate', recipeToUpdate);
         return await dispatch(createRecipe(recipeToUpdate))
           .then(res => {
             setShowSave(false);
@@ -261,6 +264,10 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             return res;
           })
           .then(res => {
+            analyticTrackEvent(
+              'Recipe created',
+              'Created from the recipes interface',
+            );
             if (logAfterUpdate) {
               return res;
             } else {
@@ -461,9 +468,10 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           headerTitle={
             route.params?.recipe ? 'Edit Recipe' : 'Create New Recipe'
           }
@@ -607,9 +615,15 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           setCopyRecipePopup(false);
           setNewRecipeName('');
           setLoadingCopyRecipe(false);
-          navigation.navigate(Routes.RecipeDetails, {
-            recipe: resCopyRecipe,
-          });
+          if (resCopyRecipe) {
+            navigation.navigate(Routes.RecipeDetails, {
+              recipe: resCopyRecipe,
+            });
+          }
+          analyticTrackEvent(
+            'Recipe copied',
+            'Copied from the edit recipe interface',
+          );
         })
         .catch(err => {
           setLoadingCopyRecipe(false);
@@ -667,6 +681,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       dispatch(
         basketActions.addExistFoodToBasket(scaled_recipe.ingredients),
       ).then(() => {
+        analyticTrackEvent('Added recipe to the basket', ' ');
         dispatch(
           basketActions.mergeBasket({
             isSingleFood: true,
@@ -827,8 +842,8 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                       }
                       defaultValue={ingredient.metadata?.original_input || ''}
                       // value={ingredient.metadata?.original_input || ''}
-                      onEndEditing={(e: any) => {
-                        saveChangeIngredient(e.nativeEvent.text, index);
+                      onEndEditing={({nativeEvent: {text}}) => {
+                        saveChangeIngredient(text, index);
                       }}
                       style={[styles.input, styles.flex1]}
                     />

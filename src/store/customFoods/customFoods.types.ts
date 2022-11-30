@@ -5,7 +5,7 @@ export enum customFoodsActionTypes {
   GET_ALL_CUSTOM_FOOD = 'GET_ALL_CUSTOM_FOOD',
   UPDATE_OR_CREATE_CUSTOM_FOOD = 'UPDATE_OR_CREATE_CUSTOM_FOOD',
   DELETE_CUSTOM_FOOD = 'DELETE_CUSTOM_FOOD',
-  CLEAR = 'CLEAR',
+  CUSTOM_FOODS_CLEAR = 'CUSTOM_FOODS_CLEAR',
 }
 
 export type UpdateCustomFoodProps = {
@@ -37,3 +37,25 @@ export type UpdateCustomFoodProps = {
 export interface CustomFoodsState {
   foods: Array<FoodProps>;
 }
+
+export type getAllCustomFoodsAction = {
+  type: customFoodsActionTypes.GET_ALL_CUSTOM_FOOD;
+  foods: FoodProps[];
+};
+export type updateOrCreateCustomFoodsAction = {
+  type: customFoodsActionTypes.UPDATE_OR_CREATE_CUSTOM_FOOD;
+  food: FoodProps;
+};
+export type deleteCustomFoodsAction = {
+  type: customFoodsActionTypes.DELETE_CUSTOM_FOOD;
+  payload: string;
+};
+export type clearCustomFoodsAction = {
+  type: customFoodsActionTypes.CUSTOM_FOODS_CLEAR;
+};
+
+export type CustomFoodsActions =
+  | getAllCustomFoodsAction
+  | updateOrCreateCustomFoodsAction
+  | deleteCustomFoodsAction
+  | clearCustomFoodsAction;

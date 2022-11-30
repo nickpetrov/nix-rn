@@ -17,7 +17,10 @@ import {Routes} from 'navigation/Routes';
 // types
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import Footer from 'components/Footer';
 
 interface WebViewScreenProps {
@@ -33,9 +36,10 @@ const WebViewScreen: React.FC<WebViewScreenProps> = ({route, navigation}) => {
     if (route.params.title) {
       navigation.setOptions({
         headerShown: true,
-        header: (props: any) => (
+        header: (props: NativeStackHeaderProps) => (
           <NavigationHeader
             {...props}
+            navigation={navigation}
             headerLeft={
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Ionicon name="ios-close" color="#fff" size={40} />

@@ -1,8 +1,6 @@
 import {FoodProps} from 'store/userLog/userLog.types';
 
 export enum foodsActionTypes {
-  GET_FOOD_INFO = 'GET_FOOD_INFO',
-  GET_ALL_CUSTOM_FOOD = 'GET_ALL_CUSTOM_FOOD',
   GET_ALL_SUGGESTED_FOOD = 'GET_ALL_SUGGESTED_FOOD',
   GET_GROCERIES = 'GET_GROCERIES',
   GET_HISTORY_FOODS = 'GET_HISTORY_FOODS',
@@ -18,7 +16,7 @@ export enum foodsActionTypes {
   CLEAR_HISTORY_FOODS = 'CLEAR_HISTORY_FOODS',
   SET_SELECTED_RESTAURANT = 'SET_SELECTED_RESTAURANT',
   SET_SEARCH_QUERY_RESTAURANT_FOODS = 'SET_SEARCH_QUERY_RESTAURANT_FOODS',
-  CLEAR = 'CLEAR',
+  FOODS_CLEAR = 'FOODS_CLEAR',
 }
 
 export interface SuggestedFoodProps {
@@ -64,9 +62,13 @@ export type SelectedRestaurant =
   | null;
 
 export interface FoodsState {
-  foodInfo: FoodProps | null;
-  foodFindByQRcode: FoodProps | null;
-  custom_foods: Array<FoodProps>;
+  foodFindByQRcode:
+    | FoodProps
+    | {
+        food_name: string;
+        photo: {thumb: null};
+      }
+    | null;
   suggested_foods: Array<SuggestedFoodProps>;
   groceries: Array<FoodProps>;
   historyFoods: Array<FoodProps>;
@@ -78,3 +80,89 @@ export interface FoodsState {
   selectedRestaurant: SelectedRestaurant;
   searchQueryRestaurantFoods: string;
 }
+
+export type getAllSuggestedFoodAction = {
+  type: foodsActionTypes.GET_ALL_SUGGESTED_FOOD;
+  suggested_foods: SuggestedFoodProps[];
+};
+export type getGroceriesAction = {
+  type: foodsActionTypes.GET_GROCERIES;
+  groceries: FoodProps[];
+  addValues: boolean;
+};
+export type getHistoryFoodsAction = {
+  type: foodsActionTypes.GET_HISTORY_FOODS;
+  historyFoods: FoodProps[];
+};
+export type getFoodByQRCodeAction = {
+  type: foodsActionTypes.GET_FOOD_BY_QR_CODE;
+  foodFindByQRcode:
+    | FoodProps
+    | {
+        food_name: string;
+        photo: {thumb: null};
+      };
+};
+export type clearScanedFoodAction = {
+  type: foodsActionTypes.CLEAR_SCANED_FOOD;
+};
+export type getRestaurantsAction = {
+  type: foodsActionTypes.GET_RESTORANTS;
+  restaurants: Array<RestaurantsProps>;
+};
+export type getRestaurantFoodsAction = {
+  type: foodsActionTypes.GET_RESTORANTS_FOODS;
+  restaurantFoods: Array<FoodProps>;
+};
+export type getRestaurantsWithCalcAction = {
+  type: foodsActionTypes.GET_RESTORANTS_WITH_CALC;
+  restaurantsWithCalc: Array<RestaurantsWithCalcProps>;
+};
+export type setTrackTabAction = {
+  type: foodsActionTypes.SET_TRACK_TAB;
+  payload: TrackTabs;
+};
+export type getNixRestaurantsFoodsAction = {
+  type: foodsActionTypes.GET_NIX_RESTORANTS_FOODS;
+  restaurantFoods: FoodProps[];
+  nixRestaurantFoodsTotal: number;
+};
+export type clearRestaurantsFoodsAction = {
+  type: foodsActionTypes.CLEAR_RESTORANTS_FOODS;
+};
+export type clearGroceryFoodsAction = {
+  type: foodsActionTypes.CLEAR_GROCERY_FOODS;
+};
+export type clearHistoryFoodsAction = {
+  type: foodsActionTypes.CLEAR_HISTORY_FOODS;
+};
+export type setSelectedRestaurantAction = {
+  type: foodsActionTypes.SET_SELECTED_RESTAURANT;
+  payload: SelectedRestaurant;
+};
+export type setSearchQueryRestaurantFoodsAction = {
+  type: foodsActionTypes.SET_SEARCH_QUERY_RESTAURANT_FOODS;
+  payload: string;
+};
+export type clearFoodsAction = {
+  type: foodsActionTypes.FOODS_CLEAR;
+  payload: string;
+};
+
+export type FoodsActions =
+  | getAllSuggestedFoodAction
+  | getGroceriesAction
+  | getHistoryFoodsAction
+  | getFoodByQRCodeAction
+  | clearScanedFoodAction
+  | getRestaurantsAction
+  | getRestaurantsWithCalcAction
+  | getRestaurantFoodsAction
+  | setTrackTabAction
+  | getNixRestaurantsFoodsAction
+  | clearRestaurantsFoodsAction
+  | clearGroceryFoodsAction
+  | clearHistoryFoodsAction
+  | setSelectedRestaurantAction
+  | setSearchQueryRestaurantFoodsAction
+  | clearFoodsAction;

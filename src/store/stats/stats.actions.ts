@@ -1,10 +1,18 @@
 import userLogService from 'api/userLogService';
 import {Dispatch} from 'redux';
-import {getWeightParams, statsActionTypes} from './stats.types';
+import {
+  getWeightParams,
+  statsActionTypes,
+  statsGetDayTotals,
+  statsGetWeights,
+} from './stats.types';
 import {RootState} from '../index';
 
 export const getDayTotals = (beginDate: string, endDate: string) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<statsGetDayTotals>,
+    useState: () => RootState,
+  ) => {
     const timezone = useState().auth.userData.timezone;
     try {
       const response = await userLogService.getTotals({
@@ -30,7 +38,7 @@ export const getDayTotals = (beginDate: string, endDate: string) => {
 };
 
 export const getStatsWeight = (params?: getWeightParams) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<statsGetWeights>) => {
     try {
       const response = await userLogService.getUserWeightlog(
         params ? params : {},

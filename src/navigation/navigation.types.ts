@@ -1,5 +1,6 @@
 import {ParamListBase} from '@react-navigation/native';
 import {Routes} from 'navigation/Routes';
+import {WebViewMessageEvent, WebViewNavigation} from 'react-native-webview';
 import {PictureProps} from 'screens/LoggedIn';
 import {FoodProps} from 'store/userLog/userLog.types';
 import {RecipeProps} from '../store/recipes/recipes.types';
@@ -45,8 +46,10 @@ export interface StackNavigatorParamList extends ParamListBase {
     title?: string;
     close?: boolean;
     withFooter?: boolean;
-    onMessage?: (data: any) => void;
-    onNavigationStateChange?: (data: any) => void;
+    onMessage?: ((event: WebViewMessageEvent) => void) & ((data: any) => void);
+    onNavigationStateChange?: ((event: WebViewNavigation) => void) &
+      ((event: WebViewNavigation) => void) &
+      ((data: any) => void);
   };
   [Routes.BarcodeScanner]:
     | {
@@ -70,7 +73,7 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.RecipeDetails]: {
     recipe: RecipeProps | null;
   };
-  [Routes.Preferences]: undefined;
+  [Routes.Preferences]: {screen: string} | undefined;
   [Routes.DailyGoals]: undefined;
   [Routes.Help]: undefined;
   [Routes.Suggested]: undefined;

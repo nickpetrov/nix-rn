@@ -4,6 +4,7 @@ import {BugReportType} from 'store/base/base.types';
 import {
   RestaurantsProps,
   RestaurantsWithCalcProps,
+  SuggestedFoodProps,
 } from 'store/foods/foods.types';
 import {FoodProps} from 'store/userLog/userLog.types';
 
@@ -41,12 +42,15 @@ const baseService = {
     });
   },
   async getSuggestedFood() {
-    return await apiClient.get('recommended_products.json.gz', {
-      baseURL: 'https://nix-export.s3.amazonaws.com/',
-      headers: {
-        'x-3scale-bypass': 'c49e69471a7b51beb2bb0e452ef53867385f7a5a',
+    return await apiClient.get<{products: SuggestedFoodProps[]}>(
+      'recommended_products.json.gz',
+      {
+        baseURL: 'https://nix-export.s3.amazonaws.com/',
+        headers: {
+          'x-3scale-bypass': 'c49e69471a7b51beb2bb0e452ef53867385f7a5a',
+        },
       },
-    });
+    );
   },
   async getBrandRestorants() {
     return await apiClient.get<RestaurantsProps[]>(

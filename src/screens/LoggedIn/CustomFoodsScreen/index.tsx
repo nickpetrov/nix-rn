@@ -24,7 +24,10 @@ import {Routes} from 'navigation/Routes';
 import {useSelector, useDispatch} from 'hooks/useRedux';
 
 // types
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {FoodProps} from 'store/userLog/userLog.types';
 import {RouteProp} from '@react-navigation/native';
@@ -68,9 +71,10 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           headerRight={
             <TouchableOpacity
               style={styles.createNew}

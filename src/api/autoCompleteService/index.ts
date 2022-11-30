@@ -1,5 +1,6 @@
 import apiClient from 'api';
-import {FoodProps} from 'store/userLog/userLog.types';
+import {SearchResponse} from 'store/autoComplete/autoComplete.types';
+
 export interface InstantQueryDataProps {
   query: string;
   brand_ids?: Array<string>;
@@ -15,14 +16,14 @@ const autoCompleteService = {
     return await apiClient.get(`log/${id}/detailed`);
   },
   async getInstant(search?: string) {
-    return await apiClient.get('search/instant', {
+    return await apiClient.get<SearchResponse>('search/instant', {
       params: {
         query: search,
       },
     });
   },
   async getTrackInstant(data: InstantQueryDataProps) {
-    return await apiClient.post<{self: FoodProps[]; branded: FoodProps[]}>(
+    return await apiClient.post<SearchResponse>(
       'search/instant',
       {
         ...data,

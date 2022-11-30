@@ -25,6 +25,22 @@ import {
   userLogActionTypes,
   WeightProps,
   WaterLogProps,
+  getUserFoodLogAction,
+  getDayTotalsUserLogAction,
+  addFoodToLogAction,
+  updateFoodFromLogAction,
+  changeSelectedDateAction,
+  setDayNotesAction,
+  deleteFoodFromLogAction,
+  deleteExerciseFromLogAction,
+  getUserWeightsLogAction,
+  addWeightToLogAction,
+  updateWeightsLogAction,
+  updateWaterLogAction,
+  deleteWaterFromLogAction,
+  getUserExerciseLogAction,
+  addUserExerciseLogAction,
+  updateUserExerciseLogAction,
 } from './userLog.types';
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
@@ -35,7 +51,7 @@ export const getDayTotals = (
   endDate: string,
   timezone: string,
 ) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<getDayTotalsUserLogAction>) => {
     try {
       const response = await userLogService.getTotals({
         beginDate,
@@ -74,7 +90,10 @@ export const getUserFoodlog = (
   endDate: string,
   offset: number | undefined,
 ) => {
-  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<getUserFoodLogAction | getDayTotalsUserLogAction>,
+    useState: () => RootState,
+  ) => {
     endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
 
     const timezone = useState().auth.userData.timezone;
@@ -104,7 +123,7 @@ export const getUserFoodlog = (
         healthkitSync(userFoodlog.foods, db);
       }
 
-      dispatch(getDayTotals(beginDateSelected, endDate, timezone));
+      dispatch<any>(getDayTotals(beginDateSelected, endDate, timezone));
     } catch (error) {
       throw error;
     }
@@ -116,7 +135,10 @@ export const getUserWeightlog = (
   endDate: string,
   offset: number | undefined,
 ) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<getUserWeightsLogAction>,
+    useState: () => RootState,
+  ) => {
     const end = moment(endDate, 'YYYY-MM-DD')
       .add(1, 'day')
       .format('YYYY-MM-DD');
@@ -153,7 +175,10 @@ export const getUserWeightlog = (
 };
 
 export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
-  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<addWeightToLogAction>,
+    useState: () => RootState,
+  ) => {
     try {
       const response = await userLogService.addWeightlog(weights);
 
@@ -170,7 +195,7 @@ export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
           const db = useState().base.db;
           syncWeight(db, oldWeights.concat(result.weights));
         }
-        dispatch(refreshUserLogTotals());
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;
@@ -179,7 +204,10 @@ export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
 };
 
 export const updateWeightlog = (weights: Array<WeightProps>) => {
-  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<updateWeightsLogAction>,
+    useState: () => RootState,
+  ) => {
     try {
       const response = await userLogService.updateWeightlog(weights);
 
@@ -203,7 +231,7 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
           const db = useState().base.db;
           syncWeight(db, newWeights);
         }
-        dispatch(refreshUserLogTotals());
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;
@@ -239,7 +267,10 @@ export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
   };
 };
 export const deleteExerciseFromLog = (exercises: Array<{id: string}>) => {
-  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<deleteExerciseFromLogAction>,
+    useState: () => RootState,
+  ) => {
     try {
       const response = await userLogService.deleteExerciseFromLog(exercises);
 
@@ -258,7 +289,7 @@ export const deleteExerciseFromLog = (exercises: Array<{id: string}>) => {
             oldExercises.filter(item => !deletedExercisesIds.includes(item.id)),
           );
         }
-        dispatch(refreshUserLogTotals());
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;
@@ -271,7 +302,10 @@ export const getUserExerciseslog = (
   endDate: string,
   offset: number | undefined,
 ) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<getUserExerciseLogAction>,
+    useState: () => RootState,
+  ) => {
     endDate = moment(endDate, 'YYYY-MM-DD').add(1, 'day').format('YYYY-MM-DD');
 
     const timezone = useState().auth.userData.timezone;
@@ -305,7 +339,10 @@ export const getUserExerciseslog = (
 };
 
 export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
-  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<addUserExerciseLogAction>,
+    useState: () => RootState,
+  ) => {
     try {
       const response = await userLogService.addExerciseLog(exercises);
 
@@ -322,7 +359,7 @@ export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
           const db = useState().base.db;
           syncExercise(db, oldExercises.concat(result.exercises));
         }
-        dispatch(refreshUserLogTotals());
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;
@@ -330,7 +367,10 @@ export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
   };
 };
 export const updateExistExercisesToLog = (exercises: ExerciseProps[]) => {
-  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<updateUserExerciseLogAction>,
+    useState: () => RootState,
+  ) => {
     try {
       const response = await userLogService.updateExerciseLog(exercises);
 
@@ -354,7 +394,7 @@ export const updateExistExercisesToLog = (exercises: ExerciseProps[]) => {
           const db = useState().base.db;
           syncExercise(db, newExercises);
         }
-        dispatch(refreshUserLogTotals());
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;
@@ -470,7 +510,10 @@ export const addFoodToLog = (
   foodArray: Array<FoodProps>,
   loggingOptions: Partial<loggingOptionsProps>,
 ) => {
-  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<addFoodToLogAction>,
+    useState: () => RootState,
+  ) => {
     // logging options:
     // "aggregate": "string",
     // "aggregate_photo": {},
@@ -508,9 +551,9 @@ export const addFoodToLog = (
       if (result.foods) {
         dispatch({
           type: userLogActionTypes.ADD_FOOD_TO_LOG,
-          foodObj: result.foods,
+          payload: result.foods,
         });
-        dispatch(refreshUserLogTotals());
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;
@@ -519,7 +562,7 @@ export const addFoodToLog = (
 };
 
 export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<updateFoodFromLogAction>) => {
     try {
       const response = await userLogService.updateFoodFromLog(foodArray);
 
@@ -530,7 +573,7 @@ export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
           type: userLogActionTypes.UPDATE_FOOD_FROM_LOG,
           payload: result.foods[0],
         });
-        dispatch(refreshUserLogTotals());
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;
@@ -539,7 +582,7 @@ export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
 };
 
 export const deleteFoodFromLog = (foodIds: Array<{id: string}>) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<deleteFoodFromLogAction>) => {
     try {
       const response = await userLogService.deleteFoodFromLog(foodIds);
 
@@ -548,7 +591,7 @@ export const deleteFoodFromLog = (foodIds: Array<{id: string}>) => {
           type: userLogActionTypes.DELETE_FOOD_FROM_LOG,
           foodIds: foodIds.map(item => item.id),
         });
-        dispatch(refreshUserLogTotals());
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;
@@ -557,12 +600,12 @@ export const deleteFoodFromLog = (foodIds: Array<{id: string}>) => {
 };
 
 export const setDayNotes = (targetDate: string, newNotes: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<setDayNotesAction>) => {
     const data = {
       dates: [
         {
           date: targetDate,
-          notes: newNotes,
+          notes: newNotes ? newNotes : null,
         },
       ],
     };
@@ -585,7 +628,7 @@ export const setDayNotes = (targetDate: string, newNotes: string) => {
 };
 
 export const changeSelectedDay = (newDate: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<changeSelectedDateAction>) => {
     dispatch({
       type: userLogActionTypes.CHANGE_SELECTED_DATE,
       newDate: newDate,
@@ -594,7 +637,7 @@ export const changeSelectedDay = (newDate: string) => {
 };
 
 export const addWaterlog = (water: Array<WaterLogProps>) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<updateWaterLogAction>) => {
     try {
       const response = await userLogService.addWaterLog(water);
 
@@ -605,7 +648,7 @@ export const addWaterlog = (water: Array<WaterLogProps>) => {
           type: userLogActionTypes.UPDATE_WATER_LOG,
           payload: result.logs[0].consumed,
         });
-        dispatch(refreshUserLogTotals());
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;
@@ -634,7 +677,10 @@ export const updateWaterlog = (water: Array<WaterLogProps>) => {
 };
 
 export const deleteWaterFromLog = () => {
-  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<deleteWaterFromLogAction>,
+    useState: () => RootState,
+  ) => {
     const selectedDate = useState().userLog.selectedDate;
     try {
       const response = await userLogService.deleteWaterFromLog([
@@ -645,7 +691,7 @@ export const deleteWaterFromLog = () => {
         dispatch({
           type: userLogActionTypes.DELETE_WATER_FROM_LOG,
         });
-        dispatch(refreshUserLogTotals());
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;

@@ -32,7 +32,10 @@ import {getCustomFoods} from 'store/customFoods/customFoods.actions';
 import {updateSearchResults} from 'store/autoComplete/autoComplete.actions';
 
 // types
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {FoodProps, MeasureProps} from 'store/userLog/userLog.types';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
@@ -46,6 +49,7 @@ import {Routes} from 'navigation/Routes';
 import {styles} from './AutocompleteScreen.styles';
 import {NixButton} from 'components/NixButton';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface AutocompleteScreenProps {
   navigation: NativeStackNavigationProp<
@@ -214,7 +218,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
           withAutoComplete
@@ -225,6 +229,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
               onPress={() => navigation.navigate(Routes.Basket)}
             />
           }
+          navigation={navigation}
         />
       ),
     });
@@ -300,6 +305,12 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
     }
     dispatch(basketActions.addFoodToBasket(item_name))
       .then(callBackAfterAddFoodToBasket)
+      .then(() => {
+        const naturalEvent = is_freeform
+          ? 'natural_freeform'
+          : 'natural_common';
+        analyticTrackEvent(naturalEvent, item_name);
+      })
       .catch(err => {
         dispatch(
           setInfoMessage({

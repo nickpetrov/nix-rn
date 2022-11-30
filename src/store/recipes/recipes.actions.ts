@@ -1,6 +1,15 @@
 import recipesService from 'api/recipeService';
 import {Dispatch} from 'redux';
-import {recipesActionTypes, UpdateRecipeProps} from './recipes.types';
+import {
+  recipesActionTypes,
+  UpdateRecipeProps,
+  getRecipesAction,
+  updateOrCreateRecipesAction,
+  copyRecipeAction,
+  createRecipeAction,
+  deleteRecipeAction,
+  clearRecipeAction,
+} from './recipes.types';
 import {RootState} from '../index';
 
 export const getRecipes = ({
@@ -10,7 +19,10 @@ export const getRecipes = ({
   newLimit?: number;
   newOffset?: number;
 }) => {
-  return async (dispatch: Dispatch, useState: () => RootState) => {
+  return async (
+    dispatch: Dispatch<getRecipesAction>,
+    useState: () => RootState,
+  ) => {
     const {limit, offset} = useState().recipes;
     const optionLimit = newLimit || limit;
     const optionOffset = newOffset || offset;
@@ -54,7 +66,7 @@ export const getRecipeById = (id: string) => {
 };
 
 export const updateRecipe = (recipe: UpdateRecipeProps) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<updateOrCreateRecipesAction>) => {
     try {
       const response = await recipesService.updateRecipe(recipe);
       const result = response.data;
@@ -72,7 +84,7 @@ export const updateRecipe = (recipe: UpdateRecipeProps) => {
 };
 
 export const createRecipe = (recipe: UpdateRecipeProps) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<createRecipeAction>) => {
     try {
       const response = await recipesService.createRecipe(recipe);
 
@@ -94,7 +106,7 @@ export const copyRecipe = (
   recipe: UpdateRecipeProps,
   clonedRecipeIndex: number,
 ) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<copyRecipeAction>) => {
     try {
       const response = await recipesService.createRecipe(recipe);
 
@@ -117,7 +129,7 @@ export const copyRecipe = (
 };
 
 export const deleteRecipe = (id: string) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<deleteRecipeAction>) => {
     try {
       const response = await recipesService.deleteRecipe(id);
 
@@ -162,7 +174,7 @@ export const getIngridientsForUpdate = async ({
 };
 
 export const reset = () => {
-  return async (dispatch: Dispatch) => {
-    dispatch({type: recipesActionTypes.CLEAR});
+  return async (dispatch: Dispatch<clearRecipeAction>) => {
+    dispatch({type: recipesActionTypes.RECIPES_CLEAR});
   };
 };

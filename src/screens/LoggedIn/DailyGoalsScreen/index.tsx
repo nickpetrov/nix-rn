@@ -30,11 +30,15 @@ import {Routes} from 'navigation/Routes';
 
 // types
 import {User} from 'store/auth/auth.types';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {setInfoMessage} from 'store/base/base.actions';
 import ShakeView from 'components/ShakeView';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface DailyGoalsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -134,6 +138,29 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
           ? parseInt(updatedGoals[key] + '' || '')
           : null;
       }
+
+      if (updatedGoals.daily_kcal !== userData.daily_kcal) {
+        analyticTrackEvent(
+          'changedCalorieLimit',
+          'From ' + userData.daily_kcal + ' to ' + updatedGoals.daily_kcal,
+        );
+      }
+      if (
+        updatedGoals.daily_carbs_pct !== userData.daily_carbs_pct ||
+        updatedGoals.daily_protein_pct !== userData.daily_protein_pct ||
+        updatedGoals.daily_fat_pct !== userData.daily_fat_pct
+      ) {
+        analyticTrackEvent(
+          'changedDailyGoals',
+          'protein:' +
+            updatedGoals.daily_protein_pct +
+            '% carbs:' +
+            updatedGoals.daily_carbs_pct +
+            '% fat:' +
+            updatedGoals.daily_fat_pct +
+            '%',
+        );
+      }
       dispatch(userActions.updateUserData(updatedGoals)).then(() => {
         navigation.goBack();
       });
@@ -142,9 +169,10 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: (props: any) => (
+      header: (props: NativeStackHeaderProps) => (
         <NavigationHeader
           {...props}
+          navigation={navigation}
           headerRight={
             <TouchableOpacity
               style={styles.question}

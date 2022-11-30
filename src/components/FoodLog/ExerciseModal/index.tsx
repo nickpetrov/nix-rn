@@ -30,6 +30,7 @@ import {styles} from './ExerciseModal.styles';
 // types
 import {ExerciseProps} from 'store/userLog/userLog.types';
 import moment from 'moment';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface ExerciseModalProps {
   visible: boolean;
@@ -66,6 +67,7 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
           setVisible(null),
         );
       } else {
+        analyticTrackEvent('loggedExercise', excerciseDescription);
         dispatch(addExerciseToLog(excerciseDescription)).then(() =>
           setVisible(null),
         );
@@ -100,7 +102,7 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
         <View style={styles.excerciseModal}>
           <View style={styles.excerciseContainer}>
             <View style={styles.excerciseModalHeader}>
-              <Text>{exercise?.id ? 'Edit Exircise' : 'Log Exircises'}</Text>
+              <Text>{exercise?.id ? 'Edit Exercise' : 'Log Exercises'}</Text>
             </View>
             <View style={styles.excerciseModalMain}>
               <VoiceInput
