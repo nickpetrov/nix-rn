@@ -12,3 +12,5 @@
 # For correct work react-native-date-picker in production.
 -keep public class net.time4j.android.ApplicationStarter
 -keep public class net.time4j.PrettyTime
+
+-keep class com.nutritionx.BuildConfig { *; }

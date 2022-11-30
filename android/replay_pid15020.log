@@ -1,3 +1,0 @@
-JvmtiExport can_access_local_variables 255
-JvmtiExport can_hotswap_or_post_breakpoint 255
-JvmtiExport can_post_on_exceptions 255

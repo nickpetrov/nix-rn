@@ -12,6 +12,7 @@ import MainContent from 'components/MainContent';
 import {PersistGate} from 'redux-persist/integration/react';
 import * as Sentry from '@sentry/react-native';
 import analytics from '@react-native-firebase/analytics';
+import Config from 'react-native-config';
 
 //for work uuid
 import 'react-native-get-random-values';
@@ -28,17 +29,10 @@ Settings.initializeSDK();
 // ignore WARNINGS - new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 
-// from ionic
-// Sentry.init({
-//   dsn: 'https://84e7ad3ef0d24d73895d708080289fb3@sentry.io/1212947',
-//   release: 'com.nutritionix.nixtrack-%%VERSION%%' + (__DEV__ ? '-dev' : ''),
-// });
-
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 
 Sentry.init({
-  dsn: 'https://a35826b51e0247a7950d1957ea54eb80@o74007.ingest.sentry.io/4504241441538048',
-  // dsn: `https://${process.env.REACT_APP_SENTRY_KEY}.ingest.sentry.io/4504241441538048`,
+  dsn: `https://${Config.REACT_APP_SENTRY_KEY}.ingest.sentry.io/4504241441538048`,
   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
   // We recommend adjusting this value in production.
   tracesSampleRate: 1.0,
