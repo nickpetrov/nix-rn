@@ -13,6 +13,16 @@ target 'nutritionx' do
   # Flags change depending on the env values.
   flags = get_default_flags()
 
+  pre_install do |installer|
+    installer.pod_targets.each do |pod|
+      if pod.name.eql?('vision-camera-code-scanner') || pod.name.eql?('VisionCamera')
+        def pod.build_type
+          Pod::BuildType.static_library
+        end
+      end
+    end
+  end
+
   use_react_native!(
     :path => config[:reactNativePath],
     # Hermes is now enabled by default. Disable by setting this flag to false.
