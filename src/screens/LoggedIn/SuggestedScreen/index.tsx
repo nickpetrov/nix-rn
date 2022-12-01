@@ -2,8 +2,8 @@
 import React, {useCallback, useEffect} from 'react';
 
 // components
-import {View, Text, Image, FlatList, Linking} from 'react-native';
-import {SvgUri} from 'react-native-svg';
+import {View, Text, FlatList, Linking} from 'react-native';
+import {WithLocalSvg} from 'react-native-svg';
 import Footer from 'components/Footer';
 import SuggestedProductItem from 'components/SuggestedProductItem';
 
@@ -23,8 +23,6 @@ import {useDispatch, useSelector} from 'hooks/useRedux';
 // actions
 import {getSuggestedFoods} from 'store/foods/foods.actions';
 import {useNetInfo} from '@react-native-community/netinfo';
-
-const {uri} = Image.resolveAssetSource(require('assets/recommended.svg'));
 
 interface SuggestedScreenProps {
   navigation: NativeStackNavigationProp<
@@ -54,8 +52,8 @@ export const SuggestedScreen: React.FC<SuggestedScreenProps> = ({
       <View style={styles.root}>
         <View style={styles.banner}>
           <View style={styles.imageContainer}>
-            <SvgUri
-              uri={uri}
+            <WithLocalSvg
+              asset={require('assets/recommended.svg')}
               width="40"
               height="60"
               viewBox="0 0 10 16"

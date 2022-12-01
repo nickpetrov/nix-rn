@@ -13,10 +13,9 @@ import {
   TouchableWithoutFeedback,
   Share,
   Linking,
-  Image,
   ScrollView,
 } from 'react-native';
-import {SvgUri} from 'react-native-svg';
+import {WithLocalSvg} from 'react-native-svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixButton} from 'components/NixButton';
 
@@ -31,8 +30,6 @@ import {styles} from './SideMenu.styles';
 
 // types
 import {DrawerNavigationProp} from '@react-navigation/drawer';
-
-const {uri} = Image.resolveAssetSource(require('assets/images/logo2.svg'));
 
 export const SideMenu: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
@@ -277,9 +274,9 @@ export const SideMenu: React.FC = () => {
             style={{marginTop: 10}}
             onPress={() => Linking.openURL('https://www.nutritionix.com')}>
             <View>
-              <SvgUri
+              <WithLocalSvg
                 style={{alignSelf: 'center', marginTop: 20}}
-                uri={uri}
+                asset={require('assets/images/logo2.svg')}
                 width="180"
                 height="40"
                 viewBox="0 0 1000 219"

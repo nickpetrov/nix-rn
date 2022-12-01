@@ -2,10 +2,10 @@
 import React from 'react';
 
 // components
-import {View, SafeAreaView, Image} from 'react-native';
+import {View, SafeAreaView} from 'react-native';
 import FooterItem from './FooterItem';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {SvgUri} from 'react-native-svg';
+import {WithLocalSvg} from 'react-native-svg';
 import MealBuilder from 'components/MealBuilder';
 
 // styles
@@ -17,8 +17,6 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
-
-const {uri} = Image.resolveAssetSource(require('assets/recommended.svg'));
 
 interface FooterProps {
   hide: boolean;
@@ -74,8 +72,8 @@ const Footer: React.FC<FooterProps> = props => {
         <FooterItem
           title="Suggested"
           onPress={() => props.navigation.navigate(Routes.Suggested)}>
-          <SvgUri
-            uri={uri}
+          <WithLocalSvg
+            asset={require('assets/recommended.svg')}
             width="20"
             height="28"
             viewBox="0 0 10 16"
