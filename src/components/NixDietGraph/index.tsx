@@ -64,17 +64,14 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
   const [trackedDays, setTrackedDays] = useState(0);
   const [greenDays, setGreenDays] = useState(0);
   const currentDay = moment();
-  const dayPassedFromTheStartOfMonth = currentDay.diff(startDate, 'days');
+  const isCurrentMonth = selectedMonth === moment().format('MMMM');
+  const dayPassedFromTheStartOfMonth = isCurrentMonth
+    ? currentDay.diff(startDate, 'days')
+    : moment(props.initialDisplayDate).add(monthOffset, 'month').daysInMonth();
   let missed = dayPassedFromTheStartOfMonth - trackedDays;
-
-  // const disableNavigation = false;
-  // let disablePrev = false;
-  // let disableNext = false;
+  missed = missed > 0 ? missed : 0;
 
   const title = props.title || 'Diet Logging Graph';
-
-  // const target = props.target || 2000;
-  // const nutrientId = props.nutrientId || 208;
 
   useEffect(() => {
     setTrackedDays(0);
@@ -106,36 +103,26 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         .endOf('month')
         .format('DD'),
     );
+  }, [monthOffset, props.initialDisplayDate]);
+
+  useEffect(() => {
     setValues(new Array(parseInt(daysInMonth)));
     setTargets(new Array(parseInt(daysInMonth)));
-  }, [monthOffset, daysInMonth, props.initialDisplayDate]);
-
-  // const nutrientSettings = {
-  //   208: {
-  //     title: 'Calories',
-  //     round: 'calories',
-  //   },
-  //   205: {
-  //     title: 'Carb',
-  //     round: 'total_carb',
-  //   },
-  //   204: {
-  //     title: 'Fat',
-  //     round: 'total_fat',
-  //   },
-  //   203: {
-  //     title: 'Protein',
-  //     round: 'protein',
-  //   },
-  //   307: {
-  //     title: 'Sodium',
-  //     round: 'sodium',
-  //   },
-  // }[nutrientId];
+  }, [daysInMonth]);
 
   useEffect(() => {
     dispatch(getDayTotals(startDate, endDate));
-  }, [dispatch, startDate, endDate]);
+    return () => {
+      dispatch(
+        getDayTotals(
+          moment(props.initialDisplayDate)
+            .startOf('month')
+            .format('YYYY-MM-DD'),
+          moment(props.initialDisplayDate).endOf('month').format('YYYY-MM-DD'),
+        ),
+      );
+    };
+  }, [dispatch, startDate, endDate, props.initialDisplayDate]);
 
   useEffect(() => {
     dates.map((day: TotalProps) => {
