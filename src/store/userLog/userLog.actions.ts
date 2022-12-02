@@ -120,7 +120,7 @@ export const getUserFoodlog = (
       const hkSyncOptions = useState().connectedApps.hkSyncOptions;
       if (hkSyncOptions.nutrition === 'push' && Platform.OS === 'ios') {
         const db = useState().base.db;
-        healthkitSync(userFoodlog.foods, db);
+        // healthkitSync(userFoodlog.foods, db);
       }
 
       dispatch<any>(getDayTotals(beginDateSelected, endDate, timezone));

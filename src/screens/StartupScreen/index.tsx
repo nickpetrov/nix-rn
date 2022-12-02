@@ -49,10 +49,10 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
       dispatch(initGroceyAgentInfo());
       if (Platform.OS === 'ios') {
         if (hkSyncOptions.weight === 'pull') {
-          dispatch(pullWeightsFromHK());
+          // dispatch(pullWeightsFromHK());
         }
         if (hkSyncOptions.exercise === 'pull') {
-          dispatch(pullExerciseFromHK());
+          // dispatch(pullExerciseFromHK());
         }
       }
     }
