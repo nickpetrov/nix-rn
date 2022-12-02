@@ -299,7 +299,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
 
   const handleCopyMeal = () => {
     dispatch(addExistFoodToBasket(foods)).then(() => {
-      analyticTrackEvent('Copy - From Summary', ' ');
+      analyticTrackEvent('Copy_From_Summary', ' ');
       navigation.navigate(Routes.Basket);
     });
   };
@@ -311,7 +311,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
         })),
       ),
     ).then(() => {
-      analyticTrackEvent('Delete - From Summary', ' ');
+      analyticTrackEvent('Delete_From_Summary', ' ');
       navigation.goBack();
     });
 

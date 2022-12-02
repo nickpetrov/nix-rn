@@ -330,7 +330,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       {
                         type: 'delete',
                         onPress: () => {
-                          analyticTrackEvent('swipe-left', 'swipe-left-delete');
+                          analyticTrackEvent('swipe_left', 'swipe_left_delete');
                           setDeleteteModal({
                             items: section.data,
                             mealName: section.key as keyof mealTypes,
@@ -340,7 +340,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       {
                         type: 'copy',
                         onPress: () => {
-                          analyticTrackEvent('swipe-left', 'swipe-left-copy');
+                          analyticTrackEvent('swipe_left', 'swipe_left_copy');
                           dispatch(addExistFoodToBasket(section.data)).then(
                             () => {
                               // close all swipes after copy

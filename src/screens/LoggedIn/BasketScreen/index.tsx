@@ -252,10 +252,10 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     dispatch(userLogActions.addFoodToLog(adjustedFoods, loggingOptions))
       .then(() => {
         if (customPhoto) {
-          analyticTrackEvent('Custom photo added', ' ');
+          analyticTrackEvent('Custom_photo_added', ' ');
         }
         if (isSingleFood) {
-          analyticTrackEvent('Recipe created', 'Created from the basket');
+          analyticTrackEvent('Recipe_created', 'Created from the basket');
         }
         dispatch(basketActions.reset());
         setLoadingSubmit(false);
@@ -386,7 +386,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
               {
                 type: 'delete',
                 onPress: () => {
-                  analyticTrackEvent('swipe-left', 'swipe-left-delete');
+                  analyticTrackEvent('swipe_left', 'swipe_left_delete');
                   if (foods.length === 1) {
                     dispatch(basketActions.reset());
                   } else {

@@ -196,7 +196,7 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
       dispatch(copyRecipe(clonedRecipe, clonedRecipeIndex))
         .then(() => {
           analyticTrackEvent(
-            'Recipe copied',
+            'Recipe_copied',
             'Copied from the recipes interface',
           );
           setCopyRecipePopup(false);
@@ -213,7 +213,7 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
     dispatch(basketActions.addRecipeToBasket(recipe.id)).then(
       (scaled_recipe: RecipeProps) => {
         analyticTrackEvent(
-          'Added recipe to the basket',
+          'Added_recipe_to_the_basket',
           'Quick log from the My Recipes',
         );
         dispatch(

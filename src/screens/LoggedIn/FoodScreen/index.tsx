@@ -254,8 +254,8 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       )
         .then(result => {
           const photoEventName = foodObj.photo.is_user_uploaded
-            ? 'Changed photo'
-            : 'Custom photo added';
+            ? 'Changed_photo'
+            : 'Custom_photo_added';
           analyticTrackEvent(photoEventName, ' ');
           if (result) {
             console.log(result);

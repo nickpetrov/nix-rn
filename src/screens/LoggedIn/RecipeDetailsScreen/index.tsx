@@ -265,7 +265,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           })
           .then(res => {
             analyticTrackEvent(
-              'Recipe created',
+              'Recipe_created',
               'Created from the recipes interface',
             );
             if (logAfterUpdate) {
@@ -621,7 +621,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             });
           }
           analyticTrackEvent(
-            'Recipe copied',
+            'Recipe_copied',
             'Copied from the edit recipe interface',
           );
         })
@@ -681,7 +681,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       dispatch(
         basketActions.addExistFoodToBasket(scaled_recipe.ingredients),
       ).then(() => {
-        analyticTrackEvent('Added recipe to the basket', ' ');
+        analyticTrackEvent('Added_recipe_to_the_basket', ' ');
         dispatch(
           basketActions.mergeBasket({
             isSingleFood: true,

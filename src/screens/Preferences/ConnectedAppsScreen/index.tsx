@@ -116,17 +116,17 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
             if (turnOffNutritionHKSync) {
               dispatch(mergeHKSyncOptions({nutrition: 'off'}));
               SQLexecute({db, query: 'DROP TABLE hkdata'});
-              analyticTrackEvent('HealthKit nutrition sync', 'disable');
+              analyticTrackEvent('HealthKit_nutrition_sync', 'disable');
             }
             if (turnOffExcerciseHKSync) {
               dispatch(mergeHKSyncOptions({exercise: 'off'}));
               SQLexecute({db, query: 'DROP TABLE hkdata_exercise'});
-              analyticTrackEvent('HealthKit exercise sync', 'disable');
+              analyticTrackEvent('HealthKit_exercise_sync', 'disable');
             }
             if (turnOffWeightHKSync) {
               dispatch(mergeHKSyncOptions({weight: 'off'}));
               SQLexecute({db, query: 'DROP TABLE hkdata_weight'});
-              analyticTrackEvent('HealthKit weight sync', 'disable');
+              analyticTrackEvent('HealthKit_weight_sync', 'disable');
             }
           }
         });

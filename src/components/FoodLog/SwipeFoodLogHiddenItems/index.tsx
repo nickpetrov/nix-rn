@@ -99,29 +99,29 @@ const SwipeFoodLogHiddenItems: React.FC<SwipeFoodLogHiddenItemsProps> = ({
         foodLogSection !== foodLogSections.Water
       ) {
         return () => {
-          analyticTrackEvent('swipe-left', 'swipe-left-copy');
+          analyticTrackEvent('swipe_left', 'swipe_left_copy');
           addItemToBasket(sectionItem);
         };
       }
     } else if (action === 'delete') {
       if (foodLogSection === foodLogSections.Exercise) {
         return () => {
-          analyticTrackEvent('swipe-left', 'swipe-left-delete');
+          analyticTrackEvent('swipe_left', 'swipe_left_delete');
           handleDeleteExerciseFromLog(sectionItem.id);
         };
       } else if (foodLogSection === foodLogSections.Weigh_in) {
         return () => {
-          analyticTrackEvent('swipe-left', 'swipe-left-delete');
+          analyticTrackEvent('swipe_left', 'swipe_left_delete');
           handleDeleteWeightFromLog(sectionItem.id);
         };
       } else if (foodLogSection === foodLogSections.Water) {
         return () => {
-          analyticTrackEvent('swipe-left', 'swipe-left-delete');
+          analyticTrackEvent('swipe_left', 'swipe_left_delete');
           handleDeleteWaterLog();
         };
       } else {
         return () => {
-          analyticTrackEvent('swipe-left', 'swipe-left-delete');
+          analyticTrackEvent('swipe_left', 'swipe_left_delete');
           analyticTrackEvent('deletedFood', sectionItem.food_name);
           handleDeleteFoodFromLog(sectionItem.id);
         };
