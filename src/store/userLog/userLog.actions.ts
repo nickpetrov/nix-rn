@@ -428,7 +428,8 @@ export const addExerciseToLog = (query: string) => {
             ...checkResult.exercises[0],
             timestamp: moment(selectedDate)
               .hours(moment().hours())
-              .minutes(moment().minutes()),
+              .minutes(moment().minutes())
+              .format(),
           },
         ]);
 

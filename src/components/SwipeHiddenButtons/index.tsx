@@ -42,6 +42,8 @@ const SwipeHiddenButtons: React.FC<SwipeHiddenButtonsProps> = ({buttons}) => {
               <Text style={styles.btnText}>Quick Log</Text>
             </TouchableOpacity>
           );
+        } else {
+          return <></>;
         }
       })}
     </View>

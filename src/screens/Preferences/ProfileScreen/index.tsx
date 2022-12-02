@@ -348,7 +348,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   setFieldValue('timezone', option.value);
                   // setTimezone(option.value);
                 }}
-                listType="FLATLIST"
+                listType="SCROLLVIEW"
                 keyExtractor={(item: {label: string; value: string}) =>
                   item.value
                 }>
