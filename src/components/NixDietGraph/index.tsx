@@ -65,12 +65,17 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
   const [greenDays, setGreenDays] = useState(0);
   const currentDay = moment();
   const isCurrentMonth = selectedMonth === moment().format('MMMM');
-  const dayPassedFromTheStartOfMonth = isCurrentMonth
+  const isNextMonths = moment(props.initialDisplayDate)
+    .add(monthOffset, 'month')
+    .isAfter(moment());
+  console.log('isNextMonths', isNextMonths);
+  const dayPassedFromTheStartOfMonth = isNextMonths
+    ? 0
+    : isCurrentMonth
     ? currentDay.diff(startDate, 'days')
     : moment(props.initialDisplayDate).add(monthOffset, 'month').daysInMonth();
   let missed = dayPassedFromTheStartOfMonth - trackedDays;
   missed = missed > 0 ? missed : 0;
-
   const title = props.title || 'Diet Logging Graph';
 
   useEffect(() => {
@@ -103,26 +108,13 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         .endOf('month')
         .format('DD'),
     );
-  }, [monthOffset, props.initialDisplayDate]);
-
-  useEffect(() => {
     setValues(new Array(parseInt(daysInMonth)));
     setTargets(new Array(parseInt(daysInMonth)));
-  }, [daysInMonth]);
+  }, [monthOffset, props.initialDisplayDate, daysInMonth]);
 
   useEffect(() => {
     dispatch(getDayTotals(startDate, endDate));
-    return () => {
-      dispatch(
-        getDayTotals(
-          moment(props.initialDisplayDate)
-            .startOf('month')
-            .format('YYYY-MM-DD'),
-          moment(props.initialDisplayDate).endOf('month').format('YYYY-MM-DD'),
-        ),
-      );
-    };
-  }, [dispatch, startDate, endDate, props.initialDisplayDate]);
+  }, [dispatch, startDate, endDate]);
 
   useEffect(() => {
     dates.map((day: TotalProps) => {
