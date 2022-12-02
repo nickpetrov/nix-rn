@@ -12,13 +12,7 @@ export const offsetDays = (
   inputFormat: string,
   offset: number,
 ) => {
-  if (offset < 0) {
-    return moment(date, inputFormat)
-      .subtract(offset, 'days')
-      .format('YYYY-MM-DD');
-  } else {
-    return moment(date, inputFormat).add(offset, 'days').format('YYYY-MM-DD');
-  }
+  return moment(date, inputFormat).add(offset, 'days').format('YYYY-MM-DD');
 };
 
 export const formatDate = (
