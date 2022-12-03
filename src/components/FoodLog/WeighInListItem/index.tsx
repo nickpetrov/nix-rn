@@ -5,9 +5,6 @@ import moment from 'moment-timezone';
 // components
 import {Text, TouchableHighlight} from 'react-native';
 
-// hooks
-import {useSelector} from 'hooks/useRedux';
-
 // styles
 import {styles} from './WeighInListItem.styles';
 import {Colors} from 'constants/Colors';
@@ -26,7 +23,6 @@ const WeighInListItem: React.FC<WeighInListItemProps> = ({
   measure_system,
   onPress,
 }) => {
-  const timezone = useSelector(state => state.auth.userData.timezone);
   return (
     <TouchableHighlight
       underlayColor={Colors.Highlight}
@@ -34,8 +30,7 @@ const WeighInListItem: React.FC<WeighInListItemProps> = ({
       onPress={onPress}>
       <Text style={styles.text}>{`${moment
         .utc(item.timestamp)
-        .clone()
-        .tz(timezone)
+        .local()
         .format('h:mm a')}   ${
         measure_system === 1
           ? `${item.kg} kg`
