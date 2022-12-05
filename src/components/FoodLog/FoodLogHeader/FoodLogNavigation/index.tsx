@@ -40,15 +40,11 @@ const FoodLogNavigation: React.FC<FoodLogNavigationProps> = ({foods}) => {
       NativeStackNavigationProp<StackNavigatorParamList, Routes.Dashboard>
     >();
   const dispatch = useDispatch();
-  // const {scrollDirection} = props;
+  // const timezone = useSelector(state => state.auth.userData.timezone);
   const {selectedDate} = useSelector(state => state.userLog);
   const [goToTodayCounter, setGoToTodayCounter] = useState(0);
-  // before, wrong display date
-  // const currDate = timeHelpers.formatDate(selectedDate, 'YYYY-MM-DD', 'MM/DD');
-  // let weekDay = timeHelpers.formatDate(selectedDate, 'YYYY-MM-DD', 'dddd');
   const currDate = moment(selectedDate).format('MM/DD');
   let weekDay = moment(selectedDate).format('dddd');
-
   if (
     moment().format('YYYY-MM-DD') ===
     moment(selectedDate, 'YYYY-MM-DD').format('YYYY-MM-DD')

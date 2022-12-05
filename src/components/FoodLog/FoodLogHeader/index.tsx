@@ -15,11 +15,6 @@ import {FoodProps} from 'store/userLog/userLog.types';
 interface FoodLogHeaderProps {
   caloriesLimit: number;
   caloriesBurned: number;
-  caloriesIntake: number;
-  protein: number;
-  carbohydrates: number;
-  fat: number;
-  // scrollDirection: 'up' | 'down';
   foods: Array<FoodProps>;
 }
 

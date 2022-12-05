@@ -104,15 +104,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const consumedWater = totals.find(
     (item: TotalProps) => item.date === selectedDate,
   )?.water_consumed_liter;
+
   const selectedDay: {
     totals: TotalProps;
   } = {
     totals:
       totals.filter(
-        (dayTotal: TotalProps) => dayTotal.date === selectedDate,
+        (dayTotal: TotalProps) =>
+          moment(dayTotal.date).format('YYYY-MM-DD') === selectedDate,
       )[0] || {},
   };
-
   const sections = useMemo(() => {
     // create empty sections
     const arr: {data: any; key: mealNameProps}[] = [
@@ -125,7 +126,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     foods
       .filter(
         (item: FoodProps) =>
-          moment(item.consumed_at).format('YYYY-MM-DD') === selectedDate,
+          moment
+            .utc(item.consumed_at)
+            .tz(userData.timezone)
+            .format('YYYY-MM-DD') === selectedDate,
       )
       .map((item: FoodProps) => {
         const index = arr.findIndex(
@@ -153,20 +157,20 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       arr.push({key: foodLogSections.Snack, data: []});
     }
 
-    // add weights section
-    arr.push({
-      key: foodLogSections.Weigh_in,
-      data: weights.filter(
-        (item: WeightProps) =>
-          moment(item.timestamp).format('YYYY-MM-DD') === selectedDate,
-      ),
-    });
-
     // add exercise section
     arr.push({
       key: foodLogSections.Exercise,
       data: exercises.filter(
         (item: ExerciseProps) =>
+          moment(item.timestamp).format('YYYY-MM-DD') === selectedDate,
+      ),
+    });
+
+    // add weights section
+    arr.push({
+      key: foodLogSections.Weigh_in,
+      data: weights.filter(
+        (item: WeightProps) =>
           moment(item.timestamp).format('YYYY-MM-DD') === selectedDate,
       ),
     });
@@ -178,7 +182,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     });
 
     return arr;
-  }, [foods, selectedDate, weights, exercises, consumedWater]);
+  }, [
+    foods,
+    selectedDate,
+    weights,
+    exercises,
+    consumedWater,
+    userData.timezone,
+  ]);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [excerciseModal, setExcerciseModal] = useState<ExerciseProps | null>(
@@ -293,16 +304,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </View>
             )}
             <FoodLogHeader
-              caloriesLimit={selectedDay.totals.daily_kcal_limit || 0}
+              caloriesLimit={
+                selectedDay.totals.daily_kcal_limit || userData.daily_kcal || 0
+              }
               caloriesBurned={selectedDay.totals.total_cal_burned || 0}
-              caloriesIntake={selectedDay.totals.total_cal || 0}
-              protein={selectedDay.totals.total_proteins || 0}
-              carbohydrates={selectedDay.totals.total_carbs || 0}
-              fat={selectedDay.totals.total_fat || 0}
               foods={foods.filter(
                 (item: FoodProps) =>
-                  moment(item.consumed_at).format('YYYY-MM-DD') ===
-                  selectedDate,
+                  moment
+                    .utc(item.consumed_at)
+                    .tz(userData.timezone)
+                    .format('YYYY-MM-DD') === selectedDate,
               )}
             />
           </>

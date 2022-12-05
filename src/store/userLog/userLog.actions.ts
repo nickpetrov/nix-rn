@@ -116,14 +116,14 @@ export const getUserFoodlog = (
           foodLog: userFoodlog.foods,
         });
       }
-      const beginDateSelected = useState().userLog.selectedDate;
+      // const beginDateSelected = useState().userLog.selectedDate;
       const hkSyncOptions = useState().connectedApps.hkSyncOptions;
       if (hkSyncOptions.nutrition === 'push' && Platform.OS === 'ios') {
         const db = useState().base.db;
         // healthkitSync(userFoodlog.foods, db);
       }
 
-      dispatch<any>(getDayTotals(beginDateSelected, endDate, timezone));
+      // dispatch<any>(getDayTotals(beginDateSelected, endDate, timezone));
     } catch (error) {
       throw error;
     }
@@ -515,21 +515,14 @@ export const addFoodToLog = (
     dispatch: Dispatch<addFoodToLogAction>,
     useState: () => RootState,
   ) => {
-    // logging options:
-    // "aggregate": "string",
-    // "aggregate_photo": {},
-    // "serving_qty": 0,
-    // "consumed_at": "string",
-    // "brand_name": "string",
-    // "meal_type": 0
-    loggingOptions.consumed_at = moment(loggingOptions.consumed_at).format(
-      'MM-DD-YYYY',
-    );
+    const timezone = useState().auth.userData.timezone;
+
+    loggingOptions.consumed_at =
+      moment(loggingOptions.consumed_at).format('YYYY-MM-DDTHH:mm:ss') +
+      moment.tz(timezone).format('Z');
     const mealType =
       loggingOptions.meal_type ||
       guessMealTypeByTime(moment(loggingOptions.consumed_at).hour());
-
-    const timezone = useState().auth.userData.timezone;
 
     foodArray.map((food: FoodProps) => {
       food.consumed_at =

@@ -19,37 +19,54 @@ import {FoodProps} from 'store/userLog/userLog.types';
 interface FoodLogStatsProps {
   caloriesLimit: number;
   caloriesBurned: number;
-  caloriesIntake: number;
-  protein: number;
-  carbohydrates: number;
-  fat: number;
-  // scrollDirection: 'up' | 'down';
   foods: Array<FoodProps>;
 }
 
-const FoodLogStats: React.FC<FoodLogStatsProps> = props => {
+const FoodLogStats: React.FC<FoodLogStatsProps> = ({
+  caloriesLimit,
+  caloriesBurned,
+  foods,
+}) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const [total, setTotal] = useState<Record<string, any>>({
+    caloriesIntake: 0,
+    nf_protein: 0,
+    nf_total_carbohydrate: 0,
+    nf_total_fat: 0,
+  });
   const [progressBarColor, setProgressBarColor] = useState<string>(
     Colors.Primary,
   );
-  const {
-    caloriesLimit,
-    caloriesBurned,
-    caloriesIntake,
-    protein,
-    carbohydrates,
-    fat,
-  } = props;
-  let progressValue = caloriesIntake
-    ? ((caloriesIntake - caloriesBurned) / caloriesLimit) * 100
+
+  useEffect(() => {
+    setTotal(() => {
+      const newTotal: Record<string, any> = {
+        caloriesIntake: 0,
+        nf_protein: 0,
+        nf_total_carbohydrate: 0,
+        nf_total_fat: 0,
+      };
+
+      foods.forEach(food => {
+        newTotal.caloriesIntake += food.nf_calories;
+        newTotal.nf_total_fat += food.nf_total_fat;
+        newTotal.nf_total_carbohydrate += food.nf_total_carbohydrate;
+        newTotal.nf_protein += food.nf_protein;
+      });
+
+      return newTotal;
+    });
+  }, [foods]);
+  let progressValue = total.caloriesIntake
+    ? ((total.caloriesIntake - caloriesBurned) / caloriesLimit) * 100
     : 0;
   let progressBarCurrent = {
     width: (progressValue > 0 ? progressValue.toFixed(0) : 0) + '%',
   };
   let remaining_calories = +(
     caloriesLimit -
-    caloriesIntake +
-    caloriesBurned
+    Math.round(total.caloriesIntake || 0) +
+    Math.round(caloriesBurned || 0)
   ).toFixed(0);
   let remaining_calories_text = 'remaining';
 
@@ -74,7 +91,7 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = props => {
       onPress={() =>
         navigation.navigate(Routes.Totals, {
           type: 'daily',
-          foods: props.foods,
+          foods: foods,
         })
       }>
       <View>
@@ -87,7 +104,7 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = props => {
           }>
           <View style={styles.caloriesProgressLabel}>
             <Text style={styles.caloriesProgressLabelText}>
-              {caloriesIntake.toFixed(0)} cal intake
+              {total.caloriesIntake.toFixed(0)} cal intake
             </Text>
           </View>
           <View style={styles.caloriesProgressLabel}>
@@ -115,15 +132,21 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = props => {
         </View>
         <View style={styles.macroTotals}>
           <View style={styles.macroTotalsTile}>
-            <Text style={styles.macroValue}>{protein.toFixed(0)}g</Text>
+            <Text style={styles.macroValue}>
+              {total.nf_protein.toFixed(0)}g
+            </Text>
             <Text style={styles.macroTitle}>Protein</Text>
           </View>
           <View style={styles.macroTotalsTile}>
-            <Text style={styles.macroValue}>{carbohydrates.toFixed(0)}g</Text>
+            <Text style={styles.macroValue}>
+              {total.nf_total_carbohydrate.toFixed(0)}g
+            </Text>
             <Text style={styles.macroTitle}>Carb</Text>
           </View>
           <View style={styles.macroTotalsTile}>
-            <Text style={styles.macroValue}>{fat.toFixed(0)}g</Text>
+            <Text style={styles.macroValue}>
+              {total.nf_total_fat.toFixed(0)}g
+            </Text>
             <Text style={styles.macroTitle}>Fat</Text>
           </View>
         </View>
