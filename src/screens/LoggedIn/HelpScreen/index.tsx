@@ -4,6 +4,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 // components
 import {View, Text, TouchableWithoutFeedback, SafeAreaView} from 'react-native';
 import {WebView} from 'react-native-webview';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 // styles
 import {styles} from './HelpScreen.styles';
@@ -35,7 +36,12 @@ export const HelpScreen: React.FC<HelpScreenProps> = () => {
               showWalkthrough();
             }}>
             <View style={styles.menuItem}>
-              <Text>Walkthrough (temporary unavailable)</Text>
+              <View style={styles.icon}>
+                <FontAwesome name="mobile" size={30} />
+              </View>
+              <Text style={styles.menuItemText}>
+                Walkthrough (temporary unavailable)
+              </Text>
               {/*TODO - create walkthrough*/}
             </View>
           </TouchableWithoutFeedback>
@@ -44,7 +50,10 @@ export const HelpScreen: React.FC<HelpScreenProps> = () => {
               setWebViewUri('https://nutritionix.helpsite.com/');
             }}>
             <View style={styles.menuItem}>
-              <Text>FAQ</Text>
+              <View style={styles.icon}>
+                <FontAwesome name="question-circle" size={30} />
+              </View>
+              <Text style={styles.menuItemText}>FAQ</Text>
             </View>
           </TouchableWithoutFeedback>
           <View style={styles.terms}>
