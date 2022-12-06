@@ -7,6 +7,7 @@ import {Routes} from 'navigation/Routes';
 // components
 import {TouchableOpacity, Keyboard, View} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import TooltipView from 'components/TooltipView';
 
 // styles
 import {styles} from './BarcodeScanner.styles';
@@ -15,12 +16,6 @@ import {styles} from './BarcodeScanner.styles';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useRoute} from '@react-navigation/native';
-import {useSelector, useDispatch} from 'hooks/useRedux';
-import TooltipView from 'components/TooltipView';
-import {
-  setCheckedEvents,
-  setWalkthroughTooltip,
-} from 'store/walkthrough/walkthrough.actions';
 
 interface BarcodeScannerProps {
   navigation: NativeStackNavigationProp<
@@ -34,10 +29,6 @@ interface BarcodeScannerProps {
 
 export const BarcodeScanner: React.FC<BarcodeScannerProps> = props => {
   const route = useRoute();
-  const dispatch = useDispatch();
-  const {checkedEvents, currentTooltip} = useSelector(
-    state => state.walkthrough,
-  );
   const initBarcodeScanner = () => {
     if (props.navigation) {
       props.navigation.navigate(Routes.BarcodeScanner, {
@@ -49,32 +40,8 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = props => {
 
   return (
     <TooltipView
-      isVisible={
-        !checkedEvents.firstLogin.value &&
-        currentTooltip?.eventName === 'firstLogin' &&
-        currentTooltip?.step === 1
-      }
-      title={
-        currentTooltip
-          ? checkedEvents[currentTooltip?.eventName].steps[currentTooltip?.step]
-              .title
-          : ''
-      }
-      text={
-        currentTooltip
-          ? checkedEvents[currentTooltip?.eventName].steps[currentTooltip?.step]
-              .text
-          : ''
-      }
-      prevAction={() => {
-        dispatch(setWalkthroughTooltip('firstLogin', 0));
-      }}
-      nextAction={() => {
-        dispatch(setWalkthroughTooltip('firstLogin', 2));
-      }}
-      finishAction={() => {
-        dispatch(setCheckedEvents('firstLogin', true));
-      }}
+      eventName="firstLogin"
+      step={1}
       childrenWrapperStyle={{backgroundColor: '#fff', padding: 0}}
       parentWrapperStyle={{...styles.barcodeButtonWrapper, ...props.style}}>
       <TouchableOpacity

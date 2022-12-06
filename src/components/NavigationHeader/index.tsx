@@ -15,10 +15,6 @@ import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
 import {setSearchValue} from 'store/autoComplete/autoComplete.actions';
-import {
-  setCheckedEvents,
-  setWalkthroughTooltip,
-} from 'store/walkthrough/walkthrough.actions';
 
 // styles
 import {styles} from './NavigationHeader.styles';
@@ -64,9 +60,6 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   withoutTitle,
   emptyRight,
 }) => {
-  const {checkedEvents, currentTooltip} = useSelector(
-    state => state.walkthrough,
-  );
   const searchValue = useSelector(state => state.autoComplete.searchValue);
   const dispatch = useDispatch();
   const title = getHeaderTitle(options, route.name);
@@ -89,38 +82,14 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
           fontSize: 16,
         }
       : {};
-  console.log('checkedEvents', checkedEvents.firstLogin);
-  console.log('currentTooltip', currentTooltip);
+
   return (
     <View style={styles.header}>
       {headerLeft ? headerLeft : back && <BackButton navigation={navigation} />}
       {withAutoComplete && (
         <TooltipView
-          isVisible={
-            !checkedEvents.firstLogin.value &&
-            currentTooltip?.eventName === 'firstLogin' &&
-            currentTooltip?.step === 0
-          }
-          title={
-            currentTooltip
-              ? checkedEvents[currentTooltip?.eventName].steps[
-                  currentTooltip?.step
-                ].title
-              : ''
-          }
-          text={
-            currentTooltip
-              ? checkedEvents[currentTooltip?.eventName].steps[
-                  currentTooltip?.step
-                ].text
-              : ''
-          }
-          nextAction={() => {
-            dispatch(setWalkthroughTooltip('firstLogin', 1));
-          }}
-          finishAction={() => {
-            dispatch(setCheckedEvents('firstLogin', true));
-          }}
+          eventName="firstLogin"
+          step={0}
           childrenWrapperStyle={{flexDirection: 'row'}}
           parentWrapperStyle={styles.autocompleteWrapper}>
           {/* used without tooltip */}

@@ -9,15 +9,6 @@ import {WithLocalSvg} from 'react-native-svg';
 import MealBuilder from 'components/MealBuilder';
 import TooltipView from 'components/TooltipView';
 
-// hooks
-import {useDispatch, useSelector} from 'hooks/useRedux';
-
-// actions
-import {
-  setCheckedEvents,
-  setWalkthroughTooltip,
-} from 'store/walkthrough/walkthrough.actions';
-
 // styles
 import {styles} from './Footer.styles';
 import {styles as footerItemStyles} from './FooterItem/FooterItem.styles';
@@ -43,10 +34,6 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = props => {
   let hideFooterStyle = {marginTop: 0};
-  const dispatch = useDispatch();
-  const {checkedEvents, currentTooltip} = useSelector(
-    state => state.walkthrough,
-  );
   if (props.hide) {
     // hideFooterStyle = hideFooterStyle.marginTop = 50;
   }
@@ -70,32 +57,9 @@ const Footer: React.FC<FooterProps> = props => {
           <FontAwesome name="bar-chart" color="#fff" size={30} />
         </FooterItem>
         <TooltipView
-          isVisible={
-            !checkedEvents.firstLogin.value &&
-            currentTooltip?.eventName === 'firstLogin' &&
-            currentTooltip?.step === 3
-          }
-          title={
-            currentTooltip
-              ? checkedEvents[currentTooltip?.eventName].steps[
-                  currentTooltip?.step
-                ].title
-              : ''
-          }
-          text={
-            currentTooltip
-              ? checkedEvents[currentTooltip?.eventName].steps[
-                  currentTooltip?.step
-                ].text
-              : ''
-          }
           placement="top"
-          prevAction={() => {
-            dispatch(setWalkthroughTooltip('firstLogin', 2));
-          }}
-          finishAction={() => {
-            dispatch(setCheckedEvents('firstLogin', true));
-          }}
+          eventName="firstLogin"
+          step={3}
           parentWrapperStyle={[
             footerItemStyles.footerItem,
             styles.parentWrapperStyle,

@@ -4,6 +4,12 @@ import Tooltip, {TooltipProps as Props} from 'react-native-walkthrough-tooltip';
 import {ReactNode} from 'react';
 import {styles} from './TooltipView.styles';
 import {NixButton} from 'components/NixButton';
+import {CheckedEventsType} from 'store/walkthrough/walkthrough.types';
+import {useDispatch, useSelector} from 'hooks/useRedux';
+import {
+  setCheckedEvents,
+  setWalkthroughTooltip,
+} from 'store/walkthrough/walkthrough.actions';
 
 declare module 'react-native-walkthrough-tooltip' {
   export interface TooltipProps {
@@ -15,38 +21,60 @@ interface TooltipViewProps extends Props {
   children: React.ReactNode;
   onClose?: () => void;
   placement?: 'bottom' | 'top' | 'left' | 'right' | 'center';
-  isVisible: boolean;
-  title: string;
-  text: string;
-  prevAction?: () => void;
-  nextAction?: () => void;
-  finishAction: () => void;
+  step: number;
+  eventName: keyof CheckedEventsType;
 }
 
 const TooltipView: React.FC<TooltipViewProps> = ({
-  isVisible,
+  step,
   placement,
+  eventName,
   onClose,
-  title,
-  prevAction,
-  nextAction,
-  finishAction,
-  text,
   children,
   ...props
 }) => {
+  const dispatch = useDispatch();
+  const {checkedEvents, currentTooltip} = useSelector(
+    state => state.walkthrough,
+  );
+  const prevAction =
+    step > 0
+      ? () => {
+          dispatch(setWalkthroughTooltip(eventName, step - 1));
+        }
+      : undefined;
+  const nextAction =
+    checkedEvents[eventName].steps.length - 1 > step
+      ? () => {
+          dispatch(setWalkthroughTooltip(eventName, step + 1));
+        }
+      : undefined;
+  const finishAction = () => {
+    dispatch(setCheckedEvents(eventName, true));
+  };
   return (
     <Tooltip
-      isVisible={isVisible}
       topAdjustment={
         Platform.OS === 'android' ? -(StatusBar?.currentHeight || 0) : 0
       }
       contentStyle={styles.tooltip}
       content={
         <View>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title}>
+            {currentTooltip
+              ? checkedEvents[currentTooltip?.eventName].steps[
+                  currentTooltip?.step
+                ].title
+              : ''}
+          </Text>
           <View style={styles.content}>
-            <Text style={styles.text}>{text}</Text>
+            <Text style={styles.text}>
+              {currentTooltip
+                ? checkedEvents[currentTooltip?.eventName].steps[
+                    currentTooltip?.step
+                  ].text
+                : ''}
+            </Text>
             <View style={styles.btns}>
               {prevAction && (
                 <NixButton
@@ -73,6 +101,11 @@ const TooltipView: React.FC<TooltipViewProps> = ({
             </View>
           </View>
         </View>
+      }
+      isVisible={
+        !checkedEvents.firstLogin.value &&
+        currentTooltip?.eventName === eventName &&
+        currentTooltip?.step === step
       }
       placement={placement || 'bottom'}
       onClose={() => {
