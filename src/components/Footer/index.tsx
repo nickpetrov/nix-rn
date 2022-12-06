@@ -7,9 +7,20 @@ import FooterItem from './FooterItem';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {WithLocalSvg} from 'react-native-svg';
 import MealBuilder from 'components/MealBuilder';
+import TooltipView from 'components/TooltipView';
+
+// hooks
+import {useDispatch, useSelector} from 'hooks/useRedux';
+
+// actions
+import {
+  setCheckedEvents,
+  setWalkthroughTooltip,
+} from 'store/walkthrough/walkthrough.actions';
 
 // styles
 import {styles} from './Footer.styles';
+import {styles as footerItemStyles} from './FooterItem/FooterItem.styles';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -32,7 +43,10 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = props => {
   let hideFooterStyle = {marginTop: 0};
-
+  const dispatch = useDispatch();
+  const {checkedEvents, currentTooltip} = useSelector(
+    state => state.walkthrough,
+  );
   if (props.hide) {
     // hideFooterStyle = hideFooterStyle.marginTop = 50;
   }
@@ -55,20 +69,55 @@ const Footer: React.FC<FooterProps> = props => {
           }}>
           <FontAwesome name="bar-chart" color="#fff" size={30} />
         </FooterItem>
-        <FooterItem
-          title="Track"
-          style={styles.footerTrackItem}
-          titleStyle={styles.foodTrackItemText}
-          onPress={() => {
-            props.navigation.navigate(Routes.TrackFoods);
-          }}>
-          <FontAwesome
-            name="plus"
-            color="#fff"
-            size={36}
-            style={{marginBottom: -7}}
-          />
-        </FooterItem>
+        <TooltipView
+          isVisible={
+            !checkedEvents.firstLogin.value &&
+            currentTooltip?.eventName === 'firstLogin' &&
+            currentTooltip?.step === 3
+          }
+          title={
+            currentTooltip
+              ? checkedEvents[currentTooltip?.eventName].steps[
+                  currentTooltip?.step
+                ].title
+              : ''
+          }
+          text={
+            currentTooltip
+              ? checkedEvents[currentTooltip?.eventName].steps[
+                  currentTooltip?.step
+                ].text
+              : ''
+          }
+          placement="top"
+          prevAction={() => {
+            dispatch(setWalkthroughTooltip('firstLogin', 2));
+          }}
+          finishAction={() => {
+            dispatch(setCheckedEvents('firstLogin', true));
+          }}
+          parentWrapperStyle={[
+            footerItemStyles.footerItem,
+            styles.parentWrapperStyle,
+          ]}>
+          <FooterItem
+            title="Track"
+            style={{
+              ...styles.footerTrackItem,
+              ...styles.footerTrackItemWithTooltip,
+            }}
+            titleStyle={styles.foodTrackItemText}
+            onPress={() => {
+              props.navigation.navigate(Routes.TrackFoods);
+            }}>
+            <FontAwesome
+              name="plus"
+              color="#fff"
+              size={32}
+              style={{marginBottom: -5}}
+            />
+          </FooterItem>
+        </TooltipView>
         <FooterItem
           title="Suggested"
           onPress={() => props.navigation.navigate(Routes.Suggested)}>

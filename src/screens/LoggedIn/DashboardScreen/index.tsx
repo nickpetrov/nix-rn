@@ -73,6 +73,7 @@ import {mealTypes} from 'store/basket/basket.types';
 import {styles} from './DashboardScreen.styles';
 import {Colors} from 'constants/Colors';
 import {analyticSetUserId, analyticTrackEvent} from 'helpers/analytics.ts';
+import {setWalkthroughTooltip} from '../../../store/walkthrough/walkthrough.actions';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -87,6 +88,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 }) => {
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
+  const checkedEvents = useSelector(state => state.walkthrough.checkedEvents);
   const [deleteteModal, setDeleteteModal] = useState<
     {items: Array<FoodProps>; mealName: keyof mealTypes} | false
   >(false);
@@ -233,6 +235,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       ),
     });
   }, [navigation]);
+
+  useEffect(() => {
+    if (!checkedEvents.firstLogin.value) {
+      dispatch(setWalkthroughTooltip('firstLogin', 0));
+    }
+  }, [checkedEvents.firstLogin, dispatch]);
 
   useEffect(() => {
     if (!db?.transaction) {

@@ -7,12 +7,18 @@ import {BarcodeScanner} from 'components/BarcodeScanner';
 import {getHeaderTitle, HeaderTitleProps} from '@react-navigation/elements';
 import BackButton from 'components/BackButton';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import TooltipView from 'components/TooltipView';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
 import {setSearchValue} from 'store/autoComplete/autoComplete.actions';
+import {
+  setCheckedEvents,
+  setWalkthroughTooltip,
+} from 'store/walkthrough/walkthrough.actions';
 
 // styles
 import {styles} from './NavigationHeader.styles';
@@ -26,7 +32,6 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 interface NavigationHeaderProps extends NativeStackHeaderProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, any>;
@@ -59,6 +64,9 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   withoutTitle,
   emptyRight,
 }) => {
+  const {checkedEvents, currentTooltip} = useSelector(
+    state => state.walkthrough,
+  );
   const searchValue = useSelector(state => state.autoComplete.searchValue);
   const dispatch = useDispatch();
   const title = getHeaderTitle(options, route.name);
@@ -81,12 +89,42 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
           fontSize: 16,
         }
       : {};
-
+  console.log('checkedEvents', checkedEvents.firstLogin);
+  console.log('currentTooltip', currentTooltip);
   return (
     <View style={styles.header}>
       {headerLeft ? headerLeft : back && <BackButton navigation={navigation} />}
       {withAutoComplete && (
-        <View style={styles.autocompleteWrapper}>
+        <TooltipView
+          isVisible={
+            !checkedEvents.firstLogin.value &&
+            currentTooltip?.eventName === 'firstLogin' &&
+            currentTooltip?.step === 0
+          }
+          title={
+            currentTooltip
+              ? checkedEvents[currentTooltip?.eventName].steps[
+                  currentTooltip?.step
+                ].title
+              : ''
+          }
+          text={
+            currentTooltip
+              ? checkedEvents[currentTooltip?.eventName].steps[
+                  currentTooltip?.step
+                ].text
+              : ''
+          }
+          nextAction={() => {
+            dispatch(setWalkthroughTooltip('firstLogin', 1));
+          }}
+          finishAction={() => {
+            dispatch(setCheckedEvents('firstLogin', true));
+          }}
+          childrenWrapperStyle={{flexDirection: 'row'}}
+          parentWrapperStyle={styles.autocompleteWrapper}>
+          {/* used without tooltip */}
+          {/* <View style={styles.autocompleteWrapper}> */}
           <TextInput
             ref={inputRef}
             style={styles.autocomplete}
@@ -115,7 +153,8 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
               style={styles.barcodeInAutocomplete}
             />
           ) : null}
-        </View>
+          {/* </View> */}
+        </TooltipView>
       )}
       {children && children}
       {!withAutoComplete && !withoutTitle && (

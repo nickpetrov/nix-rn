@@ -12,13 +12,18 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 0,
   },
+  parentWrapperStyle: {
+    backgroundColor: Colors.Primary,
+    padding: 0,
+  },
   footerTrackItem: {
     backgroundColor: Colors.Primary,
-    height: 50,
-    paddingTop: 5,
     marginTop: -5,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
+  },
+  footerTrackItemWithTooltip: {
+    width: '100%',
   },
   foodTrackItemText: {
     fontSize: 12,

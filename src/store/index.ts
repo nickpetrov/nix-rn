@@ -24,6 +24,7 @@ import apiClient from 'api/index';
 import {setDB} from './base/base.actions';
 import SQLite from 'react-native-sqlite-storage';
 import {Platform} from 'react-native';
+import walkthroughReducer from './walkthrough/walkthrough.reducer';
 
 const authPersist = {
   key: 'auth',
@@ -52,6 +53,11 @@ const groceryAgentModePersist = {
   key: 'groceryAgentMode',
   storage: AsyncStorage,
 };
+const walkthroughPersist = {
+  key: 'walkthrough',
+  storage: AsyncStorage,
+  whitelist: ['checkedEvents'],
+};
 
 const rootReducer = combineReducers({
   auth: persistReducer(authPersist, authReducer),
@@ -69,6 +75,7 @@ const rootReducer = combineReducers({
     groceryAgentModePersist,
     groceryAgentModeRducer,
   ),
+  walkthrough: persistReducer(walkthroughPersist, walkthroughReducer),
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));
