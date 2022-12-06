@@ -80,6 +80,9 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   navigation,
   route,
 }) => {
+  const firstFoodAddedToFoodLog = useSelector(
+    state => state.walkthrough.checkedEvents.firstFoodAddedToFoodLog,
+  );
   const {agreedToUsePhoto, reviewCheck} = useSelector(state => state.base);
   const [deleteteModal, setDeleteteModal] = useState(false);
   const [isUploadPhotoLoading, setIsUploadPhotoLoading] = useState(false);
@@ -259,7 +262,10 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
         }
         dispatch(basketActions.reset());
         setLoadingSubmit(false);
-        navigation.navigate(Routes.Dashboard);
+        console.log('startWalkthroughAfterLog', !firstFoodAddedToFoodLog.value);
+        navigation.navigate(Routes.Dashboard, {
+          startWalkthroughAfterLog: !firstFoodAddedToFoodLog.value,
+        });
         if (
           !(
             !!reviewCheck.rateClicked ||

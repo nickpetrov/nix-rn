@@ -13,6 +13,7 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Dashboard]:
     | {
         justLoggedIn?: boolean;
+        startWalkthroughAfterLog?: boolean;
       }
     | undefined;
   [Routes.List]: undefined;

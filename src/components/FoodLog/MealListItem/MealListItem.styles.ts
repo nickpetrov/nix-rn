@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: 'center',
     backgroundColor: '#fff',
+    width: '100%',
   },
   withoutBorder: {
     borderBottomWidth: 0,

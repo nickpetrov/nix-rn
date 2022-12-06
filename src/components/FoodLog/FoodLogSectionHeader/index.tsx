@@ -6,6 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 import {View, Text, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import TooltipView from 'components/TooltipView';
 
 // styles
 import {styles} from './FoodLogSectionHeader.styles';
@@ -17,6 +18,7 @@ import {Routes} from 'navigation/Routes';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {FoodProps, mealById} from 'store/userLog/userLog.types';
+import {mealTypes} from 'store/basket/basket.types';
 
 interface FoodLogSectionHeaderProps {
   onPress: () => void;
@@ -84,7 +86,16 @@ const FoodLogSectionHeader: React.FC<FoodLogSectionHeaderProps> = ({
                 });
               }
             }}>
-            <FontAwesome name="info-circle" color="#999" size={19} />
+            {mealType === mealTypes.Breakfast ? (
+              <TooltipView
+                eventName="firstFoodAddedToFoodLog"
+                step={1}
+                childrenWrapperStyle={{backgroundColor: '#fff'}}>
+                <FontAwesome name="info-circle" color="#999" size={19} />
+              </TooltipView>
+            ) : (
+              <FontAwesome name="info-circle" color="#999" size={19} />
+            )}
             {foods && (
               <Text style={styles.mealTotalCalories}>
                 {totalMealCalories.toFixed(0)}

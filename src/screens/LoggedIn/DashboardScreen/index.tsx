@@ -47,6 +47,7 @@ import useLocalNotification from 'hooks/useLocalNotification';
 import * as userLogActions from 'store/userLog/userLog.actions';
 import {addExistFoodToBasket} from 'store/basket/basket.actions';
 import {setDB} from 'store/base/base.actions';
+import {setWalkthroughTooltip} from 'store/walkthrough/walkthrough.actions';
 
 // constant
 import {Routes} from 'navigation/Routes';
@@ -68,12 +69,12 @@ import {
   WeightProps,
 } from 'store/userLog/userLog.types';
 import {mealTypes} from 'store/basket/basket.types';
+import {analyticSetUserId, analyticTrackEvent} from 'helpers/analytics.ts';
 
 // styles
 import {styles} from './DashboardScreen.styles';
 import {Colors} from 'constants/Colors';
-import {analyticSetUserId, analyticTrackEvent} from 'helpers/analytics.ts';
-import {setWalkthroughTooltip} from '../../../store/walkthrough/walkthrough.actions';
+import TooltipView from 'components/TooltipView';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -85,6 +86,7 @@ interface DashboardScreenProps {
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   navigation,
+  route,
 }) => {
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
@@ -243,6 +245,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   }, [checkedEvents.firstLogin, dispatch]);
 
   useEffect(() => {
+    if (route.params?.startWalkthroughAfterLog) {
+      dispatch(setWalkthroughTooltip('firstFoodAddedToFoodLog', 0));
+      navigation.setParams({startWalkthroughAfterLog: undefined});
+    }
+  }, [route.params?.startWalkthroughAfterLog, navigation, dispatch]);
+
+  useEffect(() => {
     if (!db?.transaction) {
       dispatch(
         setDB(
@@ -341,7 +350,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               : undefined;
           return mealType ? (
             <Swipeable
-              containerStyle={styles.swipeItemContainer}
+              containerStyle={{...styles.swipeItemContainer, flex: 1}}
               renderRightActions={() =>
                 section.data.length ? (
                   <SwipeHiddenButtons
@@ -389,12 +398,26 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   }
                 });
               }}>
-              <FoodLogSectionHeader
-                title={section.key || ''}
-                mealType={mealType}
-                foods={foodList}
-                onPress={() => handleChooseCategory(section.key || '')}
-              />
+              {section.key === sections[0].key ? (
+                <TooltipView
+                  eventName="firstFoodAddedToFoodLog"
+                  step={3}
+                  childrenWrapperStyle={{flex: 1, flexDirection: 'row'}}>
+                  <FoodLogSectionHeader
+                    title={section.key || ''}
+                    mealType={mealType}
+                    foods={foodList}
+                    onPress={() => handleChooseCategory(section.key || '')}
+                  />
+                </TooltipView>
+              ) : (
+                <FoodLogSectionHeader
+                  title={section.key || ''}
+                  mealType={mealType}
+                  foods={foodList}
+                  onPress={() => handleChooseCategory(section.key || '')}
+                />
+              )}
             </Swipeable>
           ) : (
             <FoodLogSectionHeader
@@ -461,7 +484,24 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               section.key !== foodLogSections.Weigh_in &&
               section.key !== foodLogSections.Water
             ) {
-              return (
+              return item.id ===
+                sections.filter(el => el.data.length)[0]?.data[0]?.id ? (
+                <TooltipView
+                  eventName="firstFoodAddedToFoodLog"
+                  step={2}
+                  useInteractionManager={true}
+                  childrenWrapperStyle={{
+                    flex: 1,
+                    backgroundColor: '#fff',
+                  }}>
+                  <MealListItem
+                    foodObj={item}
+                    navigation={navigation}
+                    mealName={mealById[item.mealType as keyof typeof mealById]}
+                    withArrow
+                  />
+                </TooltipView>
+              ) : (
                 <MealListItem
                   foodObj={item}
                   navigation={navigation}

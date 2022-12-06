@@ -4,6 +4,7 @@ import {ParamListBase, useNavigation} from '@react-navigation/native';
 
 // components
 import {View, Text, TouchableOpacity} from 'react-native';
+import TooltipView from 'components/TooltipView';
 
 // constants
 import {Colors} from 'constants/Colors';
@@ -87,71 +88,76 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = ({
   }, [progressValue]);
 
   return (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate(Routes.Totals, {
-          type: 'daily',
-          foods: foods,
-        })
-      }>
-      <View>
-        <View
-          style={
-            // props.scrollDirection === 'down'
-            //   ? styles.hide
-            //   :
-            styles.caloriesProgress
-          }>
-          <View style={styles.caloriesProgressLabel}>
-            <Text style={styles.caloriesProgressLabelText}>
-              {total.caloriesIntake.toFixed(0)} cal intake
-            </Text>
+    <TooltipView
+      eventName="firstFoodAddedToFoodLog"
+      step={0}
+      childrenWrapperStyle={{backgroundColor: '#fff'}}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate(Routes.Totals, {
+            type: 'daily',
+            foods: foods,
+          })
+        }>
+        <View>
+          <View
+            style={
+              // props.scrollDirection === 'down'
+              //   ? styles.hide
+              //   :
+              styles.caloriesProgress
+            }>
+            <View style={styles.caloriesProgressLabel}>
+              <Text style={styles.caloriesProgressLabelText}>
+                {total.caloriesIntake.toFixed(0)} cal intake
+              </Text>
+            </View>
+            <View style={styles.caloriesProgressLabel}>
+              <Text style={styles.caloriesProgressLabelText}>
+                {caloriesBurned.toFixed(0)} cal burned
+              </Text>
+            </View>
+            <View style={styles.caloriesProgressLabel}>
+              <Text style={styles.caloriesProgressLabelText}>
+                {remaining_calories_text} {remaining_calories}
+              </Text>
+            </View>
           </View>
-          <View style={styles.caloriesProgressLabel}>
-            <Text style={styles.caloriesProgressLabelText}>
-              {caloriesBurned.toFixed(0)} cal burned
-            </Text>
+          <View style={styles.progressBarWrapper}>
+            <View style={styles.progressBar}>
+              <View
+                style={{
+                  ...styles.progressBarColor,
+                  ...progressBarCurrent,
+                  ...{backgroundColor: progressBarColor},
+                }}>
+                <View style={styles.progressBarColorShadow} />
+              </View>
+            </View>
           </View>
-          <View style={styles.caloriesProgressLabel}>
-            <Text style={styles.caloriesProgressLabelText}>
-              {remaining_calories_text} {remaining_calories}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.progressBarWrapper}>
-          <View style={styles.progressBar}>
-            <View
-              style={{
-                ...styles.progressBarColor,
-                ...progressBarCurrent,
-                ...{backgroundColor: progressBarColor},
-              }}>
-              <View style={styles.progressBarColorShadow} />
+          <View style={styles.macroTotals}>
+            <View style={styles.macroTotalsTile}>
+              <Text style={styles.macroValue}>
+                {total.nf_protein.toFixed(0)}g
+              </Text>
+              <Text style={styles.macroTitle}>Protein</Text>
+            </View>
+            <View style={styles.macroTotalsTile}>
+              <Text style={styles.macroValue}>
+                {total.nf_total_carbohydrate.toFixed(0)}g
+              </Text>
+              <Text style={styles.macroTitle}>Carb</Text>
+            </View>
+            <View style={styles.macroTotalsTile}>
+              <Text style={styles.macroValue}>
+                {total.nf_total_fat.toFixed(0)}g
+              </Text>
+              <Text style={styles.macroTitle}>Fat</Text>
             </View>
           </View>
         </View>
-        <View style={styles.macroTotals}>
-          <View style={styles.macroTotalsTile}>
-            <Text style={styles.macroValue}>
-              {total.nf_protein.toFixed(0)}g
-            </Text>
-            <Text style={styles.macroTitle}>Protein</Text>
-          </View>
-          <View style={styles.macroTotalsTile}>
-            <Text style={styles.macroValue}>
-              {total.nf_total_carbohydrate.toFixed(0)}g
-            </Text>
-            <Text style={styles.macroTitle}>Carb</Text>
-          </View>
-          <View style={styles.macroTotalsTile}>
-            <Text style={styles.macroValue}>
-              {total.nf_total_fat.toFixed(0)}g
-            </Text>
-            <Text style={styles.macroTitle}>Fat</Text>
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </TooltipView>
   );
 };
 

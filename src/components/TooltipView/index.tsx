@@ -52,6 +52,7 @@ const TooltipView: React.FC<TooltipViewProps> = ({
   const finishAction = () => {
     dispatch(setCheckedEvents(eventName, true));
   };
+
   return (
     <Tooltip
       topAdjustment={
@@ -79,7 +80,7 @@ const TooltipView: React.FC<TooltipViewProps> = ({
               {prevAction && (
                 <NixButton
                   style={styles.btn}
-                  title="< Prev"
+                  title="Prev"
                   type="gray"
                   onPress={prevAction}
                 />
@@ -87,7 +88,7 @@ const TooltipView: React.FC<TooltipViewProps> = ({
               {nextAction && (
                 <NixButton
                   style={styles.btn}
-                  title="Next >"
+                  title="Next"
                   type="gray"
                   onPress={nextAction}
                 />
@@ -103,7 +104,7 @@ const TooltipView: React.FC<TooltipViewProps> = ({
         </View>
       }
       isVisible={
-        !checkedEvents.firstLogin.value &&
+        !checkedEvents[eventName].value &&
         currentTooltip?.eventName === eventName &&
         currentTooltip?.step === step
       }
