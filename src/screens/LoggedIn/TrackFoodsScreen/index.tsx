@@ -169,7 +169,9 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
 
   useEffect(() => {
     if (!firstEnterInTrackTab.value) {
-      dispatch(setWalkthroughTooltip('firstEnterInTrackTab', 0));
+      setTimeout(() => {
+        dispatch(setWalkthroughTooltip('firstEnterInTrackTab', 0));
+      },2000)
     }
   }, [firstEnterInTrackTab, dispatch]);
 
