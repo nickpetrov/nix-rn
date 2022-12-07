@@ -240,7 +240,6 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
               <TooltipView
                 eventName={tooltipEventName || 'firstFoodAddedToBasket'}
                 step={1}
-                useInteractionManager={true}
                 parentWrapperStyle={[styles.footer, withInfo && styles.between]}
                 childrenWrapperStyle={[
                   styles.footer,

@@ -58,6 +58,7 @@ const TooltipView: React.FC<TooltipViewProps> = ({
       topAdjustment={
         Platform.OS === 'android' ? -(StatusBar?.currentHeight || 0) : 0
       }
+      useInteractionManager={true}
       contentStyle={styles.tooltip}
       content={
         <View>

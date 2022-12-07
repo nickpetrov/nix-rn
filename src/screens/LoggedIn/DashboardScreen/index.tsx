@@ -510,7 +510,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <TooltipView
                   eventName="firstFoodAddedToFoodLog"
                   step={2}
-                  useInteractionManager={true}
                   childrenWrapperStyle={{
                     flex: 1,
                     backgroundColor: '#fff',
