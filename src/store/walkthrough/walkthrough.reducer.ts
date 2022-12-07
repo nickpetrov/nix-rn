@@ -121,7 +121,7 @@ export default (
         currentTooltip: null,
       };
     }
-    case walkthroughActionTypes.SET_CONTENT: {
+    case walkthroughActionTypes.SET_CURRENT_TOOLTIP: {
       return {
         ...state,
         currentTooltip: action.payload,

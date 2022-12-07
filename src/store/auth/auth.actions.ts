@@ -12,6 +12,7 @@ import {
   resetGrocerySetting,
   updateSentryContext,
 } from 'store/base/base.actions';
+import {resetWalkthrogh} from 'store/walkthrough/walkthrough.actions';
 
 // types
 import {Dispatch} from 'redux';
@@ -29,6 +30,7 @@ import {resetGrocerySettingsAction} from 'store/base/base.types';
 import {resetBasketAction} from 'store/basket/basket.types';
 import {clearGroceryAgentModeAction} from 'store/groceryAgentMode/groceryAgentMode.types';
 import {RootState} from '../index';
+import {clearWalkthroghAction} from 'store/walkthrough/walkthrough.types';
 
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch<authAction>) => {
@@ -144,12 +146,14 @@ export const logout = () => {
       | resetGrocerySettingsAction
       | resetBasketAction
       | clearGroceryAgentModeAction
+      | clearWalkthroghAction
     >,
   ) => {
     apiClient.defaults.headers.common['x-user-jwt'] = '';
     batch(() => {
       dispatch(clearAutocomplete());
       dispatch(clearBasket());
+      dispatch(resetWalkthrogh());
       dispatch(resetGroceryAgentMode());
       dispatch(resetGrocerySetting());
       dispatch({type: authActionTypes.LOGOUT});

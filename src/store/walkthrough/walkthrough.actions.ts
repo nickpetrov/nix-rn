@@ -1,5 +1,6 @@
 import {
   CheckedEventsType,
+  clearWalkthroghAction,
   setCheckedEventAction,
   setCurrentTooltipAction,
   walkthroughActionTypes,
@@ -20,12 +21,20 @@ export const setCheckedEvents = (
 export const setWalkthroughTooltip = (
   eventName: keyof CheckedEventsType,
   step: number,
+  forbidBack?: boolean,
 ): setCurrentTooltipAction => {
   return {
-    type: walkthroughActionTypes.SET_CONTENT,
+    type: walkthroughActionTypes.SET_CURRENT_TOOLTIP,
     payload: {
       eventName: eventName,
       step,
+      forbidBack,
     },
+  };
+};
+
+export const resetWalkthrogh = (): clearWalkthroghAction => {
+  return {
+    type: walkthroughActionTypes.WALKTHROUGH_CLEAR,
   };
 };

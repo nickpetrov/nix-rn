@@ -38,7 +38,7 @@ const TooltipView: React.FC<TooltipViewProps> = ({
     state => state.walkthrough,
   );
   const prevAction =
-    step > 0
+    step > 0 && !currentTooltip?.forbidBack
       ? () => {
           dispatch(setWalkthroughTooltip(eventName, step - 1));
         }

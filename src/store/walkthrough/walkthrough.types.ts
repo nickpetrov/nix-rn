@@ -1,6 +1,6 @@
 export enum walkthroughActionTypes {
   SET_CHECKED_EVENTS = 'SET_CHECKED_EVENTS',
-  SET_CONTENT = 'SET_CONTENT',
+  SET_CURRENT_TOOLTIP = 'SET_CURRENT_TOOLTIP',
   WALKTHROUGH_CLEAR = 'WALKTHROUGH_CLEAR',
 }
 
@@ -23,6 +23,7 @@ export interface WalkthroughState {
   currentTooltip: {
     eventName: keyof CheckedEventsType;
     step: number;
+    forbidBack?: boolean;
   } | null;
 }
 
@@ -30,10 +31,11 @@ export type clearWalkthroghAction = {
   type: walkthroughActionTypes.WALKTHROUGH_CLEAR;
 };
 export type setCurrentTooltipAction = {
-  type: walkthroughActionTypes.SET_CONTENT;
+  type: walkthroughActionTypes.SET_CURRENT_TOOLTIP;
   payload: {
     eventName: keyof CheckedEventsType;
     step: number;
+    forbidBack?: boolean;
   };
 };
 export type setCheckedEventAction = {

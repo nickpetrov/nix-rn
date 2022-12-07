@@ -40,6 +40,7 @@ import {
   launchImageLibrary,
   MediaType,
 } from 'react-native-image-picker';
+import TooltipView from 'components/TooltipView';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -49,6 +50,7 @@ import useStateWithCallback from 'hooks/useStateWithCallback';
 import * as basketActions from 'store/basket/basket.actions';
 import * as userLogActions from 'store/userLog/userLog.actions';
 import {showAgreementPopup, setAskForReview} from 'store/base/base.actions';
+import {setWalkthroughTooltip} from 'store/walkthrough/walkthrough.actions';
 
 // types
 import {
@@ -80,9 +82,11 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   navigation,
   route,
 }) => {
-  const firstFoodAddedToFoodLog = useSelector(
-    state => state.walkthrough.checkedEvents.firstFoodAddedToFoodLog,
-  );
+  const {
+    firstFoodAddedToFoodLog,
+    firstFoodAddedToBasket,
+    firstMultipleFoodsInBasket,
+  } = useSelector(state => state.walkthrough.checkedEvents);
   const {agreedToUsePhoto, reviewCheck} = useSelector(state => state.base);
   const [deleteteModal, setDeleteteModal] = useState(false);
   const [isUploadPhotoLoading, setIsUploadPhotoLoading] = useState(false);
@@ -107,7 +111,6 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     customPhoto,
   } = useSelector(state => state.basket);
   const selectedDate = useSelector(state => state.userLog.selectedDate);
-  let rowRefs = new Map();
   const dispatch = useDispatch();
   let totalCalories = 0;
   let totalProtein = 0;
@@ -148,6 +151,21 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
       ),
     });
   }, [navigation, route]);
+
+  useEffect(() => {
+    if (foods.length > 1) {
+      if (!firstFoodAddedToBasket.value) {
+        dispatch(setWalkthroughTooltip('firstMultipleFoodsInBasket', 0));
+      } else if (!firstMultipleFoodsInBasket.value) {
+        dispatch(setWalkthroughTooltip('firstMultipleFoodsInBasket', 2, true));
+      }
+    } else if (foods.length > 0) {
+      if (!firstFoodAddedToBasket.value) {
+        dispatch(setWalkthroughTooltip('firstFoodAddedToBasket', 0));
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (uploadPhoto) {
@@ -381,56 +399,81 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     });
   };
 
-  const foodsList = foods.map((item: FoodProps, index: number) => {
+  const foodsList = useCallback(() => {
+    let rowRefs = new Map();
     return (
-      <Swipeable
-        key={item.basketId}
-        containerStyle={styles.swipeItemContainer}
-        renderRightActions={() => (
-          <SwipeHiddenButtons
-            buttons={[
-              {
-                type: 'delete',
-                onPress: () => {
-                  analyticTrackEvent('swipe_left', 'swipe_left_delete');
-                  if (foods.length === 1) {
-                    dispatch(basketActions.reset());
-                  } else {
-                    if (item._hiddenQuery !== undefined) {
-                      analyticTrackEvent(
-                        'deleted_natural',
-                        `${item.food_name};${item._hiddenQuery},Deleted Natural`,
-                      );
-                    }
-                    dispatch(
-                      basketActions.deleteFoodFromBasket(item.basketId || '-1'),
-                    );
-                  }
-                },
-              },
-            ]}
-          />
-        )}
-        ref={ref => {
-          if (ref && !rowRefs.get(item.basketId)) {
-            rowRefs.set(item.basketId, ref);
-          }
-        }}
-        onSwipeableWillOpen={() => {
-          [...rowRefs.entries()].forEach(([key, ref]) => {
-            if (key !== item.basketId && ref) ref.close();
-          });
-        }}>
-        <FoodEditItem
-          key={item.basketId}
-          itemIndex={index}
-          foodObj={item}
-          itemChangeCallback={changeFoodAtBasket}
-          withInfo
-        />
-      </Swipeable>
+      <>
+        {foods.map((item: FoodProps, index: number) => {
+          return (
+            <Swipeable
+              key={item.basketId}
+              containerStyle={styles.swipeItemContainer}
+              renderRightActions={() => (
+                <SwipeHiddenButtons
+                  buttons={[
+                    {
+                      type: 'delete',
+                      onPress: () => {
+                        analyticTrackEvent('swipe_left', 'swipe_left_delete');
+                        if (foods.length === 1) {
+                          dispatch(basketActions.reset());
+                        } else {
+                          if (item._hiddenQuery !== undefined) {
+                            analyticTrackEvent(
+                              'deleted_natural',
+                              `${item.food_name};${item._hiddenQuery},Deleted Natural`,
+                            );
+                          }
+                          dispatch(
+                            basketActions.deleteFoodFromBasket(
+                              item.basketId || '-1',
+                            ),
+                          );
+                        }
+                      },
+                    },
+                  ]}
+                />
+              )}
+              ref={ref => {
+                if (ref && !rowRefs.get(item.basketId)) {
+                  rowRefs.set(item.basketId, ref);
+                }
+              }}
+              onSwipeableWillOpen={() => {
+                [...rowRefs.entries()].forEach(([key, ref]) => {
+                  if (key !== item.basketId && ref) ref.close();
+                });
+              }}>
+              <FoodEditItem
+                key={item.basketId}
+                itemIndex={index}
+                foodObj={item}
+                itemChangeCallback={changeFoodAtBasket}
+                withInfo
+                withTooltip={
+                  index === 0 &&
+                  (!firstFoodAddedToBasket.value ||
+                    !firstMultipleFoodsInBasket.value)
+                }
+                tooltipEventName={
+                  foods.length > 1
+                    ? 'firstMultipleFoodsInBasket'
+                    : 'firstFoodAddedToBasket'
+                }
+              />
+            </Swipeable>
+          );
+        })}
+      </>
     );
-  });
+  }, [
+    foods,
+    dispatch,
+    changeFoodAtBasket,
+    firstFoodAddedToBasket,
+    firstMultipleFoodsInBasket,
+  ]);
 
   return (
     <SafeAreaView style={styles.root}>
@@ -450,7 +493,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
             </Text>
           </View>
         )}
-        {foodsList}
+        {foodsList()}
 
         {foods.length ? (
           <View style={styles.main}>
@@ -470,11 +513,18 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                       onPress={() => setIsSingleFood(false)}
                       text="Multiple Foods"
                     />
-                    <RadioButton
-                      selected={isSingleFood}
-                      onPress={() => setIsSingleFood(true)}
-                      text="Single Food (Recipe)"
-                    />
+                    <TooltipView
+                      eventName="firstMultipleFoodsInBasket"
+                      step={2}
+                      childrenWrapperStyle={{
+                        backgroundColor: '#fff',
+                      }}>
+                      <RadioButton
+                        selected={isSingleFood}
+                        onPress={() => setIsSingleFood(true)}
+                        text="Single Food (Recipe)"
+                      />
+                    </TooltipView>
                   </View>
                 </View>
               ) : null}
