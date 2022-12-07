@@ -90,7 +90,8 @@ export const addExistFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
     useState: () => RootState,
   ) => {
     const timezone = useState().auth.userData.timezone;
-    const newFoods = foods.map(item => {
+    const clonedFoods = _.cloneDeep(foods);
+    const newFoods = clonedFoods.map(item => {
       if (!item.full_nutrients && !item.alt_measures) {
         item = nixApiDataUtilites.convertV1ItemToTrackFood(item);
         if (!item.alt_measures) {
