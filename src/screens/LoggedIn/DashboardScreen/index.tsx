@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import moment from 'moment-timezone';
 import SQLite from 'react-native-sqlite-storage';
-import {useNetInfo} from '@react-native-community/netinfo';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import {useDrawerStatus} from '@react-navigation/drawer';
 
 // components
@@ -256,14 +256,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   }, [route.params?.startWalkthroughAfterLog, navigation, dispatch]);
 
   useEffect(() => {
-    if (!netInfo.isConnected && !isDrawerOpen && isFocused) {
-      dispatch(setOfflineMode(true));
-      if (!checkedEvents.firstOfflineMode.value) {
-        dispatch(setWalkthroughTooltip('firstOfflineMode', 0));
+    NetInfo.fetch().then(state => {
+      if (state.isConnected == false && !isDrawerOpen && isFocused) {
+        console.log('netInfo.isConnected', netInfo.isConnected);
+        dispatch(setOfflineMode(true));
+        if (!checkedEvents.firstOfflineMode.value) {
+          dispatch(setWalkthroughTooltip('firstOfflineMode', 0));
+        }
+      } else {
+        dispatch(setOfflineMode(false));
       }
-    } else if (netInfo.isConnected) {
-      dispatch(setOfflineMode(false));
-    }
+    });
 
     return () => {
       dispatch(setOfflineMode(false));
