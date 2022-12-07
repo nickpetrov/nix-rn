@@ -1,12 +1,14 @@
 // utils
 import React, {useState} from 'react';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 // components
 import {View, Text, Linking, TouchableOpacity} from 'react-native';
 import {NixButton} from 'components/NixButton';
 import VoiceInput from 'components/VoiceInput';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import TooltipView from 'components/TooltipView';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -29,7 +31,6 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 // constants
 import {Routes} from 'navigation/Routes';
 import {Colors} from 'constants/Colors';
-import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface NaturalFormProps {
   navigation: NativeStackNavigationProp<
@@ -119,13 +120,21 @@ const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
   return (
     <View style={styles.root}>
       <View style={styles.container}>
-        <VoiceInput
-          value={naturalQuery}
-          onChangeText={handleQueryChange}
-          placeholder={placeholderText[randomPlaceholderIndex]}
-          style={styles.voiceInput}
-          withDisclaymore
-        />
+        <TooltipView
+          eventName="firstEnterInTrackTab"
+          childrenWrapperStyle={{
+            backgroundColor: '#fff',
+            alignItems: 'stretch',
+          }}
+          step={0}>
+          <VoiceInput
+            value={naturalQuery}
+            onChangeText={handleQueryChange}
+            placeholder={placeholderText[randomPlaceholderIndex]}
+            style={styles.voiceInput}
+            withDisclaymore
+          />
+        </TooltipView>
         <View style={styles.btnContainer}>
           <NixButton
             iconName="ios-add-circle-outline"

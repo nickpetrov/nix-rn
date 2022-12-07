@@ -28,6 +28,7 @@ import {
   setSelectedRestaurant,
   setSearchQueryRestaurant,
 } from 'store/foods/foods.actions';
+import {setWalkthroughTooltip} from 'store/walkthrough/walkthrough.actions';
 
 // styles
 import {styles} from './TrackFoodsScreen.styles';
@@ -47,6 +48,7 @@ import {
   TrackTabs,
 } from 'store/foods/foods.types';
 import {analyticSetUserId} from 'helpers/analytics.ts';
+import TooltipView from 'components/TooltipView';
 
 interface TrackFoodsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -59,6 +61,9 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
   navigation,
 }) => {
   const dispatch = useDispatch();
+  const firstEnterInTrackTab = useSelector(
+    state => state.walkthrough.checkedEvents.firstEnterInTrackTab,
+  );
   const userId = useSelector(state => state.auth.userData.id);
   const {currentTrackTab: activeTab, selectedRestaurant} = useSelector(
     state => state.foods,
@@ -162,27 +167,35 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
     }
   }, [navigation, activeTab, selectedRestaurant, query]);
 
+  useEffect(() => {
+    if (!firstEnterInTrackTab.value) {
+      dispatch(setWalkthroughTooltip('firstEnterInTrackTab', 0));
+    }
+  }, [firstEnterInTrackTab, dispatch]);
+
   return (
     <View style={styles.layout}>
       <View style={styles.container}>
-        <View style={styles.tabs}>
-          {Object.values(TrackTabs).map(item => (
-            <TouchableWithoutFeedback
-              key={item}
-              onPress={() => {
-                changeActiveTab(item);
-              }}>
-              <View
-                style={{
-                  ...styles.tab,
-                  borderBottomWidth: isActiveTab(item) ? 2 : 0,
-                  opacity: isActiveTab(item) ? 1 : 0.5,
+        <TooltipView eventName="firstEnterInTrackTab" step={1}>
+          <View style={styles.tabs}>
+            {Object.values(TrackTabs).map(item => (
+              <TouchableWithoutFeedback
+                key={item}
+                onPress={() => {
+                  changeActiveTab(item);
                 }}>
-                <Text style={styles.tabText}>{item}</Text>
-              </View>
-            </TouchableWithoutFeedback>
-          ))}
-        </View>
+                <View
+                  style={{
+                    ...styles.tab,
+                    borderBottomWidth: isActiveTab(item) ? 2 : 0,
+                    opacity: isActiveTab(item) ? 1 : 0.5,
+                  }}>
+                  <Text style={styles.tabText}>{item}</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            ))}
+          </View>
+        </TooltipView>
         {activeTab === TrackTabs.FREEFORM ? (
           <NaturalForm navigation={navigation} />
         ) : activeTab === TrackTabs.RESTAURANTS ? (
