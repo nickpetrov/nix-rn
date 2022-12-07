@@ -1,8 +1,8 @@
 import {Colors} from 'constants/Colors';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Platform, StatusBar} from 'react-native';
 
 export const styles = StyleSheet.create({
-  root: {flex: 1, paddingBottom: 70, backgroundColor: '#fff'},
+  root: {flex: 1, backgroundColor: '#fff'},
   menuItem: {
     borderBottomColor: Colors.Highlight,
     borderBottomWidth: 1,
@@ -33,24 +33,27 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  close: {
-    position: 'absolute',
-    right: 10,
-    top: 10,
-    zIndex: 10,
-    backgroundColor: '#fff',
-    borderRadius: 50,
-    height: 40,
-    width: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#bbb',
-  },
-  footer: {
+  walk: {
     flex: 1,
+    backgroundColor: Colors.Primary,
+    paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
   },
-  webView: {
+  walkBtn: {
+    paddingVertical: 40,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.Primary,
+  },
+  walkImage: {
+    flex: 1,
     width: '100%',
+    height: 'auto',
+    margin: 'auto',
+  },
+  walkText: {
+    fontSize: 24,
+    color: '#fff',
+    marginRight: 5,
   },
 });

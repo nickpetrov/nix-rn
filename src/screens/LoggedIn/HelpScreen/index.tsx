@@ -1,8 +1,14 @@
 // utils
-import React, {useCallback} from 'react';
+import React, {useState} from 'react';
 
 // components
-import {View, Text, TouchableWithoutFeedback, SafeAreaView} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  SafeAreaView,
+  Image,
+} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 // styles
@@ -20,59 +26,101 @@ interface HelpScreenProps {
 }
 
 export const HelpScreen: React.FC<HelpScreenProps> = ({navigation}) => {
-  const showWalkthrough = useCallback(() => {
-    console.log('walkthrough unavailable');
-  }, []);
+  const [walkPopup, setwalkPopup] = useState(false);
+
+  React.useEffect(
+    () =>
+      navigation.addListener('beforeRemove', e => {
+        if (!walkPopup) {
+          // If we don't have unsaved changes, then we don't need to do anything
+          return;
+        }
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        // Prompt the user before leaving the screen
+        setwalkPopup(false);
+      }),
+    [navigation, walkPopup],
+  );
+
+  React.useLayoutEffect(() => {
+    if (walkPopup) {
+      navigation.setOptions({
+        headerShown: false,
+      });
+    } else {
+      navigation.setOptions({
+        headerShown: true,
+      });
+    }
+  }, [navigation, walkPopup]);
 
   return (
     <SafeAreaView style={styles.root}>
-      <View style={styles.container}>
+      {walkPopup ? (
         <TouchableWithoutFeedback
           onPress={() => {
-            showWalkthrough();
+            setwalkPopup(false);
           }}>
-          <View style={styles.menuItem}>
-            <View style={styles.icon}>
-              <FontAwesome name="mobile" size={30} />
+          <View style={styles.walk}>
+            <Image
+              style={styles.walkImage}
+              source={require('assets/images/instruction/instruction-1.jpg')}
+              resizeMode="stretch"
+            />
+            <View style={styles.walkBtn}>
+              <Text style={styles.walkText}>Start Logging Now</Text>
+              <FontAwesome name="arrow-right" color="#fff" size={20} />
             </View>
-            <Text style={styles.menuItemText}>
-              Walkthrough (temporary unavailable)
-            </Text>
-            {/*TODO - create walkthrough*/}
           </View>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            navigation.navigate(Routes.WebView, {
-              url: 'https://nutritionix.helpsite.com/',
-            });
-          }}>
-          <View style={styles.menuItem}>
-            <View style={styles.icon}>
-              <FontAwesome name="question-circle" size={30} />
-            </View>
-            <Text style={styles.menuItemText}>FAQ</Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <View style={styles.terms}>
+      ) : (
+        <View style={styles.container}>
           <TouchableWithoutFeedback
             onPress={() => {
-              navigation.navigate(Routes.WebView, {
-                url: 'https://www.nutritionix.com/terms',
-              });
+              setwalkPopup(true);
             }}>
-            <Text style={styles.text}>Terms and Conditions</Text>
+            <View style={styles.menuItem}>
+              <View style={styles.icon}>
+                <FontAwesome name="mobile" size={30} />
+              </View>
+              <Text style={styles.menuItemText}>Walkthrough</Text>
+              {/*TODO - create walkthrough*/}
+            </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
             onPress={() => {
               navigation.navigate(Routes.WebView, {
-                url: 'https://www.nutritionix.com/privacy',
+                url: 'https://nutritionix.helpsite.com/',
               });
             }}>
-            <Text style={styles.text}>Privacy Policy</Text>
+            <View style={styles.menuItem}>
+              <View style={styles.icon}>
+                <FontAwesome name="question-circle" size={30} />
+              </View>
+              <Text style={styles.menuItemText}>FAQ</Text>
+            </View>
           </TouchableWithoutFeedback>
+          <View style={styles.terms}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate(Routes.WebView, {
+                  url: 'https://www.nutritionix.com/terms',
+                });
+              }}>
+              <Text style={styles.text}>Terms and Conditions</Text>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate(Routes.WebView, {
+                  url: 'https://www.nutritionix.com/privacy',
+                });
+              }}>
+              <Text style={styles.text}>Privacy Policy</Text>
+            </TouchableWithoutFeedback>
+          </View>
         </View>
-      </View>
+      )}
     </SafeAreaView>
   );
 };
