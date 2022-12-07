@@ -155,13 +155,21 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   useEffect(() => {
     if (foods.length > 1) {
       if (!firstFoodAddedToBasket.value) {
-        dispatch(setWalkthroughTooltip('firstMultipleFoodsInBasket', 0));
+        setTimeout(() => {
+          dispatch(setWalkthroughTooltip('firstMultipleFoodsInBasket', 0));
+        }, 2000);
       } else if (!firstMultipleFoodsInBasket.value) {
-        dispatch(setWalkthroughTooltip('firstMultipleFoodsInBasket', 2, true));
+        setTimeout(() => {
+          dispatch(
+            setWalkthroughTooltip('firstMultipleFoodsInBasket', 2, true),
+          );
+        }, 2000);
       }
     } else if (foods.length > 0) {
       if (!firstFoodAddedToBasket.value) {
-        dispatch(setWalkthroughTooltip('firstFoodAddedToBasket', 0));
+        setTimeout(() => {
+          dispatch(setWalkthroughTooltip('firstFoodAddedToBasket', 0));
+        }, 2000);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -244,13 +244,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   useEffect(() => {
     if (!checkedEvents.firstLogin.value) {
-      dispatch(setWalkthroughTooltip('firstLogin', 0));
+      setTimeout(() => {
+        dispatch(setWalkthroughTooltip('firstLogin', 0));
+      }, 2000);
     }
   }, [checkedEvents.firstLogin, dispatch]);
 
   useEffect(() => {
     if (route.params?.startWalkthroughAfterLog) {
-      dispatch(setWalkthroughTooltip('firstFoodAddedToFoodLog', 0));
+      setTimeout(() => {
+        dispatch(setWalkthroughTooltip('firstFoodAddedToFoodLog', 0));
+      }, 2000);
       navigation.setParams({startWalkthroughAfterLog: undefined});
     }
   }, [route.params?.startWalkthroughAfterLog, navigation, dispatch]);
