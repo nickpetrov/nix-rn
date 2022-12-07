@@ -4,7 +4,7 @@ import InAppReview from 'react-native-in-app-review';
 import moment from 'moment-timezone';
 
 // components
-import {Linking, Platform} from 'react-native';
+import {Linking, Platform, View, Text} from 'react-native';
 import {Navigation} from 'navigation';
 import InfoModal from 'components/InfoModal';
 import ChooseModal from 'components/ChooseModal';
@@ -22,11 +22,14 @@ import {
   showAgreementPopup,
 } from 'store/base/base.actions';
 
+// styles
+import {styles} from './MainContent.styles';
+import TooltipView from 'components/TooltipView';
+
 const MainContent = () => {
   const dispatch = useDispatch();
-  const {agreementPopup, infoMessage, askForReview, reviewCheck} = useSelector(
-    state => state.base,
-  );
+  const {agreementPopup, infoMessage, askForReview, reviewCheck, offline} =
+    useSelector(state => state.base);
   const [showRatePopup, setShowRatePopup] = useState(false);
 
   const handleAcceptAgreement = () => {
@@ -94,6 +97,18 @@ const MainContent = () => {
 
   return (
     <>
+      {offline && (
+        <View style={styles.offline}>
+          <TooltipView
+            eventName="firstOfflineMode"
+            step={0}
+            childrenWrapperStyle={{alignItems: 'stretch'}}>
+            <View style={styles.offlineContainer}>
+              <Text style={styles.offlineText}>Offline Mode</Text>
+            </View>
+          </TooltipView>
+        </View>
+      )}
       <Navigation />
       <InfoModal
         modalVisible={agreementPopup}

@@ -44,6 +44,7 @@ const initialState: BaseState = {
   db: null,
   isVoiceDisclaimerVisible: false,
   hideVoiceRecognitionDisclaimer: false,
+  offline: false,
 };
 
 export default (
@@ -82,6 +83,8 @@ export default (
       return {...state, isVoiceDisclaimerVisible: action.payload};
     case baseActionTypes.SET_GROCERY_AGENT_INFO:
       return {...state, userGroceyAgentInfo: action.payload};
+    case baseActionTypes.SET_OFFLINE_MODE:
+      return {...state, offline: action.payload};
     case baseActionTypes.RESET_GROCERY_SETTINGS:
       return {
         ...state,

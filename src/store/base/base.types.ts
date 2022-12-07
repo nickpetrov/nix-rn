@@ -12,6 +12,7 @@ export enum baseActionTypes {
   SET_GROCERY_AGENT_INFO = 'SET_GROCERY_AGENT_INFO',
   RESET_GROCERY_SETTINGS = 'RESET_GROCERY_SETTINGS',
   BASE_CLEAR = 'BASE_CLEAR',
+  SET_OFFLINE_MODE = 'SET_OFFLINE_MODE',
 }
 
 export type ReviewCheckType = {
@@ -56,6 +57,7 @@ export type BaseState = {
   db: null | SQLite.SQLiteDatabase;
   isVoiceDisclaimerVisible: boolean;
   hideVoiceRecognitionDisclaimer: boolean;
+  offline: boolean;
 };
 
 export type BugReportType = {
@@ -110,6 +112,10 @@ export type setGroceryAgentInfoAction = {
 export type resetGrocerySettingsAction = {
   type: baseActionTypes.RESET_GROCERY_SETTINGS;
 };
+export type setOfflineModeAction = {
+  type: baseActionTypes.SET_OFFLINE_MODE;
+  payload: boolean;
+};
 
 export type BaseActions =
   | setUserAgreedToUsePhotoAction
@@ -123,4 +129,5 @@ export type BaseActions =
   | setHideVoiceDisclaimoreAction
   | setGroceryAgentInfoAction
   | resetGrocerySettingsAction
-  | baseClearAction;
+  | baseClearAction
+  | setOfflineModeAction;

@@ -16,6 +16,7 @@ import {
   setHideVoiceDisclaimoreAction,
   setInfoMessageAction,
   setIsVoiceDisclaimoreVisibleAction,
+  setOfflineModeAction,
   setUserAgreedToUsePhotoAction,
   toggleAskForReviewAction,
   toggleGroceryAgentPreferenceAction,
@@ -67,6 +68,12 @@ export const updateReviewCheckAfterComeBack = () => {
 export const showAgreementPopup = (): displayAgreementPopupAction => {
   return {
     type: baseActionTypes.DISPLAY_AGREEMENT_POPUP,
+  };
+};
+export const setOfflineMode = (value: boolean): setOfflineModeAction => {
+  return {
+    type: baseActionTypes.SET_OFFLINE_MODE,
+    payload: value,
   };
 };
 export const setDB = (db: SQLite.SQLiteDatabase): setDBAction => {

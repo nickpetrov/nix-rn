@@ -7,8 +7,9 @@ import React, {
   useMemo,
 } from 'react';
 import moment from 'moment-timezone';
-import {useNetInfo} from '@react-native-community/netinfo';
 import SQLite from 'react-native-sqlite-storage';
+import {useNetInfo} from '@react-native-community/netinfo';
+import {useDrawerStatus} from '@react-navigation/drawer';
 
 // components
 import {
@@ -38,6 +39,7 @@ import SwipeHiddenButtons from 'components/SwipeHiddenButtons';
 import ChooseModal from 'components/ChooseModal';
 import WeighInListItem from 'components/FoodLog/WeighInListItem';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import TooltipView from 'components/TooltipView';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -48,6 +50,7 @@ import * as userLogActions from 'store/userLog/userLog.actions';
 import {addExistFoodToBasket} from 'store/basket/basket.actions';
 import {setDB} from 'store/base/base.actions';
 import {setWalkthroughTooltip} from 'store/walkthrough/walkthrough.actions';
+import {setOfflineMode} from 'store/base/base.actions';
 
 // constant
 import {Routes} from 'navigation/Routes';
@@ -57,7 +60,7 @@ import {
   NativeStackHeaderProps,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useIsFocused} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {
   ExerciseProps,
@@ -74,7 +77,6 @@ import {analyticSetUserId, analyticTrackEvent} from 'helpers/analytics.ts';
 // styles
 import {styles} from './DashboardScreen.styles';
 import {Colors} from 'constants/Colors';
-import TooltipView from 'components/TooltipView';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -88,8 +90,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   navigation,
   route,
 }) => {
-  const netInfo = useNetInfo();
   const dispatch = useDispatch();
+  const netInfo = useNetInfo();
+  const isFocused = useIsFocused();
+  const isDrawerOpen = useDrawerStatus() === 'open';
   const checkedEvents = useSelector(state => state.walkthrough.checkedEvents);
   const [deleteteModal, setDeleteteModal] = useState<
     {items: Array<FoodProps>; mealName: keyof mealTypes} | false
@@ -252,6 +256,27 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   }, [route.params?.startWalkthroughAfterLog, navigation, dispatch]);
 
   useEffect(() => {
+    if (!netInfo.isConnected && !isDrawerOpen && isFocused) {
+      dispatch(setOfflineMode(true));
+      if (!checkedEvents.firstOfflineMode.value) {
+        dispatch(setWalkthroughTooltip('firstOfflineMode', 0));
+      }
+    } else if (netInfo.isConnected) {
+      dispatch(setOfflineMode(false));
+    }
+
+    return () => {
+      dispatch(setOfflineMode(false));
+    };
+  }, [
+    netInfo,
+    dispatch,
+    isDrawerOpen,
+    checkedEvents.firstOfflineMode,
+    isFocused,
+  ]);
+
+  useEffect(() => {
     if (!db?.transaction) {
       dispatch(
         setDB(
@@ -313,13 +338,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         keyExtractor={(item: any) => item.id}
         ListHeaderComponent={() => (
           <>
-            {!netInfo.isConnected && (
-              <View style={styles.offline}>
-                <View style={styles.offlineContainer}>
-                  <Text style={styles.offlineText}>Offline Mode</Text>
-                </View>
-              </View>
-            )}
             <FoodLogHeader
               caloriesLimit={
                 selectedDay.totals.daily_kcal_limit || userData.daily_kcal || 0
