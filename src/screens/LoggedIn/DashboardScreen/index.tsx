@@ -342,7 +342,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       <SectionList
         listKey="rootFoodList"
         sections={sections}
-        keyExtractor={(item: any) => item.id}
+        keyExtractor={(item: any, index: number) => `${item.id}-${index}`}
         ListHeaderComponent={() => (
           <>
             <FoodLogHeader
