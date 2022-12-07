@@ -1,5 +1,5 @@
 // utils
-import React, {useState} from 'react';
+import React from 'react';
 
 // components
 import {
@@ -10,6 +10,9 @@ import {
   Image,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+// hooks
+import useStateWithCallback from 'hooks/useStateWithCallback';
 
 // styles
 import {styles} from './HelpScreen.styles';
@@ -26,7 +29,7 @@ interface HelpScreenProps {
 }
 
 export const HelpScreen: React.FC<HelpScreenProps> = ({navigation}) => {
-  const [walkPopup, setwalkPopup] = useState(false);
+  const [walkPopup, setWalkPopup] = useStateWithCallback(false);
 
   React.useEffect(
     () =>
@@ -38,9 +41,9 @@ export const HelpScreen: React.FC<HelpScreenProps> = ({navigation}) => {
         // Prevent default behavior of leaving the screen
         e.preventDefault();
         // Prompt the user before leaving the screen
-        setwalkPopup(false);
+        setWalkPopup(false);
       }),
-    [navigation, walkPopup],
+    [navigation, walkPopup, setWalkPopup],
   );
 
   React.useLayoutEffect(() => {
@@ -60,7 +63,9 @@ export const HelpScreen: React.FC<HelpScreenProps> = ({navigation}) => {
       {walkPopup ? (
         <TouchableWithoutFeedback
           onPress={() => {
-            setwalkPopup(false);
+            setWalkPopup(false, () => {
+              navigation.goBack();
+            });
           }}>
           <View style={styles.walk}>
             <Image
@@ -78,7 +83,7 @@ export const HelpScreen: React.FC<HelpScreenProps> = ({navigation}) => {
         <View style={styles.container}>
           <TouchableWithoutFeedback
             onPress={() => {
-              setwalkPopup(true);
+              setWalkPopup(true);
             }}>
             <View style={styles.menuItem}>
               <View style={styles.icon}>
