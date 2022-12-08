@@ -1,6 +1,7 @@
 // utils
 import React, {useCallback, useState, useEffect, useLayoutEffect} from 'react';
 import moment from 'moment-timezone';
+import _ from 'lodash';
 
 // helpers
 import {multiply} from 'helpers/multiply';
@@ -204,13 +205,13 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   const logFoods = () => {
     setLoadingSubmit(true);
     let loggingOptions: Partial<loggingOptionsProps> = {};
-
-    let adjustedFoods = foods;
+    const clonedFoods = _.cloneDeep(foods);
+    let adjustedFoods = clonedFoods;
 
     if (isSingleFood) {
       if (+servings > 1) {
         const mult = 1 / parseFloat(servings);
-        adjustedFoods = foods.map((foodObj: FoodProps) => {
+        adjustedFoods = clonedFoods.map((foodObj: FoodProps) => {
           foodObj.meal_type = meal_type;
           return multiply(foodObj, mult, foodObj.serving_qty * mult);
         });
@@ -234,7 +235,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     }
 
     if (!isSingleFood && customPhoto) {
-      adjustedFoods = foods.map((foodObj: FoodProps) => {
+      adjustedFoods = clonedFoods.map((foodObj: FoodProps) => {
         foodObj.photo = {
           highres: customPhoto.full,
           thumb: customPhoto.thumb,
