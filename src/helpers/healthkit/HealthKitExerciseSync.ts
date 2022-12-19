@@ -5,7 +5,7 @@ import {SQLexecute, SQLgetById} from 'helpers/sqlite';
 import {SQLiteDatabase} from 'react-native-sqlite-storage';
 import {ExerciseProps} from 'store/userLog/userLog.types';
 import moment from 'moment-timezone';
-import appleHealthKit from 'react-native-health';
+import appleHealthKit, {UnitOfEnergy, HKQuantityTypeIdentifier} from 'hk';
 
 //should always only be one row in table
 function getLastExerciseSync(db: SQLiteDatabase | null) {
@@ -35,21 +35,21 @@ function deleteExerciseFromHK(days: string[]) {
     const deferred = Q.defer();
     promises.push(deferred.promise);
     const sample = {
-      sampleType: 'HKQuantityTypeIdentifierActiveEnergyBurned',
-      startDate: moment(day).format(),
-      endDate: moment(moment(day).endOf('day')).format(), //end of day
+      identifier: HKQuantityTypeIdentifier.activeEnergyBurned,
+      startDate: moment(day).toDate(),
+      endDate: moment(moment(day).endOf('day')).toDate(), //end of day
     };
     console.log('sample', sample);
-    // window.plugins.healthkit.deleteSamples(
-    //   sample,
-    //   function (value) {
-    //     deferred.resolve('success');
-    //   },
-    //   function (err) {
-    //     console.log('Delete exercise sample err', angular.toJson(err));
-    //     deferred.reject(err);
-    //   },
-    // );
+    appleHealthKit
+      .deleteSamples(sample)
+      .then(value => {
+        console.log('val', value);
+        deferred.resolve('success');
+      })
+      .catch(err => {
+        console.log('Delete exercise sample err', err);
+        deferred.reject(err);
+      });
   });
 
   return Q.all(promises);
@@ -63,24 +63,23 @@ function addExerciseToHK(days: string[], exerciseLog: ExerciseProps[]) {
       function (exercise) {
         const deferred = Q.defer();
         promises.push(deferred.promise);
-        const sample = {
-          sampleType: appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
-          startDate: moment(exercise.timestamp).format(),
-          endDate: moment(moment(day).endOf('day')).format(),
-          amount: exercise.nf_calories,
-          unit: 'kcal',
-        };
-        console.log('sample', sample);
-        //   window.plugins.healthkit.saveQuantitySample(
-        //     sample,
-        //     function (value) {
-        //       deferred.resolve('success');
-        //     },
-        //     function (err) {
-        //       console.log('add exercise sample err', angular.toJson(err));
-        //       deferred.reject(err);
-        //     },
-        //   );
+        appleHealthKit
+          .saveQuantitySample(
+            HKQuantityTypeIdentifier.activeEnergyBurned,
+            UnitOfEnergy.Kilocalories,
+            exercise.nf_calories,
+            {
+              start: moment(exercise.timestamp).toDate(),
+              end: moment(moment(day).endOf('day')).toDate(),
+            },
+          )
+          .then(() => {
+            deferred.resolve('success');
+          })
+          .catch(err => {
+            console.log('add weight sample err', err);
+            deferred.reject(err);
+          });
       },
     );
   });

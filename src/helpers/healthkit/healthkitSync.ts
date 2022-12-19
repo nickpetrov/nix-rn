@@ -5,38 +5,41 @@ import Q from 'q';
 import {SQLexecute, SQLgetById} from 'helpers/sqlite';
 import {SQLiteDatabase} from 'react-native-sqlite-storage';
 import moment from 'moment-timezone';
-import appleHealthKit from 'react-native-health';
+import appleHealthKit, {
+  HKCorrelationTypeIdentifier,
+  HKQuantityTypeIdentifier,
+} from 'hk';
 
 const atr_ids: Record<number, string[]> = {
-  262: [appleHealthKit.Constants.Permissions.Caffeine, 'mg'],
-  301: [appleHealthKit.Constants.Permissions.Calcium, 'mg'],
-  205: [appleHealthKit.Constants.Permissions.Carbohydrates, 'g'],
-  601: [appleHealthKit.Constants.Permissions.Cholesterol, 'mg'],
-  312: [appleHealthKit.Constants.Permissions.Copper, 'mg'],
-  208: [appleHealthKit.Constants.Permissions.EnergyConsumed, 'kcal'],
-  645: [appleHealthKit.Constants.Permissions.FatMonounsaturated, 'g'],
-  646: [appleHealthKit.Constants.Permissions.FatPolyunsaturated, 'g'],
-  606: [appleHealthKit.Constants.Permissions.FatSaturated, 'g'],
-  204: [appleHealthKit.Constants.Permissions.FatTotal, 'g'],
-  291: [appleHealthKit.Constants.Permissions.Fiber, 'g'],
-  303: [appleHealthKit.Constants.Permissions.Iron, 'mg'],
-  304: [appleHealthKit.Constants.Permissions.Magnesium, 'mg'],
-  315: [appleHealthKit.Constants.Permissions.Manganese, 'mg'],
-  406: [appleHealthKit.Constants.Permissions.Niacin, 'mg'],
-  410: [appleHealthKit.Constants.Permissions.PantothenicAcid, 'mg'],
-  305: [appleHealthKit.Constants.Permissions.Phosphorus, 'mg'],
-  306: [appleHealthKit.Constants.Permissions.Potassium, 'mg'],
-  203: [appleHealthKit.Constants.Permissions.Protein, 'g'],
-  405: [appleHealthKit.Constants.Permissions.Riboflavin, 'mg'],
-  307: [appleHealthKit.Constants.Permissions.Sodium, 'mg'],
-  269: [appleHealthKit.Constants.Permissions.Sugar, 'g'],
-  404: [appleHealthKit.Constants.Permissions.Thiamin, 'mg'],
-  415: [appleHealthKit.Constants.Permissions.VitaminB6, 'mg'],
-  320: [appleHealthKit.Constants.Permissions.VitaminA, 'mcg'],
-  401: [appleHealthKit.Constants.Permissions.VitaminC, 'mg'],
-  328: [appleHealthKit.Constants.Permissions.VitaminD, 'mcg'],
-  323: [appleHealthKit.Constants.Permissions.VitaminE, 'mg'],
-  309: [appleHealthKit.Constants.Permissions.Zinc, 'mg'],
+  262: [HKQuantityTypeIdentifier.dietaryCaffeine, 'mg'],
+  301: [HKQuantityTypeIdentifier.dietaryCalcium, 'mg'],
+  205: [HKQuantityTypeIdentifier.dietaryCarbohydrates, 'g'],
+  601: [HKQuantityTypeIdentifier.dietaryCholesterol, 'mg'],
+  312: [HKQuantityTypeIdentifier.dietaryCopper, 'mg'],
+  208: [HKQuantityTypeIdentifier.dietaryEnergyConsumed, 'kcal'],
+  645: [HKQuantityTypeIdentifier.dietaryFatMonounsaturated, 'g'],
+  646: [HKQuantityTypeIdentifier.dietaryFatPolyunsaturated, 'g'],
+  606: [HKQuantityTypeIdentifier.dietaryFatSaturated, 'g'],
+  204: [HKQuantityTypeIdentifier.dietaryFatTotal, 'g'],
+  291: [HKQuantityTypeIdentifier.dietaryFiber, 'g'],
+  303: [HKQuantityTypeIdentifier.dietaryIron, 'mg'],
+  304: [HKQuantityTypeIdentifier.dietaryMagnesium, 'mg'],
+  315: [HKQuantityTypeIdentifier.dietaryManganese, 'mg'],
+  406: [HKQuantityTypeIdentifier.dietaryNiacin, 'mg'],
+  410: [HKQuantityTypeIdentifier.dietaryPantothenicAcid, 'mg'],
+  305: [HKQuantityTypeIdentifier.dietaryPhosphorus, 'mg'],
+  306: [HKQuantityTypeIdentifier.dietaryPotassium, 'mg'],
+  203: [HKQuantityTypeIdentifier.dietaryProtein, 'g'],
+  405: [HKQuantityTypeIdentifier.dietaryRiboflavin, 'mg'],
+  307: [HKQuantityTypeIdentifier.dietarySodium, 'mg'],
+  269: [HKQuantityTypeIdentifier.dietarySugar, 'g'],
+  404: [HKQuantityTypeIdentifier.dietaryThiamin, 'mg'],
+  415: [HKQuantityTypeIdentifier.dietaryVitaminB6, 'mg'],
+  320: [HKQuantityTypeIdentifier.dietaryVitaminA, 'mcg'],
+  401: [HKQuantityTypeIdentifier.dietaryVitaminC, 'mg'],
+  328: [HKQuantityTypeIdentifier.dietaryVitaminD, 'mcg'],
+  323: [HKQuantityTypeIdentifier.dietaryVitaminE, 'mg'],
+  309: [HKQuantityTypeIdentifier.dietaryZinc, 'mg'],
 };
 
 let syncInProgress = false;
@@ -70,29 +73,27 @@ function deleteFromHK(days: string[]) {
   _.forEach(days, function (day) {
     _.map(atr_ids, function (arr) {
       const sample = {
-        startDate: moment(day).format(),
-        endDate: moment(moment(day).endOf('day')).format(), //end of day
-        sampleType: arr[0],
+        startDate: moment(day).toDate(),
+        endDate: moment(moment(day).endOf('day')).toDate(), //end of day
+        identifier: arr[0],
       };
       delete_samples.push(sample);
     });
   });
-  _.forEach(delete_samples, function () {
+  _.forEach(delete_samples, function (sample) {
     const deferred = Q.defer();
     promises.push(deferred.promise);
 
-    // no ability to deleteSamples at this library
-
-    // window.plugins.healthkit.deleteSamples(
-    //   sample,
-    //   function (value) {
-    //     deferred.resolve('success');
-    //   },
-    //   function (err) {
-    //     console.log('Delete Sample err', err);
-    //     deferred.reject(err);
-    //   },
-    // );
+    appleHealthKit
+      .deleteSamples(sample)
+      .then(value => {
+        console.log('val', value);
+        deferred.resolve('success');
+      })
+      .catch(err => {
+        console.log('Delete Sample err', err);
+        deferred.reject(err);
+      });
   });
 
   return Q.all(promises);
@@ -165,17 +166,20 @@ const addToHK = (days: string[], foods: FoodProps[]) => {
       samples: samples,
     };
     console.log('correlation', correlation);
-    // window.plugins.healthkit.saveCorrelation(
-    //   correlation,
-    //   function (value) {
-    //     console.log('correlation save success!', day);
-    //     deferred.resolve('success');
-    //   },
-    //   function (err) {
-    //     console.log('correlation save err', angular.toJson(err));
-    //     deferred.reject(err);
-    //   },
-    // );
+    appleHealthKit
+      .saveCorrelationSample(HKCorrelationTypeIdentifier.food, samples, {
+        start: moment(day).toDate(),
+        end: moment(moment(day).endOf('day')).toDate(),
+        metadata: {day: day},
+      })
+      .then(() => {
+        console.log('correlation save success!', day);
+        deferred.resolve('success');
+      })
+      .catch(err => {
+        console.log('correlation save err', err);
+        deferred.reject(err);
+      });
   });
 
   return Q.all(promises);

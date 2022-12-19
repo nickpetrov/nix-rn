@@ -4375,6 +4375,10 @@ highlight-words-core@^1.2.2:
   resolved "https://registry.yarnpkg.com/highlight-words-core/-/highlight-words-core-1.2.2.tgz#1eff6d7d9f0a22f155042a00791237791b1eeaaa"
   integrity sha512-BXUKIkUuh6cmmxzi5OIbUJxrG8OAk2MqoL1DtO3Wo9D2faJg2ph5ntyuQeLqaHJmzER6H5tllCDA9ZnNe9BVGg==
 
+"hk@git+https://github.com/VladyslavRoom4/react-native-healthkit.git":
+  version "5.2.1"
+  resolved "git+https://github.com/VladyslavRoom4/react-native-healthkit.git#20268345fbf2af7ee2ac67b610cf74185c243d17"
+
 hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
@@ -7141,13 +7145,6 @@ react-native-gradle-plugin@^0.70.2:
   version "0.70.2"
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.2.tgz#b5130f2c196e27c4c5912706503d69b8790f1937"
   integrity sha512-k7d+CVh0fs/VntA2WaKD58cFB2rtiSLBHYlciH18ncaT4N/B3A4qOGv9pSCEHfQikELm6vAf98KMbE3c8KnH1A==
-
-react-native-health@^1.13.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/react-native-health/-/react-native-health-1.13.0.tgz#61f73eb828aa70e107493d01d16e410587c188cf"
-  integrity sha512-ozHemi5Amr4cjfojKa9FVVAyEJk8a9nzPP70GR59JYxcpRivv/tpqhvt8BzH/NCL9Whpvv6kiWNcIBOFd2spgA==
-  dependencies:
-    "@expo/config-plugins" "^2.0.0"
 
 react-native-image-picker@^4.10.0:
   version "4.10.0"

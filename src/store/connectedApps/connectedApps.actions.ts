@@ -8,9 +8,11 @@ import {
   mergeHKSyncOptionsAction,
 } from './connectedApps.types';
 import appleHealthKit, {
-  HealthUnit,
-  HealthValueOptions,
-} from 'react-native-health';
+  HKQuantityTypeIdentifier,
+  UnitOfEnergy,
+  HKQuantitySample,
+  UnitOfMass,
+} from 'hk';
 import moment from 'moment-timezone';
 import _ from 'lodash';
 import {RootState} from '../index';
@@ -78,40 +80,37 @@ export const pullWeightsFromHK = () => {
         new Date().getTime() - 7 * 24 * 60 * 60 * 1000,
       ).toDateString(), // 7 days ago
       endDate: new Date().toDateString(), // now
-      unit: 'gram' as HealthUnit,
+      unit: 'kg' as UnitOfMass,
     };
-    appleHealthKit.getWeightSamples(
-      options,
-      (err: Object, results: Array<HealthValueOptions>) => {
-        if (err) {
-          return;
-        } else {
-          const weightsFromHK = results.map((item: HealthValueOptions) => ({
-            ...item,
-            value: item.value / 1000,
-          }));
-          const weightsLog = useState().userLog.weights;
-          let api_timestamps: Array<string> = [];
-          _.forEach(weightsLog, function (weightObj) {
-            api_timestamps.push(moment.utc(weightObj.timestamp).format());
-          });
-          const hk_weights_to_add: Array<Omit<WeightProps, 'id'>> = [];
-          _.forEach(weightsFromHK, function (hkObj) {
-            if (
-              api_timestamps.indexOf(moment.utc(hkObj.startDate).format()) ===
-              -1
-            ) {
-              hk_weights_to_add.push({
-                kg: hkObj.value,
-                timestamp: hkObj.startDate as string,
-              });
-            }
-          });
-          console.log('weight add', hk_weights_to_add);
-          dispatch(addWeightlog(hk_weights_to_add));
-        }
-      },
-    );
+    appleHealthKit
+      .queryQuantitySamples(HKQuantityTypeIdentifier.bodyMass, options)
+      .then(results => {
+        const weightsFromHK = results.map((item: HKQuantitySample) => ({
+          ...item,
+          value: item.quantity,
+        }));
+        const weightsLog = useState().userLog.weights;
+        let api_timestamps: Array<string> = [];
+        _.forEach(weightsLog, function (weightObj) {
+          api_timestamps.push(moment.utc(weightObj.timestamp).format());
+        });
+        const hk_weights_to_add: Array<Omit<WeightProps, 'id'>> = [];
+        _.forEach(weightsFromHK, function (hkObj) {
+          if (
+            api_timestamps.indexOf(moment.utc(hkObj.startDate).format()) === -1
+          ) {
+            hk_weights_to_add.push({
+              kg: hkObj.value,
+              timestamp: hkObj.startDate.toISOString() as string,
+            });
+          }
+        });
+        console.log('weight add', hk_weights_to_add);
+        dispatch(addWeightlog(hk_weights_to_add));
+      })
+      .catch(() => {
+        return;
+      });
   };
 };
 
@@ -192,35 +191,34 @@ export const addOrUpdateHKExercise = (
 export const pullExerciseFromHK = () => {
   return async (dispatch: Dispatch<any>) => {
     const options = {
-      startDate: new Date(
-        new Date().getTime() - 7 * 24 * 60 * 60 * 1000,
-      ).toDateString(), // 7 days ago
-      endDate: new Date().toDateString(), // now
-      unit: 'kilocalorie' as HealthUnit,
+      from: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+      to: new Date(), // now
+      unit: UnitOfEnergy.Kilocalories,
     };
-    appleHealthKit.getActiveEnergyBurned(
-      options,
-      (err: Object, results: Array<HealthValueOptions>) => {
-        if (err) {
-          return;
-        } else {
-          let add_update_map: Record<string, number> = {};
-          _.forEach(results, function (record) {
-            const day_formatted = moment(record.startDate).format(
-              'ddd, MM/DD/YY',
-            );
-            if (day_formatted in add_update_map) {
-              add_update_map[day_formatted] += record.value;
-            } else {
-              if (record.value !== 0) {
-                add_update_map[day_formatted] = record.value;
-              }
+    appleHealthKit
+      .queryQuantitySamples(
+        HKQuantityTypeIdentifier.activeEnergyBurned,
+        options,
+      )
+      .then(results => {
+        let add_update_map: Record<string, number> = {};
+        _.forEach(results, function (record) {
+          const day_formatted = moment(record.startDate).format(
+            'ddd, MM/DD/YY',
+          );
+          if (day_formatted in add_update_map) {
+            add_update_map[day_formatted] += record.quantity;
+          } else {
+            if (record.quantity !== 0) {
+              add_update_map[day_formatted] = record.quantity;
             }
-          });
+          }
+        });
 
-          dispatch(addOrUpdateHKExercise(add_update_map));
-        }
-      },
-    );
+        dispatch(addOrUpdateHKExercise(add_update_map));
+      })
+      .catch(() => {
+        return;
+      });
   };
 };

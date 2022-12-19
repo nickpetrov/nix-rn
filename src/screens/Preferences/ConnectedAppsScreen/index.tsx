@@ -28,7 +28,10 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // styles
 import {styles} from './ConnectedAppsScreen.styles';
-import appleHealthKit, {HealthPermission} from 'react-native-health';
+import appleHealthKit, {
+  HKQuantityTypeIdentifier,
+  HKAuthorizationRequestStatus,
+} from 'hk';
 
 // helpers
 import {SQLexecute} from 'helpers/sqlite';
@@ -49,37 +52,37 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
   useEffect(() => {
     if (Platform.OS === 'ios') {
       const attrs_to_check = [
-        appleHealthKit.Constants.Permissions.EnergyConsumed,
-        appleHealthKit.Constants.Permissions.Caffeine,
-        appleHealthKit.Constants.Permissions.Calcium,
-        appleHealthKit.Constants.Permissions.Carbohydrates,
-        appleHealthKit.Constants.Permissions.Cholesterol,
-        appleHealthKit.Constants.Permissions.Copper,
-        appleHealthKit.Constants.Permissions.FatMonounsaturated,
-        appleHealthKit.Constants.Permissions.FatPolyunsaturated,
-        appleHealthKit.Constants.Permissions.FatSaturated,
-        appleHealthKit.Constants.Permissions.FatTotal,
-        appleHealthKit.Constants.Permissions.Fiber,
-        appleHealthKit.Constants.Permissions.Iron,
-        appleHealthKit.Constants.Permissions.Magnesium,
-        appleHealthKit.Constants.Permissions.Manganese,
-        appleHealthKit.Constants.Permissions.Niacin,
-        appleHealthKit.Constants.Permissions.PantothenicAcid,
-        appleHealthKit.Constants.Permissions.Phosphorus,
-        appleHealthKit.Constants.Permissions.Potassium,
-        appleHealthKit.Constants.Permissions.Protein,
-        appleHealthKit.Constants.Permissions.Riboflavin,
-        appleHealthKit.Constants.Permissions.Sodium,
-        appleHealthKit.Constants.Permissions.Sugar,
-        appleHealthKit.Constants.Permissions.Thiamin,
-        appleHealthKit.Constants.Permissions.VitaminB6,
-        appleHealthKit.Constants.Permissions.VitaminA,
-        appleHealthKit.Constants.Permissions.VitaminC,
-        appleHealthKit.Constants.Permissions.VitaminD,
-        appleHealthKit.Constants.Permissions.VitaminE,
-        appleHealthKit.Constants.Permissions.Zinc,
-        appleHealthKit.Constants.Permissions.BodyMass,
-        appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
+        HKQuantityTypeIdentifier.dietaryEnergyConsumed,
+        HKQuantityTypeIdentifier.dietaryCaffeine,
+        HKQuantityTypeIdentifier.dietaryCalcium,
+        HKQuantityTypeIdentifier.dietaryCarbohydrates,
+        HKQuantityTypeIdentifier.dietaryCholesterol,
+        HKQuantityTypeIdentifier.dietaryCopper,
+        HKQuantityTypeIdentifier.dietaryFatMonounsaturated,
+        HKQuantityTypeIdentifier.dietaryFatPolyunsaturated,
+        HKQuantityTypeIdentifier.dietaryFatSaturated,
+        HKQuantityTypeIdentifier.dietaryFatTotal,
+        HKQuantityTypeIdentifier.dietaryFiber,
+        HKQuantityTypeIdentifier.dietaryIron,
+        HKQuantityTypeIdentifier.dietaryMagnesium,
+        HKQuantityTypeIdentifier.dietaryManganese,
+        HKQuantityTypeIdentifier.dietaryNiacin,
+        HKQuantityTypeIdentifier.dietaryPantothenicAcid,
+        HKQuantityTypeIdentifier.dietaryPhosphorus,
+        HKQuantityTypeIdentifier.dietaryPotassium,
+        HKQuantityTypeIdentifier.dietaryProtein,
+        HKQuantityTypeIdentifier.dietaryRiboflavin,
+        HKQuantityTypeIdentifier.dietarySodium,
+        HKQuantityTypeIdentifier.dietarySugar,
+        HKQuantityTypeIdentifier.dietaryThiamin,
+        HKQuantityTypeIdentifier.dietaryVitaminB6,
+        HKQuantityTypeIdentifier.dietaryVitaminA,
+        HKQuantityTypeIdentifier.dietaryVitaminC,
+        HKQuantityTypeIdentifier.dietaryVitaminD,
+        HKQuantityTypeIdentifier.dietaryVitaminE,
+        HKQuantityTypeIdentifier.dietaryZinc,
+        HKQuantityTypeIdentifier.bodyMass,
+        HKQuantityTypeIdentifier.activeEnergyBurned,
       ];
 
       let turnOffWeightHKSync = true;
@@ -88,48 +91,46 @@ export const ConnectedAppsScreen: React.FC<ConnectedAppsScreenProps> = ({
 
       // go through all attributes and turn off appropriate options if not authorized.
       attrs_to_check.map((attr, index) => {
-        const permissions = {
-          permissions: {
-            read: [attr] as HealthPermission[],
-            write: [attr] as HealthPermission[],
-          },
-        };
-        appleHealthKit.getAuthStatus(permissions, (err, results) => {
-          console.log(err, results);
-          if (
-            // HealthStatusCode.SharingAuthorized = 2 - some error on ios when use HealthStatusCode.SharingAuthorized
-            results.permissions.write[0] === 2
-          ) {
-            if (attr === appleHealthKit.Constants.Permissions.BodyMass) {
-              turnOffWeightHKSync = false;
-            } else if (
-              attr === appleHealthKit.Constants.Permissions.ActiveEnergyBurned
+        const readPermissions = [attr];
+        const writePermissions = [attr];
+        appleHealthKit
+          .getRequestStatusForAuthorization(readPermissions, writePermissions)
+          .then(results => {
+            if (
+              // HealthStatusCode.SharingAuthorized = 2 - some error on ios when use HealthStatusCode.SharingAuthorized
+              results === HKAuthorizationRequestStatus.unnecessary
             ) {
-              turnOffExcerciseHKSync = false;
-            } else {
-              turnOffNutritionHKSync = false;
+              if (attr === HKQuantityTypeIdentifier.bodyMass) {
+                turnOffWeightHKSync = false;
+              } else if (attr === HKQuantityTypeIdentifier.activeEnergyBurned) {
+                turnOffExcerciseHKSync = false;
+              } else {
+                turnOffNutritionHKSync = false;
+              }
             }
-          }
-          // //check if it's last attribute in the list and check for options that sould be disabled.
+            // //check if it's last attribute in the list and check for options that sould be disabled.
 
-          if (index === attrs_to_check.length - 1) {
-            if (turnOffNutritionHKSync) {
-              dispatch(mergeHKSyncOptions({nutrition: 'off'}));
-              SQLexecute({db, query: 'DROP TABLE hkdata'});
-              analyticTrackEvent('HealthKit_nutrition_sync', 'disable');
+            if (index === attrs_to_check.length - 1) {
+              if (turnOffNutritionHKSync) {
+                dispatch(mergeHKSyncOptions({nutrition: 'off'}));
+                SQLexecute({db, query: 'DROP TABLE hkdata'});
+                analyticTrackEvent('HealthKit_nutrition_sync', 'disable');
+              }
+              if (turnOffExcerciseHKSync) {
+                dispatch(mergeHKSyncOptions({exercise: 'off'}));
+                SQLexecute({db, query: 'DROP TABLE hkdata_exercise'});
+                analyticTrackEvent('HealthKit_exercise_sync', 'disable');
+              }
+              if (turnOffWeightHKSync) {
+                dispatch(mergeHKSyncOptions({weight: 'off'}));
+                SQLexecute({db, query: 'DROP TABLE hkdata_weight'});
+                analyticTrackEvent('HealthKit_weight_sync', 'disable');
+              }
             }
-            if (turnOffExcerciseHKSync) {
-              dispatch(mergeHKSyncOptions({exercise: 'off'}));
-              SQLexecute({db, query: 'DROP TABLE hkdata_exercise'});
-              analyticTrackEvent('HealthKit_exercise_sync', 'disable');
-            }
-            if (turnOffWeightHKSync) {
-              dispatch(mergeHKSyncOptions({weight: 'off'}));
-              SQLexecute({db, query: 'DROP TABLE hkdata_weight'});
-              analyticTrackEvent('HealthKit_weight_sync', 'disable');
-            }
-          }
-        });
+          })
+          .catch(err => {
+            console.log(err);
+          });
       });
     }
   }, [dispatch, db]);

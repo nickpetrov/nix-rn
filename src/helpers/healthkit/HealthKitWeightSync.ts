@@ -4,11 +4,8 @@ import Q from 'q';
 import {SQLexecute, SQLgetById} from 'helpers/sqlite';
 import {SQLiteDatabase} from 'react-native-sqlite-storage';
 import moment from 'moment-timezone';
-import appleHealthKit, {
-  HealthUnit,
-  HealthValueOptions,
-} from 'react-native-health';
 import {WeightProps} from 'store/userLog/userLog.types';
+import appleHealthKit, {HKQuantityTypeIdentifier} from 'hk';
 
 //should always only be one row in table
 function getLastWeightSync(db: SQLiteDatabase | null) {
@@ -37,20 +34,17 @@ function addWeightToHK(weights: WeightProps[]) {
   _.forEach(weights, function (weight) {
     const deferred = Q.defer();
     promises.push(deferred.promise);
-    const sample = {
-      unit: 'kg' as HealthUnit,
-      value: weight.kg,
-      date: moment(weight.timestamp).format(),
-    } as HealthValueOptions;
-    console.log('weight sample', sample);
-    appleHealthKit.saveWeight(sample, err => {
-      if (err) {
+    appleHealthKit
+      .saveQuantitySample(HKQuantityTypeIdentifier.bodyMass, 'kg', weight.kg, {
+        start: new Date(weight.timestamp),
+      })
+      .then(() => {
+        deferred.resolve('success');
+      })
+      .catch(err => {
         console.log('add weight sample err', err);
         deferred.reject(err);
-      } else {
-        deferred.resolve('success');
-      }
-    });
+      });
   });
 
   return Q.all(promises);
@@ -62,22 +56,21 @@ function deleteWeightFromHK(weights: WeightProps[]) {
     const deferred = Q.defer();
     promises.push(deferred.promise);
     const sample = {
-      startDate: moment(moment(weight.timestamp).valueOf() - 1000).format(),
-      endDate: moment(moment(weight.timestamp).valueOf() + 1000).format(),
-      sampleType: 'HKQuantityTypeIdentifierBodyMass',
+      startDate: moment(moment(weight.timestamp).valueOf() - 1000).toDate(),
+      endDate: moment(moment(weight.timestamp).valueOf() + 1000).toDate(),
+      identifier: HKQuantityTypeIdentifier.bodyMass,
     };
     console.log('sample', sample);
-    // window.plugins.healthkit.deleteSamples(
-    //   sample,
-    //   function (value) {
-    //     console.log('val', angular.toJson(value));
-    //     deferred.resolve('success');
-    //   },
-    //   function (err) {
-    //     console.log('Delete weight sample err', angular.toJson(err));
-    //     deferred.reject(err);
-    //   },
-    // );
+    appleHealthKit
+      .deleteSamples(sample)
+      .then(value => {
+        console.log('val', value);
+        deferred.resolve('success');
+      })
+      .catch(err => {
+        console.log('Delete weight sample err', err);
+        deferred.reject(err);
+      });
   });
 
   return Q.all(promises);

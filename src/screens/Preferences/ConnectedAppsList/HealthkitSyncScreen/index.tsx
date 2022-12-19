@@ -3,7 +3,7 @@ import React from 'react';
 
 // components
 import {View, Text, SafeAreaView} from 'react-native';
-import appleHealthKit, {HealthPermission} from 'react-native-health';
+import appleHealthKit, {HKQuantityTypeIdentifier} from 'hk';
 import ModalSelector from 'react-native-modal-selector';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixInput} from 'components/NixInput';
@@ -42,55 +42,53 @@ export const HealthkitSyncScreen: React.FC = () => {
       });
 
       const hk_types = [
-        appleHealthKit.Constants.Permissions.EnergyConsumed,
-        appleHealthKit.Constants.Permissions.Caffeine,
-        appleHealthKit.Constants.Permissions.Calcium,
-        appleHealthKit.Constants.Permissions.Carbohydrates,
-        appleHealthKit.Constants.Permissions.Cholesterol,
-        appleHealthKit.Constants.Permissions.Copper,
-        appleHealthKit.Constants.Permissions.FatMonounsaturated,
-        appleHealthKit.Constants.Permissions.FatPolyunsaturated,
-        appleHealthKit.Constants.Permissions.FatSaturated,
-        appleHealthKit.Constants.Permissions.FatTotal,
-        appleHealthKit.Constants.Permissions.Fiber,
-        appleHealthKit.Constants.Permissions.Iron,
-        appleHealthKit.Constants.Permissions.Magnesium,
-        appleHealthKit.Constants.Permissions.Manganese,
-        appleHealthKit.Constants.Permissions.Niacin,
-        appleHealthKit.Constants.Permissions.PantothenicAcid,
-        appleHealthKit.Constants.Permissions.Phosphorus,
-        appleHealthKit.Constants.Permissions.Potassium,
-        appleHealthKit.Constants.Permissions.Protein,
-        appleHealthKit.Constants.Permissions.Riboflavin,
-        appleHealthKit.Constants.Permissions.Sodium,
-        appleHealthKit.Constants.Permissions.Sugar,
-        appleHealthKit.Constants.Permissions.Thiamin,
-        appleHealthKit.Constants.Permissions.VitaminB6,
-        appleHealthKit.Constants.Permissions.VitaminA,
-        appleHealthKit.Constants.Permissions.VitaminC,
-        appleHealthKit.Constants.Permissions.VitaminD,
-        appleHealthKit.Constants.Permissions.VitaminE,
-        appleHealthKit.Constants.Permissions.Zinc,
+        HKQuantityTypeIdentifier.dietaryEnergyConsumed,
+        HKQuantityTypeIdentifier.dietaryCaffeine,
+        HKQuantityTypeIdentifier.dietaryCalcium,
+        HKQuantityTypeIdentifier.dietaryCarbohydrates,
+        HKQuantityTypeIdentifier.dietaryCholesterol,
+        HKQuantityTypeIdentifier.dietaryCopper,
+        HKQuantityTypeIdentifier.dietaryFatMonounsaturated,
+        HKQuantityTypeIdentifier.dietaryFatPolyunsaturated,
+        HKQuantityTypeIdentifier.dietaryFatSaturated,
+        HKQuantityTypeIdentifier.dietaryFatTotal,
+        HKQuantityTypeIdentifier.dietaryFiber,
+        HKQuantityTypeIdentifier.dietaryIron,
+        HKQuantityTypeIdentifier.dietaryMagnesium,
+        HKQuantityTypeIdentifier.dietaryManganese,
+        HKQuantityTypeIdentifier.dietaryNiacin,
+        HKQuantityTypeIdentifier.dietaryPantothenicAcid,
+        HKQuantityTypeIdentifier.dietaryPhosphorus,
+        HKQuantityTypeIdentifier.dietaryPotassium,
+        HKQuantityTypeIdentifier.dietaryProtein,
+        HKQuantityTypeIdentifier.dietaryRiboflavin,
+        HKQuantityTypeIdentifier.dietarySodium,
+        HKQuantityTypeIdentifier.dietarySugar,
+        HKQuantityTypeIdentifier.dietaryThiamin,
+        HKQuantityTypeIdentifier.dietaryVitaminB6,
+        HKQuantityTypeIdentifier.dietaryVitaminA,
+        HKQuantityTypeIdentifier.dietaryVitaminC,
+        HKQuantityTypeIdentifier.dietaryVitaminD,
+        HKQuantityTypeIdentifier.dietaryVitaminE,
+        HKQuantityTypeIdentifier.dietaryZinc,
       ];
 
       const permissions = {
-        permissions: {
-          read: hk_types as HealthPermission[],
-          write: hk_types as HealthPermission[],
-        },
+        read: hk_types,
+        write: hk_types,
       };
 
-      appleHealthKit.initHealthKit(permissions, (error, results) => {
-        /* Called after we receive a response from the system */
-        if (error) {
-          console.log(error);
-          console.log('failed to request HK nutrition auth');
-        } else {
+      appleHealthKit
+        .requestAuthorization(permissions.read, permissions.write)
+        .then(results => {
           analyticTrackEvent('HealthKit_nutrition_sync', 'enable');
           console.log('results', results);
           console.log('successfully requested HK nutrition auth');
-        }
-      });
+        })
+        .catch(error => {
+          console.log(error);
+          console.log('failed to request HK nutrition auth');
+        });
     }
   };
 
@@ -100,26 +98,20 @@ export const HealthkitSyncScreen: React.FC = () => {
       analyticTrackEvent('HealthKit_weight_sync', 'disable');
     } else if (weight === 'pull') {
       const permissions = {
-        permissions: {
-          read: [
-            appleHealthKit.Constants.Permissions.BodyMass,
-          ] as HealthPermission[],
-          write: [
-            appleHealthKit.Constants.Permissions.BodyMass,
-          ] as HealthPermission[],
-        },
+        read: [HKQuantityTypeIdentifier.bodyMass],
+        write: [HKQuantityTypeIdentifier.bodyMass],
       };
-      appleHealthKit.initHealthKit(permissions, error => {
-        /* Called after we receive a response from the system */
-        if (error) {
-          console.log(error);
-          console.log('failed to request HK weight auth');
-        } else {
+      appleHealthKit
+        .requestAuthorization(permissions.read, permissions.write)
+        .then(() => {
           analyticTrackEvent('HealthKit_pull_weight_sync', 'enable');
           dispatch(pullWeightsFromHK());
           console.log('successfully requested HK weight auth');
-        }
-      });
+        })
+        .catch(error => {
+          console.log(error);
+          console.log('failed to request HK weight auth');
+        });
     } else {
       SQLexecute({
         db,
@@ -127,25 +119,19 @@ export const HealthkitSyncScreen: React.FC = () => {
           'CREATE TABLE hkdata_weight (id INTEGER PRIMARY KEY, response TEXT)',
       });
       const permissions = {
-        permissions: {
-          read: [
-            appleHealthKit.Constants.Permissions.BodyMass,
-          ] as HealthPermission[],
-          write: [
-            appleHealthKit.Constants.Permissions.BodyMass,
-          ] as HealthPermission[],
-        },
+        read: [HKQuantityTypeIdentifier.bodyMass],
+        write: [HKQuantityTypeIdentifier.bodyMass],
       };
-      appleHealthKit.initHealthKit(permissions, (error, results) => {
-        /* Called after we receive a response from the system */
-        if (error) {
-          console.log(error);
-          console.log('failed to request HK weight auth');
-        } else {
+      appleHealthKit
+        .requestAuthorization(permissions.read, permissions.write)
+        .then(results => {
           analyticTrackEvent('HealthKit_push_weight_sync', 'enable');
           console.log('successfully requested HK weight auth', results);
-        }
-      });
+        })
+        .catch(error => {
+          console.log(error);
+          console.log('failed to request HK weight auth');
+        });
     }
   }
 
@@ -155,27 +141,21 @@ export const HealthkitSyncScreen: React.FC = () => {
       analyticTrackEvent('HealthKit_exercise_sync', 'disable');
     } else if (exercise === 'pull') {
       const permissions = {
-        permissions: {
-          read: [
-            appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
-          ] as HealthPermission[],
-          write: [
-            appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
-          ] as HealthPermission[],
-        },
+        read: [HKQuantityTypeIdentifier.activeEnergyBurned],
+        write: [HKQuantityTypeIdentifier.activeEnergyBurned],
       };
-      appleHealthKit.initHealthKit(permissions, error => {
-        /* Called after we receive a response from the system */
-        if (error) {
-          console.log(error);
-          console.log('failed to request HK exercise auth');
-        } else {
+      appleHealthKit
+        .requestAuthorization(permissions.read, permissions.write)
+        .then(() => {
           analyticTrackEvent('HealthKit_pull_exercise_sync', 'enable');
           console.log('successfully requested HK exercise auth');
           console.log('here');
           dispatch(pullExerciseFromHK());
-        }
-      });
+        })
+        .catch(error => {
+          console.log(error);
+          console.log('failed to request HK exercise auth');
+        });
     } else {
       SQLexecute({
         db,
@@ -183,25 +163,19 @@ export const HealthkitSyncScreen: React.FC = () => {
           'CREATE TABLE hkdata_exercise (id INTEGER PRIMARY KEY, response TEXT)',
       });
       const permissions = {
-        permissions: {
-          read: [
-            appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
-          ] as HealthPermission[],
-          write: [
-            appleHealthKit.Constants.Permissions.ActiveEnergyBurned,
-          ] as HealthPermission[],
-        },
+        read: [HKQuantityTypeIdentifier.activeEnergyBurned],
+        write: [HKQuantityTypeIdentifier.activeEnergyBurned],
       };
-      appleHealthKit.initHealthKit(permissions, error => {
-        /* Called after we receive a response from the system */
-        if (error) {
-          console.log(error);
-          console.log('failed to request HK exercise auth');
-        } else {
+      appleHealthKit
+        .requestAuthorization(permissions.read, permissions.write)
+        .then(() => {
           analyticTrackEvent('HealthKit_push_exercise_sync', 'enable');
           console.log('successfully requested HK exercise auth');
-        }
-      });
+        })
+        .catch(error => {
+          console.log(error);
+          console.log('failed to request HK exercise auth');
+        });
     }
   };
 
