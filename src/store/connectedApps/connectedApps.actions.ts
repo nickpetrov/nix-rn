@@ -85,6 +85,7 @@ export const pullWeightsFromHK = () => {
     appleHealthKit
       .queryQuantitySamples(HKQuantityTypeIdentifier.bodyMass, options)
       .then(results => {
+        console.log('queryQuantitySamples results bodyMass', results);
         const weightsFromHK = results.map((item: HKQuantitySample) => ({
           ...item,
           value: item.quantity,
