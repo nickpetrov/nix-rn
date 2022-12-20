@@ -37,6 +37,7 @@ function addWeightToHK(weights: WeightProps[]) {
     appleHealthKit
       .saveQuantitySample(HKQuantityTypeIdentifier.bodyMass, 'kg', weight.kg, {
         start: new Date(weight.timestamp),
+        end: new Date(weight.timestamp),
       })
       .then(() => {
         deferred.resolve('add weight sample success');

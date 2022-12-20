@@ -75,7 +75,7 @@ function deleteFromHK(days: string[]) {
     _.map(atr_ids, function (arr) {
       const sample = {
         startDate: moment(moment(day).valueOf() - 1000).toDate(),
-        endDate: moment(moment(day).endOf('day').valueOf() + 1000).toDate(), //end of day
+        endDate: moment(moment(day).valueOf() + 1000).toDate(), //end of day
         identifier: arr[0],
       };
       delete_samples.push(sample);
@@ -134,6 +134,10 @@ const createSample = (day: string, foods: FoodProps[]) => {
       quantityType: id_dict.hk,
       unit: id_dict.unit,
       quantity: id_dict.value,
+      metadata: {
+        start: moment().toISOString(),
+        end: moment().toISOString(),
+      },
     };
     hkSample.push(sample);
   });
@@ -168,7 +172,7 @@ const addToHK = (days: string[], foods: FoodProps[]) => {
     appleHealthKit
       .saveCorrelationSample(HKCorrelationTypeIdentifier.food, samples, {
         start: moment(day).toDate(),
-        end: moment(moment(day).endOf('day')).toDate(),
+        end: moment(day).toDate(),
         metadata: {day: day},
       })
       .then(() => {
