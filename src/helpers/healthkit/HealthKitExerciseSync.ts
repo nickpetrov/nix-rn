@@ -43,7 +43,7 @@ function deleteExerciseFromHK(days: string[]) {
     appleHealthKit
       .deleteSamples(sample)
       .then(value => {
-        console.log('val', value);
+        console.log('Delete exercise sample success', value);
         deferred.resolve('success');
       })
       .catch(err => {
