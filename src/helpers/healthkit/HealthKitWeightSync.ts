@@ -37,8 +37,10 @@ function addWeightToHK(weights: WeightProps[]) {
     appleHealthKit
       .saveQuantitySample(HKQuantityTypeIdentifier.bodyMass, 'kg', weight.kg, {
         start: new Date(weight.timestamp),
+        end: new Date(weight.timestamp),
       })
       .then(() => {
+        console.log('add weight sample success', weight);
         deferred.resolve('add weight sample success');
       })
       .catch(err => {
@@ -56,15 +58,14 @@ function deleteWeightFromHK(weights: WeightProps[]) {
     const deferred = Q.defer();
     promises.push(deferred.promise);
     const sample = {
-      startDate: moment(moment(weight.timestamp).valueOf() - 1000).toDate(),
-      endDate: moment(moment(weight.timestamp).valueOf() + 1000).toDate(),
+      startDate: new Date(new Date(weight.timestamp).getTime() - 1000),
+      endDate: new Date(new Date(weight.timestamp).getTime() + 1000),
       identifier: HKQuantityTypeIdentifier.bodyMass,
     };
-    console.log('sample', sample);
     appleHealthKit
       .deleteSamples(sample)
       .then(value => {
-        console.log('Delete weight sample success', value);
+        console.log('Delete weight sample success', sample);
         deferred.resolve('success');
       })
       .catch(err => {
@@ -82,6 +83,8 @@ function reconcileHKWeight(
   weightsLog: WeightProps[],
   db: SQLiteDatabase | null,
 ) {
+  console.log("weightsLog",weightsLog)
+  console.log("weight_data",weight_data)
   // These are the last 7 days we want to match
   const syncDates = getLastXDaysDates(7);
   const addArr: any = [];
@@ -94,7 +97,7 @@ function reconcileHKWeight(
   _.forEach(day_difference, function (day) {
     addArr.push.apply(
       addArr,
-      weightsLog.filter((item: WeightProps) => item.timestamp === day),
+      weightsLog.filter((item: WeightProps) => moment(item.timestamp).format('YYYY-MM-DD') === moment(day).format('YYYY-MM-DD')),
     );
   });
 
@@ -102,7 +105,9 @@ function reconcileHKWeight(
     //outside the scope of 7 days
     let match_arr;
     let hkWeights: any[];
-    if (syncDates.indexOf(weight.timestamp) === -1) {
+    
+    if (syncDates.map(item => moment(item).format('YYYY-MM-DD')).indexOf(moment(weight.timestamp).format('YYYY-MM-DD')) === -1) {
+      console.log("return")
       return;
     } else {
       hkWeights = weight_data;
@@ -113,6 +118,7 @@ function reconcileHKWeight(
       // ones that are not matched need to be deleted from hk
       match_arr = new Array(hkWeights.length);
 
+      console.log("apiWeights", apiWeights)
       //first check for weights in api weights that are not in hk
       _.forEach(apiWeights, function (api_weight) {
         //index of matched weight in hkweights
@@ -123,7 +129,7 @@ function reconcileHKWeight(
         //id no match found, then need to add
         if (match === -1) {
           console.log('adding weight', api_weight.kg);
-          addArr.push(api_weight);
+            addArr.push(api_weight);
         } else {
           match_arr[match] = 1;
           //check if the weight has been updated by comparing the kg values
@@ -145,7 +151,7 @@ function reconcileHKWeight(
   });
 
   deleteWeightFromHK(deleteArr);
-  addWeightToHK(addArr);
+  addWeightToHK(_.uniqBy(addArr, (e) => e.id))
   // for updated weight
   if (updateArr.length) {
     const weights_to_delete: any = [];
@@ -201,6 +207,7 @@ function syncWeight(db: SQLiteDatabase | null, weightsLog: WeightProps[]) {
           });
         });
       } else {
+        console.log('add result weight');
         reconcileHKWeight(result.resp, result.id, weights, db);
       }
     })
