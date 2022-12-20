@@ -70,7 +70,7 @@ function addExerciseToHK(days: string[], exerciseLog: ExerciseProps[]) {
             exercise.nf_calories,
             {
               start: moment(exercise.timestamp).toDate(),
-              end: moment(moment(day).endOf('day')).toDate(),
+              // end: moment(moment(day).endOf('day')).toDate(),
             },
           )
           .then(res => {

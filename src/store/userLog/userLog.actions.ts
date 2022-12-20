@@ -441,6 +441,13 @@ export const addExerciseToLog = (query: string) => {
             exercises: result.exercises,
           });
           dispatch(refreshUserLogTotals());
+
+          const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+          if (hkSyncOptions.exercise === 'push' && Platform.OS === 'ios') {
+            const oldExercises = useState().userLog.exercises;
+            const db = useState().base.db;
+            syncExercise(db, oldExercises.concat(result.exercises));
+          }
         } else {
           dispatch(
             setInfoMessage({
