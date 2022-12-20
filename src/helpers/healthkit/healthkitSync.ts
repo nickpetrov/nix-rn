@@ -7,6 +7,7 @@ import {SQLiteDatabase} from 'react-native-sqlite-storage';
 import moment from 'moment-timezone';
 import appleHealthKit, {
   HKCorrelationTypeIdentifier,
+  HKQuantitySampleForSaving,
   HKQuantityTypeIdentifier,
 } from 'hk';
 
@@ -87,7 +88,7 @@ function deleteFromHK(days: string[]) {
     appleHealthKit
       .deleteSamples(sample)
       .then(value => {
-        console.log('val', value);
+        console.log('Delete Sample food', value);
         deferred.resolve('success');
       })
       .catch(err => {
@@ -129,12 +130,10 @@ const createSample = (day: string, foods: FoodProps[]) => {
   // convert sample dict into hksample formatted array
   let hkSample: any = [];
   _.forEach(sample_dict, function (id_dict) {
-    const sample = {
-      startDate: moment(day).format(), //beginning of day
-      endDate: moment(moment(day).endOf('day')).format(), //end of day
-      sampleType: id_dict.hk,
+    const sample: HKQuantitySampleForSaving = {
+      quantityType: id_dict.hk,
       unit: id_dict.unit,
-      amount: id_dict.value,
+      quantity: id_dict.value,
     };
     hkSample.push(sample);
   });
