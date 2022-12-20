@@ -36,14 +36,13 @@ function deleteExerciseFromHK(days: string[]) {
     promises.push(deferred.promise);
     const sample = {
       identifier: HKQuantityTypeIdentifier.activeEnergyBurned,
-      startDate: moment(moment(day).valueOf() - 1000).toDate(),
-      endDate: moment(moment(day).endOf('day').valueOf() + 1000).toDate(), //end of day
+      startDate: moment(moment(day).startOf("day").valueOf() - 1000).toDate(),
+      endDate: moment(moment(day).endOf("day").valueOf() + 1000).toDate(), //end of day
     };
-    console.log('sample', sample);
     appleHealthKit
       .deleteSamples(sample)
       .then(value => {
-        console.log('Delete exercise sample success', value);
+        console.log('Delete exercise sample success', day, sample);
         deferred.resolve('success');
       })
       .catch(err => {
@@ -56,10 +55,12 @@ function deleteExerciseFromHK(days: string[]) {
 }
 
 function addExerciseToHK(days: string[], exerciseLog: ExerciseProps[]) {
+  console.log("days", days)
+  console.log("exerciseLog", exerciseLog)
   const promises: any = [];
   _.forEach(days, function (day) {
     _.map(
-      exerciseLog.filter(item => item.timestamp == day),
+      exerciseLog.filter(item => moment(item.timestamp).format('YYYY-MM-DD') == moment(day).format('YYYY-MM-DD')),
       function (exercise) {
         const deferred = Q.defer();
         promises.push(deferred.promise);
@@ -70,11 +71,11 @@ function addExerciseToHK(days: string[], exerciseLog: ExerciseProps[]) {
             exercise.nf_calories,
             {
               start: moment(exercise.timestamp).toDate(),
-              end: moment(moment(day).endOf('day')).toDate(),
+              end: moment(exercise.timestamp).toDate(),
             },
           )
           .then(res => {
-            console.log('add exercise sample success', res);
+            console.log('add exercise sample success', moment(exercise.timestamp).toDate(), exercise.nf_calories);
             deferred.resolve('success');
           })
           .catch(err => {
@@ -117,6 +118,7 @@ function reconcileHKExercise(
       const apiExercises = exerciseLog.filter(
         item => item.timestamp === exercise.timestamp,
       );
+      console.log("apiExercises", apiExercises)
       // used to determine deletes. bit arr to store which indices in hk array are matched.
       // ones that are not matched need to be deleted from hk
       match_arr = new Array(hkExercises.length);
@@ -136,6 +138,8 @@ function reconcileHKExercise(
         } else {
           match_arr[match] = 1;
           //check if the exercise has been updated by comparing the calories burned values
+          console.log("api_exercise.nf_calories", api_exercise.nf_calories)
+          console.log("hkExercises[match].nf_calories", hkExercises[match].nf_calories)
           if (api_exercise.nf_calories !== hkExercises[match].nf_calories) {
             console.log('updating exercise', exercise.timestamp);
             daysToSync.push(exercise.timestamp);
@@ -148,7 +152,7 @@ function reconcileHKExercise(
     if (_.includes(daysToSync, exercise.timestamp)) {
       return;
     }
-
+    console.log("match_arr", match_arr)
     //iterate through the matched arr to determine deletes
     for (var i = 0; i < match_arr.length; i++) {
       if (!match_arr[i]) {
