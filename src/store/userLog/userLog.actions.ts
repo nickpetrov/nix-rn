@@ -120,7 +120,7 @@ export const getUserFoodlog = (
       const hkSyncOptions = useState().connectedApps.hkSyncOptions;
       if (hkSyncOptions.nutrition === 'push' && Platform.OS === 'ios') {
         const db = useState().base.db;
-        // healthkitSync(userFoodlog.foods, db);
+        healthkitSync(userFoodlog.foods, db);
       }
 
       // dispatch<any>(getDayTotals(beginDateSelected, endDate, timezone));
@@ -165,7 +165,7 @@ export const getUserWeightlog = (
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
           const db = useState().base.db;
-          syncWeight(db, result.weights);
+          // syncWeight(db, result.weights);
         }
       }
     } catch (error) {
@@ -193,7 +193,7 @@ export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
         if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
           const oldWeights = useState().userLog.weights;
           const db = useState().base.db;
-          syncWeight(db, oldWeights.concat(result.weights));
+          // syncWeight(db, oldWeights.concat(result.weights));
         }
         dispatch<any>(refreshUserLogTotals());
       }
@@ -229,7 +229,7 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
             }
           });
           const db = useState().base.db;
-          syncWeight(db, newWeights);
+          // syncWeight(db, newWeights);
         }
         dispatch<any>(refreshUserLogTotals());
       }
@@ -254,10 +254,10 @@ export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
         if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
           const oldWeights = useState().userLog.weights;
           const db = useState().base.db;
-          syncWeight(
-            db,
-            oldWeights.filter(item => !deletedIds.includes(item.id)),
-          );
+          // syncWeight(
+          //   db,
+          //   oldWeights.filter(item => !deletedIds.includes(item.id)),
+          // );
         }
         dispatch(refreshUserLogTotals());
       }
