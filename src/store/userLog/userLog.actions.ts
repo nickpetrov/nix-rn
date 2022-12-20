@@ -158,15 +158,15 @@ export const getUserWeightlog = (
       //   console.log('weightsLog', result.weights);
       // }
       if (result.weights) {
-        dispatch({
-          type: userLogActionTypes.GET_USER_WEIGHT_LOG,
-          weights: result.weights,
-        });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
           const db = useState().base.db;
           syncWeight(db, result.weights);
         }
+        dispatch({
+          type: userLogActionTypes.GET_USER_WEIGHT_LOG,
+          weights: result.weights,
+        });
       }
     } catch (error) {
       throw error;
@@ -185,16 +185,16 @@ export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
       const result = response.data;
 
       if (result.weights) {
-        dispatch({
-          type: userLogActionTypes.ADD_WEIGHT_LOG,
-          weights: result.weights,
-        });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
           const oldWeights = useState().userLog.weights;
           const db = useState().base.db;
           syncWeight(db, oldWeights.concat(result.weights));
         }
+        dispatch({
+          type: userLogActionTypes.ADD_WEIGHT_LOG,
+          weights: result.weights,
+        });
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
@@ -214,10 +214,6 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
       const result = response.data;
 
       if (result.weights) {
-        dispatch({
-          type: userLogActionTypes.UPDATE_WEIGHT_LOG,
-          weights: result.weights,
-        });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
           const oldWeights = useState().userLog.weights;
@@ -231,6 +227,10 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
           const db = useState().base.db;
           syncWeight(db, newWeights);
         }
+        dispatch({
+          type: userLogActionTypes.UPDATE_WEIGHT_LOG,
+          weights: result.weights,
+        });
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
@@ -246,10 +246,6 @@ export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
 
       if (response.status === 200) {
         const deletedIds = weights.map(item => item.id);
-        dispatch({
-          type: userLogActionTypes.DELETE_WEIGHT_FROM_LOG,
-          weights: weights.map(item => item.id),
-        });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.weight === 'push' && Platform.OS === 'ios') {
           const oldWeights = useState().userLog.weights;
@@ -259,6 +255,10 @@ export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
             oldWeights.filter(item => !deletedIds.includes(item.id)),
           );
         }
+        dispatch({
+          type: userLogActionTypes.DELETE_WEIGHT_FROM_LOG,
+          weights: weights.map(item => item.id),
+        });
         dispatch(refreshUserLogTotals());
       }
     } catch (error) {
@@ -276,10 +276,6 @@ export const deleteExerciseFromLog = (exercises: Array<{id: string}>) => {
 
       if (response.status === 200) {
         const deletedExercisesIds = exercises.map(item => item.id);
-        dispatch({
-          type: userLogActionTypes.DELETE_EXERCISE_FROM_LOG,
-          exercises: deletedExercisesIds,
-        });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.exercise === 'push' && Platform.OS === 'ios') {
           const oldExercises = useState().userLog.exercises;
@@ -289,6 +285,10 @@ export const deleteExerciseFromLog = (exercises: Array<{id: string}>) => {
             oldExercises.filter(item => !deletedExercisesIds.includes(item.id)),
           );
         }
+        dispatch({
+          type: userLogActionTypes.DELETE_EXERCISE_FROM_LOG,
+          exercises: deletedExercisesIds,
+        });
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
@@ -322,15 +322,15 @@ export const getUserExerciseslog = (
       //   console.log('exercisesLog', result.exercises);
       // }
       if (result.exercises) {
-        dispatch({
-          type: userLogActionTypes.GET_USER_EXERCISES_LOG,
-          exercises: result.exercises,
-        });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.exercise === 'push' && Platform.OS === 'ios') {
           const db = useState().base.db;
           syncExercise(db, result.exercises);
         }
+        dispatch({
+          type: userLogActionTypes.GET_USER_EXERCISES_LOG,
+          exercises: result.exercises,
+        });
       }
     } catch (error) {
       throw error;
@@ -349,10 +349,6 @@ export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
       const result = response.data;
 
       if (result.exercises.length) {
-        dispatch({
-          type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
-          exercises: result.exercises,
-        });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.exercise === 'push' && Platform.OS === 'ios') {
           const oldExercises = useState().userLog.exercises;
@@ -360,6 +356,10 @@ export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
           syncExercise(db, oldExercises.concat(result.exercises));
         }
         dispatch<any>(refreshUserLogTotals());
+        dispatch({
+          type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
+          exercises: result.exercises,
+        });
       }
     } catch (error) {
       throw error;
@@ -377,10 +377,6 @@ export const updateExistExercisesToLog = (exercises: ExerciseProps[]) => {
       const result = response.data;
 
       if (result.exercises.length) {
-        dispatch({
-          type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
-          exercises: result.exercises,
-        });
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.exercise === 'push' && Platform.OS === 'ios') {
           const oldExercises = useState().userLog.exercises;
@@ -394,6 +390,10 @@ export const updateExistExercisesToLog = (exercises: ExerciseProps[]) => {
           const db = useState().base.db;
           syncExercise(db, newExercises);
         }
+        dispatch({
+          type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
+          exercises: result.exercises,
+        });
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
@@ -436,18 +436,17 @@ export const addExerciseToLog = (query: string) => {
         const result = response.data;
 
         if (result.exercises.length) {
-          dispatch({
-            type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
-            exercises: result.exercises,
-          });
-          dispatch(refreshUserLogTotals());
-
           const hkSyncOptions = useState().connectedApps.hkSyncOptions;
           if (hkSyncOptions.exercise === 'push' && Platform.OS === 'ios') {
             const oldExercises = useState().userLog.exercises;
             const db = useState().base.db;
             syncExercise(db, oldExercises.concat(result.exercises));
           }
+          dispatch({
+            type: userLogActionTypes.ADD_USER_EXERCISES_LOG,
+            exercises: result.exercises,
+          });
+          dispatch(refreshUserLogTotals());
         } else {
           dispatch(
             setInfoMessage({
@@ -501,11 +500,6 @@ export const updateExerciseToLog = (query: string, exercise: ExerciseProps) => {
         const result = response.data;
 
         if (result.exercises.length) {
-          dispatch({
-            type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
-            exercises: result.exercises,
-          });
-          dispatch(refreshUserLogTotals());
           const hkSyncOptions = useState().connectedApps.hkSyncOptions;
           if (hkSyncOptions.exercise === 'push' && Platform.OS === 'ios') {
             const oldExercises = useState().userLog.exercises;
@@ -519,6 +513,11 @@ export const updateExerciseToLog = (query: string, exercise: ExerciseProps) => {
             const db = useState().base.db;
             syncExercise(db, newExercises);
           }
+          dispatch({
+            type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG,
+            exercises: result.exercises,
+          });
+          dispatch(refreshUserLogTotals());
         }
       }
     } catch (error) {
@@ -563,11 +562,6 @@ export const addFoodToLog = (
       const result = response.data;
 
       if (result.foods) {
-        dispatch({
-          type: userLogActionTypes.ADD_FOOD_TO_LOG,
-          payload: result.foods,
-        });
-        dispatch<any>(refreshUserLogTotals());
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.nutrition === 'push' && Platform.OS === 'ios') {
           const db = useState().base.db;
@@ -577,6 +571,11 @@ export const addFoodToLog = (
             : result.foods;
           healthkitSync(oldFoods.concat(foodToAdd), db);
         }
+        dispatch({
+          type: userLogActionTypes.ADD_FOOD_TO_LOG,
+          payload: result.foods,
+        });
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;
@@ -595,11 +594,6 @@ export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
       const result = response.data;
 
       if (result.foods?.length) {
-        dispatch({
-          type: userLogActionTypes.UPDATE_FOOD_FROM_LOG,
-          payload: result.foods[0],
-        });
-        dispatch<any>(refreshUserLogTotals());
         const hkSyncOptions = useState().connectedApps.hkSyncOptions;
         if (hkSyncOptions.nutrition === 'push' && Platform.OS === 'ios') {
           const db = useState().base.db;
@@ -613,6 +607,11 @@ export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
           }
           healthkitSync(newFoods, db);
         }
+        dispatch({
+          type: userLogActionTypes.UPDATE_FOOD_FROM_LOG,
+          payload: result.foods[0],
+        });
+        dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
       throw error;
