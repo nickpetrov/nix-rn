@@ -74,7 +74,7 @@ function deleteFromHK(days: string[]) {
   _.forEach(days, function (day) {
     _.map(atr_ids, function (arr) {
       const sample = {
-        startDate: moment(day).toDate(),
+        startDate: moment(moment(day).valueOf() - 1000).toDate(),
         endDate: moment(moment(day).endOf('day')).toDate(), //end of day
         identifier: arr[0],
       };
@@ -87,8 +87,8 @@ function deleteFromHK(days: string[]) {
 
     appleHealthKit
       .deleteSamples(sample)
-      .then(value => {
-        console.log('Delete Sample food', value);
+      .then(() => {
+        console.log('Delete Sample food', sample);
         deferred.resolve('success');
       })
       .catch(err => {

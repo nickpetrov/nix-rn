@@ -36,7 +36,7 @@ function deleteExerciseFromHK(days: string[]) {
     promises.push(deferred.promise);
     const sample = {
       identifier: HKQuantityTypeIdentifier.activeEnergyBurned,
-      startDate: moment(day).toDate(),
+      startDate: moment(moment(day).valueOf() - 1000).toDate(),
       endDate: moment(moment(day).endOf('day')).toDate(), //end of day
     };
     console.log('sample', sample);
