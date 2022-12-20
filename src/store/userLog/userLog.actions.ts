@@ -568,6 +568,15 @@ export const addFoodToLog = (
           payload: result.foods,
         });
         dispatch<any>(refreshUserLogTotals());
+        const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+        if (hkSyncOptions.nutrition === 'push' && Platform.OS === 'ios') {
+          const db = useState().base.db;
+          const oldFoods = useState().userLog.foods;
+          const foodToAdd = !Array.isArray(result.foods)
+            ? [result.foods]
+            : result.foods;
+          healthkitSync(oldFoods.concat(foodToAdd), db);
+        }
       }
     } catch (error) {
       throw error;
@@ -576,7 +585,10 @@ export const addFoodToLog = (
 };
 
 export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
-  return async (dispatch: Dispatch<updateFoodFromLogAction>) => {
+  return async (
+    dispatch: Dispatch<updateFoodFromLogAction>,
+    useState: () => RootState,
+  ) => {
     try {
       const response = await userLogService.updateFoodFromLog(foodArray);
 
@@ -588,6 +600,19 @@ export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
           payload: result.foods[0],
         });
         dispatch<any>(refreshUserLogTotals());
+        const hkSyncOptions = useState().connectedApps.hkSyncOptions;
+        if (hkSyncOptions.nutrition === 'push' && Platform.OS === 'ios') {
+          const db = useState().base.db;
+          const oldFoods = useState().userLog.foods;
+          const newFoods = [...oldFoods];
+          const changedFoodIndex = newFoods.findIndex(
+            item => item.id === result.foods[0].id,
+          );
+          if (changedFoodIndex !== -1) {
+            newFoods[changedFoodIndex] = result.foods[0];
+          }
+          healthkitSync(newFoods, db);
+        }
       }
     } catch (error) {
       throw error;
