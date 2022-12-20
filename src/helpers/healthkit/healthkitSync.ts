@@ -136,7 +136,7 @@ const createSample = (day: string, foods: FoodProps[]) => {
       quantity: id_dict.value,
       metadata: {
         start: moment().toISOString(),
-        end: moment().toISOString(),
+        end: moment(moment(day).endOf('day')).toISOString(),
       },
     };
     hkSample.push(sample);
@@ -172,7 +172,7 @@ const addToHK = (days: string[], foods: FoodProps[]) => {
     appleHealthKit
       .saveCorrelationSample(HKCorrelationTypeIdentifier.food, samples, {
         start: moment(day).toDate(),
-        end: moment(day).toDate(),
+        end: moment(moment(day).endOf('day')).toDate(),
         metadata: {day: day},
       })
       .then(() => {
