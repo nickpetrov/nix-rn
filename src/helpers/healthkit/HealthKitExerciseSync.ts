@@ -73,11 +73,12 @@ function addExerciseToHK(days: string[], exerciseLog: ExerciseProps[]) {
               end: moment(moment(day).endOf('day')).toDate(),
             },
           )
-          .then(() => {
+          .then(res => {
+            console.log('add exercise sample success', res);
             deferred.resolve('success');
           })
           .catch(err => {
-            console.log('add weight sample err', err);
+            console.log('add exercise sample err', err);
             deferred.reject(err);
           });
       },

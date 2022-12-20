@@ -39,7 +39,7 @@ function addWeightToHK(weights: WeightProps[]) {
         start: new Date(weight.timestamp),
       })
       .then(() => {
-        deferred.resolve('success');
+        deferred.resolve('add weight sample success');
       })
       .catch(err => {
         console.log('add weight sample err', err);
@@ -155,8 +155,8 @@ function reconcileHKWeight(
       weights_to_add.push(weightarr[0]);
     });
 
-    deleteWeightFromHK(weights_to_delete).then(function () {
-      'delete update samples success';
+    deleteWeightFromHK(weights_to_delete).then(() => {
+      console.log('delete update samples success');
       addWeightToHK(weights_to_add);
     });
   }
