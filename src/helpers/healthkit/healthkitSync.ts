@@ -75,7 +75,7 @@ function deleteFromHK(days: string[]) {
     _.map(atr_ids, function (arr) {
       const sample = {
         startDate: moment(moment(day).valueOf() - 1000).toDate(),
-        endDate: moment(moment(day).endOf('day')).toDate(), //end of day
+        endDate: moment(moment(day).endOf('day').valueOf() + 1000).toDate(), //end of day
         identifier: arr[0],
       };
       delete_samples.push(sample);

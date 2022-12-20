@@ -37,7 +37,7 @@ function deleteExerciseFromHK(days: string[]) {
     const sample = {
       identifier: HKQuantityTypeIdentifier.activeEnergyBurned,
       startDate: moment(moment(day).valueOf() - 1000).toDate(),
-      endDate: moment(moment(day).endOf('day')).toDate(), //end of day
+      endDate: moment(moment(day).endOf('day').valueOf() + 1000).toDate(), //end of day
     };
     console.log('sample', sample);
     appleHealthKit
