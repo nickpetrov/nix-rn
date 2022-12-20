@@ -134,10 +134,6 @@ const createSample = (day: string, foods: FoodProps[]) => {
       quantityType: id_dict.hk,
       unit: id_dict.unit,
       quantity: id_dict.value,
-      metadata: {
-        start: moment().startOf('day').toISOString(),
-        end: moment(moment(day).endOf('day')).toISOString(),
-      },
     };
     hkSample.push(sample);
   });
