@@ -15,7 +15,7 @@ apiClient.interceptors.request.use(
     if (config.headers === undefined) {
       config.headers = {};
     }
-    // if (__DEV__) console.log('Client API Request:', config);
+    if (__DEV__) console.log('Client API Request:', config);
     return config;
   },
   error => {
@@ -26,7 +26,7 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   function (response) {
     if (__DEV__) {
-      // console.log('API Response:', response);
+      console.log('API Response:', response);
     }
     return response;
   },
