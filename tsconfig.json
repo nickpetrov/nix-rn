@@ -21,7 +21,9 @@
       "config/*": ["config/*"]
     },
     "types": [
-      "node"
-    ],                         
+      "node",
+      "jest",
+    ],
+    "isolatedModules": false,                         
   }
 }

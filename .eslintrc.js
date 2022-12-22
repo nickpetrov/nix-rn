@@ -2,7 +2,7 @@ module.exports = {
   root: true,
   extends: '@react-native-community',
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: ['@typescript-eslint', 'prettier', 'jest'],
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
@@ -32,5 +32,13 @@ module.exports = {
         'arrow-body-style': ['error', 'as-needed'],
       },
     ],
+    'jest/no-disabled-tests': 'warn',
+    'jest/no-focused-tests': 'error',
+    'jest/no-identical-title': 'error',
+    'jest/prefer-to-have-length': 'warn',
+    'jest/valid-expect': 'error',
+  },
+  env: {
+    'jest/globals': true,
   },
 };

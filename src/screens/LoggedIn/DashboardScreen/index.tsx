@@ -338,7 +338,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   };
 
   return (
-    <View style={styles.layout}>
+    <View style={styles.layout} testID="dashboard">
       <SectionList
         listKey="rootFoodList"
         sections={sections}
@@ -482,23 +482,24 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </View>
                 </TouchableHighlight>
               )}
-              {section.key === foodLogSections.Exercise && uncompletedProfile && (
-                <View style={styles.summary}>
-                  <Text>
-                    Complete your profile{' '}
-                    <Text
-                      style={{color: Colors.Info}}
-                      onPress={() =>
-                        navigation.navigate(Routes.Preferences, {
-                          screen: Routes.Profile,
-                        })
-                      }>
-                      here
-                    </Text>{' '}
-                    for more accurate exercise tracking
-                  </Text>
-                </View>
-              )}
+              {section.key === foodLogSections.Exercise &&
+                uncompletedProfile && (
+                  <View style={styles.summary}>
+                    <Text>
+                      Complete your profile{' '}
+                      <Text
+                        style={{color: Colors.Info}}
+                        onPress={() =>
+                          navigation.navigate(Routes.Preferences, {
+                            screen: Routes.Profile,
+                          })
+                        }>
+                        here
+                      </Text>{' '}
+                      for more accurate exercise tracking
+                    </Text>
+                  </View>
+                )}
             </>
           );
         }}

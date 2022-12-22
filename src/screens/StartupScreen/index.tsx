@@ -66,7 +66,8 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
 
   return (
     <SafeAreaView
-      style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+      style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
+      testID="startup-screen">
       <ActivityIndicator size="large" />
     </SafeAreaView>
   );
