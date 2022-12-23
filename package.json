@@ -22,6 +22,7 @@
     "@react-navigation/drawer": "^6.4.4",
     "@react-navigation/native": "^6.0.12",
     "@react-navigation/native-stack": "^6.8.0",
+    "@sentry/cli": "^2.11.0",
     "@sentry/react-native": "4.9.0",
     "@types/aws-sdk": "^2.7.0",
     "@types/highlight-words-core": "^1.2.1",

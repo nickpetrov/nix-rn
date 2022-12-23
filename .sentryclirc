@@ -1,0 +1,7 @@
+[defaults]
+url = https://sentry.io/
+org = nutritionix-5x
+project = nutritionix-track-react-native
+
+[auth]
+token = ef9f490466ad4540856b447cab0216651d916ae99c54400d80fb9e49c62f6246
