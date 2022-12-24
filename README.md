@@ -22,7 +22,12 @@
 4. create archive (Product -> Archive)
 5. upload archive (Distribute App), make sure that the last version is active
 
-### produce source-map for sentry
+### produce source-map for android and upload it to sentry automaticaly
+
+1. change line 27 at script scripts/sentry-sourcemaps.sh - replace "win64-bin" with your current sestem(OS-BIN is osx-bin, win64-bin, or linux64-bin, depending on which operating system you are using.)
+2. run script `yarn run post-build`
+
+### produce source-map for sentry manualy
 
 for ios:
 
@@ -36,7 +41,7 @@ for android
    2.2 `mv index.android.bundle.hbc index.android.bundle`
 3. `npx node node_modules/react-native/scripts/compose-source-maps.js index.android.bundle.packager.map index.android.bundle.hbc.map -o index.android.bundle.map`
 
-### upload source-map for sentry
+### upload source-map for sentry manualy
 
 1. `npx sentry-cli releases new <release_name>` - release_name - example: com.nutritionx-1.0 (can find at App.tsx where sentry init - release: getBundleId() + '-' + getVersion(),)
 2. `npx sentry-cli releases files <release_name> upload-sourcemaps /path/to/files` - example path ./index.android.bundle ./index.android.bundle.map
@@ -57,8 +62,9 @@ We follow the [conventional commits specification](https://www.conventionalcommi
 
 The `package.json` file contains various scripts for common tasks:
 
-- `yarn android`: setup project for android.
-- `yarn ios`: setup project for ios.
-- `yarn start`: start metro bundle
-- `yarn lint`: lint files with ESLint.
-- `yarn test`: run unit tests with Jest.
+- `yarn run android`: setup project for android.
+- `yarn run ios`: setup project for ios.
+- `yarn run start`: start metro bundle
+- `yarn run lint`: lint files with ESLint.
+- `yarn run test`: run unit tests with Jest.
+- `yarn run post-build`: produce source-maps for android and upload it to sentry
