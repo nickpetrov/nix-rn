@@ -16,6 +16,10 @@ import baseService from 'api/baseService';
 
 // actions
 import {setInfoMessage} from '../base/base.actions';
+import {
+  pullExerciseFromHK,
+  pullWeightsFromHK,
+} from 'store/connectedApps/connectedApps.actions';
 
 // types
 import {
@@ -167,6 +171,9 @@ export const getUserWeightlog = (
           type: userLogActionTypes.GET_USER_WEIGHT_LOG,
           weights: result.weights,
         });
+        if (hkSyncOptions.weight === 'pull' && Platform.OS === 'ios') {
+          dispatch<any>(pullWeightsFromHK());
+        }
       }
     } catch (error) {
       throw error;
@@ -331,6 +338,9 @@ export const getUserExerciseslog = (
           type: userLogActionTypes.GET_USER_EXERCISES_LOG,
           exercises: result.exercises,
         });
+        if (hkSyncOptions.exercise === 'pull' && Platform.OS === 'ios') {
+          dispatch<any>(pullExerciseFromHK());
+        }
       }
     } catch (error) {
       throw error;
