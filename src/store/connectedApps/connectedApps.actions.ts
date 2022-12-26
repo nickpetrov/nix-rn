@@ -11,7 +11,7 @@ import appleHealthKit, {
   HKQuantityTypeIdentifier,
   UnitOfEnergy,
   HKQuantitySample,
-  UnitOfMass,
+  MassUnit,
 } from 'hk';
 import moment from 'moment-timezone';
 import _ from 'lodash';
@@ -76,11 +76,9 @@ export const mergeHKSyncOptions = (options: Partial<hkSyncOptionsProps>) => {
 export const pullWeightsFromHK = () => {
   return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     const options = {
-      startDate: new Date(
-        new Date().getTime() - 7 * 24 * 60 * 60 * 1000,
-      ).toDateString(), // 7 days ago
-      endDate: new Date().toDateString(), // now
-      unit: 'kg' as UnitOfMass,
+      from: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+      to: new Date(), // now
+      unit: 'kg' as MassUnit,
     };
     appleHealthKit
       .queryQuantitySamples(HKQuantityTypeIdentifier.bodyMass, options)
