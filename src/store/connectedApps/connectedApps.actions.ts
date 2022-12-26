@@ -123,9 +123,9 @@ export const addOrUpdateHKExercise = (
     _.forEach(Object.keys(add_update_map), function (day) {
       let add_data = {} as ExerciseProps;
       let ts;
-      const exercisesByDay = exerciseLog.filter(item => item.timestamp === day);
-      if (exercisesByDay && exercisesByDay && exercisesByDay.length === 0) {
-        ts = moment(day, 'ddd, MM/DD/YY').format();
+      const exercisesByDay = exerciseLog.filter(item => moment(item.timestamp).format() === moment(day).format());
+      if (exercisesByDay && exercisesByDay.length === 0) {
+        ts = moment(day).format();
         add_data = {
           tag_id: 939,
           nf_calories: add_update_map[day],
@@ -155,7 +155,7 @@ export const addOrUpdateHKExercise = (
           });
 
           if (!found) {
-            ts = moment(day, 'ddd, MM/DD/YY').format();
+            ts = moment(day).format();
             add_data = {
               tag_id: 939,
               nf_calories: add_update_map[day],
@@ -202,9 +202,7 @@ export const pullExerciseFromHK = () => {
       .then(results => {
         let add_update_map: Record<string, number> = {};
         _.forEach(results, function (record) {
-          const day_formatted = moment(record.startDate).format(
-            'ddd, MM/DD/YY',
-          );
+          const day_formatted = moment(record.startDate).format()
           if (day_formatted in add_update_map) {
             add_update_map[day_formatted] += record.quantity;
           } else {
