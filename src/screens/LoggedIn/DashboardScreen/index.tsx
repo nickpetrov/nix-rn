@@ -51,6 +51,10 @@ import {addExistFoodToBasket} from 'store/basket/basket.actions';
 import {setDB} from 'store/base/base.actions';
 import {setWalkthroughTooltip} from 'store/walkthrough/walkthrough.actions';
 import {setOfflineMode} from 'store/base/base.actions';
+import {
+  pullExerciseFromHK,
+  pullWeightsFromHK,
+} from 'store/connectedApps/connectedApps.actions';
 
 // constant
 import {Routes} from 'navigation/Routes';
@@ -94,6 +98,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const netInfo = useNetInfo();
   const isFocused = useIsFocused();
   const isDrawerOpen = useDrawerStatus() === 'open';
+  const hkSyncOptions = useSelector(state => state.connectedApps.hkSyncOptions);
   const checkedEvents = useSelector(state => state.walkthrough.checkedEvents);
   const [deleteteModal, setDeleteteModal] = useState<
     {items: Array<FoodProps>; mealName: keyof mealTypes} | false
@@ -213,9 +218,25 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const refreshFoodLog = useCallback(() => {
     setIsRefreshing(true);
     dispatch(userLogActions.refreshLog(selectedDate, userData.timezone)).then(
-      () => setIsRefreshing(false),
+      () => {
+        setIsRefreshing(false);
+        if (Platform.OS === 'ios') {
+          if (hkSyncOptions.weight === 'pull') {
+            dispatch(pullWeightsFromHK());
+          }
+          if (hkSyncOptions.exercise === 'pull') {
+            dispatch(pullExerciseFromHK());
+          }
+        }
+      },
     );
-  }, [dispatch, selectedDate, userData.timezone]);
+  }, [
+    dispatch,
+    selectedDate,
+    userData.timezone,
+    hkSyncOptions.weight,
+    hkSyncOptions.exercise,
+  ]);
 
   useEffect(() => {
     refreshFoodLog();

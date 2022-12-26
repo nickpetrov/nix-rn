@@ -2,7 +2,7 @@
 import React, {useEffect} from 'react';
 
 // components
-import {SafeAreaView, ActivityIndicator, Platform} from 'react-native';
+import {SafeAreaView, ActivityIndicator} from 'react-native';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks';
@@ -17,10 +17,6 @@ import {
   updateReviewCheckAfterComeBack,
   updateSentryContext,
 } from 'store/base/base.actions';
-import {
-  pullExerciseFromHK,
-  pullWeightsFromHK,
-} from 'store/connectedApps/connectedApps.actions';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -36,7 +32,6 @@ interface StartupScreenProps {
 export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
   const userJWT = useSelector(state => state.auth.userJWT);
-  const hkSyncOptions = useSelector(state => state.connectedApps.hkSyncOptions);
 
   useEffect(() => {
     if (!userJWT) {
@@ -47,22 +42,8 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
       dispatch(getUserDataFromAPI());
       dispatch(updateReviewCheckAfterComeBack());
       dispatch(initGroceyAgentInfo());
-      if (Platform.OS === 'ios') {
-        if (hkSyncOptions.weight === 'pull') {
-          dispatch(pullWeightsFromHK());
-        }
-        if (hkSyncOptions.exercise === 'pull') {
-          dispatch(pullExerciseFromHK());
-        }
-      }
     }
-  }, [
-    dispatch,
-    navigation,
-    userJWT,
-    hkSyncOptions.exercise,
-    hkSyncOptions.weight,
-  ]);
+  }, [dispatch, navigation, userJWT]);
 
   return (
     <SafeAreaView
