@@ -96,6 +96,8 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Logout]: undefined;
   [Routes.GroceryAgentMode]: undefined;
   [Routes.Camera]: {barcode: string; picType: number};
+  [Routes.MyCoach]: undefined;
+  [Routes.CoachPortal]: undefined;
 }
 
 export interface DrawerNavigatorParamList extends ParamListBase {

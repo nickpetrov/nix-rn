@@ -46,6 +46,8 @@ import {
   PreferencesMenuScreen,
 } from 'screens/Preferences';
 import GroceryAgentModeScreen from 'screens/LoggedIn/GroceryAgentModeScreen';
+import MyCoachScreen from 'screens/LoggedIn/MyCoachScreen';
+import SubscribeScreen from 'screens/LoggedIn/SubscribeScreen';
 
 import WebViewScreen from 'screens/LoggedIn/WebViewScreen';
 import LogoutScreen from 'screens/LoggedIn/LogoutScreen';
@@ -60,6 +62,7 @@ import {
   StackNavigatorParamList,
 } from './navigation.types';
 import CompleteRegistration from 'screens/LoggedIn/CompleteRegistration';
+import CoachPortalScreen from 'screens/LoggedIn/CoachPortalSceen';
 
 const Stack = createNativeStackNavigator<StackNavigatorParamList>();
 const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
@@ -296,6 +299,27 @@ const LoggedInNavigation = () => {
         component={CompleteRegistration}
         options={{
           headerTitle: 'Signup',
+        }}
+      />
+      <Stack.Screen
+        name={Routes.MyCoach}
+        component={MyCoachScreen}
+        options={{
+          headerTitle: 'My Coach',
+        }}
+      />
+      <Stack.Screen
+        name={Routes.CoachPortal}
+        component={CoachPortalScreen}
+        options={{
+          headerTitle: 'Coach Portal',
+        }}
+      />
+      <Stack.Screen
+        name={Routes.Subscribe}
+        component={SubscribeScreen}
+        options={{
+          headerTitle: 'Subscribe',
         }}
       />
       <Stack.Screen

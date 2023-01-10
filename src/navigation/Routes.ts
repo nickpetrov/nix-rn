@@ -38,4 +38,7 @@ export enum Routes {
   WebView = 'WebView',
   CompleteRegistration = 'CompleteRegistration',
   Logout = 'Logout',
+  MyCoach = 'MyCoach',
+  Subscribe = 'Subscribe',
+  CoachPortal = 'CoachPortal',
 }

@@ -15,6 +15,21 @@ const coachService = {
       },
     );
   },
+  async becomeCoach() {
+    return await apiClient.post('me/coach');
+  },
+  async addCoach(coachId: string) {
+    const data = {
+      coach_code: coachId,
+    };
+    return await apiClient.post('share/coaches', data);
+  },
+  async removeCoach(coachId: string) {
+    const data = {
+      coach_code: coachId,
+    };
+    return await apiClient.delete('share/coaches', {data});
+  },
 };
 
 export default coachService;
