@@ -114,7 +114,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.loginWrapper}>
+    <SafeAreaView
+      style={styles.loginWrapper}
+      accessibilityLabel="login"
+      accessible>
       <ScrollView style={styles.scrollView} alwaysBounceVertical={false}>
         <View style={styles.contentWrapper}>
           <View style={styles.logo}>

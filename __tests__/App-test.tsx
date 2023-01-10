@@ -1,14 +1,26 @@
-/**
- * @format
- */
+// @ts-ignore
+import wd from 'wd';
 
-import 'react-native';
-import React from 'react';
-import App from '../App';
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+const PORT = 4723;
+const config = {
+  platformName: 'Android',
+  deviceName: 'Pixel_2_API_31',
+  app: './android/app/build/outputs/apk/debug/app-debug.apk', // relative to root of project
+};
+const driver = wd.promiseChainRemote('localhost', PORT);
 
-// Note: test renderer must be required after react-native.
-import renderer from 'react-test-renderer';
+beforeAll(async () => {
+  await driver.init(config);
+  await driver.sleep(2000); // wait for app to load
+});
 
-it('renders correctly', () => {
-  renderer.create(<App />);
+test('appium render not exist screen', async () => {
+  expect(await driver.hasElementByAccessibilityId('not-exist')).toBe(false);
+});
+test('appium render startup screen', async () => {
+  expect(await driver.hasElementByAccessibilityId('startup')).toBe(true);
+});
+test('appium render login screen', async () => {
+  expect(await driver.hasElementByAccessibilityId('login')).toBe(true);
 });
