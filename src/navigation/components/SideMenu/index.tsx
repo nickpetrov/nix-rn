@@ -75,6 +75,7 @@ export const SideMenu: React.FC = () => {
       icon: 'thumbs-o-up',
       title: 'My Coach',
       to: Routes.MyCoach,
+      disabled: true,
     },
     {
       icon: 'play',
