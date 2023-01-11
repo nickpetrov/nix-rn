@@ -1,11 +1,5 @@
 // utils
-import React, {
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, {useState, useEffect, useLayoutEffect, useMemo} from 'react';
 import moment from 'moment-timezone';
 import SQLite from 'react-native-sqlite-storage';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
@@ -210,19 +204,15 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     weekend: userData.weekend_reminders_enabled,
   });
 
-  const refreshFoodLog = useCallback(() => {
+  useEffect(() => {
     setIsRefreshing(true);
     dispatch(userLogActions.refreshLog(selectedDate, userData.timezone)).then(
       () => {
         setIsRefreshing(false);
       },
     );
-  }, [dispatch, selectedDate, userData.timezone]);
-
-  useEffect(() => {
-    refreshFoodLog();
     analyticSetUserId(userData.id);
-  }, [refreshFoodLog, userData.id]);
+  }, [dispatch, selectedDate, userData.timezone, userData.id]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -595,7 +585,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
-            onRefresh={refreshFoodLog}
+            onRefresh={() => {
+              setIsRefreshing(true);
+              dispatch(
+                userLogActions.refreshLog(selectedDate, userData.timezone),
+              ).then(() => {
+                setIsRefreshing(false);
+              });
+            }}
           />
         }
         ListFooterComponentStyle={styles.listFooterComponent}
