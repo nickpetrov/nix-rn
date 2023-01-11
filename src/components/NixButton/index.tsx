@@ -35,6 +35,9 @@ interface NixButtonProps {
   };
   width?: number | string;
   withMarginTop?: boolean;
+  btnTextStyles?: {
+    [key: string]: string | number;
+  };
   iconStyles?: {
     [key: string]: string | number;
   };
@@ -51,6 +54,7 @@ export const NixButton: React.FC<NixButtonProps> = ({
   width,
   style,
   withMarginTop,
+  btnTextStyles,
   iconStyles,
   iosIcon,
 }) => {
@@ -139,7 +143,12 @@ export const NixButton: React.FC<NixButtonProps> = ({
           <Icon name={iconName} style={{...styles.icon, ...iconStyles}} />
         ) : null}
         <View style={styles.titleContainer}>
-          <Text style={{...styles.title, ...buttonTypeTextStyles}}>
+          <Text
+            style={{
+              ...styles.title,
+              ...buttonTypeTextStyles,
+              ...btnTextStyles,
+            }}>
             {title}
           </Text>
         </View>

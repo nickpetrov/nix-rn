@@ -149,7 +149,7 @@ const LoggedInNavigation = () => {
     <Stack.Navigator
       screenOptions={LoggedInNavigationOptions}
       initialRouteName={
-        justCreated ? Routes.CompleteRegistration : Routes.Dashboard
+        justCreated ? Routes.CompleteRegistration : Routes.Subscribe
       }>
       <Stack.Screen
         name={Routes.Dashboard}
