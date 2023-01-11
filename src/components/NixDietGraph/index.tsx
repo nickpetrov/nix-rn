@@ -179,6 +179,7 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
               skipFromStart={+firstWeekdayNumber - 1}
               daysInMonth={daysInMonth}
               selectedMonth={selectedMonth}
+              selectedYear={moment(startDate).format('YYYY')}
               navigation={props.navigation}
             />
           </View>

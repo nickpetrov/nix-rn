@@ -28,6 +28,7 @@ interface HeatMapProps {
   values: Array<number>;
   targets: Array<number>;
   selectedMonth: string;
+  selectedYear: string;
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Stats>;
 }
 
@@ -142,6 +143,7 @@ const HeatMap: React.FC<HeatMapProps> = props => {
         key={`${dayIndex}-${weekIndex}-${String(props.skipFromStart)}`}
         onPress={() => {
           const newDate = moment()
+            .set('year', +props.selectedYear)
             .set('month', +moment().month(props.selectedMonth).format('M') - 1)
             .startOf('month')
             .add(dayIndex - parseInt(String(props.skipFromStart)) - 1, 'days')
