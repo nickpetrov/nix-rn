@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* nutritionxTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* nutritionxTests.m */; };
+		0F6704EA29701A19002250CE /* Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 0F6704E929701A19002250CE /* Subscriptions.storekit */; };
+		0F6704EB29701A19002250CE /* Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 0F6704E929701A19002250CE /* Subscriptions.storekit */; };
 		0FA04594291954BE00A45F50 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FA04593291954BE00A45F50 /* HealthKit.framework */; };
 		0FABB10028D4F384004F02DD /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FABB0FF28D4F384004F02DD /* hermes.xcframework */; };
 		0FB8BFFE2937B6260073BCB6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0FB8BFFD2937B6260073BCB6 /* GoogleService-Info.plist */; };
@@ -37,6 +39,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* nutritionxTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = nutritionxTests.m; sourceTree = "<group>"; };
 		0F176BF128D863A700DB2AB6 /* nutritionx.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = nutritionx.entitlements; path = nutritionx/nutritionx.entitlements; sourceTree = "<group>"; };
+		0F6704E929701A19002250CE /* Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Subscriptions.storekit; sourceTree = SOURCE_ROOT; };
 		0FA04593291954BE00A45F50 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		0FABB0FF28D4F384004F02DD /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
 		0FB69411292B9A7700C6FBBD /* nutritionxDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = nutritionxDebug.entitlements; path = nutritionx/nutritionxDebug.entitlements; sourceTree = "<group>"; };
@@ -136,6 +139,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				0F6704E929701A19002250CE /* Subscriptions.storekit */,
 				0FB8BFFD2937B6260073BCB6 /* GoogleService-Info.plist */,
 				0FB8BFFF2937B7C80073BCB6 /* GoogleService-Info.plist */,
 				0FB8C0012937B84B0073BCB6 /* GoogleService-Info.plist */,
@@ -261,6 +265,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0F6704EB29701A19002250CE /* Subscriptions.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0FC7F4D028E217C9008B25BB /* main.jsbundle in Resources */,
+				0F6704EA29701A19002250CE /* Subscriptions.storekit in Resources */,
 				0FB8BFFE2937B6260073BCB6 /* GoogleService-Info.plist in Resources */,
 				0FB8C0002937B7C80073BCB6 /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
@@ -557,7 +563,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = rntrack;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nutritionix.nixtrack;
 				PRODUCT_NAME = nutritionx;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -590,7 +596,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = rntrack;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nutritionix.nixtrack;
 				PRODUCT_NAME = nutritionx;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

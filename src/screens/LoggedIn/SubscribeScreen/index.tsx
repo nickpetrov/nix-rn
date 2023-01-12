@@ -54,7 +54,10 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
   );
   const [showTrial, setShowTrial] = useState(true);
   const [subscriptions, setsubscriptions] = useState<Subscription[]>([]);
-
+  const itemSkus = Platform.OS === 'ios'
+  ? ['Track_Pro_Automatic_Renewal', 'Track_Pro_Renewal_Yearly']
+  : ['track_pro_automatic_renewal', 'track_pro_renewal_yearly'];
+  
   useEffect(() => {
     initConnection()
       .then(() => {
@@ -67,14 +70,10 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
             // in any case, you might not want to do anything special with the error
           })
           .then(async () => {
-            const ids =
-              Platform.OS === 'ios'
-                ? ['Track_Pro_Automatic_Renewal', 'Track_Pro_Renewal_Yearly']
-                : ['track_pro_automatic_renewal', 'track_pro_renewal_yearly'];
             try {
               const purchases = await getAvailablePurchases();
               let alreadyPurchases = purchases.filter(item =>
-                ids.includes(item.productId),
+                itemSkus.includes(item.productId),
               );
               console.log('alreadyPurchases', alreadyPurchases);
               if (alreadyPurchases && alreadyPurchases.length > 0) {
@@ -82,7 +81,6 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
               }
 
               if (Platform.OS === 'android') {
-                const itemSkus = ['com.nutritionix.nixtrack'];
                 const getsubs = await getSubscriptions({
                   skus: itemSkus,
                 });
@@ -137,6 +135,14 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
       sku = sku.toLowerCase();
     }
     let androidSignature = '';
+    const products = await getProducts({
+      skus: itemSkus,
+    });
+    console.log('products', products);
+    const getsubs = await getSubscriptions({
+      skus: itemSkus,
+    });
+    console.log('getsubs', getsubs);
     try {
       let data;
       if (Platform.OS === 'android') {
@@ -151,6 +157,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           subscriptionOffers: [{sku, offerToken}],
         });
       } else {
+        console.log("ios subs", sku)
         data = await requestSubscription({sku});
       }
       if (data) {
@@ -229,7 +236,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           btnTextStyles={{fontWeight: '700'}}
           type="blue"
           title="Subscribe"
-          onPress={() => purchaseSubscription('Track_Pro_Automatic_Renewal')}
+          onPress={() => purchaseSubscription('Track_Pro_Renewal_Yearly')}
         />
         {showTrial && <Text>Start your 2 month free trial, then $29/year</Text>}
       </View>

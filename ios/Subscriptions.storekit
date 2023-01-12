@@ -1,0 +1,77 @@
+{
+  "identifier" : "4C1CFEB8",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "9E852C1E",
+      "localizations" : [
+
+      ],
+      "name" : "Track Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "5.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "18D6FB99",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Track_Pro_Automatic_Renewal",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Track Pro Monthly",
+          "subscriptionGroupID" : "9E852C1E",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "28.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "E8FD0AE4",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Track_Pro_Renewal_Yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Track Pro Yearly",
+          "subscriptionGroupID" : "9E852C1E",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 2
+  }
+}
