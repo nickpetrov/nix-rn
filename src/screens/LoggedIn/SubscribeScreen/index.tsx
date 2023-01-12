@@ -1,5 +1,5 @@
 // utils
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 // components
 import {
@@ -13,6 +13,17 @@ import {
 } from 'react-native';
 import {NixButton} from 'components/NixButton';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {
+  initConnection,
+  endConnection,
+  getAvailablePurchases,
+  flushFailedPurchasesCachedAsPendingAndroid,
+  requestSubscription,
+  getSubscriptions,
+  getProducts,
+  Subscription,
+  SubscriptionAndroid,
+} from 'react-native-iap';
 
 // hooks
 import {useSelector} from 'hooks/useRedux';
@@ -26,6 +37,8 @@ import {Routes} from 'navigation/Routes';
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {SQLexecute} from 'helpers/sqlite';
+import coachService from 'api/coachService';
 
 interface SubscribeScreenProps {
   navigation: NativeStackNavigationProp<
@@ -35,22 +48,135 @@ interface SubscribeScreenProps {
 }
 
 const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
+  const db = useSelector(state => state.base.db);
   const {premium_user, grocery_agent} = useSelector(
     state => state.auth.userData,
   );
   const [showTrial, setShowTrial] = useState(true);
+  const [subscriptions, setsubscriptions] = useState<Subscription[]>([]);
 
-  const purchaseSubscription = (product: string) => {
-    console.log(product);
+  useEffect(() => {
+    initConnection()
+      .then(() => {
+        // we make sure that "ghost" pending payment are removed
+        // (ghost = failed pending payment that are still marked as pending in Google's native Vending module cache)
+        flushFailedPurchasesCachedAsPendingAndroid()
+          .catch(() => {
+            // exception can happen here if:
+            // - there are pending purchases that are still pending (we can't consume a pending purchase)
+            // in any case, you might not want to do anything special with the error
+          })
+          .then(async () => {
+            const ids =
+              Platform.OS === 'ios'
+                ? ['Track_Pro_Automatic_Renewal', 'Track_Pro_Renewal_Yearly']
+                : ['track_pro_automatic_renewal', 'track_pro_renewal_yearly'];
+            try {
+              const purchases = await getAvailablePurchases();
+              let alreadyPurchases = purchases.filter(item =>
+                ids.includes(item.productId),
+              );
+              console.log('alreadyPurchases', alreadyPurchases);
+              if (alreadyPurchases && alreadyPurchases.length > 0) {
+                setShowTrial(false);
+              }
+
+              if (Platform.OS === 'android') {
+                const itemSkus = ['com.nutritionix.nixtrack'];
+                const getsubs = await getSubscriptions({
+                  skus: itemSkus,
+                });
+                setsubscriptions(getsubs);
+                console.log('getsubs', getsubs);
+                const products = await getProducts({
+                  skus: itemSkus,
+                });
+                console.log('products', products);
+              }
+            } catch (error) {
+              console.log(error);
+            }
+          });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    return () => {
+      endConnection();
+    };
+  }, []);
+
+  const validatePurchase = (
+    receiptString: string,
+    androidSignature: string,
+  ) => {
+    coachService
+      .validatePurchase(receiptString, androidSignature)
+      .then((res: any) => {
+        var receipt = res.data.latest_receipt;
+        SQLexecute({
+          db,
+          query: 'INSERT INTO iap_receipts (receipt, signature) VALUES (?, ?)',
+          params: [JSON.stringify(receipt), androidSignature],
+        })
+          .then(function () {
+            navigation.navigate(Routes.MyCoach);
+          })
+          .catch(function (err: any) {
+            console.log('there was error adding receipt data to db', err);
+          });
+      })
+      .catch(function (err: any) {
+        console.log(err);
+      });
   };
+
+  const purchaseSubscription = async (sku: string) => {
+    if (Platform.OS === 'android') {
+      sku = sku.toLowerCase();
+    }
+    let androidSignature = '';
+    try {
+      let data;
+      if (Platform.OS === 'android') {
+        const androidSubs = subscriptions.find(
+          item => item.productId === sku && item.platform === 'android',
+        );
+        console.log('androidSubs', androidSubs);
+        const offerToken =
+          (androidSubs as SubscriptionAndroid)?.subscriptionOfferDetails[0]
+            .offerToken || '';
+        data = await requestSubscription({
+          subscriptionOffers: [{sku, offerToken}],
+        });
+      } else {
+        data = await requestSubscription({sku});
+      }
+      if (data) {
+        if (data.signatureAndroid) {
+          androidSignature = data.signatureAndroid;
+        }
+        // validate the receipt
+        validatePurchase(data.productId, androidSignature);
+      }
+    } catch (err: any) {
+      console.warn(err.code, err.message);
+    }
+  };
+
   const restorePurchases = () => {};
+
   const openTOS = () => {
     Linking.openURL('https://www.nutritionix.com/terms');
   };
+
   const openPrivacy = () => {
     Linking.openURL('https://www.nutritionix.com/privacy');
   };
+
   const unsubscribeFromPro = () => {};
+
   return (
     <ScrollView style={styles.root}>
       <Text style={styles.title}>Track Pro</Text>
@@ -140,7 +266,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           </Text>
         </Text>
       </View>
-      {premium_user && (
+      {!!premium_user && (
         <View>
           <Text style={styles.welcome}>
             You're a <Text style={styles.dark}>Track</Text>{' '}

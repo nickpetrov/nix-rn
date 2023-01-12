@@ -160,10 +160,10 @@ const requestExistingBarcodes = async function () {
 const countExistingBarcodes = function () {
   const db = store.getState().base.db;
   const query = 'SELECT COUNT(id) AS count FROM ' + existingBarcodesTableName;
-  return SQLexecute({
+  return {
     db,
     query,
-  }).then(function (selectResult) {
+  }.then(function (selectResult) {
     return selectResult.rows.item(0).count;
   });
 };

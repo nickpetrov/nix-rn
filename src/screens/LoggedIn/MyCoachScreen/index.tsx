@@ -14,7 +14,12 @@ import SwipeHiddenButtons from 'components/SwipeHiddenButtons';
 import {useSelector, useDispatch} from 'hooks/useRedux';
 
 // actions
-import {becomeCoach, addCoach, removeCoach} from 'store/coach/coach.actions';
+import {
+  becomeCoach,
+  addCoach,
+  removeCoach,
+  getCoaches,
+} from 'store/coach/coach.actions';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -47,6 +52,12 @@ const MyCoachScreen: React.FC<MyCoachScreenProps> = ({navigation}) => {
     first_name: string;
     last_name: string;
   } | null>(null);
+
+  useEffect(() => {
+    if (premium_user) {
+      dispatch(getCoaches());
+    }
+  }, [dispatch, premium_user]);
 
   useEffect(() => {
     if (error) {
@@ -111,6 +122,7 @@ const MyCoachScreen: React.FC<MyCoachScreenProps> = ({navigation}) => {
     dispatch(addCoach(code))
       .then(() => {
         setAddSuccess(true);
+        setCoachCode('');
         setTimeout(() => {
           setAddSuccess(false);
         }, 2000);
@@ -186,7 +198,7 @@ const MyCoachScreen: React.FC<MyCoachScreenProps> = ({navigation}) => {
           <Text style={styles.error}>{error}</Text>
         </View>
       )}
-      {premium_user && (
+      {!!premium_user && (
         <View>
           <Text style={styles.coachesTitle}>My Coaches</Text>
           {!coachesList.length && (
@@ -215,6 +227,10 @@ const MyCoachScreen: React.FC<MyCoachScreenProps> = ({navigation}) => {
                             },
                           },
                         ]}
+                        style={{
+                          minWidth: 50,
+                          paddingHorizontal: 5,
+                        }}
                       />
                     )}
                     ref={ref => {
@@ -232,7 +248,11 @@ const MyCoachScreen: React.FC<MyCoachScreenProps> = ({navigation}) => {
                     <View style={styles.coachItem}>
                       <View style={styles.coachItemPhoto}>
                         {!coachItem.photo && (
-                          <FontAwesome name="user" size={40} />
+                          <FontAwesome
+                            name="user-circle"
+                            color="#aaa"
+                            size={40}
+                          />
                         )}
                       </View>
                       <Text style={styles.coachItemText}>

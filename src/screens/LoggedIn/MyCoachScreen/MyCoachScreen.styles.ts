@@ -51,11 +51,10 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   alert: {
-    marginTop: 20,
+    marginVertical: 20,
     alignSelf: 'center',
     alignItems: 'center',
     width: 320,
-    marginVertical: 0,
     marginHorizontal: 'auto',
     backgroundColor: '#d9edf7',
     borderWidth: 1,
@@ -129,12 +128,17 @@ export const styles = StyleSheet.create({
   },
   coachesTitle: {
     padding: 10,
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   coachItem: {
     backgroundColor: '#fff',
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     flexDirection: 'row',
     alignItems: 'center',
+    borderBottomColor: Colors.LightGray,
+    borderBottomWidth: 1,
   },
   coachItemNote: {
     backgroundColor: '#fff',
@@ -147,5 +151,6 @@ export const styles = StyleSheet.create({
   },
   coachItemText: {
     marginLeft: 10,
+    fontSize: 16,
   },
 });

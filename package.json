@@ -56,6 +56,7 @@
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.6.0",
     "react-native-get-random-values": "^1.8.0",
+    "react-native-iap": "^12.4.12",
     "react-native-image-picker": "^4.10.0",
     "react-native-in-app-review": "^4.1.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",

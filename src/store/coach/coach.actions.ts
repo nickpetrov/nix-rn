@@ -10,7 +10,14 @@ import coachService from 'api/coachService';
 import {getUserDataFromAPI} from 'store/auth/auth.actions';
 
 // types
-import {coachActionTypes, getClientTotalsAction} from './coach.types';
+import {
+  addCoachAction,
+  becomeCoachAction,
+  coachActionTypes,
+  getClientTotalsAction,
+  getCoachesAction,
+  removeCoachAction,
+} from './coach.types';
 import {OptionsProps} from 'api/coachService/types';
 
 export const getClientTotals = (options: Partial<OptionsProps>) => {
@@ -51,7 +58,7 @@ export const getClientTotals = (options: Partial<OptionsProps>) => {
 };
 
 export const becomeCoach = () => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<becomeCoachAction>) => {
     try {
       const res = await coachService.becomeCoach();
       if (!!res && !!res.data && !!res.data.code) {
@@ -63,8 +70,22 @@ export const becomeCoach = () => {
   };
 };
 
+export const getCoaches = () => {
+  return async (dispatch: Dispatch<getCoachesAction>) => {
+    try {
+      const res = await coachService.getCoaches();
+      dispatch({
+        type: coachActionTypes.GET_COACHES,
+        payload: res.data.coaches,
+      });
+    } catch (error) {
+      console.log('error get coaches', error);
+    }
+  };
+};
+
 export const addCoach = (coachCode: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<addCoachAction>) => {
     try {
       const res = await coachService.addCoach(coachCode);
       dispatch({
@@ -77,7 +98,7 @@ export const addCoach = (coachCode: string) => {
   };
 };
 export const removeCoach = (coachCode: string) => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch<removeCoachAction>) => {
     try {
       await coachService.removeCoach(coachCode);
       dispatch({

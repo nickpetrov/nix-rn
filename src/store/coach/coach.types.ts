@@ -7,6 +7,7 @@ export enum coachActionTypes {
   BECOME_COACH = 'BECOME_COACH',
   ADD_COACH = 'ADD_COACH',
   REMOVE_COACH = 'REMOVE_COACH',
+  GET_COACHES = 'GET_COACHES',
 }
 
 export interface Coach {
@@ -32,6 +33,10 @@ export type addCoachAction = {
   type: coachActionTypes.ADD_COACH;
   payload: Coach;
 };
+export type getCoachesAction = {
+  type: coachActionTypes.GET_COACHES;
+  payload: Coach[];
+};
 export type removeCoachAction = {
   type: coachActionTypes.REMOVE_COACH;
   payload: string;
@@ -45,4 +50,5 @@ export type CoachActions =
   | becomeCoachAction
   | addCoachAction
   | removeCoachAction
+  | getCoachesAction
   | clearCoachAction;
