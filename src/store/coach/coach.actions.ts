@@ -19,6 +19,8 @@ import {
   removeCoachAction,
 } from './coach.types';
 import {OptionsProps} from 'api/coachService/types';
+import {RootState} from '../index';
+import {SQLexecute, SQLgetGetAll} from 'helpers/sqlite';
 
 export const getClientTotals = (options: Partial<OptionsProps>) => {
   return async (dispatch: Dispatch<getClientTotalsAction>) => {
@@ -108,5 +110,57 @@ export const removeCoach = (coachCode: string) => {
     } catch (err) {
       console.log('error remove coach', err);
     }
+  };
+};
+
+export const checkSubscriptions = () => {
+  return async (dispatch: Dispatch, useState: () => RootState) => {
+    const db = useState().base.db;
+    await SQLexecute({
+      db,
+      query:
+        'CREATE TABLE IF NOT EXISTS iap_receipts (id INTEGER PRIMARY KEY, receipt TEXT, signature TEXT)',
+    });
+
+    let sqlReceiptID = '';
+    SQLexecute({db, query: 'SELECT * FROM iap_receipts'})
+      .then(function (result) {
+        //receipt exists so they bought a subscription
+        if (result.rows.length >= 1) {
+          const res = SQLgetGetAll(result);
+          const latestEntry = res[res.length - 1];
+          sqlReceiptID = latestEntry.id;
+          const receipt = latestEntry.receipt;
+          const signature = latestEntry.signature;
+          return coachService.validatePurchase(receipt, signature);
+        }
+      })
+      .then(function (resp) {
+        if (resp) {
+          //receipt is expired, so delete it
+          if (resp.data.premium_user === false) {
+            SQLexecute({db, query: 'DELETE FROM iap_receipts'}).catch(function (
+              err,
+            ) {
+              console.log(
+                'there was an error deleting the expired receipt',
+                err,
+              );
+            });
+          } else {
+            var latest_receipt = resp.data.latest_receipt;
+            SQLexecute({
+              db,
+              query: 'UPDATE iap_receipts SET receipt=? where id=?',
+              params: [latest_receipt, sqlReceiptID],
+            }).catch(function (err) {
+              console.log('there was error upating latest receipt', err);
+            });
+          }
+        }
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
   };
 };

@@ -1,6 +1,9 @@
 // utils
 import React, {useState, useEffect} from 'react';
 
+// helpers
+import {SQLexecute} from 'helpers/sqlite';
+
 // components
 import {
   Text,
@@ -20,13 +23,19 @@ import {
   flushFailedPurchasesCachedAsPendingAndroid,
   requestSubscription,
   getSubscriptions,
-  getProducts,
   Subscription,
   SubscriptionAndroid,
 } from 'react-native-iap';
 
 // hooks
-import {useSelector} from 'hooks/useRedux';
+import {useSelector, useDispatch} from 'hooks/useRedux';
+
+// services
+import coachService from 'api/coachService';
+
+// actions
+import {setInfoMessage} from 'store/base/base.actions';
+import {updateUserData} from 'store/auth/auth.actions';
 
 // styles
 import {styles} from './SubscribeScreen.styles';
@@ -37,8 +46,6 @@ import {Routes} from 'navigation/Routes';
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {SQLexecute} from 'helpers/sqlite';
-import coachService from 'api/coachService';
 
 interface SubscribeScreenProps {
   navigation: NativeStackNavigationProp<
@@ -48,53 +55,54 @@ interface SubscribeScreenProps {
 }
 
 const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
+  const dispatch = useDispatch();
   const db = useSelector(state => state.base.db);
   const {premium_user, grocery_agent} = useSelector(
     state => state.auth.userData,
   );
   const [showTrial, setShowTrial] = useState(true);
   const [subscriptions, setsubscriptions] = useState<Subscription[]>([]);
-  const itemSkus = Platform.OS === 'ios'
-  ? ['Track_Pro_Automatic_Renewal', 'Track_Pro_Renewal_Yearly']
-  : ['track_pro_automatic_renewal', 'track_pro_renewal_yearly'];
-  
+
   useEffect(() => {
+    const restorePurchases = async () => {
+      const ids =
+        Platform.OS === 'ios'
+          ? ['Track_Pro_Automatic_Renewal', 'Track_Pro_Renewal_Yearly']
+          : ['track_pro_automatic_renewal', 'track_pro_renewal_yearly'];
+      try {
+        const purchases = await getAvailablePurchases();
+        let alreadyPurchases = purchases.filter(item =>
+          ids.includes(item.productId),
+        );
+        console.log('alreadyPurchases', alreadyPurchases);
+        if (alreadyPurchases && alreadyPurchases.length > 0) {
+          setShowTrial(false);
+        }
+
+        const getsubs = await getSubscriptions({
+          skus: ids,
+        });
+        setsubscriptions(getsubs);
+        console.log('getsubs', getsubs);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     initConnection()
       .then(() => {
-        // we make sure that "ghost" pending payment are removed
-        // (ghost = failed pending payment that are still marked as pending in Google's native Vending module cache)
-        flushFailedPurchasesCachedAsPendingAndroid()
-          .catch(() => {
-            // exception can happen here if:
-            // - there are pending purchases that are still pending (we can't consume a pending purchase)
-            // in any case, you might not want to do anything special with the error
-          })
-          .then(async () => {
-            try {
-              const purchases = await getAvailablePurchases();
-              let alreadyPurchases = purchases.filter(item =>
-                itemSkus.includes(item.productId),
-              );
-              console.log('alreadyPurchases', alreadyPurchases);
-              if (alreadyPurchases && alreadyPurchases.length > 0) {
-                setShowTrial(false);
-              }
-
-              if (Platform.OS === 'android') {
-                const getsubs = await getSubscriptions({
-                  skus: itemSkus,
-                });
-                setsubscriptions(getsubs);
-                console.log('getsubs', getsubs);
-                const products = await getProducts({
-                  skus: itemSkus,
-                });
-                console.log('products', products);
-              }
-            } catch (error) {
-              console.log(error);
-            }
-          });
+        if (Platform.OS === 'ios') {
+          restorePurchases();
+        } else {
+          // we make sure that "ghost" pending payment are removed
+          // (ghost = failed pending payment that are still marked as pending in Google's native Vending module cache)
+          flushFailedPurchasesCachedAsPendingAndroid()
+            .catch(() => {
+              // exception can happen here if:
+              // - there are pending purchases that are still pending (we can't consume a pending purchase)
+              // in any case, you might not want to do anything special with the error
+            })
+            .then(restorePurchases);
+        }
       })
       .catch(err => {
         console.log(err);
@@ -135,14 +143,6 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
       sku = sku.toLowerCase();
     }
     let androidSignature = '';
-    const products = await getProducts({
-      skus: itemSkus,
-    });
-    console.log('products', products);
-    const getsubs = await getSubscriptions({
-      skus: itemSkus,
-    });
-    console.log('getsubs', getsubs);
     try {
       let data;
       if (Platform.OS === 'android') {
@@ -157,7 +157,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           subscriptionOffers: [{sku, offerToken}],
         });
       } else {
-        console.log("ios subs", sku)
+        console.log('ios subs', sku);
         data = await requestSubscription({sku});
       }
       if (data) {
@@ -172,7 +172,29 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     }
   };
 
-  const restorePurchases = () => {};
+  const restorePurchases = async () => {
+    const ids =
+      Platform.OS === 'ios'
+        ? ['Track_Pro_Automatic_Renewal', 'Track_Pro_Renewal_Yearly']
+        : ['track_pro_automatic_renewal', 'track_pro_renewal_yearly'];
+    const purchases = await getAvailablePurchases();
+    let alreadyPurchases = purchases.filter(item =>
+      ids.includes(item.productId),
+    );
+    console.log('alreadyPurchases', alreadyPurchases);
+    let androidSignature = '';
+    if (alreadyPurchases.length) {
+      androidSignature = alreadyPurchases[0].signatureAndroid || '';
+      validatePurchase(alreadyPurchases[0].productId, androidSignature);
+    } else {
+      dispatch(
+        setInfoMessage({
+          title: 'Error',
+          btnText: 'Nothing to restore',
+        }),
+      );
+    }
+  };
 
   const openTOS = () => {
     Linking.openURL('https://www.nutritionix.com/terms');
@@ -182,7 +204,15 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     Linking.openURL('https://www.nutritionix.com/privacy');
   };
 
-  const unsubscribeFromPro = () => {};
+  const unsubscribeFromPro = () => {
+    dispatch(updateUserData({premium_user: 0}))
+      .then(function () {
+        console.log('unsubscribe success');
+      })
+      .catch(function (err) {
+        console.log('unsubscribe error', err);
+      });
+  };
 
   return (
     <ScrollView style={styles.root}>

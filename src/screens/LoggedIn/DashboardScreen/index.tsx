@@ -51,6 +51,7 @@ import {addExistFoodToBasket} from 'store/basket/basket.actions';
 import {setDB} from 'store/base/base.actions';
 import {setWalkthroughTooltip} from 'store/walkthrough/walkthrough.actions';
 import {setOfflineMode} from 'store/base/base.actions';
+import {checkSubscriptions} from 'store/coach/coach.actions';
 
 // constant
 import {Routes} from 'navigation/Routes';
@@ -297,6 +298,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             },
             () => {
               console.log('Re-open connection success!');
+              dispatch(checkSubscriptions());
             },
             error => {
               console.log('error open db', error);
@@ -304,6 +306,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           ),
         ),
       );
+    } else {
+      dispatch(checkSubscriptions());
     }
   }, [db, dispatch]);
 
