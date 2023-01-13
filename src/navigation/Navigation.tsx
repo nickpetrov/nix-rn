@@ -63,6 +63,7 @@ import {
 } from './navigation.types';
 import CompleteRegistration from 'screens/LoggedIn/CompleteRegistration';
 import CoachPortalScreen from 'screens/LoggedIn/CoachPortalSceen';
+import ViewClientScreen from 'screens/LoggedIn/ViewClientScreen';
 
 const Stack = createNativeStackNavigator<StackNavigatorParamList>();
 const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
@@ -313,6 +314,13 @@ const LoggedInNavigation = () => {
         component={CoachPortalScreen}
         options={{
           headerTitle: 'Coach Portal',
+        }}
+      />
+      <Stack.Screen
+        name={Routes.ViewClient}
+        component={ViewClientScreen}
+        options={{
+          headerTitle: 'View Client',
         }}
       />
       <Stack.Screen

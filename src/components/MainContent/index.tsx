@@ -129,7 +129,7 @@ const MainContent = () => {
         title={infoMessage?.title || 'Thank you!'}
         text={infoMessage?.text || ''}
         btn={{
-          type: 'blue',
+          type: infoMessage?.btnType || 'blue',
           title: infoMessage?.btnText ? infoMessage?.btnText : 'Close',
         }}>
         {infoMessage?.child && infoMessage?.child}

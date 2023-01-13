@@ -41,4 +41,5 @@ export enum Routes {
   MyCoach = 'MyCoach',
   Subscribe = 'Subscribe',
   CoachPortal = 'CoachPortal',
+  ViewClient = 'ViewClient',
 }

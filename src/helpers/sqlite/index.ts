@@ -45,9 +45,19 @@ export const SQLexecute = async ({
 };
 
 export function SQLgetById(result: ResultSet) {
-  var output = null;
+  let output = null;
   if (result.rows.length > 0) {
     output = _.cloneDeep(result.rows.item(0));
+  }
+  return output;
+}
+
+// Proces a result set
+export function SQLgetGetAll(result: ResultSet) {
+  const output = [];
+
+  for (let i = 0; i < result.rows.length; i++) {
+    output.push(result.rows.item(i));
   }
   return output;
 }

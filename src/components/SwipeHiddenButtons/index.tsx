@@ -15,9 +15,15 @@ export type SwipeHidderButtonProps = {
 
 interface SwipeHiddenButtonsProps {
   buttons: Array<SwipeHidderButtonProps>;
+  style?: {
+    [key: string]: string | number;
+  };
 }
 
-const SwipeHiddenButtons: React.FC<SwipeHiddenButtonsProps> = ({buttons}) => {
+const SwipeHiddenButtons: React.FC<SwipeHiddenButtonsProps> = ({
+  buttons,
+  style,
+}) => {
   return (
     <View style={styles.hiddenItems}>
       {buttons.map((item: SwipeHidderButtonProps) => {
@@ -26,7 +32,7 @@ const SwipeHiddenButtons: React.FC<SwipeHiddenButtonsProps> = ({buttons}) => {
             <TouchableOpacity
               key={item.type}
               onPress={() => item.onPress()}
-              style={[styles.btn, styles.bgCopy]}>
+              style={[styles.btn, styles.bgCopy, style]}>
               <Text style={styles.btnText}>Copy</Text>
             </TouchableOpacity>
           );
@@ -35,7 +41,7 @@ const SwipeHiddenButtons: React.FC<SwipeHiddenButtonsProps> = ({buttons}) => {
             <TouchableOpacity
               key={item.type}
               onPress={() => item.onPress()}
-              style={[styles.btn, styles.bgRed]}>
+              style={[styles.btn, styles.bgRed, style]}>
               {item.icon ? (
                 <FontAwesome
                   name={item.icon.name || 'trash'}
@@ -52,7 +58,7 @@ const SwipeHiddenButtons: React.FC<SwipeHiddenButtonsProps> = ({buttons}) => {
             <TouchableOpacity
               key={item.type}
               onPress={() => item.onPress()}
-              style={[styles.btn, styles.bgBlue]}>
+              style={[styles.btn, styles.bgBlue, style]}>
               <Text style={styles.btnText}>Quick Log</Text>
             </TouchableOpacity>
           );
