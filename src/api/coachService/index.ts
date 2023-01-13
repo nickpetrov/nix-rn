@@ -3,6 +3,7 @@ import {TotalProps} from 'store/userLog/userLog.types';
 import {OptionsProps} from './types';
 import {Platform} from 'react-native';
 import {Coach} from 'store/coach/coach.types';
+import {User} from 'store/auth/auth.types';
 
 const coachService = {
   async getClientTotals(options: OptionsProps) {
@@ -17,11 +18,17 @@ const coachService = {
       },
     );
   },
+  async getClients() {
+    return await apiClient.get<{patients: User[]}>('share/patients');
+  },
   async getCoaches() {
     return await apiClient.get<{coaches: Coach[]}>('share/coaches');
   },
   async becomeCoach() {
     return await apiClient.post('me/coach');
+  },
+  async stopBeingCoach() {
+    return await apiClient.delete('me/coach');
   },
   async addCoach(coachId: string) {
     const data = {

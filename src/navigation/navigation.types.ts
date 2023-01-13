@@ -4,6 +4,7 @@ import {WebViewMessageEvent, WebViewNavigation} from 'react-native-webview';
 import {PictureProps} from 'screens/LoggedIn';
 import {FoodProps} from 'store/userLog/userLog.types';
 import {RecipeProps} from '../store/recipes/recipes.types';
+import {User} from 'store/auth/auth.types';
 
 export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Login]: undefined;
@@ -98,6 +99,10 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Camera]: {barcode: string; picType: number};
   [Routes.MyCoach]: undefined;
   [Routes.CoachPortal]: undefined;
+  [Routes.ViewClient]: {
+    client: User;
+    clientId: string;
+  };
 }
 
 export interface DrawerNavigatorParamList extends ParamListBase {

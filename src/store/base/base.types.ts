@@ -27,6 +27,7 @@ export type InfoMessageType = {
   title?: string;
   text?: string;
   btnText?: string;
+  btnType?: 'blue' | 'positive' | 'gray' | 'primary';
   child?: React.ReactNode;
   loadingType?: boolean;
   loadTime?: number;

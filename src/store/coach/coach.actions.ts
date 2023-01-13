@@ -17,10 +17,12 @@ import {
   getClientTotalsAction,
   getCoachesAction,
   removeCoachAction,
+  getClientsAction,
 } from './coach.types';
 import {OptionsProps} from 'api/coachService/types';
 import {RootState} from '../index';
 import {SQLexecute, SQLgetGetAll} from 'helpers/sqlite';
+import {User} from 'store/auth/auth.types';
 
 export const getClientTotals = (options: Partial<OptionsProps>) => {
   return async (dispatch: Dispatch<getClientTotalsAction>) => {
@@ -68,6 +70,37 @@ export const becomeCoach = () => {
       }
     } catch (error) {
       console.log('error become coach', error);
+    }
+  };
+};
+export const stopBeingCoach = () => {
+  return async () => {
+    try {
+      await coachService.stopBeingCoach();
+    } catch (error) {
+      console.log('error stop being a coach', error);
+    }
+  };
+};
+
+export const getClients = () => {
+  return async (dispatch: Dispatch<getClientsAction>) => {
+    try {
+      const res = await coachService.getClients();
+      if (!res || !res.data || !res.data.patients) {
+        return;
+      } else {
+        let clientList: User[] = [];
+        _.forEach(res.data.patients, user => {
+          clientList.push(user);
+        });
+        dispatch({
+          type: coachActionTypes.GET_CLIENTS,
+          payload: clientList,
+        });
+      }
+    } catch (error) {
+      console.log('error get clients', error);
     }
   };
 };

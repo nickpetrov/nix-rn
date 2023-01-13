@@ -28,7 +28,7 @@ export type User = {
   gender: string;
   email: string;
   oauths: {provider: string; log_pref: number}[];
-  coach: {is_active: number; code: string};
+  coach: {is_active: number; code: string} | null;
   mobile_number: string | null;
   enable_weekday_sms: number;
   enable_review_foods: number | null;

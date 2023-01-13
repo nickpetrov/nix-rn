@@ -14,7 +14,7 @@ interface InfoModalProps {
   subtitle?: string;
   btn?: {
     title: string;
-    type: 'blue' | 'positive' | 'gray';
+    type: 'blue' | 'positive' | 'gray' | 'primary';
   };
   children?: React.ReactNode;
   loadingType?: boolean;

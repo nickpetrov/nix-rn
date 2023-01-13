@@ -4,6 +4,7 @@ import {CoachActions, coachActionTypes, CoachsState} from './coach.types';
 const initialState: CoachsState = {
   clientTotals: [],
   coachesList: [],
+  clientList: [],
 };
 
 export default (state: CoachsState = initialState, action: CoachActions) => {
@@ -12,6 +13,8 @@ export default (state: CoachsState = initialState, action: CoachActions) => {
       return {...state, clientTotals: action.payload};
     case coachActionTypes.GET_COACHES:
       return {...state, coachesList: action.payload};
+    case coachActionTypes.GET_CLIENTS:
+      return {...state, clientList: action.payload};
     case coachActionTypes.ADD_COACH:
       return {...state, coachesList: [...state.coachesList, action.payload]};
     case coachActionTypes.REMOVE_COACH: {
