@@ -165,7 +165,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           androidSignature = data.signatureAndroid;
         }
         // validate the receipt
-        validatePurchase(data.productId, androidSignature);
+        validatePurchase(data.transactionReceipt, androidSignature);
       }
     } catch (err: any) {
       console.warn(err.code, err.message);
@@ -185,7 +185,10 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     let androidSignature = '';
     if (alreadyPurchases.length) {
       androidSignature = alreadyPurchases[0].signatureAndroid || '';
-      validatePurchase(alreadyPurchases[0].productId, androidSignature);
+      validatePurchase(
+        alreadyPurchases[0].transactionReceipt,
+        androidSignature,
+      );
     } else {
       dispatch(
         setInfoMessage({
