@@ -39,7 +39,7 @@ const coachService = {
     const data = {
       receipt: receipt,
       platform: Platform.OS,
-      signature: signature,
+      signature: signature ? signature : null,
     };
     return await apiClient.post('iap/validateReceipt', data);
   },
