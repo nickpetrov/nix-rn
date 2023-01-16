@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* nutritionxTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* nutritionxTests.m */; };
+		03E1937AF6329C992431A78B /* libPods-nutritionx-nutritionxTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F636BEA2A3E5754B07981E08 /* libPods-nutritionx-nutritionxTests.a */; };
 		0F6704EA29701A19002250CE /* Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 0F6704E929701A19002250CE /* Subscriptions.storekit */; };
 		0F6704EB29701A19002250CE /* Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 0F6704E929701A19002250CE /* Subscriptions.storekit */; };
-		03E1937AF6329C992431A78B /* libPods-nutritionx-nutritionxTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F636BEA2A3E5754B07981E08 /* libPods-nutritionx-nutritionxTests.a */; };
 		0FA04594291954BE00A45F50 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FA04593291954BE00A45F50 /* HealthKit.framework */; };
 		0FABB10028D4F384004F02DD /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FABB0FF28D4F384004F02DD /* hermes.xcframework */; };
 		0FB8BFFE2937B6260073BCB6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0FB8BFFD2937B6260073BCB6 /* GoogleService-Info.plist */; };
