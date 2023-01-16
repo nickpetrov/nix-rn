@@ -120,7 +120,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     coachService
       .validatePurchase(receiptString, androidSignature)
       .then((res: any) => {
-        var receipt = res.data.latest_receipt;
+        const receipt = res.data.latest_receipt;
         SQLexecute({
           db,
           query: 'INSERT INTO iap_receipts (receipt, signature) VALUES (?, ?)',
@@ -165,7 +165,26 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           androidSignature = data.signatureAndroid;
         }
         // validate the receipt
-        validatePurchase(data.transactionReceipt, androidSignature);
+        if (Platform.OS === 'ios') {
+          console.log('validate the receipt ios', data.transactionReceipt);
+          validatePurchase(data.transactionReceipt, androidSignature);
+        } else {
+          console.log('validate the receipt android', {
+            packageName: data.packageNameAndroid,
+            productId: data.productId,
+            productToken: data.purchaseToken,
+            subscription: true,
+          });
+          validatePurchase(
+            JSON.stringify({
+              packageName: data.packageNameAndroid,
+              productId: data.productId,
+              productToken: data.purchaseToken,
+              subscription: true,
+            }),
+            androidSignature,
+          );
+        }
       }
     } catch (err: any) {
       console.warn(err.code, err.message);
@@ -185,10 +204,22 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     let androidSignature = '';
     if (alreadyPurchases.length) {
       androidSignature = alreadyPurchases[0].signatureAndroid || '';
-      validatePurchase(
-        alreadyPurchases[0].transactionReceipt,
-        androidSignature,
-      );
+      if (Platform.OS === 'ios') {
+        validatePurchase(
+          alreadyPurchases[0].transactionReceipt,
+          androidSignature,
+        );
+      } else {
+        validatePurchase(
+          JSON.stringify({
+            packageName: alreadyPurchases[0].packageNameAndroid,
+            productId: alreadyPurchases[0].productId,
+            productToken: alreadyPurchases[0].purchaseToken,
+            subscription: true,
+          }),
+          androidSignature,
+        );
+      }
     } else {
       dispatch(
         setInfoMessage({
