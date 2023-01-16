@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
     textTransform: 'capitalize',
     fontSize: 12,
     color: Colors.Secondary,
-    fontFamily: 'Roboto, sans-serif',
+    fontFamily: 'System',
   },
   main: {
     flexGrow: 1,
