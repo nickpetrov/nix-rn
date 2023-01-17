@@ -1,4 +1,4 @@
-package com.nutritionx.newarchitecture.modules;
+package com.nutritionix.nixtrack.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

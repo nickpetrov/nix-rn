@@ -43,7 +43,7 @@ for android
 
 ### upload source-map for sentry manualy
 
-1. `npx sentry-cli releases new <release_name>` - release_name - example: com.nutritionx-1.0 (can find at App.tsx where sentry init - release: getBundleId() + '-' + getVersion(),)
+1. `npx sentry-cli releases new <release_name>` - release_name - example: com.nutritionix.nixtrack-1.0 (can find at App.tsx where sentry init - release: getBundleId() + '-' + getVersion(),)
 2. `npx sentry-cli releases files <release_name> upload-sourcemaps /path/to/files` - example path ./index.android.bundle ./index.android.bundle.map
 3. `npx sentry-cli releases finalize <release_name>`
 

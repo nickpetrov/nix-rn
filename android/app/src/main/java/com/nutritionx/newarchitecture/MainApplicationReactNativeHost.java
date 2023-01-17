@@ -1,4 +1,4 @@
-package com.nutritionx.newarchitecture;
+package com.nutritionix.nixtrack.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.nutritionx.BuildConfig;
-import com.nutritionx.newarchitecture.components.MainComponentsRegistry;
-import com.nutritionx.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.nutritionix.nixtrack.BuildConfig;
+import com.nutritionix.nixtrack.newarchitecture.components.MainComponentsRegistry;
+import com.nutritionix.nixtrack.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

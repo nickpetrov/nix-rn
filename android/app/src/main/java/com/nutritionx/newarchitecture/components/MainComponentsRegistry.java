@@ -1,4 +1,4 @@
-package com.nutritionx.newarchitecture.components;
+package com.nutritionix.nixtrack.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

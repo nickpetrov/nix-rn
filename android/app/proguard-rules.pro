@@ -13,4 +13,4 @@
 -keep public class net.time4j.android.ApplicationStarter
 -keep public class net.time4j.PrettyTime
 
--keep class com.nutritionx.BuildConfig { *; }
+-keep class com.nutritionix.nixtrack.BuildConfig { *; }
