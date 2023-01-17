@@ -1,4 +1,4 @@
-import {TotalProps} from 'store/userLog/userLog.types';
+import {FoodProps, TotalProps} from 'store/userLog/userLog.types';
 import {PhotoProps} from '../autoComplete/autoComplete.types';
 import {User} from 'store/auth/auth.types';
 
@@ -10,6 +10,8 @@ export enum coachActionTypes {
   REMOVE_COACH = 'REMOVE_COACH',
   GET_COACHES = 'GET_COACHES',
   GET_CLIENTS = 'GET_CLIENTS',
+  GET_CLIENT_FOODLOG = 'GET_CLIENT_FOODLOG',
+  CLEAR_CLIENT_TOTALS_AND_FOODS = 'CLEAR_CLIENT_TOTALS_AND_FOODS',
 }
 
 export interface Coach {
@@ -23,14 +25,22 @@ export interface CoachsState {
   clientTotals: Array<TotalProps>;
   coachesList: Array<Coach>;
   clientList: Array<User>;
+  clientFoods: Array<FoodProps>;
 }
 
 export type getClientTotalsAction = {
   type: coachActionTypes.GET_CLIENT_TOTTALS;
   payload: Array<TotalProps>;
 };
+export type getClientFoogLogAction = {
+  type: coachActionTypes.GET_CLIENT_FOODLOG;
+  payload: Array<FoodProps>;
+};
 export type becomeCoachAction = {
   type: coachActionTypes.BECOME_COACH;
+};
+export type clearClientTotalsAndFoodsAction = {
+  type: coachActionTypes.CLEAR_CLIENT_TOTALS_AND_FOODS;
 };
 export type addCoachAction = {
   type: coachActionTypes.ADD_COACH;
@@ -59,4 +69,6 @@ export type CoachActions =
   | removeCoachAction
   | getCoachesAction
   | getClientsAction
+  | clearClientTotalsAndFoodsAction
+  | getClientFoogLogAction
   | clearCoachAction;

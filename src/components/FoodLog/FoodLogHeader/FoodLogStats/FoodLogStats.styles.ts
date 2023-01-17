@@ -2,12 +2,12 @@ import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   caloriesProgress: {
-    padding: 10,
+    paddingTop: 5,
+    marginHorizontal: 7,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   caloriesProgressLabel: {
-    width: '33.33333%',
     alignItems: 'center',
   },
   caloriesProgressLabelText: {
@@ -42,12 +42,12 @@ export const styles = StyleSheet.create({
     },
   },
   macroTotals: {
-    width: '100%',
+    flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
   },
   macroTotalsTile: {
-    width: '33.333333%',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 5,
@@ -66,5 +66,22 @@ export const styles = StyleSheet.create({
   },
   hide: {
     display: 'none',
+  },
+  row: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  main: {
+    flex: 1,
+  },
+  arrow: {
+    height: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    borderLeftColor: '#ddd',
+    borderLeftWidth: 1,
   },
 });

@@ -1,7 +1,7 @@
-import apiClient from 'api';
-import {TotalProps} from 'store/userLog/userLog.types';
-import {OptionsProps} from './types';
 import {Platform} from 'react-native';
+import apiClient from 'api';
+import {FoodProps, TotalProps} from 'store/userLog/userLog.types';
+import {OptionsProps} from './types';
 import {Coach} from 'store/coach/coach.types';
 import {User} from 'store/auth/auth.types';
 
@@ -14,6 +14,20 @@ const coachService = {
           begin: options.begin,
           end: options.end,
           timezone: options.timezone,
+        },
+      },
+    );
+  },
+  async getClientFoodLog(options: OptionsProps) {
+    return await apiClient.get<{foods: FoodProps[]}>(
+      `log/${options.clientId}`,
+      {
+        params: {
+          begin: options.begin,
+          end: options.end,
+          timezone: options.timezone,
+          limit: 500,
+          offset: 0,
         },
       },
     );

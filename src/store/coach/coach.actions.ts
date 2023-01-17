@@ -18,6 +18,8 @@ import {
   getCoachesAction,
   removeCoachAction,
   getClientsAction,
+  getClientFoogLogAction,
+  clearClientTotalsAndFoodsAction,
 } from './coach.types';
 import {OptionsProps} from 'api/coachService/types';
 import {RootState} from '../index';
@@ -61,6 +63,50 @@ export const getClientTotals = (options: Partial<OptionsProps>) => {
   };
 };
 
+export const getClientFoodLog = (options: Partial<OptionsProps>) => {
+  return async (dispatch: Dispatch<getClientFoogLogAction>) => {
+    let newOptions = {...options};
+    if (_.isEmpty(newOptions)) {
+      newOptions = {};
+    }
+
+    if (!newOptions.begin) {
+      newOptions.begin = moment().startOf('month').format('YYYY-MM-DD');
+    }
+    if (!newOptions.end) {
+      newOptions.end = moment().endOf('month').format('YYYY-MM-DD');
+    }
+    if (!newOptions.timezone) {
+      newOptions.timezone = 'US/Eastern';
+    }
+    try {
+      const response = await coachService.getClientFoodLog(
+        newOptions as OptionsProps,
+      );
+
+      const result = response.data;
+      if (__DEV__) {
+        console.log('client foodlog', result);
+      }
+      if (result.foods) {
+        dispatch({
+          type: coachActionTypes.GET_CLIENT_FOODLOG,
+          payload: result.foods,
+        });
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
+};
+
+export const clearClientTotalsAndFoods = () => {
+  return async (dispatch: Dispatch<clearClientTotalsAndFoodsAction>) => {
+    dispatch({
+      type: coachActionTypes.CLEAR_CLIENT_TOTALS_AND_FOODS,
+    });
+  };
+};
 export const becomeCoach = () => {
   return async (dispatch: Dispatch<becomeCoachAction>) => {
     try {
