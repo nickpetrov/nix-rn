@@ -44,6 +44,7 @@ interface MealListItemProps {
   withNewLabel?: boolean;
   searchValue?: string;
   historyTab?: boolean;
+  readOnly?: boolean;
 }
 const MealListItem: React.FC<MealListItemProps> = props => {
   const {
@@ -57,6 +58,7 @@ const MealListItem: React.FC<MealListItemProps> = props => {
     reverse,
     withNewLabel,
     historyTab,
+    readOnly,
   } = props;
 
   //reverse - use at recipe screen; display alwayes 1 serving
@@ -70,6 +72,7 @@ const MealListItem: React.FC<MealListItemProps> = props => {
     : (foodObj as FoodProps).nf_calories;
   return (
     <TouchableHighlight
+      disabled={!props.navigation && !props.onTap}
       onPress={() =>
         props.navigation
           ? props.navigation.navigate(Routes.Food, {
@@ -77,6 +80,7 @@ const MealListItem: React.FC<MealListItemProps> = props => {
               mealType: mealName
                 ? mealTypes[mealName as keyof typeof mealTypes]
                 : undefined,
+              readOnly,
             })
           : props.onTap && props.onTap()
       }>

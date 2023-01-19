@@ -12,6 +12,7 @@ import {useSelector, useDispatch} from 'hooks/useRedux';
 
 // actions
 import {changeSelectedDay} from 'store/userLog/userLog.actions';
+import {changeClientSelectedDay} from 'store/coach/coach.actions';
 
 // helpers
 import * as timeHelpers from 'helpers/time.helpers';
@@ -26,22 +27,30 @@ import {Routes} from 'navigation/Routes';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {FoodProps} from 'store/userLog/userLog.types';
+import {User} from 'store/auth/auth.types';
 
 let goToTodayCounterTimeout: ReturnType<typeof setTimeout> | undefined;
 
 interface FoodLogNavigationProps {
   foods: Array<FoodProps>;
-  // scrollDirection: 'up' | 'down';
+  client?: User;
 }
 
-const FoodLogNavigation: React.FC<FoodLogNavigationProps> = ({foods}) => {
+const FoodLogNavigation: React.FC<FoodLogNavigationProps> = ({
+  foods,
+  client,
+}) => {
   const navigation =
     useNavigation<
       NativeStackNavigationProp<StackNavigatorParamList, Routes.Dashboard>
     >();
   const dispatch = useDispatch();
   // const timezone = useSelector(state => state.auth.userData.timezone);
-  const {selectedDate} = useSelector(state => state.userLog);
+  const {selectedDate: mainUserSelectedDay} = useSelector(
+    state => state.userLog,
+  );
+  const {clientSelectedDate} = useSelector(state => state.coach);
+  const selectedDate = client ? clientSelectedDate : mainUserSelectedDay;
   const [goToTodayCounter, setGoToTodayCounter] = useState(0);
   const currDate = moment(selectedDate).format('MM/DD');
   let weekDay = moment(selectedDate).format('dddd');
@@ -64,10 +73,14 @@ const FoodLogNavigation: React.FC<FoodLogNavigationProps> = ({foods}) => {
       }, 1500);
     } else if (goToTodayCounter > 1) {
       clearTimeout(goToTodayCounterTimeout);
-      dispatch(changeSelectedDay(timeHelpers.today()));
+      if (client) {
+        dispatch(changeClientSelectedDay(timeHelpers.today()));
+      } else {
+        dispatch(changeSelectedDay(timeHelpers.today()));
+      }
       setGoToTodayCounter(0);
     }
-  }, [goToTodayCounter, dispatch, weekDay]);
+  }, [goToTodayCounter, dispatch, weekDay, client]);
 
   // const goToToday = () => {
   //   setGoToTodayCounter(goToTodayCounter + 1);
@@ -86,7 +99,11 @@ const FoodLogNavigation: React.FC<FoodLogNavigationProps> = ({foods}) => {
       clearTimeout(goToTodayCounterTimeout);
     }
     const newDate = timeHelpers.offsetDays(selectedDate, 'YYYY-MM-DD', offset);
-    dispatch(changeSelectedDay(newDate));
+    if (client) {
+      dispatch(changeClientSelectedDay(newDate));
+    } else {
+      dispatch(changeSelectedDay(newDate));
+    }
   };
 
   let foodLogNav = (
@@ -105,8 +122,20 @@ const FoodLogNavigation: React.FC<FoodLogNavigationProps> = ({foods}) => {
               </Text>
             </View>
           ) : null}
+          {client && (
+            <Text style={styles.dayLogNavigationClientText}>{`${
+              client.first_name
+            } ${client.last_name ? client.last_name : ''}`}</Text>
+          )}
           <Text style={styles.dayLogNavigationText}>
-            <Text style={styles.dayLogNavHighlight}>{weekDay},</Text> {currDate}
+            <Text
+              style={[
+                styles.dayLogNavHighlight,
+                client && styles.clientDayLogNavHighlight,
+              ]}>
+              {weekDay},
+            </Text>{' '}
+            {currDate}
           </Text>
         </View>
       </TouchableOpacity>

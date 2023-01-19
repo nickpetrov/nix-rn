@@ -12,7 +12,7 @@ import {styles} from './ExerciseListItem.styles';
 import {Colors} from 'constants/Colors';
 
 interface ExerciseListItemProps {
-  onPress: () => void;
+  onPress?: () => void;
   exercise: ExerciseProps;
   last?: boolean;
 }
@@ -26,6 +26,7 @@ const ExerciseListItem: React.FC<ExerciseListItemProps> = ({
     <TouchableHighlight
       underlayColor={Colors.Highlight}
       style={styles.container}
+      disabled={!onPress}
       onPress={onPress}>
       <View style={[styles.root, !last ? styles.borderBottom : {}]}>
         <View style={styles.left}>

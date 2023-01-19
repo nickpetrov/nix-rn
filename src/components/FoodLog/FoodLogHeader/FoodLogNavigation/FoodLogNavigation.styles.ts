@@ -39,6 +39,9 @@ export const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 11,
   },
+  dayLogNavigationClientText: {
+    color: '#fff',
+  },
   navAngleWrapperLeft: {
     width: 50,
     height: '100%',
@@ -56,6 +59,9 @@ export const styles = StyleSheet.create({
   dayLogNavHighlight: {
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  clientDayLogNavHighlight: {
+    fontSize: 14,
   },
   flex1: {
     flex: 1,

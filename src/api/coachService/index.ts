@@ -4,6 +4,7 @@ import {FoodProps, TotalProps} from 'store/userLog/userLog.types';
 import {OptionsProps} from './types';
 import {Coach} from 'store/coach/coach.types';
 import {User} from 'store/auth/auth.types';
+import {ExerciseProps} from 'store/userLog/userLog.types';
 
 const coachService = {
   async getClientTotals(options: OptionsProps) {
@@ -21,6 +22,20 @@ const coachService = {
   async getClientFoodLog(options: OptionsProps) {
     return await apiClient.get<{foods: FoodProps[]}>(
       `log/${options.clientId}`,
+      {
+        params: {
+          begin: options.begin,
+          end: options.end,
+          timezone: options.timezone,
+          limit: 500,
+          offset: 0,
+        },
+      },
+    );
+  },
+  async getClientExerciseslog(options: OptionsProps) {
+    return await apiClient.get<{exercises: ExerciseProps[]}>(
+      `exercise/log/${options.clientId}`,
       {
         params: {
           begin: options.begin,

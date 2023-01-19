@@ -64,6 +64,7 @@ import {
 import CompleteRegistration from 'screens/LoggedIn/CompleteRegistration';
 import CoachPortalScreen from 'screens/LoggedIn/CoachPortalSceen';
 import ViewClientScreen from 'screens/LoggedIn/ViewClientScreen';
+import ViewClientDayLogScreen from 'screens/LoggedIn/ViewClientDayLogScreen';
 
 const Stack = createNativeStackNavigator<StackNavigatorParamList>();
 const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
@@ -321,6 +322,13 @@ const LoggedInNavigation = () => {
         component={ViewClientScreen}
         options={{
           headerTitle: 'View Client',
+        }}
+      />
+      <Stack.Screen
+        name={Routes.ViewClientDayLog}
+        component={ViewClientDayLogScreen}
+        options={{
+          headerTitle: 'Client Daily Log',
         }}
       />
       <Stack.Screen

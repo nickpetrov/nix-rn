@@ -27,7 +27,6 @@ import * as userActions from 'store/auth/auth.actions';
 import * as logActions from 'store/userLog/userLog.actions';
 import * as userLogActions from 'store/userLog/userLog.actions';
 import {addExistFoodToBasket} from 'store/basket/basket.actions';
-import {getClientTotals} from 'store/coach/coach.actions';
 
 // helpres
 import getAttrValueById from 'helpers/getAttrValueById';
@@ -123,7 +122,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           : `${mealType} - ${moment(followDate).format('ddd, MM/DD')}`,
     });
   }, [navigation, mealType, followDate]);
-
+  console.log('clientTotals', clientTotals);
   useEffect(() => {
     if (clientTotals.length) {
       if (clientTotals[0].daily_kcal_limit) {
@@ -143,17 +142,6 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
       }
     }
   }, [followDate, totals, clientTotals]);
-
-  useEffect(() => {
-    if (clientId) {
-      const options = {
-        clientId,
-        begin: moment(followDate).format('YYYY-MM-DD'),
-        end: moment(followDate).add(1, 'day').format('YYYY-MM-DD'),
-      };
-      dispatch(getClientTotals(options));
-    }
-  }, [clientId, dispatch, followDate]);
 
   useEffect(() => {
     setTotal(prev => {
@@ -366,7 +354,9 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     valueVitaminC: total.nf_vitamin_c_dv || 0,
     valueCalcium: total.nf_calcium_dv || 0,
     valueIron: total.nf_iron_dv || 0,
-    calorieIntake: userData.daily_kcal,
+    calorieIntake: clientId
+      ? clientTotals[0].daily_kcal_limit
+      : userData.daily_kcal,
   };
 
   return (

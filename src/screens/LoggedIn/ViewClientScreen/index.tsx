@@ -8,7 +8,6 @@ import {
   View,
   ScrollView,
   TouchableWithoutFeedback,
-  TouchableHighlight,
   Linking,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -22,6 +21,7 @@ import {
   getClientTotals,
   getClientFoodLog,
   clearClientTotalsAndFoods,
+  changeClientSelectedDay,
 } from 'store/coach/coach.actions';
 
 // constants
@@ -35,6 +35,7 @@ import {FoodProps} from 'store/userLog/userLog.types';
 
 // styles
 import {styles} from './ViewClientScreen.styles';
+import {TouchableOpacity} from 'react-native';
 
 interface ViewClientScreenProps {
   navigation: NativeStackNavigationProp<
@@ -176,14 +177,16 @@ const ViewClientScreen: React.FC<ViewClientScreenProps> = ({
               moment(item.date).format('YYYY-MM-DD'),
           );
           return (
-            <TouchableHighlight
+            <TouchableOpacity
               key={item.date}
               style={styles.totalItem}
-              onPress={() =>
-                navigation.navigate(Routes.Dashboard, {
+              onPress={() => {
+                const newDate = moment(item.date).format('YYYY-MM-DD');
+                dispatch(changeClientSelectedDay(newDate));
+                navigation.navigate(Routes.ViewClientDayLog, {
                   client,
-                })
-              }>
+                });
+              }}>
               <View>
                 <Text style={styles.totalItemTitle}>
                   {moment(item.date).format('dddd, MMMM Do YYYY')}
@@ -198,7 +201,7 @@ const ViewClientScreen: React.FC<ViewClientScreenProps> = ({
                   />
                 </View>
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
           );
         })}
     </ScrollView>

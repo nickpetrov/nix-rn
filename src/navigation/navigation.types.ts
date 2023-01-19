@@ -15,7 +15,6 @@ export interface StackNavigatorParamList extends ParamListBase {
     | {
         justLoggedIn?: boolean;
         startWalkthroughAfterLog?: boolean;
-        client?: User;
       }
     | undefined;
   [Routes.List]: undefined;
@@ -103,6 +102,9 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.ViewClient]: {
     client: User;
     clientId: string;
+  };
+  [Routes.ViewClientDayLog]: {
+    client: User;
   };
 }
 

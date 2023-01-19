@@ -42,4 +42,5 @@ export enum Routes {
   Subscribe = 'Subscribe',
   CoachPortal = 'CoachPortal',
   ViewClient = 'ViewClient',
+  ViewClientDayLog = 'ViewClientDayLog',
 }

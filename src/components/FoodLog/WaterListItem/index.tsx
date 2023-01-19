@@ -11,7 +11,7 @@ import {Colors} from 'constants/Colors';
 export interface WaterListItemProps {
   consumed: number;
   measure_system: number;
-  onPress: () => void;
+  onPress?: () => void;
 }
 
 const WaterListItem: React.FC<WaterListItemProps> = props => {
@@ -19,6 +19,7 @@ const WaterListItem: React.FC<WaterListItemProps> = props => {
     <TouchableHighlight
       underlayColor={Colors.Highlight}
       style={styles.root}
+      disabled={!props.onPress}
       onPress={props.onPress}>
       <Text style={styles.text}>
         {props.measure_system === 1

@@ -24,6 +24,8 @@ interface FoodLogStatsProps {
   foods: Array<FoodProps>;
   withoutNavigate?: boolean;
   withArrow?: boolean;
+  clientId?: string;
+  clientSelectedDate?: string;
 }
 
 const FoodLogStats: React.FC<FoodLogStatsProps> = ({
@@ -32,6 +34,8 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = ({
   foods,
   withoutNavigate,
   withArrow,
+  clientId,
+  clientSelectedDate,
 }) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [total, setTotal] = useState<Record<string, any>>({
@@ -160,14 +164,15 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = ({
         height: 'auto',
       }}>
       <TouchableOpacity
-        onPress={
-          withoutNavigate
-            ? undefined
-            : () =>
-                navigation.navigate(Routes.Totals, {
-                  type: 'daily',
-                  foods: foods,
-                })
+        disabled={withoutNavigate}
+        onPress={() =>
+          navigation.navigate(Routes.Totals, {
+            type: 'daily',
+            foods: foods,
+            clientId,
+            date: clientSelectedDate,
+            readOnly: !!clientId,
+          })
         }>
         {withArrow ? (
           <View style={styles.row}>

@@ -20,11 +20,16 @@ import {
   getClientsAction,
   getClientFoogLogAction,
   clearClientTotalsAndFoodsAction,
+  changeClientSelectedDateAction,
+  getClientExercisesAction,
+  clearCoachAction,
 } from './coach.types';
 import {OptionsProps} from 'api/coachService/types';
 import {RootState} from '../index';
 import {SQLexecute, SQLgetGetAll} from 'helpers/sqlite';
 import {User} from 'store/auth/auth.types';
+import * as timeHelper from 'helpers/time.helpers';
+import {batch} from 'react-redux';
 
 export const getClientTotals = (options: Partial<OptionsProps>) => {
   return async (dispatch: Dispatch<getClientTotalsAction>) => {
@@ -99,6 +104,50 @@ export const getClientFoodLog = (options: Partial<OptionsProps>) => {
     }
   };
 };
+export const getClientExercisesLog = (options: Partial<OptionsProps>) => {
+  return async (dispatch: Dispatch<getClientExercisesAction>) => {
+    let newOptions = {...options};
+    if (_.isEmpty(newOptions)) {
+      newOptions = {};
+    }
+
+    if (!newOptions.begin) {
+      newOptions.begin = moment().startOf('month').format('YYYY-MM-DD');
+    }
+    if (!newOptions.end) {
+      newOptions.end = moment().endOf('month').format('YYYY-MM-DD');
+    }
+    if (!newOptions.timezone) {
+      newOptions.timezone = 'US/Eastern';
+    }
+    try {
+      const response = await coachService.getClientExerciseslog(
+        newOptions as OptionsProps,
+      );
+
+      const result = response.data;
+      if (__DEV__) {
+        console.log('client exercises', result);
+      }
+      if (result.exercises) {
+        dispatch({
+          type: coachActionTypes.GET_CLIENT_EXERCISES_LOG,
+          payload: result.exercises,
+        });
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
+};
+
+export const clearCoachState = () => {
+  return async (dispatch: Dispatch<clearCoachAction>) => {
+    dispatch({
+      type: coachActionTypes.COACH_CLEAR,
+    });
+  };
+};
 
 export const clearClientTotalsAndFoods = () => {
   return async (dispatch: Dispatch<clearClientTotalsAndFoodsAction>) => {
@@ -107,6 +156,7 @@ export const clearClientTotalsAndFoods = () => {
     });
   };
 };
+
 export const becomeCoach = () => {
   return async (dispatch: Dispatch<becomeCoachAction>) => {
     try {
@@ -241,5 +291,54 @@ export const checkSubscriptions = () => {
       .catch(function (err) {
         console.log(err);
       });
+  };
+};
+
+export const changeClientSelectedDay = (newDate: string) => {
+  return async (dispatch: Dispatch<changeClientSelectedDateAction>) => {
+    dispatch({
+      type: coachActionTypes.CHANGE_CLIENT_SELECTED_DATE,
+      newDate: newDate,
+    });
+  };
+};
+
+export const refreshClientLog = (
+  options: Partial<OptionsProps>,
+  selectedDate: string,
+) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
+    let newOptions = {...options};
+    if (_.isEmpty(newOptions)) {
+      newOptions = {};
+    }
+    const clientTotals = useState().coach.clientTotals;
+    const needUpdateAfterChangeSelectedDate =
+      clientTotals.findIndex(
+        item => moment(item.date).format('YYYY-MM-DD') === selectedDate,
+      ) === -1;
+
+    if (needUpdateAfterChangeSelectedDate) {
+      if (!newOptions.begin) {
+        newOptions.begin = timeHelper.offsetDays(
+          selectedDate,
+          'YYYY-MM-DD',
+          -7,
+        );
+      }
+      if (!newOptions.end) {
+        newOptions.end = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', 7);
+      }
+      if (!newOptions.timezone) {
+        newOptions.timezone = 'US/Eastern';
+      }
+      batch(() => {
+        dispatch(getClientFoodLog(options));
+        dispatch(getClientExercisesLog(options));
+        dispatch(getClientTotals(options));
+      });
+    } else {
+      return;
+    }
   };
 };
