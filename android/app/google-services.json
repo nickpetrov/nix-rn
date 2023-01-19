@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:485602608525:android:48f7ea7739a5f5a5cc29c4",
+        "mobilesdk_app_id": "1:485602608525:android:227a94bb8ad54384cc29c4",
         "android_client_info": {
           "package_name": "com.nutritionix.nixtrack"
         }
@@ -29,6 +29,49 @@
             {
               "client_id": "485602608525-tddfnk3s1oqiq03i1tkpcvfkre271ict.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "485602608525-34vm66buqte2eeqqnvrr4da0d3i5f9g8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "rntrack"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485602608525:android:48f7ea7739a5f5a5cc29c4",
+        "android_client_info": {
+          "package_name": "com.nutritionx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485602608525-tddfnk3s1oqiq03i1tkpcvfkre271ict.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRrz1aU60XKgMudJ8IGO8zvxL1lVXS4xM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485602608525-tddfnk3s1oqiq03i1tkpcvfkre271ict.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "485602608525-34vm66buqte2eeqqnvrr4da0d3i5f9g8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "rntrack"
+              }
             }
           ]
         }
