@@ -53,6 +53,7 @@ const FoodLogSectionHeader: React.FC<FoodLogSectionHeaderProps> = ({
 
   return (
     <TouchableOpacity
+      style={{flex: 1}}
       disabled={!clientId}
       onPress={() => {
         if (foods?.length && mealType) {
