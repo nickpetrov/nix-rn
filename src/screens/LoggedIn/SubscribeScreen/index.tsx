@@ -46,6 +46,7 @@ import {Routes} from 'navigation/Routes';
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface SubscribeScreenProps {
   navigation: NativeStackNavigationProp<
@@ -120,6 +121,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     coachService
       .validatePurchase(receiptString, androidSignature)
       .then((res: any) => {
+        analyticTrackEvent('validate_subscribe_success', Platform.OS);
         const receipt = res.data.latest_receipt;
         SQLexecute({
           db,
@@ -134,6 +136,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           });
       })
       .catch(function (err: any) {
+        analyticTrackEvent('validate_subscribe_fail', Platform.OS);
         console.log(err);
       });
   };
@@ -161,6 +164,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         data = await requestSubscription({sku});
       }
       if (data) {
+        analyticTrackEvent('subscribe', Platform.OS);
         if (data.signatureAndroid) {
           androidSignature = data.signatureAndroid;
         }
@@ -241,6 +245,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
   const unsubscribeFromPro = () => {
     dispatch(updateUserData({premium_user: 0}))
       .then(function () {
+        analyticTrackEvent('unsubscribe', 'unsubscribe_from_pro');
         console.log('unsubscribe success');
       })
       .catch(function (err) {
