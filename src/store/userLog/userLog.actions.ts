@@ -747,16 +747,29 @@ export const deleteWaterFromLog = () => {
   };
 };
 
-export const refreshLog = (selectedDate: string, timezone: string) => {
-  return async (dispatch: Dispatch<any>) => {
+export const refreshLog = (
+  selectedDate: string,
+  timezone: string,
+  refresh?: boolean,
+) => {
+  return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     const logBeginDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', -7);
     const logEndDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', 7);
-    batch(() => {
-      dispatch(getUserFoodlog(logBeginDate, logEndDate, 0));
-      dispatch(getUserWeightlog(logBeginDate, logEndDate, 0));
-      dispatch(getUserExerciseslog(logBeginDate, logEndDate, 0));
-      dispatch(getDayTotals(logBeginDate, logEndDate, timezone));
-    });
+    const totals = useState().userLog.totals;
+    const needUpdateAfterChangeSelectedDate =
+      totals.findIndex(
+        item => moment(item.date).format('YYYY-MM-DD') === selectedDate,
+      ) === -1;
+    if (needUpdateAfterChangeSelectedDate || refresh) {
+      batch(() => {
+        dispatch(getUserFoodlog(logBeginDate, logEndDate, 0));
+        dispatch(getUserWeightlog(logBeginDate, logEndDate, 0));
+        dispatch(getUserExerciseslog(logBeginDate, logEndDate, 0));
+        dispatch(getDayTotals(logBeginDate, logEndDate, timezone));
+      });
+    } else {
+      return;
+    }
   };
 };
 

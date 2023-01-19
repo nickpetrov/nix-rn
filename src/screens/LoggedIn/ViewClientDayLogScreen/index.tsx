@@ -281,9 +281,11 @@ const ViewClientDayLogScreen: React.FC<ViewClientDayLogScreenProps> = ({
                 clientId: client.id,
                 timezone: client.timezone,
               };
-              dispatch(refreshClientLog(options, selectedDate)).then(() => {
-                setIsRefreshing(false);
-              });
+              dispatch(refreshClientLog(options, selectedDate, true)).then(
+                () => {
+                  setIsRefreshing(false);
+                },
+              );
             }}
           />
         }

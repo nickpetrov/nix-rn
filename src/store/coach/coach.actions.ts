@@ -306,6 +306,7 @@ export const changeClientSelectedDay = (newDate: string) => {
 export const refreshClientLog = (
   options: Partial<OptionsProps>,
   selectedDate: string,
+  refresh?: boolean,
 ) => {
   return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     let newOptions = {...options};
@@ -318,7 +319,7 @@ export const refreshClientLog = (
         item => moment(item.date).format('YYYY-MM-DD') === selectedDate,
       ) === -1;
 
-    if (needUpdateAfterChangeSelectedDate) {
+    if (needUpdateAfterChangeSelectedDate || refresh) {
       if (!newOptions.begin) {
         newOptions.begin = timeHelper.offsetDays(
           selectedDate,

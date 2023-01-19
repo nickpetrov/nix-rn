@@ -592,7 +592,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             onRefresh={() => {
               setIsRefreshing(true);
               dispatch(
-                userLogActions.refreshLog(selectedDate, userData.timezone),
+                userLogActions.refreshLog(
+                  selectedDate,
+                  userData.timezone,
+                  true,
+                ),
               ).then(() => {
                 setIsRefreshing(false);
               });
