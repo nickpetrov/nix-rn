@@ -25,6 +25,7 @@ import {
   getSubscriptions,
   Subscription,
   SubscriptionAndroid,
+  setup,
 } from 'react-native-iap';
 
 // hooks
@@ -92,6 +93,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         console.log('error get subscriptions', error);
       }
     };
+    setup({storekitMode:'STOREKIT_HYBRID_MODE'})
     initConnection()
       .then(() => {
         if (Platform.OS === 'ios') {
