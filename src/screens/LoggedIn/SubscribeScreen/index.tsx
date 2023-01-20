@@ -93,11 +93,11 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         console.log('error get subscriptions', error);
       }
     };
-    setup({storekitMode:'STOREKIT_HYBRID_MODE'})
+    setup({storekitMode: 'STOREKIT_HYBRID_MODE'});
     initConnection()
-      .then(() => {
+      .then(async () => {
         if (Platform.OS === 'ios') {
-          restorePurchases();
+          await restorePurchases();
         } else {
           // we make sure that "ghost" pending payment are removed
           // (ghost = failed pending payment that are still marked as pending in Google's native Vending module cache)
@@ -107,7 +107,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
               // - there are pending purchases that are still pending (we can't consume a pending purchase)
               // in any case, you might not want to do anything special with the error
             })
-            .then(restorePurchases);
+            .then(async () => await restorePurchases());
         }
       })
       .catch(err => {
