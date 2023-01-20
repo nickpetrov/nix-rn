@@ -106,7 +106,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log("init connection error", err);
       });
 
     return () => {
