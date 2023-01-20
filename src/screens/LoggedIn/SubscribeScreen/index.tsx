@@ -79,14 +79,17 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         if (alreadyPurchases && alreadyPurchases.length > 0) {
           setShowTrial(false);
         }
-
+      } catch (error) {
+        console.log('error getAvailablePurchases', error);
+      }
+      try {
         const getsubs = await getSubscriptions({
           skus: ids,
         });
         setsubscriptions(getsubs);
         console.log('getsubs', getsubs);
       } catch (error) {
-        console.log(error);
+        console.log('error get subscriptions', error);
       }
     };
     initConnection()
@@ -106,7 +109,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         }
       })
       .catch(err => {
-        console.log("init connection error", err);
+        console.log('init connection error', err);
       });
 
     return () => {
