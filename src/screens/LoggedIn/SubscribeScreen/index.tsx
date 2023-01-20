@@ -167,6 +167,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         data = await requestSubscription({sku});
       }
       if (data) {
+        console.log('data', data);
         analyticTrackEvent('subscribe', Platform.OS);
         if (data.signatureAndroid) {
           androidSignature = data.signatureAndroid;
@@ -176,21 +177,21 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           console.log('validate the receipt ios', data.transactionReceipt);
           validatePurchase(data.transactionReceipt, androidSignature);
         } else {
-          console.log('validate the receipt android', {
-            packageName: data.packageNameAndroid,
-            productId: data.productId,
-            productToken: data.purchaseToken,
-            subscription: true,
-          });
-          validatePurchase(
-            JSON.stringify({
-              packageName: data.packageNameAndroid,
-              productId: data.productId,
-              productToken: data.purchaseToken,
-              subscription: true,
-            }),
-            androidSignature,
-          );
+          const sentData = Array.isArray(data)
+            ? {
+                packageName: data[0].packageNameAndroid,
+                productId: data[0].productId,
+                productToken: data[0].purchaseToken,
+                subscription: true,
+              }
+            : {
+                packageName: data.packageNameAndroid,
+                productId: data.productId,
+                productToken: data.purchaseToken,
+                subscription: true,
+              };
+          console.log('validate the receipt android', sentData);
+          validatePurchase(JSON.stringify(sentData), androidSignature);
         }
       }
     } catch (err: any) {
