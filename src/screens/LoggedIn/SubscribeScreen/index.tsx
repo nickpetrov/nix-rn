@@ -83,6 +83,10 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
       androidSignature: string,
       purchase?: ProductPurchase | SubscriptionPurchase,
     ) => {
+      if (!receiptString) {
+        console.log('empty reciept');
+        return;
+      }
       coachService
         .validatePurchase(receiptString, androidSignature)
         .then((res: any) => {
@@ -189,11 +193,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         }
         // validate the receipt
         if (Platform.OS === 'ios') {
-          console.log('validate the receipt ios', purchase.transactionReceipt);
-          console.log(
-            'validate the receipt ios, all purchase after subscribe',
-            purchase,
-          );
+          console.log('validate the receipt ios, purchase data', purchase);
           validatePurchase(
             purchase.transactionReceipt,
             androidSignature,
