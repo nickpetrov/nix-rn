@@ -110,9 +110,6 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         })
         .catch(function (err: any) {
           analyticTrackEvent('validate_subscribe_fail', Platform.OS);
-          if (purchase && Platform.OS === 'ios') {
-            finishTransaction({purchase, isConsumable: false});
-          }
           console.log(err);
         });
     },
@@ -154,7 +151,9 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         ? ['Track_Pro_Automatic_Renewal', 'Track_Pro_Renewal_Yearly']
         : ['track_pro_automatic_renewal', 'track_pro_renewal_yearly'];
     try {
-      const purchases = await getAvailablePurchases();
+      const purchases = await getAvailablePurchases({
+        automaticallyFinishRestoredTransactions: true,
+      });
       let alreadyPurchases = purchases.filter(item =>
         ids.includes(item.productId),
       );
@@ -276,7 +275,9 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
       Platform.OS === 'ios'
         ? ['Track_Pro_Automatic_Renewal', 'Track_Pro_Renewal_Yearly']
         : ['track_pro_automatic_renewal', 'track_pro_renewal_yearly'];
-    const purchases = await getAvailablePurchases();
+    const purchases = await getAvailablePurchases({
+      onlyIncludeActiveItems: true,
+    });
     let alreadyPurchases = purchases.filter(item =>
       ids.includes(item.productId),
     );
