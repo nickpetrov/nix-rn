@@ -1,8 +1,9 @@
 // utils
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 
 // helpers
 import {SQLexecute} from 'helpers/sqlite';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 // components
 import {
@@ -26,7 +27,9 @@ import {
   Subscription,
   SubscriptionAndroid,
   setup,
+  clearProductsIOS,
 } from 'react-native-iap';
+import LoadIndicator from 'components/LoadIndicator';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
@@ -43,11 +46,11 @@ import {styles} from './SubscribeScreen.styles';
 
 // constants
 import {Routes} from 'navigation/Routes';
+import {Colors} from 'constants/Colors';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface SubscribeScreenProps {
   navigation: NativeStackNavigationProp<
@@ -63,61 +66,66 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     state => state.auth.userData,
   );
   const [showTrial, setShowTrial] = useState(true);
+  const [initLoading, setInitLoading] = useState(false);
+  const [subsLoading, setSubsLoading] = useState(false);
   const [subscriptions, setsubscriptions] = useState<Subscription[]>([]);
 
-  useEffect(() => {
-    const restorePurchases = async () => {
-      const ids =
-        Platform.OS === 'ios'
-          ? ['Track_Pro_Automatic_Renewal', 'Track_Pro_Renewal_Yearly']
-          : ['track_pro_automatic_renewal', 'track_pro_renewal_yearly'];
-      try {
-        const purchases = await getAvailablePurchases();
-        let alreadyPurchases = purchases.filter(item =>
-          ids.includes(item.productId),
-        );
-        console.log('alreadyPurchases', alreadyPurchases);
-        if (alreadyPurchases && alreadyPurchases.length > 0) {
-          setShowTrial(false);
-        }
-      } catch (error) {
-        console.log('error getAvailablePurchases', error);
+  const initIAP = useCallback(async (): Promise<void> => {
+    setInitLoading(true);
+    if (Platform.OS === 'ios') {
+      clearProductsIOS();
+    }
+
+    try {
+      const result = await initConnection();
+      if (Platform.OS === 'android') {
+        await flushFailedPurchasesCachedAsPendingAndroid();
       }
-      try {
-        const getsubs = await getSubscriptions({
-          skus: ids,
-        });
-        setsubscriptions(getsubs);
-        console.log('getsubs', getsubs);
-      } catch (error) {
-        console.log('error get subscriptions', error);
+      if (result === false) {
+        console.log("couldn't get in-app-purchase information");
+        return;
       }
-    };
-    setup({storekitMode: 'STOREKIT_HYBRID_MODE'});
-    initConnection()
-      .then(async () => {
-        if (Platform.OS === 'ios') {
-          await restorePurchases();
-        } else {
-          // we make sure that "ghost" pending payment are removed
-          // (ghost = failed pending payment that are still marked as pending in Google's native Vending module cache)
-          flushFailedPurchasesCachedAsPendingAndroid()
-            .catch(() => {
-              // exception can happen here if:
-              // - there are pending purchases that are still pending (we can't consume a pending purchase)
-              // in any case, you might not want to do anything special with the error
-            })
-            .then(async () => await restorePurchases());
-        }
-      })
-      .catch(err => {
-        console.log('init connection error', err);
+    } catch (err) {
+      console.error('fail to get in-app-purchase information', err);
+    }
+
+    const ids =
+      Platform.OS === 'ios'
+        ? ['Track_Pro_Automatic_Renewal', 'Track_Pro_Renewal_Yearly']
+        : ['track_pro_automatic_renewal', 'track_pro_renewal_yearly'];
+    try {
+      const purchases = await getAvailablePurchases();
+      let alreadyPurchases = purchases.filter(item =>
+        ids.includes(item.productId),
+      );
+      console.log('alreadyPurchases', alreadyPurchases);
+      if (alreadyPurchases && alreadyPurchases.length > 0) {
+        setShowTrial(false);
+      }
+    } catch (error) {
+      console.log('error getAvailablePurchases', error);
+    }
+
+    try {
+      const getsubs = await getSubscriptions({
+        skus: ids,
       });
+      setsubscriptions(getsubs);
+      console.log('getsubs', getsubs);
+    } catch (error) {
+      console.log('error get subscriptions', error);
+    }
+    setInitLoading(false);
+  }, []);
+
+  useEffect(() => {
+    setup({storekitMode: 'STOREKIT_HYBRID_MODE'});
+    initIAP();
 
     return () => {
       endConnection();
     };
-  }, []);
+  }, [initIAP]);
 
   const validatePurchase = (
     receiptString: string,
@@ -147,6 +155,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
   };
 
   const purchaseSubscription = async (sku: string) => {
+    setSubsLoading(true);
     if (Platform.OS === 'android') {
       sku = sku.toLowerCase();
     }
@@ -161,12 +170,20 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         const offerToken =
           (androidSubs as SubscriptionAndroid)?.subscriptionOfferDetails[0]
             .offerToken || '';
-        data = await requestSubscription({
-          subscriptionOffers: [{sku, offerToken}],
-        });
+        try {
+          data = await requestSubscription({
+            subscriptionOffers: [{sku, offerToken}],
+          });
+        } catch (error) {
+          console.log('err req subscribe android', error);
+        }
       } else {
         console.log('ios subs', sku);
-        data = await requestSubscription({sku});
+        try {
+          data = await requestSubscription({sku});
+        } catch (error) {
+          console.log('err req subscribe ios', error);
+        }
       }
       if (data) {
         console.log('data', data);
@@ -177,6 +194,10 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         // validate the receipt
         if (Platform.OS === 'ios') {
           console.log('validate the receipt ios', data.transactionReceipt);
+          console.log(
+            'validate the receipt ios, all data after subscribe',
+            data,
+          );
           validatePurchase(data.transactionReceipt, androidSignature);
         } else {
           const sentData = Array.isArray(data)
@@ -199,6 +220,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     } catch (err: any) {
       console.warn(err.code, err.message);
     }
+    setSubsLoading(false);
   };
 
   const restorePurchases = async () => {
@@ -259,6 +281,10 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
       });
   };
 
+  if (initLoading) {
+    return <LoadIndicator color={Colors.Primary} />;
+  }
+
   return (
     <ScrollView style={styles.root}>
       <Text style={styles.title}>Track Pro</Text>
@@ -286,6 +312,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           btnTextStyles={{fontWeight: '700'}}
           type="blue"
           title="Subscribe"
+          disabled={subsLoading}
           onPress={() => purchaseSubscription('Track_Pro_Automatic_Renewal')}
         />
         {showTrial && (
@@ -311,6 +338,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           btnTextStyles={{fontWeight: '700'}}
           type="blue"
           title="Subscribe"
+          disabled={subsLoading}
           onPress={() => purchaseSubscription('Track_Pro_Renewal_Yearly')}
         />
         {showTrial && <Text>Start your 2 month free trial, then $29/year</Text>}
