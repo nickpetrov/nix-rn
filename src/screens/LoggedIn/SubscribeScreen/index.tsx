@@ -34,6 +34,7 @@ import {
   purchaseUpdatedListener,
   purchaseErrorListener,
   PurchaseError,
+  finishTransaction,
 } from 'react-native-iap';
 import LoadIndicator from 'components/LoadIndicator';
 
@@ -77,12 +78,19 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
   const [subscriptions, setsubscriptions] = useState<Subscription[]>([]);
 
   const validatePurchase = useCallback(
-    (receiptString: string, androidSignature: string) => {
+    (
+      receiptString: string,
+      androidSignature: string,
+      purchase?: ProductPurchase | SubscriptionPurchase,
+    ) => {
       coachService
         .validatePurchase(receiptString, androidSignature)
         .then((res: any) => {
           analyticTrackEvent('validate_subscribe_success', Platform.OS);
           const receipt = res.data.latest_receipt;
+          if (purchase && Platform.OS === 'ios') {
+            finishTransaction({purchase, isConsumable: false});
+          }
           SQLexecute({
             db,
             query:
@@ -98,6 +106,9 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         })
         .catch(function (err: any) {
           analyticTrackEvent('validate_subscribe_fail', Platform.OS);
+          if (purchase && Platform.OS === 'ios') {
+            finishTransaction({purchase, isConsumable: false});
+          }
           console.log(err);
         });
     },
@@ -121,7 +132,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           console.log('err clearProductsIOS', error);
         }
         try {
-          await clearTransactionIOS()
+          await clearTransactionIOS();
         } catch (error) {
           console.log('err clearTransactionIOS', error);
         }
@@ -180,7 +191,11 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
             'validate the receipt ios, all purchase after subscribe',
             purchase,
           );
-          validatePurchase(purchase.transactionReceipt, androidSignature);
+          validatePurchase(
+            purchase.transactionReceipt,
+            androidSignature,
+            purchase,
+          );
         } else {
           const sentData = {
             packageName: purchase.packageNameAndroid,
@@ -189,7 +204,11 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
             subscription: true,
           };
           console.log('validate the receipt android', sentData);
-          validatePurchase(JSON.stringify(sentData), androidSignature);
+          validatePurchase(
+            JSON.stringify(sentData),
+            androidSignature,
+            purchase,
+          );
         }
       },
     );
@@ -202,7 +221,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
 
     return () => {
       purchaseUpdateSubscription.remove();
-      purchaseErrorSubscription.remove()
+      purchaseErrorSubscription.remove();
       endConnection();
     };
   }, [initIAP, validatePurchase]);
@@ -265,6 +284,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         validatePurchase(
           alreadyPurchases[0].transactionReceipt,
           androidSignature,
+          alreadyPurchases[0],
         );
       } else {
         validatePurchase(
@@ -275,6 +295,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
             subscription: true,
           }),
           androidSignature,
+          alreadyPurchases[0],
         );
       }
     } else {
