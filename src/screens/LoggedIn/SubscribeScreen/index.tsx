@@ -89,7 +89,11 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           analyticTrackEvent('validate_subscribe_success', Platform.OS);
           const receipt = res.data.latest_receipt;
           if (purchase && Platform.OS === 'ios') {
-            finishTransaction({purchase, isConsumable: false});
+            try {
+              finishTransaction({purchase, isConsumable: false});
+            } catch (error) {
+              console.log('finishTransaction error', error);
+            }
           }
           SQLexecute({
             db,
