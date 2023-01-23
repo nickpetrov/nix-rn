@@ -72,14 +72,12 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
 
   const initIAP = useCallback(async (): Promise<void> => {
     setInitLoading(true);
-    if (Platform.OS === 'ios') {
-      clearProductsIOS();
-    }
-
     try {
       const result = await initConnection();
       if (Platform.OS === 'android') {
         await flushFailedPurchasesCachedAsPendingAndroid();
+      } else {
+        await clearProductsIOS();
       }
       if (result === false) {
         console.log("couldn't get in-app-purchase information");
