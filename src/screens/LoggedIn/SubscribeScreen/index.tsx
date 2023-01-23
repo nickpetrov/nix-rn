@@ -28,6 +28,9 @@ import {
   SubscriptionAndroid,
   setup,
   clearProductsIOS,
+  SubscriptionPurchase,
+  ProductPurchase,
+  purchaseUpdatedListener,
 } from 'react-native-iap';
 import LoadIndicator from 'components/LoadIndicator';
 
@@ -70,6 +73,34 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
   const [subsLoading, setSubsLoading] = useState(false);
   const [subscriptions, setsubscriptions] = useState<Subscription[]>([]);
 
+  const validatePurchase = useCallback(
+    (receiptString: string, androidSignature: string) => {
+      coachService
+        .validatePurchase(receiptString, androidSignature)
+        .then((res: any) => {
+          analyticTrackEvent('validate_subscribe_success', Platform.OS);
+          const receipt = res.data.latest_receipt;
+          SQLexecute({
+            db,
+            query:
+              'INSERT INTO iap_receipts (receipt, signature) VALUES (?, ?)',
+            params: [JSON.stringify(receipt), androidSignature],
+          })
+            .then(function () {
+              navigation.navigate(Routes.MyCoach);
+            })
+            .catch(function (err: any) {
+              console.log('there was error adding receipt data to db', err);
+            });
+        })
+        .catch(function (err: any) {
+          analyticTrackEvent('validate_subscribe_fail', Platform.OS);
+          console.log(err);
+        });
+    },
+    [db, navigation],
+  );
+
   const initIAP = useCallback(async (): Promise<void> => {
     setInitLoading(true);
     try {
@@ -82,7 +113,9 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         }
       } else {
         try {
-          await clearProductsIOS();
+          if (clearProductsIOS) {
+            await clearProductsIOS();
+          }
         } catch (error) {
           console.log('err clearProductsIOS', error);
         }
@@ -127,45 +160,46 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
   useEffect(() => {
     setup({storekitMode: 'STOREKIT_HYBRID_MODE'});
     initIAP();
+    const purchaseUpdateSubscription = purchaseUpdatedListener(
+      (purchase: SubscriptionPurchase | ProductPurchase) => {
+        console.log('purchaseUpdatedListener', purchase);
+        let androidSignature = '';
+        if (purchase.signatureAndroid) {
+          androidSignature = purchase.signatureAndroid;
+        }
+        // validate the receipt
+        if (Platform.OS === 'ios') {
+          console.log('validate the receipt ios', purchase.transactionReceipt);
+          console.log(
+            'validate the receipt ios, all purchase after subscribe',
+            purchase,
+          );
+          validatePurchase(purchase.transactionReceipt, androidSignature);
+        } else {
+          const sentData = {
+            packageName: purchase.packageNameAndroid,
+            productId: purchase.productId,
+            productToken: purchase.purchaseToken,
+            subscription: true,
+          };
+          console.log('validate the receipt android', sentData);
+          validatePurchase(JSON.stringify(sentData), androidSignature);
+        }
+      },
+    );
 
     return () => {
+      purchaseUpdateSubscription.remove();
       endConnection();
     };
-  }, [initIAP]);
-
-  const validatePurchase = (
-    receiptString: string,
-    androidSignature: string,
-  ) => {
-    coachService
-      .validatePurchase(receiptString, androidSignature)
-      .then((res: any) => {
-        analyticTrackEvent('validate_subscribe_success', Platform.OS);
-        const receipt = res.data.latest_receipt;
-        SQLexecute({
-          db,
-          query: 'INSERT INTO iap_receipts (receipt, signature) VALUES (?, ?)',
-          params: [JSON.stringify(receipt), androidSignature],
-        })
-          .then(function () {
-            navigation.navigate(Routes.MyCoach);
-          })
-          .catch(function (err: any) {
-            console.log('there was error adding receipt data to db', err);
-          });
-      })
-      .catch(function (err: any) {
-        analyticTrackEvent('validate_subscribe_fail', Platform.OS);
-        console.log(err);
-      });
-  };
+  }, [initIAP, validatePurchase]);
 
   const purchaseSubscription = async (sku: string) => {
     setSubsLoading(true);
     if (Platform.OS === 'android') {
       sku = sku.toLowerCase();
     }
-    let androidSignature = '';
+
     try {
       let data;
       if (Platform.OS === 'android') {
@@ -194,34 +228,6 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
       if (data) {
         console.log('data', data);
         analyticTrackEvent('subscribe', Platform.OS);
-        if (data.signatureAndroid) {
-          androidSignature = data.signatureAndroid;
-        }
-        // validate the receipt
-        if (Platform.OS === 'ios') {
-          console.log('validate the receipt ios', data.transactionReceipt);
-          console.log(
-            'validate the receipt ios, all data after subscribe',
-            data,
-          );
-          validatePurchase(data.transactionReceipt, androidSignature);
-        } else {
-          const sentData = Array.isArray(data)
-            ? {
-                packageName: data[0].packageNameAndroid,
-                productId: data[0].productId,
-                productToken: data[0].purchaseToken,
-                subscription: true,
-              }
-            : {
-                packageName: data.packageNameAndroid,
-                productId: data.productId,
-                productToken: data.purchaseToken,
-                subscription: true,
-              };
-          console.log('validate the receipt android', sentData);
-          validatePurchase(JSON.stringify(sentData), androidSignature);
-        }
       }
     } catch (err: any) {
       console.warn(err.code, err.message);
