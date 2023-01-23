@@ -28,9 +28,12 @@ import {
   SubscriptionAndroid,
   setup,
   clearProductsIOS,
+  clearTransactionIOS,
   SubscriptionPurchase,
   ProductPurchase,
   purchaseUpdatedListener,
+  purchaseErrorListener,
+  PurchaseError,
 } from 'react-native-iap';
 import LoadIndicator from 'components/LoadIndicator';
 
@@ -113,11 +116,14 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         }
       } else {
         try {
-          if (clearProductsIOS) {
-            await clearProductsIOS();
-          }
+          await clearProductsIOS();
         } catch (error) {
           console.log('err clearProductsIOS', error);
+        }
+        try {
+          await clearTransactionIOS()
+        } catch (error) {
+          console.log('err clearTransactionIOS', error);
         }
       }
       if (result === false) {
@@ -188,8 +194,15 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
       },
     );
 
+    const purchaseErrorSubscription = purchaseErrorListener(
+      (error: PurchaseError) => {
+        console.log('purchaseErrorListener', error);
+      },
+    );
+
     return () => {
       purchaseUpdateSubscription.remove();
+      purchaseErrorSubscription.remove()
       endConnection();
     };
   }, [initIAP, validatePurchase]);
