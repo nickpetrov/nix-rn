@@ -193,7 +193,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    setup({storekitMode: 'STOREKIT_HYBRID_MODE'});
+    setup({storekitMode: 'STOREKIT1_MODE'});
     initIAP();
     const purchaseUpdateSubscription = purchaseUpdatedListener(
       (purchase: SubscriptionPurchase | ProductPurchase) => {
