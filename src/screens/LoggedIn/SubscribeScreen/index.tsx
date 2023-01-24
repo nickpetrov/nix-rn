@@ -35,6 +35,7 @@ import {
   purchaseErrorListener,
   PurchaseError,
   finishTransaction,
+  IapIos,
 } from 'react-native-iap';
 import LoadIndicator from 'components/LoadIndicator';
 
@@ -182,6 +183,11 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     setInitLoading(false);
   }, []);
 
+  const getIosReceipt = useCallback(async () => {
+    const receipt = await IapIos.getReceiptIOS({forceRefresh: false});
+    return receipt;
+  }, []);
+
   useEffect(() => {
     setup({storekitMode: 'STOREKIT_HYBRID_MODE'});
     initIAP();
@@ -194,11 +200,17 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         }
         // validate the receipt
         console.log('validate the receipt, purchase data', purchase);
-        validatePurchase(
-          purchase.transactionReceipt,
-          androidSignature,
-          purchase,
-        );
+        if (purchase.transactionReceipt) {
+          validatePurchase(
+            purchase.transactionReceipt,
+            androidSignature,
+            purchase,
+          );
+        } else if (Platform.OS === 'ios') {
+          getIosReceipt().then(receipt => {
+            validatePurchase(receipt, androidSignature, purchase);
+          });
+        }
       },
     );
 
@@ -213,7 +225,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
       purchaseErrorSubscription.remove();
       endConnection();
     };
-  }, [initIAP, validatePurchase]);
+  }, [initIAP, validatePurchase, getIosReceipt]);
 
   const purchaseSubscription = async (sku: string) => {
     setSubsLoading(true);
@@ -271,11 +283,17 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     let androidSignature = '';
     if (alreadyPurchases.length) {
       androidSignature = alreadyPurchases[0].signatureAndroid || '';
-      validatePurchase(
-        alreadyPurchases[0].transactionReceipt,
-        androidSignature,
-        alreadyPurchases[0],
-      );
+      if (alreadyPurchases[0].transactionReceipt) {
+        validatePurchase(
+          alreadyPurchases[0].transactionReceipt,
+          androidSignature,
+          alreadyPurchases[0],
+        );
+      } else if (Platform.OS === 'ios') {
+        getIosReceipt().then(receipt => {
+          validatePurchase(receipt, androidSignature, alreadyPurchases[0]);
+        });
+      }
     } else {
       dispatch(
         setInfoMessage({
