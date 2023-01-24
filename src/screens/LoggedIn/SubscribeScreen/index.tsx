@@ -193,27 +193,12 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           androidSignature = purchase.signatureAndroid;
         }
         // validate the receipt
-        if (Platform.OS === 'ios') {
-          console.log('validate the receipt ios, purchase data', purchase);
-          validatePurchase(
-            purchase.transactionReceipt,
-            androidSignature,
-            purchase,
-          );
-        } else {
-          const sentData = {
-            packageName: purchase.packageNameAndroid,
-            productId: purchase.productId,
-            purchaseToken: purchase.purchaseToken,
-            subscription: true,
-          };
-          console.log('validate the receipt android', sentData);
-          validatePurchase(
-            JSON.stringify(sentData),
-            androidSignature,
-            purchase,
-          );
-        }
+        console.log('validate the receipt, purchase data', purchase);
+        validatePurchase(
+          purchase.transactionReceipt,
+          androidSignature,
+          purchase,
+        );
       },
     );
 
@@ -286,24 +271,11 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     let androidSignature = '';
     if (alreadyPurchases.length) {
       androidSignature = alreadyPurchases[0].signatureAndroid || '';
-      if (Platform.OS === 'ios') {
-        validatePurchase(
-          alreadyPurchases[0].transactionReceipt,
-          androidSignature,
-          alreadyPurchases[0],
-        );
-      } else {
-        validatePurchase(
-          JSON.stringify({
-            packageName: alreadyPurchases[0].packageNameAndroid,
-            productId: alreadyPurchases[0].productId,
-            purchaseToken: alreadyPurchases[0].purchaseToken,
-            subscription: true,
-          }),
-          androidSignature,
-          alreadyPurchases[0],
-        );
-      }
+      validatePurchase(
+        alreadyPurchases[0].transactionReceipt,
+        androidSignature,
+        alreadyPurchases[0],
+      );
     } else {
       dispatch(
         setInfoMessage({
@@ -452,7 +424,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
               <FontAwesome name="chevron-right" color="#fff" size={16} />
             </>
           </TouchableHighlight>
-          {grocery_agent && (
+          {!!grocery_agent && (
             <TouchableOpacity
               style={styles.unsubscribeBtn}
               onPress={unsubscribeFromPro}>

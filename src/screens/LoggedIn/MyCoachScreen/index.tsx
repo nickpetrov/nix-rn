@@ -43,6 +43,7 @@ const MyCoachScreen: React.FC<MyCoachScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
   let rowRefs = new Map<string, Swipeable>();
   const {premium_user, coach} = useSelector(state => state.auth.userData);
+  const myCoachCode = coach?.code;
   const coachesList = useSelector(state => state.coach.coachesList);
   const [coachCode, setCoachCode] = useState('');
   const [error, setError] = useState('');
@@ -287,7 +288,7 @@ const MyCoachScreen: React.FC<MyCoachScreenProps> = ({navigation}) => {
           />
         </View>
       )}
-      {!coach && (
+      {!myCoachCode && (
         <View style={styles.alert}>
           <Text style={styles.alertHeader}>Are you a Coach?</Text>
           <Text style={styles.alertText}>
@@ -302,7 +303,7 @@ const MyCoachScreen: React.FC<MyCoachScreenProps> = ({navigation}) => {
           </Text>
         </View>
       )}
-      {!!coach && (
+      {!!myCoachCode && (
         <View style={styles.alert}>
           <Text style={styles.alertHeader}>Hey there, coach!</Text>
           <Text style={styles.alertText}>View your Coach Portal:</Text>

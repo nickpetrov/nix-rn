@@ -277,6 +277,7 @@ export const checkSubscriptions = () => {
               );
             });
           } else {
+            dispatch<any>(getUserDataFromAPI());
             var latest_receipt = resp.data.latest_receipt;
             SQLexecute({
               db,

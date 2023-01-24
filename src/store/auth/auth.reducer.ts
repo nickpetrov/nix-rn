@@ -52,12 +52,14 @@ export default (
   action: AuthActions,
 ): AuthState => {
   switch (action.type) {
-    case authActionTypes.UPDATE_USER_DATA:
+    case authActionTypes.UPDATE_USER_DATA: {
+      const oldUser = _.cloneDeep(state.userData);
       const stateWithNewUserData = {
         ...state,
-        userData: _.merge(state.userData, action.newUserObj),
+        userData: _.merge(oldUser, action.newUserObj),
       };
       return stateWithNewUserData;
+    }
     case authActionTypes.SIGNIN:
       const stateWithSignedInUser = {
         ...state,
