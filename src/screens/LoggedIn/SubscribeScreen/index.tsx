@@ -204,7 +204,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           const sentData = {
             packageName: purchase.packageNameAndroid,
             productId: purchase.productId,
-            productToken: purchase.purchaseToken,
+            purchaseToken: purchase.purchaseToken,
             subscription: true,
           };
           console.log('validate the receipt android', sentData);
@@ -297,7 +297,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           JSON.stringify({
             packageName: alreadyPurchases[0].packageNameAndroid,
             productId: alreadyPurchases[0].productId,
-            productToken: alreadyPurchases[0].purchaseToken,
+            purchaseToken: alreadyPurchases[0].purchaseToken,
             subscription: true,
           }),
           androidSignature,
