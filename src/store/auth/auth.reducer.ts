@@ -1,5 +1,6 @@
 //types
 import {AuthActions, authActionTypes, UserData} from './auth.types';
+import _ from 'lodash';
 
 export type AuthState = UserData;
 
@@ -54,7 +55,7 @@ export default (
     case authActionTypes.UPDATE_USER_DATA:
       const stateWithNewUserData = {
         ...state,
-        userData: {...state.userData, ...action.newUserObj},
+        userData: _.merge(state.userData, action.newUserObj),
       };
       return stateWithNewUserData;
     case authActionTypes.SIGNIN:
