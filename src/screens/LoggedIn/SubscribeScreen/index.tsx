@@ -184,8 +184,12 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
   }, []);
 
   const getIosReceipt = useCallback(async () => {
-    const receipt = await IapIos.getReceiptIOS({forceRefresh: false});
-    return receipt;
+    try {
+      const receipt = await IapIos.getReceiptIOS({forceRefresh: false});
+      return receipt;
+    } catch (error) {
+      console.log('error get ios receipt', error);
+    }
   }, []);
 
   useEffect(() => {
@@ -208,7 +212,9 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           );
         } else if (Platform.OS === 'ios') {
           getIosReceipt().then(receipt => {
-            validatePurchase(receipt, androidSignature, purchase);
+            if (receipt) {
+              validatePurchase(receipt, androidSignature, purchase);
+            }
           });
         }
       },
@@ -291,7 +297,9 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         );
       } else if (Platform.OS === 'ios') {
         getIosReceipt().then(receipt => {
-          validatePurchase(receipt, androidSignature, alreadyPurchases[0]);
+          if (receipt) {
+            validatePurchase(receipt, androidSignature, alreadyPurchases[0]);
+          }
         });
       }
     } else {
