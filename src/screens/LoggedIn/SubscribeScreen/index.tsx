@@ -46,7 +46,7 @@ import coachService from 'api/coachService';
 
 // actions
 import {setInfoMessage} from 'store/base/base.actions';
-import {updateUserData} from 'store/auth/auth.actions';
+import {updateUserData, getUserDataFromAPI} from 'store/auth/auth.actions';
 
 // styles
 import {styles} from './SubscribeScreen.styles';
@@ -106,6 +106,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
             params: [JSON.stringify(receipt), androidSignature],
           })
             .then(function () {
+              dispatch(getUserDataFromAPI());
               navigation.navigate(Routes.MyCoach);
             })
             .catch(function (err: any) {
@@ -117,7 +118,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
           console.log(err);
         });
     },
-    [db, navigation],
+    [db, navigation, dispatch],
   );
 
   const initIAP = useCallback(async (): Promise<void> => {
