@@ -35,7 +35,7 @@ import {
   purchaseErrorListener,
   PurchaseError,
   finishTransaction,
-  IapIos,
+  getReceiptIOS,
 } from 'react-native-iap';
 import LoadIndicator from 'components/LoadIndicator';
 
@@ -185,7 +185,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
 
   const getIosReceipt = useCallback(async () => {
     try {
-      const receipt = await IapIos.getReceiptIOS({forceRefresh: false});
+      const receipt = await getReceiptIOS({forceRefresh: false});
       return receipt;
     } catch (error) {
       console.log('error get ios receipt', error);
