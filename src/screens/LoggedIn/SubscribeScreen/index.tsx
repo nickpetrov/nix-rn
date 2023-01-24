@@ -186,6 +186,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
   const getIosReceipt = useCallback(async () => {
     try {
       const receipt = await getReceiptIOS({forceRefresh: false});
+      console.log('getReceiptIOS', receipt);
       return receipt;
     } catch (error) {
       console.log('error get ios receipt', error);
