@@ -283,9 +283,9 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     const purchases = await getAvailablePurchases({
       onlyIncludeActiveItems: true,
     });
-    let alreadyPurchases = purchases.filter(item =>
-      ids.includes(item.productId),
-    );
+    let alreadyPurchases = purchases
+      .filter(item => ids.includes(item.productId))
+      .sort((a, b) => b.transactionDate - a.transactionDate);
     console.log('alreadyPurchases', alreadyPurchases);
     let androidSignature = '';
     if (alreadyPurchases.length) {
