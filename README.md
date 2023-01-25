@@ -47,6 +47,16 @@ for android
 2. `npx sentry-cli releases files <release_name> upload-sourcemaps /path/to/files` - example path ./index.android.bundle ./index.android.bundle.map
 3. `npx sentry-cli releases finalize <release_name>`
 
+### testing subscription
+
+1. need license testers for google or sanbox testers for ios
+2. login at google play with `license testers` or login at appleid with `sanbox tester`
+3. test subscriptions: (on ios only at real device).
+4. usefull links:
+   `https://developer.android.com/google/play/billing/test#subs`
+   `https://help.apple.com/app-store-connect/#/dev7e89e149d`
+   `https://developer.apple.com/apple-pay/sandbox-testing/`
+
 ### Commit message convention
 
 We follow the [conventional commits specification](https://www.conventionalcommits.org/en) for our commit messages:
