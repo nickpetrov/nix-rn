@@ -1,6 +1,6 @@
 // utils
 import React from 'react';
-import {getReadableVersion, getBuildNumber} from 'react-native-device-info';
+import {getVersion, getBuildNumber} from 'react-native-device-info';
 
 // components
 import {View, Text, TouchableWithoutFeedback, SafeAreaView} from 'react-native';
@@ -32,7 +32,7 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
   const userGroceyAgentInfo = useSelector(
     state => state.base.userGroceyAgentInfo,
   );
-  const appVersion = getReadableVersion();
+  const appVersion = getVersion();
   const buildNumber = getBuildNumber();
   return (
     <SafeAreaView style={styles.root}>

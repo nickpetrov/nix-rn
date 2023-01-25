@@ -2,7 +2,7 @@
 import React, {useCallback} from 'react';
 import InAppReview from 'react-native-in-app-review';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
-import {getReadableVersion} from 'react-native-device-info';
+import {getVersion} from 'react-native-device-info';
 
 // components
 import {
@@ -37,7 +37,7 @@ export const SideMenu: React.FC = () => {
   const userGroceyAgentInfo = useSelector(
     state => state.base.userGroceyAgentInfo,
   );
-  const appVersion = getReadableVersion();
+  const appVersion = getVersion();
 
   let menuItems: Array<{
     icon: string;
