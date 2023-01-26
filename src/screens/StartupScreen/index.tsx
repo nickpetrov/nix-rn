@@ -1,5 +1,6 @@
 // utils
 import React, {useEffect} from 'react';
+import SplashScreen from 'react-native-splash-screen';
 
 // components
 import {SafeAreaView, ActivityIndicator} from 'react-native';
@@ -44,6 +45,10 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
       dispatch(initGroceyAgentInfo());
     }
   }, [dispatch, navigation, userJWT]);
+
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
 
   return (
     <SafeAreaView
