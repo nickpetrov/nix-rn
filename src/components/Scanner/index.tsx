@@ -12,14 +12,10 @@ import {
   Text,
 } from 'react-native';
 import {Svg, Defs, Rect, Mask} from 'react-native-svg';
-import {
-  useScanBarcodes,
-  BarcodeFormat,
-  Barcode,
-} from 'vision-camera-code-scanner';
+import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
 
 // hooks
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'hooks/useRedux';
 
 // actions
@@ -29,19 +25,20 @@ import {setInfoMessage} from 'store/base/base.actions';
 import {styles} from './Scanner.styles';
 
 interface ScannerProps {
-  callBack: (barcodes: Barcode[]) => void;
-  redirectStateKey?: string;
+  callBack: (newBarcode: string) => void;
+  from?: string;
   withPreView?: boolean;
+  isFocused: boolean;
 }
 
 const Scanner: React.FC<ScannerProps> = ({
   callBack,
   withPreView,
-  redirectStateKey,
+  from,
+  isFocused,
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation<any>();
-  const isActive = useIsFocused();
   const devices = useCameraDevices();
   const device = devices.back;
   const camera = useRef<Camera>(null);
@@ -55,35 +52,6 @@ const Scanner: React.FC<ScannerProps> = ({
       checkInverted: true,
     },
   );
-  // for some reason close app when use this
-  // const frameProcessor = useFrameProcessor(frame => {
-  //   'worklet';
-  //   const detectedBarcodes = scanBarcodes(
-  //     frame,
-  //     [BarcodeFormat.ALL_FORMATS],
-  //     {
-  //       checkInverted: true,
-  //     },
-  //   );
-  //   console.log('detectedBarcodes', detectedBarcodes);
-  //   const scanedBarcode = detectedBarcodes[0];
-  //   if (scanedBarcode) {
-  //     if (
-  //       scanedBarcode.format !== BarcodeFormat.QR_CODE ||
-  //       scanedBarcode.rawValue?.includes('nutritionix.com')
-  //     ) {
-  //       takePhoto();
-  //       setTimeout(() => runOnJS(setBarcode)(scanedBarcode.rawValue), 3000);
-  //     } else {
-  //       navigation.navigate({
-  //         key: route.params?.redirectStateKey || '',
-  //         params: {
-  //           scanError: true,
-  //         },
-  //       });
-  //     }
-  //   }
-  // }, []);
 
   const takePhoto = async () => {
     const photo = await camera.current?.takePhoto();
@@ -111,44 +79,40 @@ const Scanner: React.FC<ScannerProps> = ({
   }, [requestPermission]);
 
   useEffect(() => {
-    if (barcodes.length && !barcode) {
-      if (
-        barcodes[0].format !== BarcodeFormat.QR_CODE ||
-        barcodes[0].rawValue?.includes('nutritionix.com')
-      ) {
-        if (withPreView) {
-          takePhoto();
+    setBarcode(prev => {
+      if (!prev && barcodes.length) {
+        if (
+          barcodes[0].format !== BarcodeFormat.QR_CODE ||
+          barcodes[0].rawValue?.includes('nutritionix.com')
+        ) {
+          if (withPreView) {
+            takePhoto();
+          }
+        } else {
+          if (from) {
+            navigation.navigate(from);
+          }
+          dispatch(
+            setInfoMessage({
+              title: 'Error',
+              text: 'We scanned an unrecognized QR code, if you are trying to scan a food product barcode, please try to avoid scanning the QR code near the barcode and try scanning this product again',
+              btnText: 'Ok',
+            }),
+          );
         }
-        callBack(barcodes);
         if (barcodes[0].rawValue) {
-          setBarcode(barcodes[0].rawValue);
+          callBack(barcodes[0].rawValue);
+          return barcodes[0].rawValue;
+        } else {
+          return prev;
         }
       } else {
-        if (redirectStateKey) {
-          navigation.navigate({
-            key: redirectStateKey,
-          });
-        }
-        dispatch(
-          setInfoMessage({
-            title: 'Error',
-            text: 'We scanned an unrecognized QR code, if you are trying to scan a food product barcode, please try to avoid scanning the QR code near the barcode and try scanning this product again',
-            btnText: 'Ok',
-          }),
-        );
+        return prev;
       }
-    }
-  }, [
-    barcodes,
-    dispatch,
-    barcode,
-    navigation,
-    callBack,
-    redirectStateKey,
-    withPreView,
-  ]);
+    });
+  }, [barcodes, dispatch, navigation, callBack, from, withPreView]);
 
-  if (device == null || !hasPermission || !isActive) {
+  if (device == null || !hasPermission || !isFocused) {
     return <ActivityIndicator />;
   }
 
@@ -158,7 +122,7 @@ const Scanner: React.FC<ScannerProps> = ({
         ref={camera}
         style={styles.camera}
         device={device}
-        isActive={isActive}
+        isActive={isFocused && !barcode}
         frameProcessor={frameProcessor}
         frameProcessorFps={5}
         photo={true}

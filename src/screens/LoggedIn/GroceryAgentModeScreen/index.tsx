@@ -1,7 +1,9 @@
 // utils
-import React, {useState, useLayoutEffect, useEffect} from 'react';
+import React, {useState, useLayoutEffect, useEffect, useCallback} from 'react';
 import {launchCamera} from 'react-native-image-picker';
 import {NetInfoStateType, useNetInfo} from '@react-native-community/netinfo';
+import RNFS from 'react-native-fs';
+import {useIsFocused} from '@react-navigation/native';
 
 // components
 import {
@@ -15,7 +17,6 @@ import {
 import Scanner from 'components/Scanner';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {NixButton} from 'components/NixButton';
-import {Barcode} from 'vision-camera-code-scanner';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -46,7 +47,6 @@ import {photoTemplateKeys} from 'store/groceryAgentMode/groceryAgentMode.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {MediaType} from 'react-native-image-picker/lib/typescript/types';
-import RNFS from 'react-native-fs';
 
 interface GroceryAgentModeScreenProps {
   navigation: NativeStackNavigationProp<
@@ -59,6 +59,7 @@ const GroceryAgentModeScreen: React.FC<GroceryAgentModeScreenProps> = ({
   navigation,
 }) => {
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const netInfo = useNetInfo();
   const wiFiNetworkIsInUse =
     netInfo.isConnected && netInfo.type === NetInfoStateType.wifi;
@@ -140,31 +141,32 @@ const GroceryAgentModeScreen: React.FC<GroceryAgentModeScreenProps> = ({
     });
   };
 
-  const scanBarcode = async (barcodes: Barcode[]) => {
-    if (barcodes[0].rawValue) {
-      const barcodeExistsInTableExistingBarcodes =
-        await barcodeExistsInExistingBarcodes(barcodes[0].rawValue);
-      const checkBarcodeExistsInTableRecordForSync =
-        await checkBarcodeExistsInRecordForSync(barcodes[0].rawValue);
-      const barcodeExists =
-        barcodeExistsInTableExistingBarcodes ||
-        checkBarcodeExistsInTableRecordForSync;
-      if (!barcodeExists) {
-        dispatch(
-          mergeCurrentSession({barcode: barcodes[0].rawValue, userId: userId}),
-        );
-      } else {
-        dispatch(
-          setInfoMessage({
-            text: 'Looks like we already have this product in our DB.',
-            loadingType: true,
-            loadTime: 3000,
-          }),
-        );
+  const scanBarcode = useCallback(
+    async (barcode: string) => {
+      if (barcode) {
+        const barcodeExistsInTableExistingBarcodes =
+          await barcodeExistsInExistingBarcodes(barcode);
+        const checkBarcodeExistsInTableRecordForSync =
+          await checkBarcodeExistsInRecordForSync(barcode);
+        const barcodeExists =
+          barcodeExistsInTableExistingBarcodes ||
+          checkBarcodeExistsInTableRecordForSync;
+        if (!barcodeExists) {
+          dispatch(mergeCurrentSession({barcode: barcode, userId: userId}));
+        } else {
+          dispatch(
+            setInfoMessage({
+              text: 'Looks like we already have this product in our DB.',
+              loadingType: true,
+              loadTime: 3000,
+            }),
+          );
+        }
       }
-    }
-    setActiveScan(false);
-  };
+      setActiveScan(false);
+    },
+    [dispatch, userId],
+  );
 
   const cancel = () => {
     dispatch(resetCurrentSession());
@@ -182,7 +184,9 @@ const GroceryAgentModeScreen: React.FC<GroceryAgentModeScreenProps> = ({
     <>
       {activeScan ? (
         <View style={styles.scanContainer}>
-          <Scanner callBack={scanBarcode} />
+          {isFocused && (
+            <Scanner callBack={scanBarcode} isFocused={isFocused} />
+          )}
         </View>
       ) : (
         <ScrollView style={styles.root}>

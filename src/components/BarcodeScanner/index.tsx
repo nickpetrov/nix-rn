@@ -32,7 +32,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = props => {
   const initBarcodeScanner = () => {
     if (props.navigation) {
       props.navigation.navigate(Routes.BarcodeScanner, {
-        redirectStateKey: route.key,
+        from: route.name,
       });
     }
     Keyboard.dismiss();

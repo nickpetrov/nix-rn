@@ -11,6 +11,7 @@ import {
   ParamListBase,
   useRoute,
 } from '@react-navigation/native';
+import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './BackButton.styles';
@@ -21,13 +22,18 @@ interface BackButtonProps {
 
 const BackButton: React.FC<BackButtonProps> = ({navigation}) => {
   const route = useRoute<any>();
-  const redirectStateKey = route?.params?.redirectStateKey;
+  const from = route?.params?.from;
 
   return (
     <TouchableOpacity
       onPress={() => {
-        if (redirectStateKey) {
-          navigation.navigate({key: redirectStateKey});
+        if (from && (from === Routes.Basket || from === Routes.Dashboard)) {
+          navigation.navigate(from);
+        } else if (
+          from &&
+          (from === Routes.BarcodeScanner || from === Routes.PhotoUpload)
+        ) {
+          navigation.navigate(Routes.Dashboard);
         } else {
           navigation.goBack();
         }

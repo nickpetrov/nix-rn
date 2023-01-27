@@ -1,5 +1,5 @@
 // utils
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 
 // components
 import {Text, View} from 'react-native';
@@ -21,7 +21,7 @@ import {grocery_photo_upload} from 'config/index';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {FoodProps} from 'store/userLog/userLog.types';
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useIsFocused} from '@react-navigation/native';
 
 // helpers
 import {
@@ -45,6 +45,7 @@ interface BarcodeScannerScreenProps {
 
 export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
   React.memo(({navigation, route}) => {
+    const isFocused = useIsFocused();
     const volunteer = useSelector(
       state => state.base.groceryAgentPreferences.volunteer,
     );
@@ -55,21 +56,21 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
     );
     const dispatch = useDispatch();
     const foodFindByQRcode = useSelector(state => state.foods.foodFindByQRcode);
-    const [barcode, setBarcode] = useState<string>();
+    const [barcode, setBarcode] = useState<string | null>(null);
 
     useEffect(() => {
       if (barcode && barcode.length > 14) {
         if (barcode.includes('nutritionix.com/q1')) {
           dispatch(addExistFoodToBasket([externalLinkV1(barcode)])).then(() =>
             navigation.navigate(Routes.Basket, {
-              redirectStateKey: route.params?.redirectStateKey,
+              from: Routes.BarcodeScanner,
             }),
           );
         } else if (barcode.includes('nutritionix.com/q2')) {
           dispatch(addFoodToBasket(externalLinkV2(barcode)))
             .then(() =>
               navigation.navigate(Routes.Basket, {
-                redirectStateKey: route.params?.redirectStateKey,
+                from: Routes.BarcodeScanner,
               }),
             )
             .catch(err => console.log(err));
@@ -83,13 +84,13 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
                 });
                 dispatch(addExistFoodToBasket(foods[0].ingredients)).then(() =>
                   navigation.navigate(Routes.Basket, {
-                    redirectStateKey: route.params?.redirectStateKey,
+                    from: Routes.BarcodeScanner,
                   }),
                 );
               } else {
                 dispatch(addExistFoodToBasket(foods)).then(() =>
                   navigation.navigate(Routes.Basket, {
-                    redirectStateKey: route.params?.redirectStateKey,
+                    from: Routes.BarcodeScanner,
                   }),
                 );
               }
@@ -113,13 +114,13 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
             ) {
               navigation.navigate(Routes.PhotoUpload, {
                 barcode,
-                redirectStateKey: route.params?.redirectStateKey,
+                from: route.params?.from,
               });
             } else if (foods && !force_photo_upload) {
               setShowHelpPopup(foods);
             } else {
               navigation.navigate(Routes.Basket, {
-                redirectStateKey: route.params?.redirectStateKey,
+                from: Routes.BarcodeScanner,
               });
             }
           })
@@ -131,20 +132,24 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
               if (userData.grocery_agent) {
                 navigation.navigate(Routes.PhotoUpload, {
                   barcode,
-                  redirectStateKey: route.params?.redirectStateKey,
+                  from: route.params?.from,
                 });
               } else {
                 navigation.navigate(Routes.PhotoUpload, {
                   barcode,
-                  redirectStateKey: route.params?.redirectStateKey,
+                  from: route.params?.from,
                   new_product: true,
                 });
               }
             } else {
               navigation.navigate(Routes.Basket, {
-                redirectStateKey: route.params?.redirectStateKey,
+                from: Routes.BarcodeScanner,
               });
             }
+          })
+          .finally(() => {
+            dispatch(clearSnanedFood());
+            setBarcode(null);
           });
       }
       if (barcode) {
@@ -160,21 +165,27 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
       volunteer,
     ]);
 
-    useEffect(() => {
-      return () => {
-        dispatch(clearSnanedFood());
-        setBarcode(undefined);
-      };
-    }, [dispatch]);
+    const changeBarcodeCallback = useCallback((newBarcode: string) => {
+      setTimeout(() => {
+        setBarcode(prev => {
+          if (prev) {
+            return prev;
+          } else {
+            return newBarcode;
+          }
+        });
+      }, 3000);
+    }, []);
 
     return (
       <View style={styles.root}>
-        <Scanner
-          callBack={barcodes => {
-            setTimeout(() => setBarcode(barcodes[0].rawValue), 3000);
-          }}
-          redirectStateKey={route.params?.redirectStateKey}
-        />
+        {isFocused && (
+          <Scanner
+            isFocused={isFocused}
+            callBack={changeBarcodeCallback}
+            from={route.params?.from}
+          />
+        )}
         {foodFindByQRcode && (
           <View style={styles.qrCodeTitleContainer}>
             <Text style={styles.qrCodeTitle}>
@@ -203,7 +214,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
                 onPress={() => {
                   setShowHelpPopup(false);
                   navigation.navigate(Routes.Basket, {
-                    redirectStateKey: route.params?.redirectStateKey,
+                    from: Routes.BarcodeScanner,
                   });
                 }}
               />
@@ -215,7 +226,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
                   if (barcode) {
                     navigation.navigate(Routes.PhotoUpload, {
                       barcode,
-                      redirectStateKey: route.params?.redirectStateKey,
+                      from: route.params?.from,
                     });
                   }
                 }}

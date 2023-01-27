@@ -483,7 +483,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     firstFoodAddedToBasket,
     firstMultipleFoodsInBasket,
   ]);
-
+  console.log(route.params?.from);
   return (
     <SafeAreaView style={styles.root}>
       <KeyboardAwareScrollView
@@ -778,7 +778,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
               setShowReportNutrion(false);
               navigation.navigate(Routes.BarcodeScanner, {
                 force_photo_upload: true,
-                redirectStateKey: route.key,
+                from: Routes.Basket,
               });
             }}>
             <FontAwesome name="barcode" color="#fff" size={25} />

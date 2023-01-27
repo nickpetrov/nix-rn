@@ -29,7 +29,7 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.DeveloperSettings]: undefined;
   [Routes.Basket]:
     | {
-        redirectStateKey?: string;
+        from?: string;
       }
     | undefined;
   [Routes.Food]: {
@@ -56,7 +56,7 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.BarcodeScanner]:
     | {
         force_photo_upload?: boolean;
-        redirectStateKey?: string;
+        from?: string;
       }
     | undefined;
   [Routes.CustomFoods]: {showSavedFoodMessage?: boolean} | undefined;
@@ -90,7 +90,7 @@ export interface StackNavigatorParamList extends ParamListBase {
     barcode: string;
     picture?: PictureProps | null;
     picType?: number;
-    redirectStateKey?: string;
+    from?: string;
     new_product?: boolean;
   };
   [Routes.Stats]: undefined;

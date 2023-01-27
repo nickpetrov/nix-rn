@@ -59,12 +59,12 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     useState<Asset | null>(null);
   const barcode = route.params?.barcode;
   const new_product = route.params?.new_product;
-  const redirectStateKey = route.params?.redirectStateKey;
+  const from = route.params?.from;
   const [uploadInProgress1, setUploadInProgress1] = useState(false);
   const [uploadInProgress2, setUploadInProgress2] = useState(false);
 
   const userData = useSelector(state => state.auth.userData);
-  console.log('new_product', new_product);
+
   /*
 
   Photo file name template:
@@ -97,10 +97,8 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     const infoMessage = new_product
       ? 'We will have this product added to our database in the next three business days. To add a comparable food to your log right now, use the "Freeform" tab and enter the calories of the food, followed by a generic name of the food. Examples: 100 cal greek yogurt, 150 cal granola bar, 250 cal lean cuisine'
       : 'We will have this product updated in our database in the next three business days.';
-    if (redirectStateKey) {
-      navigation.navigate({
-        key: redirectStateKey,
-      });
+    if (from) {
+      navigation.navigate(from);
     } else {
       navigation.navigate(Routes.Dashboard);
     }
