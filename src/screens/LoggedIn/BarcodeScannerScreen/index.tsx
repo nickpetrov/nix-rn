@@ -179,7 +179,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
             return newBarcode;
           }
         });
-      }, 3000);
+      }, 1000);
     }, []);
 
     return (
