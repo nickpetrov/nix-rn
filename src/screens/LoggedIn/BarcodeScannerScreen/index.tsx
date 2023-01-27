@@ -56,7 +56,6 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
 
     useEffect(() => {
       if (barcode && barcode.length > 14) {
-        console.log('long barcode');
         if (barcode.includes('nutritionix.com/q1')) {
           dispatch(addExistFoodToBasket([externalLinkV1(barcode)])).then(() =>
             navigation.navigate(Routes.Basket, {
