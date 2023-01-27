@@ -19,6 +19,9 @@ interface ChooseModalProps {
     title: string;
     onPress: () => void;
     disabled?: boolean;
+    style?: {
+      [key: string]: string | number;
+    };
   }>;
   children?: React.ReactNode;
 }
@@ -46,7 +49,7 @@ const ChooseModal: React.FC<ChooseModalProps> = ({
         <View style={styles.modalView}>
           {title && (
             <View style={styles.header}>
-              <Text>{title}</Text>
+              <Text style={styles.title}>{title}</Text>
               {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
             </View>
           )}
@@ -60,6 +63,7 @@ const ChooseModal: React.FC<ChooseModalProps> = ({
                     key={btn.title}
                     style={[styles.btnContainer, index === 0 && styles.mr10]}>
                     <NixButton
+                      style={btn?.style}
                       buttonTextStyles={styles.btnText}
                       title={btn.title}
                       type={btn.type}

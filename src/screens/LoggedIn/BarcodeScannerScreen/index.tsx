@@ -3,7 +3,6 @@ import React, {useState, useEffect, useCallback} from 'react';
 
 // components
 import {Text, View} from 'react-native';
-import {NixButton} from 'components/NixButton/index';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -51,15 +50,13 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
     );
     const userData = useSelector(state => state.auth.userData);
     const force_photo_upload = route.params?.force_photo_upload;
-    const [showHelpPopup, setShowHelpPopup] = useState<FoodProps[] | false>(
-      false,
-    );
     const dispatch = useDispatch();
     const foodFindByQRcode = useSelector(state => state.foods.foodFindByQRcode);
     const [barcode, setBarcode] = useState<string | null>(null);
 
     useEffect(() => {
       if (barcode && barcode.length > 14) {
+        console.log('long barcode');
         if (barcode.includes('nutritionix.com/q1')) {
           dispatch(addExistFoodToBasket([externalLinkV1(barcode)])).then(() =>
             navigation.navigate(Routes.Basket, {
@@ -105,19 +102,28 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
             if (
               foods &&
               (force_photo_upload ||
-                userData.grocery_agent ||
-                volunteer ||
+                (userData.grocery_agent && volunteer) ||
                 Math.floor(
                   Math.random() *
                     grocery_photo_upload.user_volunteering_multiplicator,
                 ) === 0)
             ) {
-              navigation.navigate(Routes.PhotoUpload, {
-                barcode,
-                from: route.params?.from,
-              });
-            } else if (foods && !force_photo_upload) {
-              setShowHelpPopup(foods);
+              if (force_photo_upload) {
+                navigation.navigate(Routes.PhotoUpload, {
+                  barcode,
+                  from: route.params?.from,
+                });
+              } else {
+                navigation.navigate(Routes.Basket, {
+                  from: Routes.BarcodeScanner,
+                  helpPopup: {
+                    text: `Hey ${userData.first_name}! ${foods[0].brand_name} ${
+                      foods[0].nix_item_name || foods[0].food_name || ''
+                    } exists in our database, but we could use some help submitting photos of this product's nutrition label so we can make sure our data is still up - to - date. Would you mind taking two photos of this product for us?`,
+                    barcode,
+                  },
+                });
+              }
             } else {
               navigation.navigate(Routes.Basket, {
                 from: Routes.BarcodeScanner,
@@ -191,47 +197,6 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
             <Text style={styles.qrCodeTitle}>
               Food: {foodFindByQRcode.food_name}
             </Text>
-          </View>
-        )}
-        {showHelpPopup && (
-          <View style={styles.alert}>
-            <Text style={styles.alertTitle}>We could use some help</Text>
-            <Text style={styles.alertText}>
-              {`Hey ${userData.first_name}! ${showHelpPopup[0].brand_name} ${
-                showHelpPopup[0].nix_item_name ||
-                showHelpPopup[0].food_name ||
-                ''
-              } exists in our
-              database, but we could use some help submitting photos of
-              this product's nutrition label so we can make sure our data
-              is still up - to - date. Would you mind taking two photos of
-              this product for us?`}
-            </Text>
-            <View style={styles.buttons}>
-              <NixButton
-                title="No thank you"
-                type="gray"
-                onPress={() => {
-                  setShowHelpPopup(false);
-                  navigation.navigate(Routes.Basket, {
-                    from: Routes.BarcodeScanner,
-                  });
-                }}
-              />
-              <NixButton
-                title="Sure, happy to help!"
-                type="blue"
-                onPress={() => {
-                  setShowHelpPopup(false);
-                  if (barcode) {
-                    navigation.navigate(Routes.PhotoUpload, {
-                      barcode,
-                      from: route.params?.from,
-                    });
-                  }
-                }}
-              />
-            </View>
           </View>
         )}
       </View>

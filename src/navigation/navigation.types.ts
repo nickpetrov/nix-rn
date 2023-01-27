@@ -30,6 +30,10 @@ export interface StackNavigatorParamList extends ParamListBase {
   [Routes.Basket]:
     | {
         from?: string;
+        helpPopup?: {
+          text: string;
+          barcode: string;
+        };
       }
     | undefined;
   [Routes.Food]: {

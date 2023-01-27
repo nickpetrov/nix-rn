@@ -40,7 +40,8 @@ export const getFoodByQRcode = (
   ) => {
     try {
       const response = await baseService.getFoodByQRcode(barcode);
-
+      console.log('response', response);
+      console.log('data', response.data);
       const foods = response.data.foods;
 
       if (foods && foods[0]) {
@@ -79,11 +80,11 @@ export const getFoodByQRcode = (
             )
             .isBefore(moment());
         }
-
+        console.log('foodNeedsUpdate0', foodNeedsUpdate);
         if (force_photo_upload) {
           foodNeedsUpdate = true;
         }
-
+        console.log('foodNeedsUpdate', foodNeedsUpdate);
         if (!foodNeedsUpdate) {
           return null;
         } else {

@@ -88,6 +88,9 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     firstFoodAddedToBasket,
     firstMultipleFoodsInBasket,
   } = useSelector(state => state.walkthrough.checkedEvents);
+  const helpPopupInfo = route.params?.helpPopup;
+  console.log('helpPopupInfo', helpPopupInfo);
+  const [helpPopup, setHelpPopup] = useState(false);
   const {agreedToUsePhoto, reviewCheck} = useSelector(state => state.base);
   const [deleteteModal, setDeleteteModal] = useState(false);
   const [isUploadPhotoLoading, setIsUploadPhotoLoading] = useState(false);
@@ -152,6 +155,12 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
       ),
     });
   }, [navigation, route]);
+
+  useEffect(() => {
+    if (helpPopupInfo) {
+      setHelpPopup(true);
+    }
+  }, [helpPopupInfo]);
 
   useEffect(() => {
     if (foods.length > 1) {
@@ -829,6 +838,34 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
             onPress: () => {
               setDeleteteModal(false);
               dispatch(basketActions.reset());
+            },
+          },
+        ]}
+      />
+      <ChooseModal
+        modalVisible={helpPopup}
+        hideModal={() => setHelpPopup(false)}
+        title="We could use some help"
+        text={helpPopupInfo?.text || ''}
+        btns={[
+          {
+            type: 'gray',
+            title: 'No thank you',
+            onPress: () => setHelpPopup(false),
+          },
+          {
+            type: 'primary',
+            title: 'Sure, happy to help!',
+            style: {
+              height: 50,
+            },
+            onPress: () => {
+              setHelpPopup(false);
+              if (helpPopupInfo?.barcode) {
+                navigation.navigate(Routes.PhotoUpload, {
+                  barcode: helpPopupInfo?.barcode,
+                });
+              }
             },
           },
         ]}
