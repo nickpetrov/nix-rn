@@ -58,30 +58,34 @@ const MealBuilder = () => {
       {!!basketFoods.length && (
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate(Routes.Basket)}>
-          <BlinkView
-            animated={animated}
-            endCallback={() => setAnimated(false)}
-            iterations={basketFoods.length === 1 ? 2 : undefined}
-            duration={basketFoods.length === 1 ? 250 : 400}>
-            <View style={styles.mealBuilder}>
-              <Text style={styles.mealBuilderTilte}>
-                Review{' '}
-                <Text style={styles.mealBuilderQty}>{basketFoods.length}</Text>{' '}
-                Foods
-              </Text>
-              <View style={styles.mealBuilderRight}>
-                <Text style={styles.mealBuilderQty}>
-                  <CountUp
-                    isCounting
-                    end={+totalCalories.toFixed(0)}
-                    duration={2}
-                  />
-                  <Text style={styles.mealBuilderCal}>cal</Text>
+          <View>
+            <BlinkView
+              animated={animated}
+              endCallback={() => setAnimated(false)}
+              iterations={basketFoods.length === 1 ? 2 : undefined}
+              duration={basketFoods.length === 1 ? 250 : 400}>
+              <View style={styles.mealBuilder}>
+                <Text style={styles.mealBuilderTilte}>
+                  Review{' '}
+                  <Text style={styles.mealBuilderQty}>
+                    {basketFoods.length}
+                  </Text>{' '}
+                  Foods
                 </Text>
-                <Ionicons name="chevron-forward" color="#fff" size={30} />
+                <View style={styles.mealBuilderRight}>
+                  <Text style={styles.mealBuilderQty}>
+                    <CountUp
+                      isCounting
+                      end={+totalCalories.toFixed(0)}
+                      duration={2}
+                    />
+                    <Text style={styles.mealBuilderCal}>cal</Text>
+                  </Text>
+                  <Ionicons name="chevron-forward" color="#fff" size={30} />
+                </View>
               </View>
-            </View>
-          </BlinkView>
+            </BlinkView>
+          </View>
         </TouchableWithoutFeedback>
       )}
     </>
