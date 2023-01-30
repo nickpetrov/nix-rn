@@ -72,6 +72,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 3,
     backgroundColor: '#eee',
     borderRadius: 6,
+    height: 34,
   },
   closeBtn: {
     position: 'absolute',
