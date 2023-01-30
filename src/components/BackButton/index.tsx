@@ -28,7 +28,9 @@ const BackButton: React.FC<BackButtonProps> = ({navigation}) => {
     <TouchableOpacity
       onPress={() => {
         if (from && (from === Routes.Basket || from === Routes.Dashboard)) {
-          navigation.navigate(from);
+          navigation.navigate(from, {
+            from: route.name,
+          });
         } else if (
           from &&
           (from === Routes.BarcodeScanner || from === Routes.PhotoUpload)
