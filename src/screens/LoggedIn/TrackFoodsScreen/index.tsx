@@ -96,11 +96,15 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
           }
           headerTitle={getHeaderTitle(activeTab)}
           withAutoComplete={
-            activeTab === TrackTabs.FREEFORM ||
-            activeTab === TrackTabs.HISTORY ||
-            (activeTab === TrackTabs.RESTAURANTS && !!selectedRestaurant)
+            activeTab === TrackTabs.FREEFORM || activeTab === TrackTabs.HISTORY
           }
-        />
+          withoutTitle={
+            activeTab === TrackTabs.RESTAURANTS && !!selectedRestaurant
+          }>
+          {activeTab === TrackTabs.RESTAURANTS && !!selectedRestaurant && (
+            <View style={styles.inputContainer} />
+          )}
+        </NavigationHeader>
       ),
     });
   }, [navigation, activeTab, selectedRestaurant]);
