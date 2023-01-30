@@ -51,6 +51,7 @@ export const styles = StyleSheet.create({
     borderRadius: 6,
     flex: 1,
     marginRight: 5,
+    height: 30,
   },
   patient: {
     padding: 10,

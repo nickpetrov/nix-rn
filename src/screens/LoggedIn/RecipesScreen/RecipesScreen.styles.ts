@@ -54,6 +54,7 @@ export const styles = StyleSheet.create({
     margin: 8,
     marginTop: 2,
     backgroundColor: Colors.LightGray,
+    height: 34,
   },
   row: {
     flex: 1,
