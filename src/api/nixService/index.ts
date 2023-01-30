@@ -39,7 +39,7 @@ const nixService = {
       },
     });
   },
-  async getgetGroceryFoods(query: string, start?: number, end?: number) {
+  async getGroceryFoods(query: string, start?: number, end?: number) {
     start = start || 0;
     end = end || 20;
     const data = {

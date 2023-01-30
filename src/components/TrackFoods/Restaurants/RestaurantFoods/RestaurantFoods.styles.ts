@@ -6,12 +6,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  container: {
-    padding: 8,
-    paddingBottom: 50,
-  },
   restaurants: {
-    marginHorizontal: 2,
+    flex: 1,
+    paddingTop: 8,
+    marginHorizontal: 5,
     backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: {
@@ -21,11 +19,13 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 2,
     elevation: 3,
-    borderRadius: 4,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
   },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 8,
   },
   contentImage: {
     width: 100,
@@ -48,22 +48,11 @@ export const styles = StyleSheet.create({
   emptyContainer: {
     borderTopColor: Colors.LightGray,
     borderTopWidth: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 20,
   },
   empty: {
     borderRadius: 4,
     paddingVertical: 15,
     paddingHorizontal: 10,
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
   emptyText: {
     textAlign: 'center',
@@ -72,5 +61,21 @@ export const styles = StyleSheet.create({
   },
   link: {
     color: Colors.Info,
+  },
+  inputContainer: {
+    alignSelf: 'center',
+    width: '80%',
+    marginVertical: 8,
+  },
+  input: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    backgroundColor: '#eee',
+    borderRadius: 6,
+  },
+  closeBtn: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
   },
 });

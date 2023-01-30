@@ -18,9 +18,7 @@ const initialState: FoodsState = {
   restaurantsWithCalc: [],
   restaurantFoods: [],
   currentTrackTab: TrackTabs.FREEFORM,
-  nixRestaurantFoodsTotal: 0,
   selectedRestaurant: null,
-  searchQueryRestaurantFoods: '',
 };
 
 export default (
@@ -51,22 +49,14 @@ export default (
       return {...state, restaurantsWithCalc: action.restaurantsWithCalc};
     case foodsActionTypes.GET_RESTORANTS_FOODS:
       return {...state, restaurantFoods: action.restaurantFoods};
-    case foodsActionTypes.GET_NIX_RESTORANTS_FOODS:
-      return {
-        ...state,
-        restaurantFoods: state.restaurantFoods.concat(action.restaurantFoods),
-        nixRestaurantFoodsTotal: action.nixRestaurantFoodsTotal,
-      };
     case foodsActionTypes.SET_TRACK_TAB:
       return {...state, currentTrackTab: action.payload};
     case foodsActionTypes.CLEAR_RESTORANTS_FOODS:
-      return {...state, restaurantFoods: [], nixRestaurantFoodsTotal: 0};
+      return {...state, restaurantFoods: []};
     case foodsActionTypes.CLEAR_GROCERY_FOODS:
       return {...state, groceries: []};
     case foodsActionTypes.SET_SELECTED_RESTAURANT:
       return {...state, selectedRestaurant: action.payload};
-    case foodsActionTypes.SET_SEARCH_QUERY_RESTAURANT_FOODS:
-      return {...state, searchQueryRestaurantFoods: action.payload};
     case foodsActionTypes.FOODS_CLEAR:
       return initialState;
     default:

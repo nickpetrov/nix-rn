@@ -10,12 +10,10 @@ export enum foodsActionTypes {
   GET_RESTORANTS_FOODS = 'GET_RESTORANTS_FOODS',
   GET_RESTORANTS_WITH_CALC = 'GET_RESTORANTS_WITH_CALC',
   SET_TRACK_TAB = 'SET_TRACK_TAB',
-  GET_NIX_RESTORANTS_FOODS = 'GET_NIX_RESTORANTS_FOODS',
   CLEAR_RESTORANTS_FOODS = 'CLEAR_RESTORANTS_FOODS',
   CLEAR_GROCERY_FOODS = 'CLEAR_GROCERY_FOODS',
   CLEAR_HISTORY_FOODS = 'CLEAR_HISTORY_FOODS',
   SET_SELECTED_RESTAURANT = 'SET_SELECTED_RESTAURANT',
-  SET_SEARCH_QUERY_RESTAURANT_FOODS = 'SET_SEARCH_QUERY_RESTAURANT_FOODS',
   FOODS_CLEAR = 'FOODS_CLEAR',
 }
 
@@ -76,9 +74,7 @@ export interface FoodsState {
   restaurantsWithCalc: Array<RestaurantsWithCalcProps>;
   restaurantFoods: Array<FoodProps>;
   currentTrackTab: TrackTabs;
-  nixRestaurantFoodsTotal: number;
   selectedRestaurant: SelectedRestaurant;
-  searchQueryRestaurantFoods: string;
 }
 
 export type getAllSuggestedFoodAction = {
@@ -122,11 +118,6 @@ export type setTrackTabAction = {
   type: foodsActionTypes.SET_TRACK_TAB;
   payload: TrackTabs;
 };
-export type getNixRestaurantsFoodsAction = {
-  type: foodsActionTypes.GET_NIX_RESTORANTS_FOODS;
-  restaurantFoods: FoodProps[];
-  nixRestaurantFoodsTotal: number;
-};
 export type clearRestaurantsFoodsAction = {
   type: foodsActionTypes.CLEAR_RESTORANTS_FOODS;
 };
@@ -139,10 +130,6 @@ export type clearHistoryFoodsAction = {
 export type setSelectedRestaurantAction = {
   type: foodsActionTypes.SET_SELECTED_RESTAURANT;
   payload: SelectedRestaurant;
-};
-export type setSearchQueryRestaurantFoodsAction = {
-  type: foodsActionTypes.SET_SEARCH_QUERY_RESTAURANT_FOODS;
-  payload: string;
 };
 export type clearFoodsAction = {
   type: foodsActionTypes.FOODS_CLEAR;
@@ -159,10 +146,8 @@ export type FoodsActions =
   | getRestaurantsWithCalcAction
   | getRestaurantFoodsAction
   | setTrackTabAction
-  | getNixRestaurantsFoodsAction
   | clearRestaurantsFoodsAction
   | clearGroceryFoodsAction
   | clearHistoryFoodsAction
   | setSelectedRestaurantAction
-  | setSearchQueryRestaurantFoodsAction
   | clearFoodsAction;

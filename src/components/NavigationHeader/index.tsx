@@ -116,7 +116,9 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
               </TouchableOpacity>
             </View>
           )}
-          {route.name === Routes.Dashboard || route.name === Routes.Basket ? (
+          {route.name === Routes.Dashboard ||
+          route.name === Routes.Basket ||
+          route.name === Routes.TrackFoods ? (
             <BarcodeScanner
               navigation={navigation}
               style={styles.barcodeInAutocomplete}

@@ -31,16 +31,4 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 15,
   },
-  input: {
-    backgroundColor: '#ffffff',
-    padding: 5,
-    flex: 1,
-    borderRadius: 4,
-    height: 30,
-  },
-  closeBtn: {
-    position: 'absolute',
-    right: 10,
-    top: 8,
-  },
 });

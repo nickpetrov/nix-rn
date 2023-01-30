@@ -1,15 +1,8 @@
 // utils
-import React, {useLayoutEffect, useEffect, useState} from 'react';
-import {useDebounce} from 'use-debounce';
+import React, {useLayoutEffect, useEffect} from 'react';
 
 // components
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, TouchableWithoutFeedback} from 'react-native';
 import Footer from 'components/Footer';
 import Grocery from 'components/TrackFoods/Grocery';
 import NaturalForm from 'components/TrackFoods/NaturalForm';
@@ -17,17 +10,12 @@ import Restaurants from 'components/TrackFoods/Restaurants/intex';
 import History from 'components/TrackFoods/History';
 import BasketButton from 'components/BasketButton';
 import {NavigationHeader} from 'components/NavigationHeader';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
 
 // actions
-import {
-  setTrackTab,
-  setSelectedRestaurant,
-  setSearchQueryRestaurant,
-} from 'store/foods/foods.actions';
+import {setTrackTab, setSelectedRestaurant} from 'store/foods/foods.actions';
 import {setWalkthroughTooltip} from 'store/walkthrough/walkthrough.actions';
 
 // styles
@@ -42,11 +30,7 @@ import {
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {
-  RestaurantsProps,
-  RestaurantsWithCalcProps,
-  TrackTabs,
-} from 'store/foods/foods.types';
+import {TrackTabs} from 'store/foods/foods.types';
 import {analyticSetUserId} from 'helpers/analytics.ts';
 import TooltipView from 'components/TooltipView';
 
@@ -68,21 +52,12 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
   const {currentTrackTab: activeTab, selectedRestaurant} = useSelector(
     state => state.foods,
   );
-  const [query, setQuery] = useState('');
-  const [searchValue] = useDebounce(query, 500);
   const changeActiveTab = (tabName: TrackTabs) => {
     if (activeTab !== tabName) {
       dispatch(setTrackTab(tabName));
     }
     dispatch(setSelectedRestaurant(null));
-    if (query) {
-      setQuery('');
-    }
   };
-
-  useEffect(() => {
-    dispatch(setSearchQueryRestaurant(searchValue));
-  }, [dispatch, searchValue]);
 
   const isActiveTab = (tabToCheck: string) => {
     return activeTab === tabToCheck;
@@ -107,65 +82,28 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
   }, [dispatch, userId]);
 
   useLayoutEffect(() => {
-    if (selectedRestaurant) {
-      const brandName =
-        (selectedRestaurant as RestaurantsProps).name ||
-        (selectedRestaurant as RestaurantsWithCalcProps).proper_brand_name;
-      navigation.setOptions({
-        header: (props: NativeStackHeaderProps) => (
-          <NavigationHeader
-            {...props}
-            navigation={navigation}
-            headerRight={
-              <BasketButton
-                icon="shopping-basket"
-                withCount
-                onPress={() => navigation.navigate(Routes.Basket)}
-              />
-            }
-            withoutTitle>
-            <View style={styles.inputContainer}>
-              <TextInput
-                placeholder={`Search ${brandName}`}
-                style={styles.input}
-                value={query}
-                onChangeText={text => setQuery(text)}
-              />
-              {query.length > 0 && (
-                <View style={styles.closeBtn}>
-                  <TouchableOpacity onPress={() => setQuery('')}>
-                    <FontAwesome name="close" color="#000" size={13} />
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          </NavigationHeader>
-        ),
-      });
-    } else {
-      navigation.setOptions({
-        header: (props: NativeStackHeaderProps) => (
-          <NavigationHeader
-            {...props}
-            navigation={navigation}
-            headerRight={
-              <BasketButton
-                icon="shopping-basket"
-                withCount
-                onPress={() => navigation.navigate(Routes.Basket)}
-              />
-            }
-            headerTitle={getHeaderTitle(activeTab)}
-            withAutoComplete={
-              activeTab === TrackTabs.FREEFORM ||
-              activeTab === TrackTabs.HISTORY
-            }
-          />
-        ),
-      });
-      setQuery('');
-    }
-  }, [navigation, activeTab, selectedRestaurant, query]);
+    navigation.setOptions({
+      header: (props: NativeStackHeaderProps) => (
+        <NavigationHeader
+          {...props}
+          navigation={navigation}
+          headerRight={
+            <BasketButton
+              icon="shopping-basket"
+              withCount
+              onPress={() => navigation.navigate(Routes.Basket)}
+            />
+          }
+          headerTitle={getHeaderTitle(activeTab)}
+          withAutoComplete={
+            activeTab === TrackTabs.FREEFORM ||
+            activeTab === TrackTabs.HISTORY ||
+            (activeTab === TrackTabs.RESTAURANTS && !!selectedRestaurant)
+          }
+        />
+      ),
+    });
+  }, [navigation, activeTab, selectedRestaurant]);
 
   useEffect(() => {
     if (!firstEnterInTrackTab.value) {

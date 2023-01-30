@@ -26,7 +26,6 @@ import {
   getRestorants,
   getRestorantsWithCalc,
   setSelectedRestaurant,
-  setSearchQueryRestaurant,
 } from 'store/foods/foods.actions';
 import {setInfoMessage} from 'store/base/base.actions';
 
@@ -113,9 +112,6 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
       dispatch(getRestorants());
       dispatch(getRestorantsWithCalc());
     });
-    return () => {
-      dispatch(setSearchQueryRestaurant(''));
-    };
   }, [dispatch]);
 
   useEffect(() => {

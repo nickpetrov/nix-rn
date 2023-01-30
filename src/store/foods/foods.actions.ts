@@ -9,12 +9,10 @@ import {
   getFoodByQRCodeAction,
   getGroceriesAction,
   getHistoryFoodsAction,
-  getNixRestaurantsFoodsAction,
   getRestaurantFoodsAction,
   getRestaurantsAction,
   getRestaurantsWithCalcAction,
   SelectedRestaurant,
-  setSearchQueryRestaurantFoodsAction,
   setSelectedRestaurantAction,
   setTrackTabAction,
   TrackTabs,
@@ -134,7 +132,7 @@ export const getSuggestedFoods = () => {
 export const getGroceries = (query: string, start?: number, end?: number) => {
   return async (dispatch: Dispatch<getGroceriesAction>) => {
     try {
-      const response = await nixService.getgetGroceryFoods(query, start, end);
+      const response = await nixService.getGroceryFoods(query, start, end);
 
       const result = response.data;
       // if (__DEV__) {
@@ -236,39 +234,6 @@ export const getRestorantsFoods = (data: InstantQueryDataProps) => {
     }
   };
 };
-export const getNixRestorantsFoods = (
-  query: string,
-  brand_id: string,
-  start?: number,
-  step?: number,
-) => {
-  return async (dispatch: Dispatch<getNixRestaurantsFoodsAction>) => {
-    try {
-      const response = await nixService.getRestaurantFoods(
-        query,
-        brand_id,
-        start,
-        step,
-      );
-
-      const result = response.data;
-      if (__DEV__) {
-        console.log('nix restaurants foods', result);
-      }
-      if (result && result.hits && result.hits.length) {
-        dispatch({
-          type: foodsActionTypes.GET_NIX_RESTORANTS_FOODS,
-          restaurantFoods: result.hits.map(
-            (item: {fields: FoodProps}) => item.fields,
-          ),
-          nixRestaurantFoodsTotal: result.total,
-        });
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
-};
 
 export const setTrackTab = (tab: TrackTabs): setTrackTabAction => {
   return {
@@ -289,14 +254,6 @@ export const clearGroceryFoods = (): clearGroceryFoodsAction => {
 export const clearHistoryFoods = (): clearHistoryFoodsAction => {
   return {
     type: foodsActionTypes.CLEAR_HISTORY_FOODS,
-  };
-};
-export const setSearchQueryRestaurant = (
-  query: string,
-): setSearchQueryRestaurantFoodsAction => {
-  return {
-    type: foodsActionTypes.SET_SEARCH_QUERY_RESTAURANT_FOODS,
-    payload: query,
   };
 };
 export const setSelectedRestaurant = (
