@@ -534,6 +534,8 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                     <TooltipView
                       eventName="firstMultipleFoodsInBasket"
                       step={2}
+                      placement="top"
+                      doNotDisplay={foods.length > 3}
                       childrenWrapperStyle={{
                         backgroundColor: '#fff',
                       }}>

@@ -23,6 +23,7 @@ interface TooltipViewProps extends Props {
   placement?: 'bottom' | 'top' | 'left' | 'right' | 'center';
   step: number;
   eventName: keyof CheckedEventsType;
+  doNotDisplay?: boolean;
 }
 
 const TooltipView: React.FC<TooltipViewProps> = ({
@@ -30,6 +31,7 @@ const TooltipView: React.FC<TooltipViewProps> = ({
   placement,
   eventName,
   onClose,
+  doNotDisplay,
   children,
   ...props
 }) => {
@@ -107,7 +109,8 @@ const TooltipView: React.FC<TooltipViewProps> = ({
       isVisible={
         !checkedEvents[eventName].value &&
         currentTooltip?.eventName === eventName &&
-        currentTooltip?.step === step
+        currentTooltip?.step === step &&
+        !doNotDisplay
       }
       placement={placement || 'bottom'}
       onClose={() => {
