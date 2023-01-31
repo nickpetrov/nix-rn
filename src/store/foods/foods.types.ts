@@ -84,7 +84,6 @@ export type getAllSuggestedFoodAction = {
 export type getGroceriesAction = {
   type: foodsActionTypes.GET_GROCERIES;
   groceries: FoodProps[];
-  addValues: boolean;
 };
 export type getHistoryFoodsAction = {
   type: foodsActionTypes.GET_HISTORY_FOODS;

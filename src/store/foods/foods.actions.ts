@@ -25,8 +25,6 @@ import moment from 'moment-timezone';
 import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {addExistFoodToBasket} from 'store/basket/basket.actions';
 import {grocery_photo_upload} from 'config/index';
-import nixService from 'api/nixService';
-import {FoodProps} from 'store/userLog/userLog.types';
 import {addFoodToBasketAction} from 'store/basket/basket.types';
 
 export const getFoodByQRcode = (
@@ -129,22 +127,27 @@ export const getSuggestedFoods = () => {
   };
 };
 
-export const getGroceries = (query: string, start?: number, end?: number) => {
+export const getGroceries = (query: string) => {
   return async (dispatch: Dispatch<getGroceriesAction>) => {
     try {
-      const response = await nixService.getGroceryFoods(query, start, end);
+      const sentData = {
+        query,
+        branded: true,
+        detailed: true,
+        self: false,
+        common: false,
+        branded_type: 2,
+      };
+      const response = await autoCompleteService.getInstant(sentData);
 
       const result = response.data;
-      // if (__DEV__) {
-      //   console.log('groceries', result.branded);
-      // }
-      if (result) {
+      if (__DEV__) {
+        console.log('groceries', result.branded);
+      }
+      if (result.branded && result.branded.length) {
         dispatch({
           type: foodsActionTypes.GET_GROCERIES,
-          groceries: result.hits.map(
-            (item: {fields: FoodProps}) => item.fields,
-          ),
-          addValues: !!start,
+          groceries: result.branded,
         });
       }
     } catch (error) {

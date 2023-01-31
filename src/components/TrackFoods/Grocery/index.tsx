@@ -58,7 +58,6 @@ const Grocery: React.FC<GroceryProps> = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    // in native app it's fire without bounce,so flow a bit different
     if (value.length > 2) {
       dispatch(getGroceries(value));
     }

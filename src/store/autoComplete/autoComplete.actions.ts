@@ -13,7 +13,7 @@ import {FoodProps} from 'store/userLog/userLog.types';
 export const updateSearchResults = (query: string) => {
   return async (dispatch: Dispatch<updateSearchResultsAction>) => {
     try {
-      const response = await autoCompleteService.getInstant(query);
+      const response = await autoCompleteService.getInstant({query});
 
       const data = response.data;
 

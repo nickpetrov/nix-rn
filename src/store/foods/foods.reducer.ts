@@ -35,9 +35,7 @@ export default (
     case foodsActionTypes.GET_GROCERIES:
       return {
         ...state,
-        groceries: action.addValues
-          ? state.groceries.concat(action.groceries)
-          : action.groceries,
+        groceries: action.groceries,
       };
     case foodsActionTypes.GET_HISTORY_FOODS:
       return {...state, historyFoods: action.historyFoods};

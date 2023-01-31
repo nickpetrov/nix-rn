@@ -9,17 +9,16 @@ export interface InstantQueryDataProps {
   branded?: boolean;
   detailed?: boolean;
   branded_type?: number;
+  common_grocery?: boolean;
 }
 
 const autoCompleteService = {
   async getFoodById(id: string) {
     return await apiClient.get(`log/${id}/detailed`);
   },
-  async getInstant(search?: string) {
+  async getInstant(data?: InstantQueryDataProps) {
     return await apiClient.get<SearchResponse>('search/instant', {
-      params: {
-        query: search,
-      },
+      params: data,
     });
   },
   async getTrackInstant(data: InstantQueryDataProps) {
