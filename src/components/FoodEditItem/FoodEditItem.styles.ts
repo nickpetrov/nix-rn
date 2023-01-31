@@ -54,7 +54,8 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
   },
-  nameContainer: {},
+  nameContainer: {
+  },
   foodName: {
     textTransform: 'capitalize',
   },
@@ -65,9 +66,7 @@ export const styles = StyleSheet.create({
     fontFamily: 'System',
   },
   main: {
-    maxWidth: '70%',
-    flexGrow: 1,
-    flexBasis: 'auto',
+    flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     marginRight: 10,
@@ -85,7 +84,6 @@ export const styles = StyleSheet.create({
   footer: {
     minWidth: '20%',
     maxWidth: '20%',
-    flexGrow: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
