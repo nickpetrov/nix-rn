@@ -107,6 +107,8 @@ const MealListItem: React.FC<MealListItemProps> = props => {
             textToHighlight={capitalize(name)}
             style={styles.foodName}
             highlightStyle={{fontWeight: '600'}}
+            numberOfLines={1}
+            ellipsizeMode="tail"
           />
           <HighlightText
             searchWords={[searchValue || '']}
@@ -119,6 +121,8 @@ const MealListItem: React.FC<MealListItemProps> = props => {
                     }${foodObj.serving_qty} ${foodObj.serving_unit}`,
                   )
             }
+            numberOfLines={1}
+            ellipsizeMode="tail"
             style={styles.qty}
             highlightStyle={{fontWeight: '600'}}
           />

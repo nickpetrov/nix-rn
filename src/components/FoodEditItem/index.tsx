@@ -175,19 +175,37 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
           )}
         </View>
       </View>
-      <View>
-        <Text style={styles.foodName}>{food_name}</Text>
-        {brand_name && <Text style={styles.foodBrandName}>{brand_name}</Text>}
-      </View>
+      <Text
+        style={styles.foodName}
+        numberOfLines={withInfo ? 1 : 2}
+        ellipsizeMode="tail">
+        {food_name}
+      </Text>
+      {brand_name && (
+        <Text
+          style={styles.foodBrandName}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {brand_name}
+        </Text>
+      )}
     </>
   );
   const rightPart = (
     <>
       {withInfo ? (
-        <FontAwesome name="info-circle" color="#999" size={19} />
+        <FontAwesome
+          style={styles.info}
+          name="info-circle"
+          color="#999"
+          size={19}
+        />
       ) : null}
-      <View style={[styles.calories, withInfo ? {marginLeft: 10} : {}]}>
-        <Text style={styles.caloriesValue}>
+      <View style={[styles.calories]}>
+        <Text
+          style={styles.caloriesValue}
+          numberOfLines={1}
+          ellipsizeMode="tail">
           {' '}
           {nfCalories
             ? nfCalories.toFixed(0)
@@ -203,15 +221,17 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
   return (
     <TouchableHighlight onPress={onTap}>
       <View style={[styles.foodItem, withoutBorder && styles.withoutBorder]}>
-        <Image
-          style={styles.foodThumb}
-          source={
-            food.photo
-              ? {uri: food.photo.thumb}
-              : require('assets/gray_nix_apple_small.png')
-          }
-          resizeMode="contain"
-        />
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.foodThumb}
+            source={
+              food.photo
+                ? {uri: food.photo.thumb}
+                : require('assets/gray_nix_apple_small.png')
+            }
+            resizeMode="contain"
+          />
+        </View>
         {withTooltip ? (
           <TooltipView
             eventName={tooltipEventName || 'firstFoodAddedToBasket'}
@@ -236,14 +256,13 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
                 });
               }
             }}>
-            <View style={[styles.footer, withInfo && styles.between]}>
+            <View style={[styles.footer]}>
               <TooltipView
                 eventName={tooltipEventName || 'firstFoodAddedToBasket'}
                 step={1}
-                parentWrapperStyle={[styles.footer, withInfo && styles.between]}
+                parentWrapperStyle={[styles.footer]}
                 childrenWrapperStyle={[
                   styles.footer,
-                  withInfo && styles.between,
                   {backgroundColor: '#fff'},
                 ]}>
                 {rightPart}
@@ -260,9 +279,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
                 });
               }
             }}>
-            <View style={[styles.footer, withInfo && styles.between]}>
-              {rightPart}
-            </View>
+            <View style={[styles.footer]}>{rightPart}</View>
           </TouchableWithoutFeedback>
         )}
       </View>

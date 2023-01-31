@@ -22,6 +22,10 @@ export const styles = StyleSheet.create({
   caloriesLabel: {
     color: '#aaa',
   },
+  imageContainer: {
+    flexGrow: 1,
+    maxWidth: 48,
+  },
   foodThumb: {
     width: 40,
     height: 40,
@@ -48,9 +52,8 @@ export const styles = StyleSheet.create({
     padding: 8,
     borderWidth: 1,
     borderColor: '#ddd',
-    flexGrow: 2,
-    width: '100%',
   },
+  nameContainer: {},
   foodName: {
     textTransform: 'capitalize',
   },
@@ -61,35 +64,39 @@ export const styles = StyleSheet.create({
     fontFamily: 'System',
   },
   main: {
+    maxWidth: '70%',
     flexGrow: 1,
+    flexBasis: 'auto',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     marginRight: 10,
   },
   pickerContainer: {
     flexGrow: 1,
-    flex: 1,
     justifyContent: 'center',
   },
   pickerText: {
     color: Colors.Gray8,
   },
   picker: {
-    flex: 1,
     flexGrow: 1,
   },
   footer: {
     minWidth: '20%',
-    width: '20%',
+    maxWidth: '20%',
+    flexGrow: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
+  },
+  info: {
+    position: 'absolute',
+    left: 0,
   },
   calories: {},
   cal: {
     textAlign: 'right',
     fontSize: 12,
     color: Colors.Gray8,
-  },
-  between: {
-    justifyContent: 'space-between',
   },
 });
