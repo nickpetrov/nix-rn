@@ -175,7 +175,10 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
           )}
         </View>
       </View>
-      <Text style={styles.foodName} numberOfLines={1} ellipsizeMode="tail">
+      <Text
+        style={styles.foodName}
+        numberOfLines={withInfo ? 1 : 2}
+        ellipsizeMode="tail">
         {food_name}
       </Text>
       {brand_name && (
