@@ -15,6 +15,7 @@ import {
   Image,
   ScrollView,
   Platform,
+  Linking,
 } from 'react-native';
 import {NixButton} from 'components/NixButton';
 
@@ -158,7 +159,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
             <Text style={styles.noteText}>Need help?</Text>
             <Text style={styles.noteText}>
               Contact us at{' '}
-              <Text style={styles.highlightText}>support@nutritionix.com</Text>
+              <Text
+                style={styles.highlightText}
+                onPress={() =>
+                  Linking.openURL('mailto:support@nutritionix.com')
+                }>
+                support@nutritionix.com
+              </Text>
             </Text>
           </View>
         </View>
