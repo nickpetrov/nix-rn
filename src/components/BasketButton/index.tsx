@@ -1,5 +1,6 @@
 // utils
 import React from 'react';
+import {useRoute} from '@react-navigation/native';
 
 // components
 import {View, Text, TouchableOpacity} from 'react-native';
@@ -8,6 +9,9 @@ import TooltipView from 'components/TooltipView';
 
 // hooks
 import {useSelector} from 'hooks/useRedux';
+
+// constants
+import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './BasketButton.styles';
@@ -19,10 +23,12 @@ interface BasketButtonProps {
 }
 
 const BasketButton: React.FC<BasketButtonProps> = props => {
+  const route = useRoute();
   const foods = useSelector(state => state.basket.foods);
   return (
     <TouchableOpacity onPress={props.onPress} style={styles.container}>
       <TooltipView
+        doNotDisplay={route.name !== Routes.Dashboard}
         eventName="firstLogin"
         step={2}
         parentWrapperStyle={styles.root}>

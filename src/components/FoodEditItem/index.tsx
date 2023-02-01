@@ -1,6 +1,6 @@
 // utils
 import React, {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import _ from 'lodash';
 
 // components
@@ -54,6 +54,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
   withTooltip,
   tooltipEventName,
 }) => {
+  const route = useRoute();
   const navigation =
     useNavigation<
       NativeStackNavigationProp<StackNavigatorParamList, Routes.Food>
@@ -234,6 +235,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
         </View>
         {withTooltip ? (
           <TooltipView
+            doNotDisplay={route.name !== Routes.Basket}
             eventName={tooltipEventName || 'firstFoodAddedToBasket'}
             step={0}
             parentWrapperStyle={{...styles.main}}
@@ -258,6 +260,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
             }}>
             <View style={styles.footer}>
               <TooltipView
+                doNotDisplay={route.name !== Routes.Basket}
                 eventName={tooltipEventName || 'firstFoodAddedToBasket'}
                 step={1}
                 parentWrapperStyle={{

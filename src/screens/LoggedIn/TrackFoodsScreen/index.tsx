@@ -1,5 +1,9 @@
 // utils
 import React, {useLayoutEffect, useEffect} from 'react';
+import {useRoute} from '@react-navigation/native';
+
+// helpers
+import {analyticSetUserId} from 'helpers/analytics.ts';
 
 // components
 import {View, Text, TouchableWithoutFeedback} from 'react-native';
@@ -10,6 +14,7 @@ import Restaurants from 'components/TrackFoods/Restaurants/intex';
 import History from 'components/TrackFoods/History';
 import BasketButton from 'components/BasketButton';
 import {NavigationHeader} from 'components/NavigationHeader';
+import TooltipView from 'components/TooltipView';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
@@ -31,8 +36,6 @@ import {
 } from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {TrackTabs} from 'store/foods/foods.types';
-import {analyticSetUserId} from 'helpers/analytics.ts';
-import TooltipView from 'components/TooltipView';
 
 interface TrackFoodsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -44,6 +47,7 @@ interface TrackFoodsScreenProps {
 export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
   navigation,
 }) => {
+  const route = useRoute();
   const dispatch = useDispatch();
   const firstEnterInTrackTab = useSelector(
     state => state.walkthrough.checkedEvents.firstEnterInTrackTab,
@@ -113,14 +117,17 @@ export const TrackFoodsScreen: React.FC<TrackFoodsScreenProps> = ({
     if (!firstEnterInTrackTab.value) {
       setTimeout(() => {
         dispatch(setWalkthroughTooltip('firstEnterInTrackTab', 0));
-      }, 2000);
+      }, 1000);
     }
   }, [firstEnterInTrackTab, dispatch]);
 
   return (
     <View style={styles.layout}>
       <View style={styles.container}>
-        <TooltipView eventName="firstEnterInTrackTab" step={1}>
+        <TooltipView
+          eventName="firstEnterInTrackTab"
+          step={1}
+          doNotDisplay={route.name !== Routes.TrackFoods}>
           <View style={styles.tabs}>
             {Object.values(TrackTabs).map(item => (
               <TouchableWithoutFeedback

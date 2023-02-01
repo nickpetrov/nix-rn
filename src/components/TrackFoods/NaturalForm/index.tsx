@@ -2,6 +2,7 @@
 import React, {useState} from 'react';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {useRoute} from '@react-navigation/native';
 
 // components
 import {View, Text, Linking, TouchableOpacity} from 'react-native';
@@ -40,6 +41,7 @@ interface NaturalFormProps {
 }
 
 const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
+  const route = useRoute();
   const netInfo = useNetInfo();
   const isVoiceDisclaimerVisible = useSelector(
     state => state.base.isVoiceDisclaimerVisible,
@@ -121,6 +123,7 @@ const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
     <View style={styles.root}>
       <View style={styles.container}>
         <TooltipView
+          doNotDisplay={route.name !== Routes.TrackFoods}
           eventName="firstEnterInTrackTab"
           childrenWrapperStyle={{
             backgroundColor: '#fff',

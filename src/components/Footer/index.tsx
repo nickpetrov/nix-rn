@@ -1,5 +1,6 @@
 // utils
 import React from 'react';
+import {useRoute} from '@react-navigation/native';
 
 // components
 import {View, SafeAreaView} from 'react-native';
@@ -33,6 +34,7 @@ interface FooterProps {
 }
 
 const Footer: React.FC<FooterProps> = props => {
+  const route = useRoute();
   let hideFooterStyle = {marginTop: 0};
   if (props.hide) {
     // hideFooterStyle = hideFooterStyle.marginTop = 50;
@@ -57,6 +59,7 @@ const Footer: React.FC<FooterProps> = props => {
           <FontAwesome name="bar-chart" color="#fff" size={30} />
         </FooterItem>
         <TooltipView
+          doNotDisplay={route.name !== Routes.Dashboard}
           placement="top"
           eventName="firstLogin"
           step={3}

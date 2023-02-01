@@ -1,6 +1,6 @@
 // utils
 import React, {useEffect, useState} from 'react';
-import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {ParamListBase, useNavigation, useRoute} from '@react-navigation/native';
 
 // components
 import {View, Text, TouchableOpacity} from 'react-native';
@@ -37,6 +37,7 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = ({
   clientId,
   clientSelectedDate,
 }) => {
+  const route = useRoute();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [total, setTotal] = useState<Record<string, any>>({
     caloriesIntake: 0,
@@ -156,6 +157,7 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = ({
 
   return (
     <TooltipView
+      doNotDisplay={route.name !== Routes.Dashboard}
       eventName="firstFoodAddedToFoodLog"
       step={0}
       childrenWrapperStyle={{

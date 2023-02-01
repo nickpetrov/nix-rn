@@ -234,7 +234,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     if (!checkedEvents.firstLogin.value) {
       setTimeout(() => {
         dispatch(setWalkthroughTooltip('firstLogin', 0));
-      }, 2000);
+      }, 1000);
     }
   }, [checkedEvents.firstLogin, dispatch]);
 
@@ -242,7 +242,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     if (route.params?.startWalkthroughAfterLog) {
       setTimeout(() => {
         dispatch(setWalkthroughTooltip('firstFoodAddedToFoodLog', 0));
-      }, 2000);
+      }, 1000);
       navigation.setParams({startWalkthroughAfterLog: undefined});
     }
   }, [route.params?.startWalkthroughAfterLog, navigation, dispatch]);
@@ -416,6 +416,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               }}>
               {section.key === sections[0].key ? (
                 <TooltipView
+                  doNotDisplay={route.name !== Routes.Dashboard}
                   eventName="firstFoodAddedToFoodLog"
                   step={3}
                   childrenWrapperStyle={{flex: 1, flexDirection: 'row'}}>
@@ -503,6 +504,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               return item.id ===
                 sections.filter(el => el.data.length)[0]?.data[0]?.id ? (
                 <TooltipView
+                  doNotDisplay={route.name !== Routes.Dashboard}
                   eventName="firstFoodAddedToFoodLog"
                   step={2}
                   childrenWrapperStyle={{

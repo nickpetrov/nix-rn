@@ -167,19 +167,19 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
       if (!firstFoodAddedToBasket.value) {
         setTimeout(() => {
           dispatch(setWalkthroughTooltip('firstMultipleFoodsInBasket', 0));
-        }, 2000);
+        }, 1000);
       } else if (!firstMultipleFoodsInBasket.value) {
         setTimeout(() => {
           dispatch(
             setWalkthroughTooltip('firstMultipleFoodsInBasket', 2, true),
           );
-        }, 2000);
+        }, 1000);
       }
     } else if (foods.length > 0) {
       if (!firstFoodAddedToBasket.value) {
         setTimeout(() => {
           dispatch(setWalkthroughTooltip('firstFoodAddedToBasket', 0));
-        }, 2000);
+        }, 1000);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -535,7 +535,9 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                       eventName="firstMultipleFoodsInBasket"
                       step={2}
                       placement="top"
-                      doNotDisplay={foods.length > 3}
+                      doNotDisplay={
+                        foods.length > 3 || route.name !== Routes.Basket
+                      }
                       childrenWrapperStyle={{
                         backgroundColor: '#fff',
                       }}>

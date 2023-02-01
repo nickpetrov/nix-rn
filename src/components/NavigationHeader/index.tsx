@@ -88,6 +88,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
       {headerLeft ? headerLeft : back && <BackButton navigation={navigation} />}
       {withAutoComplete && (
         <TooltipView
+          doNotDisplay={route.name !== Routes.Dashboard}
           eventName="firstLogin"
           step={0}
           childrenWrapperStyle={{flexDirection: 'row'}}

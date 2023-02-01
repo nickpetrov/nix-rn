@@ -40,6 +40,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = props => {
 
   return (
     <TooltipView
+      doNotDisplay={route.name !== Routes.Dashboard}
       eventName="firstLogin"
       step={1}
       childrenWrapperStyle={{backgroundColor: '#fff', padding: 0}}

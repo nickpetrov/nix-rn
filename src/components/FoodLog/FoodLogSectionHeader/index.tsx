@@ -1,6 +1,6 @@
 // utils
 import React, {useState, useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 // components
 import {View, Text, TouchableOpacity} from 'react-native';
@@ -35,6 +35,7 @@ const FoodLogSectionHeader: React.FC<FoodLogSectionHeaderProps> = ({
   title,
   clientId,
 }) => {
+  const route = useRoute();
   const navigation =
     useNavigation<
       NativeStackNavigationProp<StackNavigatorParamList, Routes.Dashboard>
@@ -107,6 +108,7 @@ const FoodLogSectionHeader: React.FC<FoodLogSectionHeaderProps> = ({
               }}>
               {mealType === mealTypes.Breakfast ? (
                 <TooltipView
+                  doNotDisplay={route.name !== Routes.Dashboard}
                   eventName="firstFoodAddedToFoodLog"
                   step={1}
                   childrenWrapperStyle={{backgroundColor: '#fff'}}>
