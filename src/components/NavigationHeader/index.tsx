@@ -1,5 +1,5 @@
 // utils
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 
 // components
 import {View, Text, TextInput} from 'react-native';
@@ -75,10 +75,6 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   const searchAutocomplete = (text: string) => {
     dispatch(setSearchValue(text));
   };
-
-  useEffect(() => {
-    dispatch(setSearchValue(''));
-  }, [dispatch, route.name]);
 
   const smallSize =
     route.name === Routes.Totals
