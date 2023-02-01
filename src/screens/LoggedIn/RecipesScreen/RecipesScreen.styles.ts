@@ -73,4 +73,7 @@ export const styles = StyleSheet.create({
     fontSize: 12,
   },
   swipeItemContainer: {},
+  copyRecipeText: {
+    paddingHorizontal: 4,
+  },
 });

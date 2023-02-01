@@ -331,7 +331,6 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
           setNewRecipeName('');
         }}
         title="Copy Recipe"
-        text="Enter new unique name for the new recipe"
         btns={[
           {
             type: 'gray',
@@ -350,11 +349,16 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
             disabled: loadingCopyRecipe,
           },
         ]}>
-        <TextInput
-          value={newRecipeName}
-          onChangeText={setNewRecipeName}
-          editable={!loadingCopyRecipe}
-        />
+        <>
+          <Text style={styles.copyRecipeText}>
+            Enter new unique name for the new recipe
+          </Text>
+          <TextInput
+            value={newRecipeName}
+            onChangeText={setNewRecipeName}
+            editable={!loadingCopyRecipe}
+          />
+        </>
       </ChooseModal>
     </View>
   );

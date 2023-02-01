@@ -206,12 +206,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   });
 
   useEffect(() => {
-    setIsRefreshing(true);
-    dispatch(userLogActions.refreshLog(selectedDate, userData.timezone)).then(
-      () => {
-        setIsRefreshing(false);
-      },
-    );
+    dispatch(userLogActions.refreshLog(selectedDate, userData.timezone));
     analyticSetUserId(userData.id);
   }, [dispatch, selectedDate, userData.timezone, userData.id]);
 

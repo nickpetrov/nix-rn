@@ -175,7 +175,10 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
           )}
         </View>
       </View>
-      <Text style={styles.foodName} numberOfLines={1} ellipsizeMode="tail">
+      <Text
+        style={styles.foodName}
+        numberOfLines={withInfo ? 1 : 2}
+        ellipsizeMode="tail">
         {food_name}
       </Text>
       {brand_name && (
@@ -253,13 +256,21 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
                 });
               }
             }}>
-            <TooltipView
-              eventName={tooltipEventName || 'firstFoodAddedToBasket'}
-              step={1}
-              parentWrapperStyle={[styles.footer]}
-              childrenWrapperStyle={[{backgroundColor: '#fff'}]}>
-              {rightPart}
-            </TooltipView>
+            <View style={styles.footer}>
+              <TooltipView
+                eventName={tooltipEventName || 'firstFoodAddedToBasket'}
+                step={1}
+                parentWrapperStyle={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                }}
+                childrenWrapperStyle={[
+                  {backgroundColor: '#fff', alignItems: 'flex-end'},
+                ]}>
+                {rightPart}
+              </TooltipView>
+            </View>
           </TouchableWithoutFeedback>
         ) : (
           <TouchableWithoutFeedback

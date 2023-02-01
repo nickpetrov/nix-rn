@@ -37,7 +37,7 @@ import {
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 import {FoodProps, MeasureProps} from 'store/userLog/userLog.types';
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useIsFocused} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {searchSections} from 'store/autoComplete/autoComplete.types';
 import {RecipeProps} from 'store/recipes/recipes.types';
@@ -65,6 +65,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
 }) => {
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
+  const IsFocused = useIsFocused();
   const basketFoods = useSelector(state => state.basket.foods);
   const customFoods = useSelector(state => state.customFoods.foods);
   const recipes = useSelector(state => state.recipes.recipes);
@@ -215,6 +216,12 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
       dispatch(autocompleteActions.clear());
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!IsFocused) {
+      dispatch(autocompleteActions.setSearchValue(''));
+    }
+  }, [IsFocused, dispatch]);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
