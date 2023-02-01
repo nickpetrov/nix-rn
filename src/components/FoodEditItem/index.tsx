@@ -260,7 +260,9 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
               eventName={tooltipEventName || 'firstFoodAddedToBasket'}
               step={1}
               parentWrapperStyle={[styles.footer]}
-              childrenWrapperStyle={[{backgroundColor: '#fff'}]}>
+              childrenWrapperStyle={[
+                {backgroundColor: '#fff', alignItems: 'flex-end'},
+              ]}>
               {rightPart}
             </TooltipView>
           </TouchableWithoutFeedback>
