@@ -134,14 +134,11 @@ const ViewClientDayLogScreen: React.FC<ViewClientDayLogScreenProps> = ({
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    setIsRefreshing(true);
     const options = {
       clientId: client.id,
       timezone: client.timezone,
     };
-    dispatch(refreshClientLog(options, selectedDate)).then(() => {
-      setIsRefreshing(false);
-    });
+    dispatch(refreshClientLog(options, selectedDate));
   }, [dispatch, selectedDate, client.timezone, client.id]);
 
   useLayoutEffect(() => {
