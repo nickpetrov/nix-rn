@@ -187,111 +187,115 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
   };
 
   return (
-    <ScrollView style={styles.root}>
-      <View style={styles.container}>
-        <View style={styles.mb20}>
-          <Text>
-            {!new_product
-              ? 'Thanks for helping us to keep Nutritionix database up-to-date!'
-              : 'Congratulations! You found a product we do not yet have in the Nutritionix database. Can you help us by taking 2 photos of the product?'}
+    <>
+      <ScrollView style={styles.root}>
+        <View style={styles.container}>
+          <View style={styles.mb20}>
+            <Text>
+              {!new_product
+                ? 'Thanks for helping us to keep Nutritionix database up-to-date!'
+                : 'Congratulations! You found a product we do not yet have in the Nutritionix database. Can you help us by taking 2 photos of the product?'}
+            </Text>
+          </View>
+          <View style={styles.mb5}>
+            <View style={styles.titleContainer}>
+              <Text>1. Front Package Photo:</Text>
+              {frontPackagePicture?.uri && (
+                <Ionicons
+                  name="checkmark"
+                  size={20}
+                  style={styles.chekmarkIcon}
+                />
+              )}
+            </View>
+            {!frontPackagePicture?.uri ? (
+              <View style={styles.mb20}>
+                <NixButton
+                  onPress={() => takePictureHandler(1)}
+                  title="Take Front Package Photo"
+                  iconName="camera"
+                />
+              </View>
+            ) : (
+              <View style={styles.previewImageWrapper}>
+                <Image
+                  resizeMode="contain"
+                  style={styles.previewImage}
+                  source={{
+                    uri: frontPackagePicture?.uri,
+                  }}
+                />
+                <TouchableOpacity
+                  style={styles.btnRetake}
+                  onPress={() => takePictureHandler(1)}>
+                  <Ionicons name="reload" size={20} style={styles.retakeIcon} />
+                  <Text>Retake</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+          <View style={styles.mb10}>
+            <View style={styles.titleContainer}>
+              <Text>2. Nutrition Label Photo:</Text>
+              {nutritionPackagePicture?.uri && (
+                <Ionicons
+                  name="checkmark"
+                  size={20}
+                  style={styles.chekmarkIcon}
+                />
+              )}
+            </View>
+            {!nutritionPackagePicture?.uri ? (
+              <View style={styles.mb20}>
+                <NixButton
+                  onPress={() => takePictureHandler(2)}
+                  title="Take Nutrition Label Photo"
+                  iconName="camera"
+                />
+              </View>
+            ) : (
+              <View style={styles.previewImageWrapper}>
+                <Image
+                  resizeMode="contain"
+                  style={styles.previewImage}
+                  source={{
+                    uri: nutritionPackagePicture?.uri,
+                  }}
+                />
+                <TouchableOpacity
+                  style={styles.btnRetake}
+                  onPress={() => takePictureHandler(2)}>
+                  <Ionicons name="reload" size={20} style={styles.retakeIcon} />
+                  <Text>Retake</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+          <View style={styles.mb10}>
+            <Text>Barcode Scanned: {barcode}</Text>
+          </View>
+          <Text style={styles.noteText}>
+            By submitting photos, you accept the{' '}
+            <TouchableWithoutFeedback
+              onPress={() =>
+                Linking.openURL('https://www.nutritionix.com/privacy')
+              }>
+              <Text style={styles.noteTextLink}>
+                Nutritionix Privacy Policy
+              </Text>
+            </TouchableWithoutFeedback>
           </Text>
-        </View>
-        <View style={styles.mb5}>
-          <View style={styles.titleContainer}>
-            <Text>1. Front Package Photo:</Text>
-            {frontPackagePicture?.uri && (
-              <Ionicons
-                name="checkmark"
-                size={20}
-                style={styles.chekmarkIcon}
-              />
-            )}
+          <View>
+            <NixButton
+              disabled={
+                !nutritionPackagePicture?.uri || !frontPackagePicture?.uri
+              }
+              onPress={uploadPhotos}
+              title="Submit photos to Nutritionix"
+            />
           </View>
-          {!frontPackagePicture?.uri ? (
-            <View style={styles.mb20}>
-              <NixButton
-                onPress={() => takePictureHandler(1)}
-                title="Take Front Package Photo"
-                iconName="camera"
-              />
-            </View>
-          ) : (
-            <View style={styles.previewImageWrapper}>
-              <Image
-                resizeMode="contain"
-                style={styles.previewImage}
-                source={{
-                  uri: frontPackagePicture?.uri,
-                }}
-              />
-              <TouchableOpacity
-                style={styles.btnRetake}
-                onPress={() => takePictureHandler(1)}>
-                <Ionicons name="reload" size={20} style={styles.retakeIcon} />
-                <Text>Retake</Text>
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
-        <View style={styles.mb10}>
-          <View style={styles.titleContainer}>
-            <Text>2. Nutrition Label Photo:</Text>
-            {nutritionPackagePicture?.uri && (
-              <Ionicons
-                name="checkmark"
-                size={20}
-                style={styles.chekmarkIcon}
-              />
-            )}
-          </View>
-          {!nutritionPackagePicture?.uri ? (
-            <View style={styles.mb20}>
-              <NixButton
-                onPress={() => takePictureHandler(2)}
-                title="Take Nutrition Label Photo"
-                iconName="camera"
-              />
-            </View>
-          ) : (
-            <View style={styles.previewImageWrapper}>
-              <Image
-                resizeMode="contain"
-                style={styles.previewImage}
-                source={{
-                  uri: nutritionPackagePicture?.uri,
-                }}
-              />
-              <TouchableOpacity
-                style={styles.btnRetake}
-                onPress={() => takePictureHandler(2)}>
-                <Ionicons name="reload" size={20} style={styles.retakeIcon} />
-                <Text>Retake</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-        <View style={styles.mb10}>
-          <Text>Barcode Scanned: {barcode}</Text>
-        </View>
-        <Text style={styles.noteText}>
-          By submitting photos, you accept the{' '}
-          <TouchableWithoutFeedback
-            onPress={() =>
-              Linking.openURL('https://www.nutritionix.com/privacy')
-            }>
-            <Text style={styles.noteTextLink}>Nutritionix Privacy Policy</Text>
-          </TouchableWithoutFeedback>
-        </Text>
-        <View>
-          <NixButton
-            disabled={
-              !nutritionPackagePicture?.uri || !frontPackagePicture?.uri
-            }
-            onPress={uploadPhotos}
-            title="Submit photos to Nutritionix"
-          />
-        </View>
-      </View>
+      </ScrollView>
       {(uploadInProgress1 || uploadInProgress2) && (
         <View style={styles.loadContainer}>
           <View style={styles.loadTextContainer}>
@@ -301,6 +305,6 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
           </View>
         </View>
       )}
-    </ScrollView>
+    </>
   );
 };
