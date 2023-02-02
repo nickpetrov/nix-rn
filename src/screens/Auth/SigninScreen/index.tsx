@@ -121,6 +121,8 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                     error={errors.email}
                     withoutErorrText
                     withErrorBorder
+                    autoCorrect={false}
+                    editable={!isLoading}
                   />
                   <NixInput
                     rootStyles={{
@@ -137,6 +139,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                     error={errors.password}
                     withoutErorrText
                     withErrorBorder
+                    editable={!isLoading}
                   />
                 </View>
                 <TouchableOpacity

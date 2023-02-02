@@ -137,6 +137,7 @@ const StepOneForm: React.FC<Props> = () => {
                 autoCapitalize="none"
                 error={touched.first_name ? errors.first_name : undefined}
                 errorStyles={styles.errorStyle}
+                editable={!isLoading}
               />
               <NixInput
                 rootStyles={styles.inputRoot}
@@ -153,6 +154,7 @@ const StepOneForm: React.FC<Props> = () => {
                 keyboardType="email-address"
                 error={touched.email ? errors.email : undefined}
                 errorStyles={styles.errorStyle}
+                editable={!isLoading}
               />
               <NixInput
                 rootStyles={styles.inputRoot}
@@ -169,6 +171,7 @@ const StepOneForm: React.FC<Props> = () => {
                 keyboardType="email-address"
                 error={touched.confirmEmail ? errors.confirmEmail : undefined}
                 errorStyles={styles.errorStyle}
+                editable={!isLoading}
               />
               <NixInput
                 rootStyles={styles.inputRoot}
@@ -183,6 +186,7 @@ const StepOneForm: React.FC<Props> = () => {
                 secureTextEntry={true}
                 error={touched.password ? errors.password : undefined}
                 errorStyles={styles.errorStyle}
+                editable={!isLoading}
               />
               <View style={styles.countrySelect}>
                 <Text style={styles.countrySelectText}>Country</Text>
@@ -234,6 +238,7 @@ const StepOneForm: React.FC<Props> = () => {
                 textStyle={{
                   textDecorationLine: 'none',
                 }}
+                disabled={isLoading}
               />
             </View>
             <View style={styles.checkBoxContainer}>
@@ -249,6 +254,7 @@ const StepOneForm: React.FC<Props> = () => {
                   textDecorationLine: 'none',
                   fontSize: 14,
                 }}
+                disabled={isLoading}
               />
             </View>
             <NixButton
