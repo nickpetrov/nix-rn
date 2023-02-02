@@ -105,8 +105,13 @@ export const NixInput = React.forwardRef<TextInput | null, NixInputProps>(
                 ref={input => {
                   inputRef.current = input;
                   if (ref) {
-                    (ref as React.MutableRefObject<TextInput | null>).current =
-                      input;
+                    if (typeof ref === 'function') {
+                      ref(input);
+                    } else {
+                      (
+                        ref as React.MutableRefObject<TextInput | null>
+                      ).current = input;
+                    }
                   }
                 }}
                 style={[
