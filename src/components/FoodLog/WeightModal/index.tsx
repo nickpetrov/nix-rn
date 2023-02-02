@@ -57,16 +57,23 @@ const WeightModal: React.FC<WeightModalProps> = ({
   const [measureSystem, setMeasureSystem] = useState(userData.measure_system);
   const dispatch = useDispatch();
   const [value, setValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSave = () => {
     const currentValue =
-      measureSystem === 1 ? value : Math.round(parseFloat(value) / 2.20462);
+      measureSystem === 1 ? +value : Math.round(parseFloat(value) / 2.20462);
     if (currentValue > 0) {
+      setIsLoading(true);
       analyticTrackEvent('loggedWeight', currentValue);
       if (weight?.id) {
-        dispatch(updateWeightlog([{...weight, kg: +currentValue}])).then(() =>
-          setVisible(null),
-        );
+        dispatch(updateWeightlog([{...weight, kg: +currentValue}]))
+          .then(() => {
+            setIsLoading(false);
+            setVisible(null);
+          })
+          .catch(() => {
+            setIsLoading(false);
+          });
       } else {
         dispatch(
           addWeightlog([
@@ -78,7 +85,14 @@ const WeightModal: React.FC<WeightModalProps> = ({
                 .format(),
             },
           ]),
-        ).then(() => setVisible(null));
+        )
+          .then(() => {
+            setIsLoading(false);
+            setVisible(null);
+          })
+          .catch(() => {
+            setIsLoading(false);
+          });
       }
     }
   };
@@ -114,6 +128,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
                 value={value}
                 onChangeText={(val: string) => setValue(val)}
                 keyboardType="numeric"
+                editable={!isLoading}
               />
               <View style={styles.units}>
                 <View style={styles.flex1}>
@@ -133,6 +148,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
                     });
                   }}
                   text="kg"
+                  disabled={isLoading}
                 />
                 <RadioButton
                   selected={measureSystem === 0}
@@ -148,6 +164,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
                     })
                   }
                   text="lbs"
+                  disabled={isLoading}
                 />
               </View>
               <View style={styles.note}>
@@ -165,7 +182,12 @@ const WeightModal: React.FC<WeightModalProps> = ({
               </View>
               <View style={styles.weightModalButtons}>
                 <View style={[styles.flex1, styles.mr8]}>
-                  <NixButton title="Save" type="blue" onPress={handleSave} />
+                  <NixButton
+                    title="Save"
+                    type="blue"
+                    disabled={isLoading}
+                    onPress={handleSave}
+                  />
                 </View>
                 <View style={styles.flex1}>
                   <NixButton title="Cancel" onPress={() => setVisible(null)} />

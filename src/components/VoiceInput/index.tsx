@@ -37,6 +37,7 @@ interface VoiceRecognitionControlsProps {
     [key: string]: string | number;
   };
   text?: string;
+  disabled?: boolean;
 }
 const VoiceRecognitionControls: React.FC<
   VoiceRecognitionControlsProps
@@ -45,6 +46,7 @@ const VoiceRecognitionControls: React.FC<
     <View style={{position: 'absolute', bottom: 10, right: 10, ...props.style}}>
       <TouchableWithoutFeedback
         style={{...styles.voiceRecognitionControls}}
+        disabled={!!props.disabled}
         onPress={() => {
           props.onPress();
         }}>
@@ -65,6 +67,7 @@ interface VoiceInputProps {
   onChangeText: (v: string) => void;
   placeholder: string;
   withDisclaymore?: boolean;
+  disabled?: boolean;
 }
 
 const VoiceInput: React.FC<VoiceInputProps> = ({
@@ -73,6 +76,7 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
   placeholder,
   style,
   withDisclaymore,
+  disabled,
 }) => {
   const dispatch = useDispatch();
   const hideVoiceRecognitionDisclaimer = useSelector(
@@ -197,23 +201,27 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
+          editable={!disabled}
         />
         {speechRecognitionInProgress ? (
           <>
             <VoiceRecognitionControls
               onPress={stopRecognizing}
               iconName="stop"
+              disabled={disabled}
             />
             <VoiceRecognitionControls
               onPress={cancelRecognizing}
               iconName="ban"
               style={{right: 50}}
+              disabled={disabled}
             />
           </>
         ) : (
           <VoiceRecognitionControls
             onPress={startRecognizing}
             iconName="microphone"
+            disabled={disabled}
           />
         )}
       </View>

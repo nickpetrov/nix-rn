@@ -51,6 +51,7 @@ const WaterModal: React.FC<WaterModalProps> = ({
   const [totalValue, setTotalValue] = useState(
     consumedWater ? String(consumedWater) : '',
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const commonValues = [
     {
@@ -77,6 +78,7 @@ const WaterModal: React.FC<WaterModalProps> = ({
 
   const handleAdd = (value: number) => {
     if (value) {
+      setIsLoading(true);
       const unit = measure_system === 1 ? 'L' : 'oz';
       analyticTrackEvent('addedWater', value + ' ' + unit);
       dispatch(
@@ -86,14 +88,20 @@ const WaterModal: React.FC<WaterModalProps> = ({
             consumed: measure_system === 1 ? +value : +(value / 33.814),
           },
         ]),
-      ).then(() => {
-        setCustomValue('');
-        setVisible(false);
-      });
+      )
+        .then(() => {
+          setCustomValue('');
+          setVisible(false);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setIsLoading(false);
+        });
     }
   };
   const handleEdit = (value: number) => {
     if (value) {
+      setIsLoading(true);
       analyticTrackEvent('updatedWater', ' ');
       dispatch(
         updateWaterlog([
@@ -102,9 +110,14 @@ const WaterModal: React.FC<WaterModalProps> = ({
             consumed: measure_system === 1 ? +value : +(value / 33.814),
           },
         ]),
-      ).then(() => {
-        setVisible(false);
-      });
+      )
+        .then(() => {
+          setVisible(false);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setIsLoading(false);
+        });
     }
   };
 
@@ -150,6 +163,7 @@ const WaterModal: React.FC<WaterModalProps> = ({
                     <TouchableOpacity
                       style={styles.commonBuble}
                       key={item.id}
+                      disabled={isLoading}
                       onPress={() => handleAdd(item.value)}>
                       <Text style={styles.commonBubleText}>{item.text}</Text>
                     </TouchableOpacity>
@@ -164,12 +178,14 @@ const WaterModal: React.FC<WaterModalProps> = ({
                         value={customValue}
                         onChangeText={setCustomValue}
                         keyboardType="numeric"
+                        editable={!isLoading}
                       />
                       <Text>{measure_system === 1 ? 'L' : 'oz'}</Text>
                     </View>
                     <NixButton
                       title="Add"
                       type="blue"
+                      disabled={isLoading}
                       onPress={() => handleAdd(+customValue)}
                     />
                   </View>
@@ -185,12 +201,14 @@ const WaterModal: React.FC<WaterModalProps> = ({
                         value={totalValue}
                         onChangeText={setTotalValue}
                         keyboardType="numeric"
+                        editable={!isLoading}
                       />
                       <Text>{measure_system === 1 ? 'L' : 'oz'}</Text>
                     </View>
                     <NixButton
                       title="Update"
                       type="blue"
+                      disabled={isLoading}
                       onPress={() => handleEdit(+totalValue)}
                     />
                   </View>

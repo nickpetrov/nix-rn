@@ -14,11 +14,15 @@ interface RadioButtonProps {
   style?: {
     [key: string]: string | number;
   };
+  disabled?: boolean;
 }
 
 const RadioButton: React.FC<RadioButtonProps> = props => {
   return (
-    <TouchableOpacity onPress={props.onPress} style={styles.container}>
+    <TouchableOpacity
+      onPress={props.onPress}
+      style={styles.container}
+      disabled={props.disabled}>
       <View
         style={[styles.root, {marginRight: props.text ? 5 : 0}, props.style]}>
         {props.selected ? <View style={styles.selected} /> : null}

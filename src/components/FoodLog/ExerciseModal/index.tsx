@@ -57,27 +57,46 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
     ),
   ].slice(0, 3) as string[];
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const [excerciseDescription, setExcerciseDescription] = useState('');
 
   const handleSave = () => {
     if (excerciseDescription) {
+      setIsLoading(true);
       if (exercise?.id) {
         updateExerciseToLog;
-        dispatch(updateExerciseToLog(excerciseDescription, exercise)).then(() =>
-          setVisible(null),
-        );
+        dispatch(updateExerciseToLog(excerciseDescription, exercise))
+          .then(() => {
+            setIsLoading(false);
+            setVisible(null);
+          })
+          .catch(() => {
+            setIsLoading(false);
+          });
       } else {
         analyticTrackEvent('loggedExercise', excerciseDescription);
-        dispatch(addExerciseToLog(excerciseDescription)).then(() =>
-          setVisible(null),
-        );
+        dispatch(addExerciseToLog(excerciseDescription))
+          .then(() => {
+            setIsLoading(false);
+            setVisible(null);
+          })
+          .catch(() => {
+            setIsLoading(false);
+          });
       }
     }
   };
 
   const hadnleDelete = () => {
-    dispatch(deleteExerciseFromLog([{id: exercise?.id || '-1'}]));
-    setVisible(null);
+    setIsLoading(true);
+    dispatch(deleteExerciseFromLog([{id: exercise?.id || '-1'}]))
+      .then(() => {
+        setIsLoading(false);
+        setVisible(null);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -114,6 +133,7 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
   - 350 cal`}
                 value={excerciseDescription}
                 onChangeText={(value: string) => setExcerciseDescription(value)}
+                disabled={isLoading}
               />
               <View>
                 <Text>Recent Exercises:</Text>
@@ -125,7 +145,8 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
                       dispatch(addExerciseToLog(item)).then(() =>
                         setVisible(null),
                       )
-                    }>
+                    }
+                    disabled={isLoading}>
                     <Text style={styles.recentText}>{item}</Text>
                     <FontAwesome name="plus" color="#ccc" size={15} />
                   </TouchableOpacity>
@@ -135,7 +156,8 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 {exercise?.id && (
                   <TouchableOpacity
                     style={styles.deleteBtn}
-                    onPress={() => hadnleDelete()}>
+                    onPress={() => hadnleDelete()}
+                    disabled={isLoading}>
                     <FontAwesome name="trash" color="#fff" size={15} />
                   </TouchableOpacity>
                 )}
@@ -148,7 +170,12 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
                   />
                 </View>
                 <View style={styles.btnContainer}>
-                  <NixButton title="Save" type="blue" onPress={handleSave} />
+                  <NixButton
+                    title="Save"
+                    type="blue"
+                    disabled={isLoading}
+                    onPress={handleSave}
+                  />
                 </View>
               </View>
             </View>
