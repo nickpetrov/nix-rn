@@ -29,6 +29,7 @@ import ChooseModal from 'components/ChooseModal';
 import VoiceInput from 'components/VoiceInput';
 import AddPhotoView from 'components/AddPhotoView';
 import GoBackModal from 'components/GoBackModal';
+import LoadIndicator from 'components/LoadIndicator';
 
 // actions
 import {
@@ -802,7 +803,9 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             return (
               <View
                 style={styles.ingridientItemContainer}
-                key={ingredient.metadata?.original_input || index}>
+                key={
+                  `${ingredient.metadata?.original_input} - ${index}` || index
+                }>
                 <Swipeable
                   renderRightActions={() => (
                     <TouchableOpacity
@@ -1039,6 +1042,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           },
         ]}
       />
+      {showSpinner && <LoadIndicator withShadow />}
     </>
   );
 };

@@ -12,6 +12,7 @@ import {NixButton} from 'components/NixButton';
 import {NavigationHeader} from 'components/NavigationHeader';
 import {NixInput} from 'components/NixInput';
 import ShakeView from 'components/ShakeView';
+import LoadIndicator from 'components/LoadIndicator';
 
 // actions
 import {
@@ -454,6 +455,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           )}
         </View>
       </KeyboardAwareScrollView>
+      {isProcessingFood && <LoadIndicator withShadow />}
     </>
   );
 };

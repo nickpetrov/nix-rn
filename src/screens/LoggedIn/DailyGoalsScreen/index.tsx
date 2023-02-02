@@ -1,5 +1,5 @@
 // utils
-import React, {useRef, useLayoutEffect} from 'react';
+import React, {useRef, useLayoutEffect, useState} from 'react';
 import * as yup from 'yup';
 
 // components
@@ -59,6 +59,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
   const formRef = useRef<FormikProps<DailyGoalsDataProps>>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const goalsValidation = yup.object().shape({
     daily_kcal: yup
@@ -131,6 +132,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
         }),
       );
     } else {
+      setIsLoading(true);
       const updatedGoals = {...values};
       let key: keyof typeof updatedGoals;
       for (key in updatedGoals) {
@@ -138,6 +140,15 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
           ? parseInt(updatedGoals[key] + '' || '')
           : null;
       }
+
+      dispatch(userActions.updateUserData(updatedGoals))
+        .then(() => {
+          setIsLoading(false);
+          navigation.goBack();
+        })
+        .catch(() => {
+          setIsLoading(false);
+        });
 
       if (updatedGoals.daily_kcal !== userData.daily_kcal) {
         analyticTrackEvent(
@@ -161,9 +172,6 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
             '%',
         );
       }
-      dispatch(userActions.updateUserData(updatedGoals)).then(() => {
-        navigation.goBack();
-      });
     }
   };
 
@@ -232,6 +240,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 withErrorBorder
                 error={errors.daily_kcal}
                 withoutErorrText
+                editable={!isLoading}
               />
 
               <NixInput
@@ -255,6 +264,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 withErrorBorder
                 error={errors.daily_carbs_pct}
                 withoutErorrText
+                editable={!isLoading}
               />
 
               <NixInput
@@ -278,6 +288,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 withErrorBorder
                 error={errors.daily_protein_pct}
                 withoutErorrText
+                editable={!isLoading}
               />
 
               <NixInput
@@ -301,6 +312,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 withErrorBorder
                 error={errors.daily_fat_pct}
                 withoutErorrText
+                editable={!isLoading}
               />
               {Object.values(errors).some(item => item) && (
                 <View style={styles.errorView}>
@@ -318,7 +330,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                     title="Save"
                     onPress={handleSubmit}
                     type="primary"
-                    disabled={!isValid || !dirty}
+                    disabled={!isValid || !dirty || isLoading}
                   />
                 </ShakeView>
               </View>

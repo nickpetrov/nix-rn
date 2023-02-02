@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 import {Formik, FormikProps} from 'formik';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -19,7 +20,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ModalSelector from 'react-native-modal-selector';
 import {NavigationHeader} from 'components/NavigationHeader';
 import {NixInput} from 'components/NixInput';
-import {Platform} from 'react-native';
+import LoadIndicator from 'components/LoadIndicator';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -664,6 +665,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
               <Text style={styles.saveBtnText}>Save</Text>
             </TouchableOpacity>
           </View>
+          {loadingSubmit && <LoadIndicator withShadow />}
         </SafeAreaView>
       )}
     </Formik>

@@ -11,6 +11,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   withShadow: {
-    backgroundColor: 'rgba(0,0,0,0.1)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
 });
