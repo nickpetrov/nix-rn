@@ -496,6 +496,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   return (
     <SafeAreaView style={styles.root}>
       <KeyboardAwareScrollView
+        keyboardShouldPersistTaps="always"
         style={styles.keyboardView}
         enableOnAndroid={true}
         enableAutomaticScroll={true}>
