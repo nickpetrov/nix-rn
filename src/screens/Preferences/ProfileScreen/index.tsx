@@ -1,10 +1,17 @@
 // utils
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback, useMemo} from 'react';
 import moment from 'moment-timezone';
 import _ from 'lodash';
 
 // components
-import {View, TouchableOpacity, Text, TextInput, Keyboard} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  TextInput,
+  Keyboard,
+  Animated,
+} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Formik, FormikProps} from 'formik';
 import {NixButton} from 'components/NixButton';
@@ -41,6 +48,7 @@ import {User} from 'store/auth/auth.types';
 
 // validation
 import {validationSchema} from './validation';
+import {Platform} from 'react-native';
 
 interface ProfileScreenProps {
   navigation: NativeStackNavigationProp<
@@ -79,6 +87,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     {label: string; value: string}[]
   >([]);
   const cmToinches = (userData.height_cm || 0) * 0.393701;
+  const botIndentValue = useMemo(() => new Animated.Value(20), []);
 
   useEffect(() => {
     const timezones = moment.tz.names().map(tz => {
@@ -298,6 +307,47 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       );
     });
   };
+
+  const keyboardWillShow = useCallback(
+    (event: KeyboardEvent) => {
+      console.log('event', event);
+      Animated.timing(botIndentValue, {
+        // @ts-ignore
+        duration: event.duration || 200,
+        // @ts-ignore
+        toValue: event.endCoordinates.height - 80,
+        useNativeDriver: false,
+      }).start();
+    },
+    [botIndentValue],
+  );
+  const keyboardWillHide = useCallback(
+    (event: KeyboardEvent) => {
+      Animated.timing(botIndentValue, {
+        // @ts-ignore
+        duration: event.duration || 200,
+        toValue: 20,
+        useNativeDriver: false,
+      }).start();
+    },
+    [botIndentValue],
+  );
+
+  useEffect(() => {
+    const keyboardWillShowSub = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      keyboardWillShow,
+    );
+    const keyboardWillHideSub = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      keyboardWillHide,
+    );
+
+    return () => {
+      keyboardWillShowSub.remove();
+      keyboardWillHideSub.remove();
+    };
+  }, [keyboardWillShow, keyboardWillHide]);
 
   return (
     <>
@@ -582,7 +632,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   </View>
                 </View>
                 {isValid && (
-                  <View style={styles.saveBtnContainer}>
+                  <Animated.View
+                    style={[styles.saveBtnContainer, {bottom: botIndentValue}]}>
                     <TouchableOpacity
                       style={styles.saveBtn}
                       onPress={() => {
@@ -592,7 +643,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       disabled={!isValid || loadingSubmit}>
                       <Text style={styles.saveBtnText}>Save</Text>
                     </TouchableOpacity>
-                  </View>
+                  </Animated.View>
                 )}
               </View>
             );
