@@ -10,7 +10,7 @@ import {
   Text,
   TextInput,
   Keyboard,
-  Animated,
+  KeyboardAvoidingView,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Formik, FormikProps} from 'formik';
@@ -308,29 +308,29 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
   return (
     <>
-      <KeyboardAwareScrollView
-        contentContainerStyle={styles.root}
-        keyboardShouldPersistTaps="always"
-        enableOnAndroid={true}
-        enableAutomaticScroll={true}>
-        <Formik
-          initialValues={FormikInitValues}
-          innerRef={formRef}
-          onSubmit={values => submitHandler(values)}
-          validationSchema={validationSchema}
-          validateOnBlur={validOnChange}
-          validateOnChange={validOnChange}>
-          {({
-            handleChange,
-            isValid,
-            handleSubmit,
-            handleBlur,
-            setFieldValue,
-            values,
-            errors,
-          }) => {
-            return (
-              <View style={{flex: 1}}>
+      <Formik
+        initialValues={FormikInitValues}
+        innerRef={formRef}
+        onSubmit={values => submitHandler(values)}
+        validationSchema={validationSchema}
+        validateOnBlur={validOnChange}
+        validateOnChange={validOnChange}>
+        {({
+          handleChange,
+          isValid,
+          handleSubmit,
+          handleBlur,
+          setFieldValue,
+          values,
+          errors,
+        }) => {
+          return (
+            <View style={{flex: 1}}>
+              <KeyboardAwareScrollView
+                contentContainerStyle={styles.root}
+                keyboardShouldPersistTaps="always"
+                enableOnAndroid={true}
+                enableAutomaticScroll={true}>
                 <NixInput
                   label="First Name"
                   placeholder="First Name"
@@ -588,99 +588,104 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                     />
                   </View>
                 </View>
-                {isValid && (
-                  <Animated.View style={styles.saveBtnContainer}>
-                    <TouchableOpacity
-                      style={styles.saveBtn}
-                      onPress={() => {
-                        setValidOnChange(true);
-                        handleSubmit();
-                      }}
-                      disabled={!isValid || loadingSubmit}>
-                      <Text style={styles.saveBtnText}>Save</Text>
-                    </TouchableOpacity>
-                  </Animated.View>
-                )}
-              </View>
-            );
-          }}
-        </Formik>
-        <ChooseModal
-          modalVisible={changeEmailPopup}
-          hideModal={() => {
-            setChangeEmailPopup(false);
-            setOldEmail('');
-            setEmail('');
-          }}
-          title="Email change"
-          btns={[
-            {
-              type: 'primary',
-              title: 'Sumbit',
-              onPress: () => {
-                handleChangeEmail();
-              },
-              disabled: loadingSubmit,
+              </KeyboardAwareScrollView>
+              {isValid && (
+                <KeyboardAvoidingView
+                  behavior="position"
+                  keyboardVerticalOffset={100}
+                  contentContainerStyle={{flex: 1}}
+                  style={styles.saveBtnContainer}>
+                  <TouchableOpacity
+                    style={styles.saveBtn}
+                    onPress={() => {
+                      setValidOnChange(true);
+                      handleSubmit();
+                    }}
+                    disabled={!isValid || loadingSubmit}>
+                    <Text style={styles.saveBtnText}>Save</Text>
+                  </TouchableOpacity>
+                </KeyboardAvoidingView>
+              )}
+            </View>
+          );
+        }}
+      </Formik>
+      <ChooseModal
+        modalVisible={changeEmailPopup}
+        hideModal={() => {
+          setChangeEmailPopup(false);
+          setOldEmail('');
+          setEmail('');
+        }}
+        title="Email change"
+        btns={[
+          {
+            type: 'primary',
+            title: 'Sumbit',
+            onPress: () => {
+              handleChangeEmail();
             },
-            {
-              type: 'gray',
-              title: 'Cancel',
-              onPress: () => {
-                setChangeEmailPopup(false);
-                setOldEmail(userData.email || '');
-                setEmail('');
-              },
+            disabled: loadingSubmit,
+          },
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => {
+              setChangeEmailPopup(false);
+              setOldEmail(userData.email || '');
+              setEmail('');
             },
-          ]}>
-          <View style={{marginBottom: 10}}>
-            <Text style={styles.modalLabel}>Old Email</Text>
-            <TextInput
-              placeholder="Old Email"
-              value={oldEmail}
-              onChangeText={(v: string) => setOldEmail(v)}
-            />
-            <Text style={styles.modalLabel}>New Email</Text>
-            <TextInput
-              placeholder="New Email"
-              value={email}
-              onChangeText={(v: string) => setEmail(v)}
-            />
-          </View>
-        </ChooseModal>
-        <ChooseModal
-          modalVisible={resetPassPopup}
-          hideModal={() => {
-            setResetPassPopup(false);
-            setEmail('');
-          }}
-          title="Please type your email"
-          btns={[
-            {
-              type: 'primary',
-              title: 'Sumbit',
-              onPress: () => {
-                handleResetPass();
-              },
-              disabled: loadingSubmit || !email,
-            },
-            {
-              type: 'gray',
-              title: 'Cancel',
-              onPress: () => {
-                setResetPassPopup(false);
-                setEmail('');
-              },
-            },
-          ]}>
+          },
+        ]}>
+        <View style={{marginBottom: 10}}>
+          <Text style={styles.modalLabel}>Old Email</Text>
           <TextInput
-            placeholder="What is your email address?"
+            placeholder="Old Email"
+            value={oldEmail}
+            onChangeText={(v: string) => setOldEmail(v)}
+          />
+          <Text style={styles.modalLabel}>New Email</Text>
+          <TextInput
+            placeholder="New Email"
             value={email}
             onChangeText={(v: string) => setEmail(v)}
-            autoCapitalize="none"
-            textContentType="emailAddress"
           />
-        </ChooseModal>
-      </KeyboardAwareScrollView>
+        </View>
+      </ChooseModal>
+      <ChooseModal
+        modalVisible={resetPassPopup}
+        hideModal={() => {
+          setResetPassPopup(false);
+          setEmail('');
+        }}
+        title="Please type your email"
+        btns={[
+          {
+            type: 'primary',
+            title: 'Sumbit',
+            onPress: () => {
+              handleResetPass();
+            },
+            disabled: loadingSubmit || !email,
+          },
+          {
+            type: 'gray',
+            title: 'Cancel',
+            onPress: () => {
+              setResetPassPopup(false);
+              setEmail('');
+            },
+          },
+        ]}>
+        <TextInput
+          placeholder="What is your email address?"
+          value={email}
+          onChangeText={(v: string) => setEmail(v)}
+          autoCapitalize="none"
+          textContentType="emailAddress"
+        />
+      </ChooseModal>
+
       {loadingSubmit && <LoadIndicator withShadow />}
     </>
   );

@@ -14,6 +14,7 @@ import {
   Platform,
   TextInput,
   Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {Formik, FormikProps} from 'formik';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -705,7 +706,11 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
               </TouchableWithoutFeedback>
             </View>
           </KeyboardAwareScrollView>
-          <View style={styles.saveBtnContainer}>
+          <KeyboardAvoidingView
+            behavior="position"
+            keyboardVerticalOffset={100}
+            contentContainerStyle={{flex: 1}}
+            style={styles.saveBtnContainer}>
             <TouchableOpacity
               style={styles.saveBtn}
               onPress={() => {
@@ -715,7 +720,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
               disabled={!isValid || loadingSubmit}>
               <Text style={styles.saveBtnText}>Save</Text>
             </TouchableOpacity>
-          </View>
+          </KeyboardAvoidingView>
           {loadingSubmit && <LoadIndicator withShadow />}
         </SafeAreaView>
       )}

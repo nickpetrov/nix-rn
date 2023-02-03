@@ -19,6 +19,7 @@ import {
   TouchableWithoutFeedback,
   Image,
   TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {
   Swipeable,
@@ -984,14 +985,18 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         </View>
       </ChooseModal>
       {showSave && (
-        <View style={styles.saveBtnContainer}>
+        <KeyboardAvoidingView
+          behavior="position"
+          keyboardVerticalOffset={100}
+          contentContainerStyle={{flex: 1}}
+          style={styles.saveBtnContainer}>
           <TouchableOpacity
             style={styles.saveBtn}
             onPress={() => saveRecipe()}
             disabled={showSpinner || photoUploading}>
             <Text style={styles.saveBtnText}>Save</Text>
           </TouchableOpacity>
-        </View>
+        </KeyboardAvoidingView>
       )}
       {!!showUnsavedPopup?.backAction && (
         <GoBackModal
