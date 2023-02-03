@@ -14,6 +14,7 @@ import {
   Linking,
   TextInput,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import RestaurantFoodItem from 'components/RestaurantFoodItem';
@@ -227,6 +228,7 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
           )}
         </View>
         <FlatList
+          keyboardShouldPersistTaps="always"
           data={restaurantFoods}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) =>
@@ -234,7 +236,10 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
           }
           renderItem={({item}) => (
             <RestaurantFoodItem
-              onPress={() => addFoodToBasket(item)}
+              onPress={() => {
+                Keyboard.dismiss();
+                addFoodToBasket(item);
+              }}
               food={item}
             />
           )}

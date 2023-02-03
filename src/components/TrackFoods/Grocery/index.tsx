@@ -13,6 +13,7 @@ import {
   Text,
   Modal,
   TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import RestaurantFoodItem from 'components/RestaurantFoodItem';
@@ -99,13 +100,17 @@ const Grocery: React.FC<GroceryProps> = () => {
       {groceries.length ? (
         <FlatList
           data={groceries}
+          keyboardShouldPersistTaps="always"
           keyExtractor={(item, index) =>
             item._id || item.item_name || `${item.brand_name}-${index}`
           }
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => (
             <RestaurantFoodItem
-              onPress={() => addFoodToBasket(item)}
+              onPress={() => {
+                Keyboard.dismiss();
+                addFoodToBasket(item);
+              }}
               food={item}
             />
           )}

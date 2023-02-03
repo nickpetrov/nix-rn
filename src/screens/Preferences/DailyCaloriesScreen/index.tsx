@@ -12,6 +12,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Platform,
+  TextInput,
+  Keyboard,
 } from 'react-native';
 import {Formik, FormikProps} from 'formik';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -73,6 +75,7 @@ interface FormikDataProps {
 export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
   navigation,
 }) => {
+  const inputRefs = useRef<{[key: string]: TextInput | null}>({});
   const netInfo = useNetInfo();
   const userData = useSelector(state => state.auth.userData);
   const [validOnChange, setValidOnChange] = useState(false);
@@ -131,6 +134,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
   };
 
   const submitHandler = (values: FormikDataProps) => {
+    Keyboard.dismiss();
     if (!netInfo.isConnected) {
       dispatch(
         setInfoMessage({
@@ -312,6 +316,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
         <SafeAreaView style={styles.root}>
           <KeyboardAwareScrollView
             style={styles.container}
+            keyboardShouldPersistTaps="always"
             enableOnAndroid={true}
             enableAutomaticScroll={true}>
             <View style={styles.fields}>
@@ -417,7 +422,16 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     keyboardType="numeric"
                     autoCapitalize="none"
                     error={errors.weight_kg}
-                    errorStyles={styles.errorStyles}>
+                    errorStyles={styles.errorStyles}
+                    blurOnSubmit={false}
+                    returnKeyType="next"
+                    ref={ref => (inputRefs.current.weight_kg = ref)}
+                    onSubmitEditing={() => {
+                      const nextRef = inputRefs.current.height_cm;
+                      if (nextRef) {
+                        nextRef?.focus();
+                      }
+                    }}>
                     <FontAwesome
                       name={'edit'}
                       size={15}
@@ -440,7 +454,16 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     autoCapitalize="none"
                     placeholder="cm"
                     error={errors.height_cm}
-                    errorStyles={styles.errorStyles}>
+                    errorStyles={styles.errorStyles}
+                    blurOnSubmit={false}
+                    returnKeyType="next"
+                    ref={ref => (inputRefs.current.height_cm = ref)}
+                    onSubmitEditing={() => {
+                      const nextRef = inputRefs.current.age;
+                      if (nextRef) {
+                        nextRef?.focus();
+                      }
+                    }}>
                     <FontAwesome
                       name={'edit'}
                       size={15}
@@ -463,7 +486,16 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     autoCapitalize="none"
                     placeholder="lbs."
                     error={errors.weight_lb}
-                    errorStyles={styles.errorStyles}>
+                    errorStyles={styles.errorStyles}
+                    blurOnSubmit={false}
+                    returnKeyType="next"
+                    ref={ref => (inputRefs.current.weight_lb = ref)}
+                    onSubmitEditing={() => {
+                      const nextRef = inputRefs.current.height_ft;
+                      if (nextRef) {
+                        nextRef?.focus();
+                      }
+                    }}>
                     <FontAwesome
                       name={'edit'}
                       size={15}
@@ -488,7 +520,16 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     autoCapitalize="none"
                     placeholder="ft."
                     error={errors.height_ft}
-                    errorStyles={styles.errorStyles}>
+                    errorStyles={styles.errorStyles}
+                    blurOnSubmit={false}
+                    returnKeyType="next"
+                    ref={ref => (inputRefs.current.height_ft = ref)}
+                    onSubmitEditing={() => {
+                      const nextRef = inputRefs.current.height_in;
+                      if (nextRef) {
+                        nextRef?.focus();
+                      }
+                    }}>
                     <FontAwesome
                       name={'edit'}
                       size={15}
@@ -513,7 +554,16 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     autoCapitalize="none"
                     placeholder="in."
                     error={errors.height_in}
-                    errorStyles={styles.errorStyles}>
+                    errorStyles={styles.errorStyles}
+                    blurOnSubmit={false}
+                    returnKeyType="next"
+                    ref={ref => (inputRefs.current.height_in = ref)}
+                    onSubmitEditing={() => {
+                      const nextRef = inputRefs.current.age;
+                      if (nextRef) {
+                        nextRef?.focus();
+                      }
+                    }}>
                     <FontAwesome
                       name={'edit'}
                       size={15}
@@ -540,7 +590,8 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                 autoCapitalize="none"
                 placeholder=""
                 error={errors.age}
-                errorStyles={styles.errorStyles}>
+                errorStyles={styles.errorStyles}
+                ref={ref => (inputRefs.current.age = ref)}>
                 <FontAwesome name={'edit'} size={15} style={styles.inputIcon} />
               </NixInput>
             </View>

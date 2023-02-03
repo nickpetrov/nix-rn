@@ -1,9 +1,10 @@
 // utils
 import React, {useState, useEffect} from 'react';
 import {batch} from 'react-redux';
+import moment from 'moment-timezone';
 
 // components
-import {View, TextInput, TouchableOpacity} from 'react-native';
+import {View, TextInput, TouchableOpacity, Keyboard} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import MealListItem from 'components/FoodLog/MealListItem';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -28,7 +29,6 @@ import {FoodProps} from 'store/userLog/userLog.types';
 // constants
 import {Routes} from 'navigation/Routes';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
-import moment from 'moment-timezone';
 
 interface HistoryProps {
   navigation: NativeStackNavigationProp<
@@ -110,6 +110,7 @@ const History: React.FC<HistoryProps> = () => {
         )}
       </View>
       <FlatList
+        keyboardShouldPersistTaps="always"
         data={
           historyFoods.length || value
             ? sortByFoodName(historyFoods)
@@ -119,7 +120,10 @@ const History: React.FC<HistoryProps> = () => {
         renderItem={({item}) => (
           <MealListItem
             foodObj={item}
-            onTap={() => addFoodToBasket(item)}
+            onTap={() => {
+              Keyboard.dismiss();
+              addFoodToBasket(item);
+            }}
             withoutPhotoUploadIcon
             historyTab
             withCal

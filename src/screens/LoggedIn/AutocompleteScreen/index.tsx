@@ -482,6 +482,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
               <View style={[!!searchQuery && styles.emptySpaceForTabs]}>
                 <SectionList
                   listKey="rootFoodList"
+                  keyboardShouldPersistTaps="always"
                   showsVerticalScrollIndicator={false}
                   sections={
                     searchQuery.length > 0 ? sections : suggestedSection

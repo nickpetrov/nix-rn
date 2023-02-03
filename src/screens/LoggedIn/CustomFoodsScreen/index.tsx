@@ -143,7 +143,9 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
       />
       <View style={styles.swipeContainer}>
         <Text style={styles.swipeText}>swipe left to delete</Text>
-        {showSavedFoodMessage && <Text style={styles.saved}>Recipe Saved</Text>}
+        {showSavedFoodMessage && (
+          <Text style={styles.saved}>Сustom food Saved</Text>
+        )}
       </View>
       {foods.length === 0 && (
         <View style={styles.empty}>

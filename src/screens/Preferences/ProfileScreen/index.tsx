@@ -4,7 +4,7 @@ import moment from 'moment-timezone';
 import _ from 'lodash';
 
 // components
-import {View, TouchableOpacity, Text, TextInput} from 'react-native';
+import {View, TouchableOpacity, Text, TextInput, Keyboard} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Formik, FormikProps} from 'formik';
 import {NixButton} from 'components/NixButton';
@@ -64,6 +64,7 @@ interface FormikDataProps {
 }
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
+  const inputRefs = useRef<{[key: string]: TextInput | null}>({});
   const netInfo = useNetInfo();
   const userData = useSelector(state => state.auth.userData);
   const dispatch = useDispatch();
@@ -139,6 +140,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   };
 
   const submitHandler = (values: FormikDataProps) => {
+    Keyboard.dismiss();
     if (!netInfo.isConnected) {
       dispatch(
         setInfoMessage({
@@ -301,6 +303,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     <>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.root}
+        keyboardShouldPersistTaps="always"
         enableOnAndroid={true}
         enableAutomaticScroll={true}>
         <Formik
@@ -331,6 +334,15 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   autoCapitalize="none"
                   error={errors.first_name}
                   errorStyles={styles.errorStyles}
+                  blurOnSubmit={false}
+                  returnKeyType="next"
+                  ref={ref => (inputRefs.current.first_name = ref)}
+                  onSubmitEditing={() => {
+                    const nextRef = inputRefs.current.last_name;
+                    if (nextRef) {
+                      nextRef?.focus();
+                    }
+                  }}
                 />
                 <NixInput
                   label="Last Name"
@@ -342,6 +354,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   autoCapitalize="none"
                   error={errors.last_name}
                   errorStyles={styles.errorStyles}
+                  ref={ref => (inputRefs.current.last_name = ref)}
                 />
                 <ModalSelector
                   data={timezoneList}

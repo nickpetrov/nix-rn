@@ -58,9 +58,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
   route,
 }) => {
   const scrollRef = useRef<Element>();
-  let inputRefs = useRef<{[key: string]: TextInput | null}>({
-    food_name: null,
-  });
+  const inputRefs = useRef<{[key: string]: TextInput | null}>({});
   const [invalid, setInvalid] = useState(false);
   const [showPreloader, setShowPreloader] = useState(false);
   const [isProcessingFood, setIsProcessingFood] = useState(false);
@@ -277,7 +275,6 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
         style={styles.root}
         enableResetScrollToCoords={false}
         keyboardShouldPersistTaps="always"
-        keyboardDismissMode="on-drag"
         enableOnAndroid={true}
         scrollEnabled={true}>
         <NixInput

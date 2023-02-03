@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   KeyboardAvoidingView,
+  TextInput,
 } from 'react-native';
 import {Formik, FormikProps} from 'formik';
 import {NixInput} from 'components/NixInput';
@@ -55,6 +56,7 @@ export type DailyGoalsDataProps = Pick<
 export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
   navigation,
 }) => {
+  const inputRefs = useRef<{[key: string]: TextInput | null}>({});
   const userData = useSelector(state => state.auth.userData);
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
@@ -241,6 +243,15 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 error={errors.daily_kcal}
                 withoutErorrText
                 editable={!isLoading}
+                returnKeyType="next"
+                ref={ref => (inputRefs.current.daily_kcal = ref)}
+                onSubmitEditing={() => {
+                  const nextRef = inputRefs.current.daily_carbs_pct;
+                  if (nextRef) {
+                    nextRef?.focus();
+                  }
+                }}
+                blurOnSubmit={false}
               />
 
               <NixInput
@@ -265,6 +276,15 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 error={errors.daily_carbs_pct}
                 withoutErorrText
                 editable={!isLoading}
+                returnKeyType="next"
+                ref={ref => (inputRefs.current.daily_carbs_pct = ref)}
+                onSubmitEditing={() => {
+                  const nextRef = inputRefs.current.daily_protein_pct;
+                  if (nextRef) {
+                    nextRef?.focus();
+                  }
+                }}
+                blurOnSubmit={false}
               />
 
               <NixInput
@@ -289,6 +309,15 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 error={errors.daily_protein_pct}
                 withoutErorrText
                 editable={!isLoading}
+                returnKeyType="next"
+                ref={ref => (inputRefs.current.daily_protein_pct = ref)}
+                onSubmitEditing={() => {
+                  const nextRef = inputRefs.current.daily_fat_pct;
+                  if (nextRef) {
+                    nextRef?.focus();
+                  }
+                }}
+                blurOnSubmit={false}
               />
 
               <NixInput
@@ -313,6 +342,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 error={errors.daily_fat_pct}
                 withoutErorrText
                 editable={!isLoading}
+                ref={ref => (inputRefs.current.daily_fat_pct = ref)}
               />
               {Object.values(errors).some(item => item) && (
                 <View style={styles.errorView}>

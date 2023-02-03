@@ -13,11 +13,17 @@ import moment from 'moment-timezone';
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // components
-import {View, Text, TouchableWithoutFeedback, Image} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  Image,
+  TextInput,
+} from 'react-native';
 import {
   Swipeable,
-  TextInput,
   TouchableOpacity,
+  TextInput as GHTextInput,
 } from 'react-native-gesture-handler';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -83,6 +89,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
   route,
 }) => {
   const dispatch = useDispatch();
+  const inputRefs = useRef<{[key: string]: TextInput | null}>({});
   const ingridientsInputRefs = useRef<Array<TextInput | null>>([]);
   const [error, setError] = useState<false | string>(false);
   const [errorIngridient, setErrorIngridient] = useState<
@@ -713,6 +720,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       )}
       <KeyboardAwareScrollView
         style={styles.root}
+        keyboardShouldPersistTaps="always"
         enableOnAndroid={true}
         enableAutomaticScroll={true}>
         {invalidForm && <Text style={styles.invalid}>Recipe not saved</Text>}
@@ -722,6 +730,15 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             onChangeText={text => updateTextField('name', text)}
             style={[styles.input, !!errorMessages.name && styles.invalidInput]}
             placeholder="Recipe Name"
+            returnKeyType="next"
+            ref={ref => (inputRefs.current.name = ref)}
+            onSubmitEditing={() => {
+              const nextRef = inputRefs.current.serving_qty;
+              if (nextRef) {
+                nextRef?.focus();
+              }
+            }}
+            blurOnSubmit={false}
           />
           {errorMessages.name && (
             <Text style={styles.errorMessage}>{errorMessages.name}</Text>
@@ -749,6 +766,15 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                   !!errorMessages.serving_qty && styles.invalidInput,
                 ]}
                 keyboardType="numeric"
+                returnKeyType="next"
+                ref={ref => (inputRefs.current.serving_qty = ref)}
+                onSubmitEditing={() => {
+                  const nextRef = inputRefs.current.prep_time_min;
+                  if (nextRef) {
+                    nextRef?.focus();
+                  }
+                }}
+                blurOnSubmit={false}
               />
             </View>
             <View style={[styles.flex1, styles.ml8]}>
@@ -775,6 +801,15 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                 placeholder="0 min"
                 keyboardType="numeric"
                 style={styles.numericInput}
+                returnKeyType="next"
+                ref={ref => (inputRefs.current.prep_time_min = ref)}
+                onSubmitEditing={() => {
+                  const nextRef = inputRefs.current.cook_time_min;
+                  if (nextRef) {
+                    nextRef?.focus();
+                  }
+                }}
+                blurOnSubmit={false}
               />
               <View style={styles.prepContainer}>
                 <Text style={styles.fz11}>Preparation</Text>
@@ -787,6 +822,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                 placeholder="0 min"
                 keyboardType="numeric"
                 style={styles.numericInput}
+                ref={ref => (inputRefs.current.cook_time_min = ref)}
               />
               <View style={styles.prepContainer}>
                 <Text style={styles.fz11}>Cooking</Text>
@@ -839,9 +875,10 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                       }
                       resizeMode="contain"
                     />
-                    <TextInput
+                    <GHTextInput
                       ref={el =>
-                        (ingridientsInputRefs.current[index] = el as TextInput)
+                        (ingridientsInputRefs.current[index] =
+                          el as GHTextInput)
                       }
                       defaultValue={ingredient.metadata?.original_input || ''}
                       // value={ingredient.metadata?.original_input || ''}

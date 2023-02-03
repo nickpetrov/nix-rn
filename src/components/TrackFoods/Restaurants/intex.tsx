@@ -45,6 +45,7 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './Restaurants.styles';
+import {Keyboard} from 'react-native';
 
 interface RestaurantsComponentProps {
   navigation: NativeStackNavigationProp<
@@ -271,6 +272,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
           <View>
             <SectionList
               listKey="restaurantsList"
+              keyboardShouldPersistTaps="always"
               sections={sections}
               keyExtractor={item =>
                 (item as RestaurantsProps)?.id ||
@@ -310,6 +312,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
                       name={(item as RestaurantsProps).name}
                       logo={(item as RestaurantsProps).logo}
                       onPress={() => {
+                        Keyboard.dismiss();
                         showRestaurant(item);
                       }}
                     />
