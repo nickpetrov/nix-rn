@@ -304,6 +304,9 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     });
 
   const labelOptions = {
+    showLegacyVersion: false,
+    useBaseValueFor2018LabelAndNotDVPercentage: true,
+    hideModeSwitcher: true,
     textNutritionFacts: '',
     showDisclaimer: false,
     allowCustomWidth: true,

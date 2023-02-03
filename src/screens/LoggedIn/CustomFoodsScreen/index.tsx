@@ -3,7 +3,7 @@ import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {FullOptions, Searcher} from 'fast-fuzzy';
 
 // components
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Keyboard} from 'react-native';
 import {FlatList, TextInput, Swipeable} from 'react-native-gesture-handler';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {NavigationHeader} from 'components/NavigationHeader';
@@ -155,6 +155,7 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
         </View>
       )}
       <FlatList
+        keyboardShouldPersistTaps="always"
         data={filteredFoods}
         keyExtractor={item => item.id}
         renderItem={({item}) => (
@@ -191,7 +192,10 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
               });
             }}>
             <MealListItem
-              onTap={() => handleOnPress(item)}
+              onTap={() => {
+                Keyboard.dismiss();
+                handleOnPress(item);
+              }}
               foodObj={item}
               withCal
               withoutPhotoUploadIcon

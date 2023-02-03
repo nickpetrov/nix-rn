@@ -91,6 +91,9 @@ const useFoodLabel = (food: FoodProps) => {
   }, [food]);
 
   const labelData = {
+    showLegacyVersion: false,
+    useBaseValueFor2018LabelAndNotDVPercentage: true,
+    hideModeSwitcher: true,
     showItemName: false,
     showServingUnitQuantity: false,
     allowCustomWidth: true,

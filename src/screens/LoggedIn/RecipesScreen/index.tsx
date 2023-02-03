@@ -7,7 +7,7 @@ import _ from 'lodash';
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // components
-import {View, Text} from 'react-native';
+import {View, Text, Keyboard} from 'react-native';
 import {
   FlatList,
   Swipeable,
@@ -259,6 +259,7 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
         </View>
       )}
       <FlatList
+        keyboardShouldPersistTaps="always"
         data={filteredRecipes}
         keyExtractor={item => item.id}
         renderItem={({item}) => (
@@ -307,7 +308,10 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
               });
             }}>
             <MealListItem
-              onTap={() => handleOnPress(item)}
+              onTap={() => {
+                Keyboard.dismiss();
+                handleOnPress(item);
+              }}
               foodObj={item}
               recipe
               smallImage
