@@ -12,7 +12,7 @@ import _ from 'lodash';
 import {useDispatch} from 'hooks/useRedux';
 
 // components
-import {View, Text, TouchableOpacity, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput, Keyboard} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NixButton} from 'components/NixButton';
 import {NavigationHeader} from 'components/NavigationHeader';
@@ -163,6 +163,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
   };
 
   const saveCustomFood = (log?: boolean) => {
+    Keyboard.dismiss();
     if (invalidForm()) {
       setInvalid(true);
       return;
@@ -252,9 +253,8 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
         // @ts-ignores
         scrollRef.current,
         (left: number, top: number) => {
-          const to = top - 200;
           // @ts-ignore
-          scrollRef.current?.scrollTo({y: to, animated: true});
+          scrollRef.current?.scrollTo({y: top, animated: true});
         },
         () => {
           console.log('fail scroll');
