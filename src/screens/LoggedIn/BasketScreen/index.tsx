@@ -746,7 +746,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
         ) : (
           <View>
             <NixButton
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate(Routes.Dashboard)}
               title="Back to Food Log"
               type="primary"
               style={{borderRadius: 0}}
