@@ -19,6 +19,7 @@ import {
   Image,
   Platform,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import {NixButton} from 'components/NixButton';
 import Totals from 'components/Totals';
@@ -492,11 +493,12 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     firstFoodAddedToBasket,
     firstMultipleFoodsInBasket,
   ]);
-  console.log(route.params?.from);
+
   return (
     <SafeAreaView style={styles.root}>
       <KeyboardAwareScrollView
-        keyboardShouldPersistTaps="always"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
         style={styles.keyboardView}
         enableOnAndroid={true}
         enableAutomaticScroll={true}>
@@ -738,6 +740,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                   ? 'Log 1 Food'
                   : `Log ${foods.length} Foods`
               }
+              onPressIn={Keyboard.dismiss}
               onPress={handleSubmit}
               type="primary"
               style={{borderRadius: 0}}

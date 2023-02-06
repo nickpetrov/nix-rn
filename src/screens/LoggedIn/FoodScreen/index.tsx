@@ -17,6 +17,8 @@ import {
   TouchableOpacity,
   Share,
   Animated,
+  KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import FoodEditItem from 'components/FoodEditItem';
 import WhenSection from 'components/WhenSection';
@@ -283,6 +285,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       target?: string | undefined;
     }>,
   ) => {
+    Keyboard.dismiss();
     setShowSpinner(true);
     analyticTrackEvent('updatedFood', foodObj.food_name);
     dispatch(updateFoodFromlog([foodObj]))
@@ -342,7 +345,10 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   return (
     <SafeAreaView style={styles.root}>
       {foodObj ? (
-        <ScrollView keyboardShouldPersistTaps="always" overScrollMode="never">
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          overScrollMode="never">
           {readOnly ? (
             <MealListItem
               foodObj={foodObj}
@@ -637,14 +643,18 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
         ]}
       />
       {showSave && (
-        <View style={styles.saveBtnContainer}>
+        <KeyboardAvoidingView
+          behavior="position"
+          keyboardVerticalOffset={100}
+          contentContainerStyle={{flex: 1}}
+          style={styles.saveBtnContainer}>
           <TouchableOpacity
             style={styles.saveBtn}
             onPress={() => handleSave()}
             disabled={showSpinner}>
             <Text style={styles.saveBtnText}>Save</Text>
           </TouchableOpacity>
-        </View>
+        </KeyboardAvoidingView>
       )}
       {!!showUnsavedPopup?.backAction && (
         <GoBackModal

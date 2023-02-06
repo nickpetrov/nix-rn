@@ -25,6 +25,7 @@ interface NixButtonProps {
   disabled?: boolean;
   onTap?: () => void;
   onPress?: () => void;
+  onPressIn?: () => void;
   title?: string;
   iconName?: string;
   style?: {
@@ -49,6 +50,7 @@ export const NixButton: React.FC<NixButtonProps> = ({
   disabled,
   onTap,
   onPress,
+  onPressIn,
   title,
   iconName,
   width,
@@ -138,6 +140,7 @@ export const NixButton: React.FC<NixButtonProps> = ({
       <TouchableOpacity
         style={styles.contentWrapper}
         onPress={onTap || onPress}
+        onPressIn={onPressIn}
         disabled={disabled}>
         {iconName ? (
           <Icon name={iconName} style={{...styles.icon, ...iconStyles}} />
