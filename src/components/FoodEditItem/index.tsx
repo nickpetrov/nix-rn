@@ -114,11 +114,16 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
       (newMeasure[0]?.serving_weight / newMeasure[0]?.qty || 1) /
       (prevMeasure[0]?.serving_weight / prevMeasure[0]?.qty || 1);
     const clonedFood = _.cloneDeep(food);
-    const newFoodObj = multiply(
+    let newFoodObj = multiply(
       {...clonedFood, serving_unit: newMeasureName},
       multiplyer,
       food.serving_qty,
     );
+    if (newFoodObj.serving_qty !== 1) {
+      const mult = 1 / newFoodObj.serving_qty;
+      newFoodObj = multiply(_.cloneDeep(newFoodObj), mult, 1);
+      setServingQty('1');
+    }
     setFoodObj({...newFoodObj});
     setNfCalories(newFoodObj.nf_calories);
     if (itemChangeCallback) {
