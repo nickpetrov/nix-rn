@@ -193,7 +193,8 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
   useEffect(
     () =>
       navigation.addListener('beforeRemove', e => {
-        if (!selectedRestaurant) {
+        console.log('beforeRemove', e);
+        if (!selectedRestaurant || e.data.action.type !== 'GO_BACK') {
           // If we don't have unsaved changes, then we don't need to do anything
           return;
         }
