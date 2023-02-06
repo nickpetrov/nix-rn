@@ -83,7 +83,11 @@ const Grocery: React.FC<GroceryProps> = () => {
           meal_type: guessMealTypeByTime(moment().hours()),
         }),
       );
-      dispatch(basketActions.addExistFoodToBasket([food]));
+      if (food.nix_item_id) {
+        dispatch(basketActions.addBrandedFoodToBasket(food.nix_item_id));
+      } else {
+        dispatch(basketActions.addExistFoodToBasket([food]));
+      }
     });
   };
 
