@@ -110,11 +110,12 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
       (item: MeasureProps) => item.measure === newMeasureName,
     );
     setServingUnit(newMeasure[0].measure);
-    serving_weight_grams = newMeasure[0].serving_weight;
     const multiplyer =
-      serving_weight_grams / (prevMeasure[0]?.serving_weight || 1);
+      (newMeasure[0]?.serving_weight / newMeasure[0]?.qty || 1) /
+      (prevMeasure[0]?.serving_weight / prevMeasure[0]?.qty || 1);
+    const clonedFood = _.cloneDeep(food);
     const newFoodObj = multiply(
-      {...food, serving_unit: newMeasureName},
+      {...clonedFood, serving_unit: newMeasureName},
       multiplyer,
       food.serving_qty,
     );
@@ -128,7 +129,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
   const onQtyChange = () => {
     const newValue = parseFloat(servingQty) || 1;
     const multiplyer = newValue / food.serving_qty;
-    const newFoodObj = multiply(food, multiplyer, newValue);
+    const newFoodObj = multiply(_.cloneDeep(food), multiplyer, newValue);
     setFoodObj({...newFoodObj});
     setNfCalories(newFoodObj.nf_calories);
     if (itemChangeCallback) {
@@ -213,10 +214,12 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
           ellipsizeMode="tail">
           {' '}
           {nfCalories
-            ? nfCalories.toFixed(0)
-            : full_nutrients
-                ?.filter((item: NutrientProps) => item.attr_id === 208)[0]
-                .value.toFixed(0)}
+            ? Math.round(nfCalories)
+            : Math.round(
+                full_nutrients?.filter(
+                  (item: NutrientProps) => item.attr_id === 208,
+                )[0].value,
+              )}
         </Text>
         <Text style={styles.cal}>cal</Text>
       </View>
