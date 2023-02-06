@@ -32,7 +32,7 @@ export const getDayTotals = (beginDate: string, endDate: string) => {
         });
       }
     } catch (error) {
-      throw error;
+      console.log('error getDayTotals stats reducer', error);
     }
   };
 };

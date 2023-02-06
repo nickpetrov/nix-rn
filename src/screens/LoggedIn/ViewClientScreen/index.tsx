@@ -78,9 +78,11 @@ const ViewClientScreen: React.FC<ViewClientScreenProps> = ({
     };
     dispatch(getClientTotals(options))
       .then(() => {
-        dispatch(getClientFoodLog(options)).then(() => {
-          setShowPreloader(false);
-        });
+        dispatch(getClientFoodLog(options))
+          .then(() => {
+            setShowPreloader(false);
+          })
+          .catch(err => console.log(err));
       })
       .catch(() => {
         setShowPreloader(false);
