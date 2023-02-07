@@ -9,6 +9,7 @@
 
 1. `cd android`
 2. `gradlew assembleDebug` or `gradlew assembleRelease`
+3. create source-maps for sentry when upload new version to store `yarn run post-build`
 
 ### create bundle for TF (ios)
 
