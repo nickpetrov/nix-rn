@@ -73,6 +73,7 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
     (restaurant as RestaurantsWithCalcProps).brand_id;
   const calcUrl =
     (restaurant as RestaurantsWithCalcProps).mobile_calculator_url || '';
+  const emptyBasket = useSelector(state => state.basket.foods.length === 0);
   const restaurantFoods = useSelector(state => state.foods.restaurantFoods);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
@@ -110,11 +111,13 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
 
   const addFoodToBasket = (food: FoodProps) => {
     batch(() => {
-      dispatch(
-        basketActions.mergeBasket({
-          meal_type: guessMealTypeByTime(moment().hours()),
-        }),
-      );
+      if (emptyBasket) {
+        dispatch(
+          basketActions.mergeBasket({
+            meal_type: guessMealTypeByTime(moment().hours()),
+          }),
+        );
+      }
       if (food.nix_item_id) {
         dispatch(basketActions.addBrandedFoodToBasket(food.nix_item_id));
       } else {

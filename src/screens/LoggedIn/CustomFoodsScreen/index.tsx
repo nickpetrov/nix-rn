@@ -1,6 +1,10 @@
 // utils
 import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {FullOptions, Searcher} from 'fast-fuzzy';
+import moment from 'moment-timezone';
+
+//helpers
+import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 // components
 import {View, Text, TouchableOpacity, Keyboard} from 'react-native';
@@ -15,7 +19,7 @@ import {
   deleteCustomFood,
   getCustomFoods,
 } from 'store/customFoods/customFoods.actions';
-import {addCustomFoodToBasket} from 'store/basket/basket.actions';
+import {addCustomFoodToBasket, mergeBasket} from 'store/basket/basket.actions';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -51,6 +55,7 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
   const [loading, setLoading] = useState(false);
   const [showSavedFoodMessage, setShowSavedFoodMessage] = useState(false);
   const foods = useSelector(state => state.customFoods.foods);
+  const emptyBasket = useSelector(state => state.basket.foods.length === 0);
   const [filteredFoods, setFilteredFoods] = useState<Array<FoodProps>>([]);
   const [filterQuery, setFilterQuery] = useState('');
   const [foodsSearcher, setFoodsSearcher] =
@@ -128,6 +133,13 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
     dispatch(deleteCustomFood(id));
   };
   const quickLog = (item: FoodProps) => {
+    if (emptyBasket) {
+      dispatch(
+        mergeBasket({
+          meal_type: guessMealTypeByTime(moment().hours()),
+        }),
+      );
+    }
     dispatch(addCustomFoodToBasket([item])).then(() => {
       navigation.replace(Routes.Basket);
     });

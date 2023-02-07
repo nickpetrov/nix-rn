@@ -47,6 +47,7 @@ interface GroceryProps {
 const Grocery: React.FC<GroceryProps> = () => {
   const dispatch = useDispatch();
   const groceries = useSelector(state => state.foods.groceries);
+  const emptyBasket = useSelector(state => state.basket.foods.length === 0);
   const [popup, setPopup] = useState(false);
   const [query, setQuery] = useState('');
   const [value] = useDebounce(query, 500);
@@ -78,11 +79,13 @@ const Grocery: React.FC<GroceryProps> = () => {
 
   const addFoodToBasket = (food: FoodProps) => {
     batch(() => {
-      dispatch(
-        basketActions.mergeBasket({
-          meal_type: guessMealTypeByTime(moment().hours()),
-        }),
-      );
+      if (emptyBasket) {
+        dispatch(
+          basketActions.mergeBasket({
+            meal_type: guessMealTypeByTime(moment().hours()),
+          }),
+        );
+      }
       if (food.nix_item_id) {
         dispatch(basketActions.addBrandedFoodToBasket(food.nix_item_id));
       } else {

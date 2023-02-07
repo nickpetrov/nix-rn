@@ -41,6 +41,7 @@ const History: React.FC<HistoryProps> = () => {
   const dispatch = useDispatch();
   const suggestedFoods = useSelector(state => state.autoComplete.suggested);
   const historyFoods = useSelector(state => state.foods.historyFoods);
+  const emptyBasket = useSelector(state => state.basket.foods.length === 0);
   const [query, setQuery] = useState('');
   const [value] = useDebounce(query, 500);
 
@@ -71,7 +72,9 @@ const History: React.FC<HistoryProps> = () => {
     batch(() => {
       dispatch(
         basketActions.mergeBasket({
-          meal_type: guessMealTypeByTime(moment().hours()),
+          meal_type: emptyBasket
+            ? guessMealTypeByTime(moment().hours())
+            : undefined,
           consumed_at: moment().format(),
         }),
       );

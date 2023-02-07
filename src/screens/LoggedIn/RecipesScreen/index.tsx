@@ -2,6 +2,11 @@
 import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {FullOptions, Searcher} from 'fast-fuzzy';
 import _ from 'lodash';
+import moment from 'moment-timezone';
+
+// helpers
+import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -44,7 +49,6 @@ import {
 } from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {RouteProp} from '@react-navigation/native';
-import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface RecipesScreenProps {
   navigation: NativeStackNavigationProp<
@@ -60,6 +64,7 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
 }) => {
   const dispatch = useDispatch();
   const [showSavedRecipeMessage, setShowSavedRecipeMessage] = useState(false);
+  const emptyBasket = useSelector(state => state.basket.foods.length === 0);
   const {recipes, limit, offset, showMore} = useSelector(
     state => state.recipes,
   );
@@ -210,6 +215,13 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
   };
 
   const quickLog = (recipe: RecipeProps) => {
+    if (emptyBasket) {
+      dispatch(
+        basketActions.mergeBasket({
+          meal_type: guessMealTypeByTime(moment().hours()),
+        }),
+      );
+    }
     dispatch(basketActions.addRecipeToBasket(recipe.id)).then(
       (scaled_recipe: RecipeProps) => {
         analyticTrackEvent(
