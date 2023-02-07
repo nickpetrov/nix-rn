@@ -1,5 +1,6 @@
 import {mealTypes} from 'store/basket/basket.types';
 import {PhotoProps} from '../autoComplete/autoComplete.types';
+import {updateUserAction} from 'store/auth/auth.types';
 
 export enum userLogActionTypes {
   GET_USER_FOODLOG = 'GET_USER_FOODLOG',
@@ -284,4 +285,5 @@ export type UserLogActions =
   | getUserExerciseLogAction
   | addUserExerciseLogAction
   | updateUserExerciseLogAction
-  | updateWeightsLogAction;
+  | updateWeightsLogAction
+  | updateUserAction;

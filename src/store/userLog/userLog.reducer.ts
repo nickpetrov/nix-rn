@@ -118,6 +118,19 @@ export default (
       }
       return {...state, totals: newTotals};
     }
+    case authActionTypes.UPDATE_USER_DATA: {
+      const newTotals = [...state.totals];
+      const currDate = newTotals.find(
+        item =>
+          moment(item.date).format('YYYY-MM-DD') ===
+          moment().format('YYYY-MM-DD'),
+      );
+      if (currDate) {
+        currDate.daily_kcal_limit =
+          action.newUserObj.daily_kcal || currDate.daily_kcal_limit;
+      }
+      return {...state, totals: newTotals};
+    }
     case authActionTypes.LOGOUT:
       return initialState;
     default:
