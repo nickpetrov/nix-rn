@@ -83,10 +83,13 @@ const ViewClientDayLogScreen: React.FC<ViewClientDayLogScreenProps> = ({
   };
   const sections = useMemo(() => {
     // create empty sections
-    const arr: {data: any; key: mealNameProps}[] = [
+    let arr: {data: any; key: mealNameProps}[] = [
       {key: foodLogSections.Breakfast, data: []},
+      {key: foodLogSections.AM_Snack, data: []},
       {key: foodLogSections.Lunch, data: []},
+      {key: foodLogSections.PM_Snack, data: []},
       {key: foodLogSections.Dinner, data: []},
+      {key: foodLogSections.Late_Snack, data: []},
     ];
 
     // add data to sections
@@ -112,6 +115,15 @@ const ViewClientDayLogScreen: React.FC<ViewClientDayLogScreenProps> = ({
           });
         }
       });
+
+    // remove empty snack sections
+    arr = arr.filter(
+      item =>
+        item.data.length > 0 ||
+        item.key === foodLogSections.Breakfast ||
+        item.key === foodLogSections.Lunch ||
+        item.key === foodLogSections.Dinner,
+    );
 
     // add exercise section
     arr.push({
