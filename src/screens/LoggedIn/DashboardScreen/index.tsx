@@ -263,7 +263,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   useEffect(() => {
     NetInfo.fetch().then(state => {
       if (state.isConnected == false && !isDrawerOpen && isFocused) {
-        console.log('netInfo.isConnected', netInfo.isConnected);
         dispatch(setOfflineMode(true));
         if (!checkedEvents.firstOfflineMode.value) {
           dispatch(setWalkthroughTooltip('firstOfflineMode', 0));
@@ -340,7 +339,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         });
     }
   };
-  console.log('user', userData);
+
   return (
     <View style={styles.layout}>
       <SectionList
