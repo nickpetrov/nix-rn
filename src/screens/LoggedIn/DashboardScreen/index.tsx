@@ -340,7 +340,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         });
     }
   };
-
+  console.log('user', userData);
   return (
     <View style={styles.layout}>
       <SectionList

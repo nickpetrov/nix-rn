@@ -12,14 +12,16 @@ const authService = {
       password,
     });
   },
-  async fbSignIn(access_token: string) {
+  async fbSignIn(access_token: string, timezone: string) {
     return await apiClient.post<AuthResponse>('oauth/facebook/signin', {
       access_token,
+      timezone,
     });
   },
-  async appleSignIn(apple_user_data: AppleRequestResponse) {
+  async appleSignIn(apple_user_data: AppleRequestResponse, timezone: string) {
     return await apiClient.post<AuthResponse>('oauth/apple/signin', {
       ...apple_user_data,
+      timezone,
     });
   },
   async signUp(data: SignUpRequest) {

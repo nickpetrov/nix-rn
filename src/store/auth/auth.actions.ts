@@ -3,6 +3,7 @@ import authService from 'api/authService';
 import apiClient from 'api/index';
 import userService from 'api/userService';
 import {batch} from 'react-redux';
+import moment from 'moment-timezone';
 
 //actions
 import {clear as clearAutocomplete} from 'store/autoComplete/autoComplete.actions';
@@ -35,7 +36,8 @@ import {clearWalkthroghAction} from 'store/walkthrough/walkthrough.types';
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch<authAction>) => {
     try {
-      const response = await authService.fbSignIn(access_token);
+      const timezone = moment.tz.guess(true) || 'US/Eastern';
+      const response = await authService.fbSignIn(access_token, timezone);
 
       const userData = response.data;
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
@@ -52,7 +54,8 @@ export const fbLogin = (access_token: string) => {
 export const appleLogin = (apple_user_data: AppleRequestResponse) => {
   return async (dispatch: Dispatch<authAction>) => {
     try {
-      const response = await authService.appleSignIn(apple_user_data);
+      const timezone = moment.tz.guess(true) || 'US/Eastern';
+      const response = await authService.appleSignIn(apple_user_data, timezone);
       const userData = response.data;
       apiClient.defaults.headers.common['x-user-jwt'] = userData['x-user-jwt'];
       dispatch({type: authActionTypes.SIGNIN, userData});
