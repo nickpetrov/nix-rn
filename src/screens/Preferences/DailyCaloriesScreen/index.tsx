@@ -178,8 +178,9 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
 
     if (newUserData.measure_system === 0) {
       if (values.weight_lb && +values.weight_lb > 0) {
-        newUserData.weight_kg = parseFloat(
-          String(values.weight_lb ? +values.weight_lb : 1 / 2.20462),
+        newUserData.weight_kg = _.round(
+          (values.weight_lb ? +values.weight_lb : 1) / 2.20462,
+          1,
         );
       }
       if (values.height_ft && +values.height_ft > 0) {
