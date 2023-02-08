@@ -47,7 +47,7 @@ const StepOneForm: React.FC<Props> = () => {
       first_name: form.first_name,
       email: form.email,
       password: form.password,
-      timezone: moment.tz.guess() || 'US/Eastern',
+      timezone: moment.tz.guess(true) || 'US/Eastern',
     };
     if (isLoading) return;
     setIsLoading(true);

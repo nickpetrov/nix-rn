@@ -1,6 +1,9 @@
+// utils
+import moment from 'moment-timezone';
+import _ from 'lodash';
+
 //types
 import {AuthActions, authActionTypes, UserData} from './auth.types';
-import _ from 'lodash';
 
 export type AuthState = UserData;
 
@@ -26,7 +29,7 @@ const initialState: AuthState = {
     enable_review_foods: null,
     is_activated: 0,
     created_at: '',
-    timezone: 'US/Central',
+    timezone: moment.tz.guess(true) || 'US/Central',
     account_setup: '',
     default_nutrient: 208,
     default_nutrient_value: 0,
