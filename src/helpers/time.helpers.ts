@@ -3,8 +3,7 @@ import {store} from 'store/index';
 import _ from 'lodash';
 
 export const today = () => {
-  const userTimezone = store.getState().auth.userData.timezone || 'US/Central';
-  return moment().tz(userTimezone).format('YYYY-MM-DD');
+  return moment().format('YYYY-MM-DD');
 };
 
 export const offsetDays = (

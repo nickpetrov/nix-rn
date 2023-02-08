@@ -31,7 +31,11 @@ import baseService from 'api/baseService';
 
 // add by name
 export const addFoodToBasket = (query: string) => {
-  return async (dispatch: Dispatch<addFoodToBasketAction>) => {
+  return async (
+    dispatch: Dispatch<addFoodToBasketAction>,
+    useState: () => RootState,
+  ) => {
+    const timezone = useState().auth.userData.timezone;
     try {
       const response = await basketService.getFoodForBasket(query);
 
@@ -49,6 +53,9 @@ export const addFoodToBasket = (query: string) => {
         }
         return {
           ...item,
+          consumed_at:
+            moment().format('YYYY-MM-DDTHH:mm:ss') +
+            moment.tz(timezone).format('Z'),
           basketId: uuidv4(),
         };
       });
@@ -62,7 +69,11 @@ export const addFoodToBasket = (query: string) => {
 
 // add by id
 export const addFoodToBasketById = (id: string) => {
-  return async (dispatch: Dispatch<addFoodToBasketAction>) => {
+  return async (
+    dispatch: Dispatch<addFoodToBasketAction>,
+    useState: () => RootState,
+  ) => {
+    const timezone = useState().auth.userData.timezone;
     try {
       const response = await autoCompleteService.getFoodById(id);
 
@@ -73,7 +84,9 @@ export const addFoodToBasketById = (id: string) => {
       if (food.note) {
         delete food.note;
       }
-      food.consumed_at = moment().format();
+      food.consumed_at =
+        moment().format('YYYY-MM-DDTHH:mm:ss') +
+        moment.tz(timezone).format('Z');
       food.basketId = uuidv4();
       dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]});
       return [food];
