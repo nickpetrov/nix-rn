@@ -5,6 +5,11 @@ import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import _ from 'lodash';
 import {Easing} from 'react-native-reanimated';
 
+// helpers
+import {defaultOption} from 'helpers/nutrionixLabel';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {calculateConsumedTimestamp} from 'helpers/foodLogHelpers';
+
 // components
 import {
   View,
@@ -66,8 +71,6 @@ import {MediaType, Asset} from 'react-native-image-picker/lib/typescript/types';
 
 // styles
 import {styles} from './FoodScreen.styles';
-import {defaultOption} from 'helpers/nutrionixLabel';
-import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface FoodScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Food>;
@@ -88,6 +91,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       target?: string | undefined;
     }>;
   }>(null);
+  const userTimezone = useSelector(state => state.auth.userData.timezone);
   const {selectedDate} = useSelector(state => state.userLog);
   const [foodObj, setFoodObj] = useState<FoodProps>(route.params?.foodObj);
   const [showNotes, setShowNotes] = useState(false);
@@ -184,7 +188,12 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   };
 
   const onMealTypeChange = (newMealType: mealTypes) => {
-    setFoodObj((prev: FoodProps) => ({...prev, meal_type: newMealType}));
+    setFoodObj((prev: FoodProps) => {
+      const newDate =
+        calculateConsumedTimestamp(newMealType, prev.consumed_at) +
+        moment.tz(userTimezone).format('Z');
+      return {...prev, meal_type: newMealType, consumed_at: newDate};
+    });
   };
 
   const handleNotesChange = (note: string) => {
@@ -192,9 +201,12 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   };
 
   const onDateChange = (date: string) => {
-    const newDate =
-      moment(date).format('YYYY-MM-DDTHH:mm:ss') + moment.tz().format('Z');
-    setFoodObj((prev: FoodProps) => ({...prev, consumed_at: newDate}));
+    setFoodObj((prev: FoodProps) => {
+      const newDate =
+        calculateConsumedTimestamp(prev.meal_type, date) +
+        moment.tz(userTimezone).format('Z');
+      return {...prev, consumed_at: newDate};
+    });
   };
 
   const handleChangeFood = useCallback(

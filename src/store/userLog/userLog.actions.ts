@@ -4,7 +4,10 @@ import {batch} from 'react-redux';
 import {Platform} from 'react-native';
 
 //helpers
-import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
+import {
+  calculateConsumedTimestamp,
+  guessMealTypeByTime,
+} from 'helpers/foodLogHelpers';
 import * as timeHelper from 'helpers/time.helpers';
 import healthkitSync from 'helpers/healthkit/healthkitSync';
 import syncWeight from 'helpers/healthkit/HealthKitWeightSync';
@@ -546,17 +549,19 @@ export const addFoodToLog = (
   ) => {
     const timezone = useState().auth.userData.timezone;
 
-    loggingOptions.consumed_at =
-      moment(loggingOptions.consumed_at).format('YYYY-MM-DDTHH:mm:ss') +
-      moment.tz(timezone).format('Z');
     const mealType =
       loggingOptions.meal_type ||
       guessMealTypeByTime(moment(loggingOptions.consumed_at).hour());
 
+    const consumed_at = calculateConsumedTimestamp(
+      mealType,
+      loggingOptions.consumed_at,
+    );
+
+    loggingOptions.consumed_at = consumed_at + moment.tz(timezone).format('Z');
+
     foodArray.map((food: FoodProps) => {
-      food.consumed_at =
-        moment(loggingOptions.consumed_at).format('YYYY-MM-DDTHH:mm:ss') +
-        moment.tz(timezone).format('Z');
+      food.consumed_at = consumed_at + moment.tz(timezone).format('Z');
       food.meal_type = mealType;
 
       delete food.uuid;

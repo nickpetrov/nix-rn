@@ -1,3 +1,4 @@
+import moment from 'moment-timezone';
 import {mealTypes} from 'store/basket/basket.types';
 import {mealNameProps} from 'store/userLog/userLog.types';
 
@@ -40,4 +41,58 @@ export const capitalize = (sentence: string) => {
       return word[0].toUpperCase() + word.substring(1);
     })
     .join(' ');
+};
+
+export const calculateConsumedTimestamp = (
+  meal_type: number,
+  consumed_at?: string | Date,
+) => {
+  const date = moment(consumed_at);
+  let calculateTime = moment(consumed_at).format('YYYY-MM-DDTHH:mm');
+  switch (meal_type) {
+    case mealTypes.Breakfast:
+      calculateTime = date
+        .hours(4)
+        .minutes(0)
+        .seconds(0)
+        .format('YYYY-MM-DDTHH:mm');
+      return calculateTime;
+    case mealTypes['AM Snack']:
+      calculateTime = date
+        .hours(10)
+        .minutes(0)
+        .seconds(0)
+        .format('YYYY-MM-DDTHH:mm');
+      return calculateTime;
+    case mealTypes.Lunch:
+      calculateTime = date
+        .hours(12)
+        .minutes(0)
+        .seconds(0)
+        .format('YYYY-MM-DDTHH:mm');
+      return calculateTime;
+    case mealTypes['PM Snack']:
+      calculateTime = date
+        .hours(15)
+        .minutes(0)
+        .seconds(0)
+        .format('YYYY-MM-DDTHH:mm');
+      return calculateTime;
+    case mealTypes.Dinner:
+      calculateTime = date
+        .hours(17)
+        .minutes(0)
+        .seconds(0)
+        .format('YYYY-MM-DDTHH:mm');
+      return calculateTime;
+    case mealTypes['Late Snack']:
+      calculateTime = date
+        .hours(21)
+        .minutes(0)
+        .seconds(0)
+        .format('YYYY-MM-DDTHH:mm');
+      return calculateTime;
+    default:
+      return calculateTime;
+  }
 };
