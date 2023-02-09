@@ -34,7 +34,7 @@ const RestaurantFoodItem: React.FC<RestaurantFoodItemProps> = ({
             </Text>
             <Text numberOfLines={1} style={styles.brandName}>
               {food.brand_name}{' '}
-              {food.nf_serving_size_qty || food.serving_qty || 1}{' '}
+              {(food.nf_serving_size_qty || food.serving_qty || 1).toFixed(2)}{' '}
               {food.nf_serving_size_unit || food.serving_unit}
             </Text>
           </View>
