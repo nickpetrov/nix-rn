@@ -41,7 +41,7 @@ import useLocalNotification from 'hooks/useLocalNotification';
 
 // actinos
 import * as userLogActions from 'store/userLog/userLog.actions';
-import {addExistFoodToBasket} from 'store/basket/basket.actions';
+import {addExistFoodToBasket, mergeBasket} from 'store/basket/basket.actions';
 import {setDB} from 'store/base/base.actions';
 import {setWalkthroughTooltip} from 'store/walkthrough/walkthrough.actions';
 import {setOfflineMode} from 'store/base/base.actions';
@@ -72,6 +72,7 @@ import {analyticSetUserId, analyticTrackEvent} from 'helpers/analytics.ts';
 // styles
 import {styles} from './DashboardScreen.styles';
 import {Colors} from 'constants/Colors';
+import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -399,6 +400,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           analyticTrackEvent('swipe_left', 'swipe_left_copy');
                           dispatch(addExistFoodToBasket(section.data)).then(
                             () => {
+                              dispatch(
+                                mergeBasket({
+                                  consumed_at: moment().format('YYYY-MM-DD'),
+                                  meal_type: guessMealTypeByTime(
+                                    moment().hours(),
+                                  ),
+                                }),
+                              );
                               // close all swipes after copy
                               [...rowRefs.values()].forEach(ref => {
                                 if (ref) {

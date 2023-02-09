@@ -7,7 +7,7 @@ import SwipeHiddenButtons, {
 } from 'components/SwipeHiddenButtons';
 
 // hooks
-import {useDispatch, useSelector} from 'hooks/useRedux';
+import {useDispatch} from 'hooks/useRedux';
 import {useNavigation} from '@react-navigation/native';
 
 // actions
@@ -29,6 +29,7 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {mealTypes} from 'store/basket/basket.types';
 import Swipeable from 'react-native-gesture-handler/lib/typescript/components/Swipeable';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
+import moment from 'moment-timezone';
 
 interface SwipeFoodLogHiddenItemsProps {
   foodLogSection: foodLogSections;
@@ -46,13 +47,12 @@ const SwipeFoodLogHiddenItems: React.FC<SwipeFoodLogHiddenItemsProps> = ({
       NativeStackNavigationProp<StackNavigatorParamList, Routes.Dashboard>
     >();
   const dispatch = useDispatch();
-  const selectedDate = useSelector(state => state.userLog.selectedDate);
   const addItemToBasket = useCallback(
     (food: FoodProps) => {
       dispatch(basketActions.addExistFoodToBasket([food])).then(() => {
         dispatch(
           basketActions.mergeBasket({
-            consumed_at: selectedDate,
+            consumed_at: moment().format('YYYY-MM-DD'),
             meal_type: mealTypes[foodLogSection as keyof typeof mealTypes],
           }),
         );
@@ -63,7 +63,7 @@ const SwipeFoodLogHiddenItems: React.FC<SwipeFoodLogHiddenItemsProps> = ({
         navigation.navigate(Routes.Basket);
       });
     },
-    [selectedDate, foodLogSection, dispatch, navigation, rowRefs],
+    [foodLogSection, dispatch, navigation, rowRefs],
   );
 
   const handleDeleteFoodFromLog = useCallback(
