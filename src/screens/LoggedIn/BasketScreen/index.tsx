@@ -299,7 +299,12 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
         }
         dispatch(basketActions.reset());
         setLoadingSubmit(false);
-        console.log('startWalkthroughAfterLog', !firstFoodAddedToFoodLog.value);
+        const consumed_at_data = moment(loggingOptions.consumed_at).format(
+          'YYYY-MM-DD',
+        );
+        if (consumed_at_data !== selectedDate) {
+          dispatch(userLogActions.changeSelectedDay(consumed_at_data));
+        }
         navigation.navigate(Routes.Dashboard, {
           startWalkthroughAfterLog: !firstFoodAddedToFoodLog.value,
         });
@@ -307,7 +312,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
           !(
             !!reviewCheck.rateClicked ||
             (!!reviewCheck.scheduleDate &&
-              moment(reviewCheck.scheduleDate, 'DD-MM-YYYY').isAfter(moment()))
+              moment(reviewCheck.scheduleDate).isAfter(moment()))
           ) &&
           reviewCheck.runCounter > 4
         ) {
