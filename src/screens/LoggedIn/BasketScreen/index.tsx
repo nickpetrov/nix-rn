@@ -312,7 +312,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
           !(
             !!reviewCheck.rateClicked ||
             (!!reviewCheck.scheduleDate &&
-              moment(reviewCheck.scheduleDate).isAfter(moment()))
+              moment(reviewCheck.scheduleDate, 'DD-MM-YYYY').isAfter(moment()))
           ) &&
           reviewCheck.runCounter > 4
         ) {

@@ -43,6 +43,7 @@ const basePersist = {
     'userGroceyAgentInfo',
     'db',
     'hideVoiceRecognitionDisclaimer',
+    'reviewCheck',
   ],
 };
 const connectedAppsPersist = {
