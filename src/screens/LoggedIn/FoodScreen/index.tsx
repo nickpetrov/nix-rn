@@ -92,7 +92,6 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     }>;
   }>(null);
   const userTimezone = useSelector(state => state.auth.userData.timezone);
-  const {selectedDate} = useSelector(state => state.userLog);
   const [foodObj, setFoodObj] = useState<FoodProps>(route.params?.foodObj);
   const [showNotes, setShowNotes] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -168,17 +167,17 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   };
 
   const addItemToBasket = async () => {
-    dispatch(basketActions.addFoodToBasket(foodObj?.food_name || ''))
+    dispatch(basketActions.addExistFoodToBasket([foodObj]))
       .then(() => {
         dispatch(
           basketActions.mergeBasket(
             route.params?.mealType
               ? {
-                  consumed_at: selectedDate,
+                  consumed_at: moment().format('YYYY-MM-DD'),
                   meal_type: route.params?.mealType,
                 }
               : {
-                  consumed_at: selectedDate,
+                  consumed_at: moment().format('YYYY-MM-DD'),
                 },
           ),
         );

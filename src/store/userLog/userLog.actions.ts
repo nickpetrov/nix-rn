@@ -560,12 +560,15 @@ export const addFoodToLog = (
 
     loggingOptions.consumed_at = consumed_at + moment.tz(timezone).format('Z');
 
-    foodArray.map((food: FoodProps) => {
+    foodArray.forEach((food: FoodProps) => {
       food.consumed_at = consumed_at + moment.tz(timezone).format('Z');
       food.meal_type = mealType;
 
       delete food.uuid;
       delete food.public_id;
+      if (food._hiddenQuery !== undefined) {
+        delete food._hiddenQuery;
+      }
     });
 
     try {
