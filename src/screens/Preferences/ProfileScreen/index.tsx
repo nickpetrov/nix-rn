@@ -28,12 +28,14 @@ import {useNetInfo} from '@react-native-community/netinfo';
 // actions
 import * as userActions from 'store/auth/auth.actions';
 import {setInfoMessage} from 'store/base/base.actions';
+import {getUserWeightlog} from 'store/userLog/userLog.actions';
 
 // services
 import authService from 'api/authService';
 
 // helpres
 import {difference} from 'helpers/difference';
+import {offsetDays} from 'helpers/time.helpers';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -74,6 +76,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const inputRefs = useRef<{[key: string]: TextInput | null}>({});
   const netInfo = useNetInfo();
   const userData = useSelector(state => state.auth.userData);
+  const selectedDate = useSelector(state => state.userLog.selectedDate);
   const dispatch = useDispatch();
   const [validOnChange, setValidOnChange] = useState(false);
   const formRef = useRef<FormikProps<FormikDataProps>>(null);
@@ -217,6 +220,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         .then(() => {
           setLoadingSubmit(false);
           navigation.goBack();
+          const logBeginDate = offsetDays(selectedDate, 'YYYY-MM-DD', -7);
+          const logEndDate = offsetDays(selectedDate, 'YYYY-MM-DD', 7);
+          dispatch(getUserWeightlog(logBeginDate, logEndDate, 0));
         })
         .catch(() => {
           setLoadingSubmit(false);

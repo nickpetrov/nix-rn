@@ -31,9 +31,12 @@ import {useDispatch, useSelector} from 'hooks/useRedux';
 // actions
 import * as authActions from 'store/auth/auth.actions';
 import {setInfoMessage} from 'store/base/base.actions';
+import {getUserWeightlog} from 'store/userLog/userLog.actions';
 
 // helpers
 import * as NixCalc from 'helpers/nixCalculator';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {offsetDays} from 'helpers/time.helpers';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -51,7 +54,6 @@ import {User} from 'store/auth/auth.types';
 
 // validation
 import {validationSchema} from './validation';
-import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface DailyCaloriesScreenProps {
   navigation: NativeStackNavigationProp<
@@ -79,6 +81,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
   const inputRefs = useRef<{[key: string]: TextInput | null}>({});
   const netInfo = useNetInfo();
   const userData = useSelector(state => state.auth.userData);
+  const selectedDate = useSelector(state => state.userLog.selectedDate);
   const [validOnChange, setValidOnChange] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [updateCalorieMessage, setUpdateCalorieMessage] = useState('');
@@ -203,6 +206,9 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
         setLoadingSubmit(false);
         setUpdateCalorieMessage('Updated');
         navigation.navigate(Routes.Dashboard);
+        const logBeginDate = offsetDays(selectedDate, 'YYYY-MM-DD', -7);
+        const logEndDate = offsetDays(selectedDate, 'YYYY-MM-DD', 7);
+        dispatch(getUserWeightlog(logBeginDate, logEndDate, 0));
       })
       .catch(err => {
         setUpdateCalorieMessage(err.data?.message || 'Error');
