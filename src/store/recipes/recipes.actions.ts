@@ -140,7 +140,7 @@ export const deleteRecipe = (id: string) => {
         });
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };

@@ -75,13 +75,17 @@ const SwipeFoodLogHiddenItems: React.FC<SwipeFoodLogHiddenItemsProps> = ({
 
   const handleDeleteWeightFromLog = useCallback(
     (id: string) => {
-      dispatch(deleteWeightFromLog([{id: id || '-1'}]));
+      dispatch(deleteWeightFromLog([{id: id || '-1'}])).catch(err =>
+        console.log(err),
+      );
     },
     [dispatch],
   );
   const handleDeleteExerciseFromLog = useCallback(
     (id: string) => {
-      dispatch(deleteExerciseFromLog([{id: id || '-1'}]));
+      dispatch(deleteExerciseFromLog([{id: id || '-1'}])).catch(err =>
+        console.log(err),
+      );
     },
     [dispatch],
   );

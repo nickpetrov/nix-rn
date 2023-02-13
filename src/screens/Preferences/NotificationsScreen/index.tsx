@@ -55,9 +55,13 @@ export const NotificationsScreen: React.FC = () => {
         weekday_reminders_enabled: weekday ? 1 : 0,
         weekend_reminders_enabled: weekend ? 1 : 0,
       }),
-    ).then(() => {
-      changeHandler(weekday ? 1 : 0, weekend ? 1 : 0);
-    });
+    )
+      .then(() => {
+        changeHandler(weekday ? 1 : 0, weekend ? 1 : 0);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }, [weekend, weekday, changeHandler, dispatch]);
 
   return (

@@ -142,9 +142,9 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
                     key={item}
                     style={styles.recent}
                     onPress={() =>
-                      dispatch(addExerciseToLog(item)).then(() =>
-                        setVisible(null),
-                      )
+                      dispatch(addExerciseToLog(item))
+                        .then(() => setVisible(null))
+                        .catch(err => console.log(err))
                     }
                     disabled={isLoading}>
                     <Text style={styles.recentText}>{item}</Text>

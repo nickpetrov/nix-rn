@@ -39,8 +39,8 @@ export const fitbitSign = () => {
         });
         return result.state;
       }
-    } catch (err: any) {
-      throw err;
+    } catch (err) {
+      console.log(err);
     }
   };
 };
@@ -59,7 +59,7 @@ export const fitbitUnlink = () => {
         });
       }
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 };

@@ -122,7 +122,7 @@ export const getSuggestedFoods = () => {
         });
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };
@@ -151,7 +151,7 @@ export const getGroceries = (query: string) => {
         });
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };
@@ -172,7 +172,7 @@ export const getHistoryFoods = (data: InstantQueryDataProps) => {
         });
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };
@@ -192,7 +192,7 @@ export const getRestorants = () => {
         });
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };
@@ -213,7 +213,7 @@ export const getRestorantsWithCalc = () => {
         });
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };

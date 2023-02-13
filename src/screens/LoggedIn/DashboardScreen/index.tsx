@@ -220,7 +220,9 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   });
 
   useEffect(() => {
-    dispatch(userLogActions.refreshLog(selectedDate, userData.timezone));
+    dispatch(userLogActions.refreshLog(selectedDate, userData.timezone)).catch(
+      err => console.log(err),
+    );
     analyticSetUserId(userData.id);
   }, [dispatch, selectedDate, userData.timezone, userData.id]);
 
@@ -615,9 +617,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   userData.timezone,
                   true,
                 ),
-              ).then(() => {
-                setIsRefreshing(false);
-              });
+              )
+                .then(() => {
+                  setIsRefreshing(false);
+                })
+                .catch(err => {
+                  console.log(err);
+                  setIsRefreshing(false);
+                });
             }}
           />
         }

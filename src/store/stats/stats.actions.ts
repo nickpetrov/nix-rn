@@ -57,7 +57,7 @@ export const getStatsWeight = (params?: getWeightParams) => {
         return result.weights;
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };

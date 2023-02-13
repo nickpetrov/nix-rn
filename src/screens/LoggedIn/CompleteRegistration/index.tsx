@@ -85,7 +85,6 @@ const CompleteRegistration: React.FC<Props> = ({navigation}) => {
       fetchTopics();
     } catch (err) {
       console.log(err);
-      throw err;
     }
   }, []);
 

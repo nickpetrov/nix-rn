@@ -46,7 +46,7 @@ const History: React.FC<HistoryProps> = () => {
   const [value] = useDebounce(query, 500);
 
   useEffect(() => {
-    dispatch(showSuggestedFoods(-1));
+    dispatch(showSuggestedFoods(-1)).catch(err => console.log(err));
     return () => {
       dispatch(clearHistoryFoods());
     };

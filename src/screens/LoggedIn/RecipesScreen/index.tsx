@@ -222,8 +222,8 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
         }),
       );
     }
-    dispatch(basketActions.addRecipeToBasket(recipe.id)).then(
-      (scaled_recipe: RecipeProps) => {
+    dispatch(basketActions.addRecipeToBasket(recipe.id))
+      .then((scaled_recipe: RecipeProps) => {
         analyticTrackEvent(
           'Added_recipe_to_the_basket',
           'Quick log from the My Recipes',
@@ -245,8 +245,8 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
           }),
         );
         navigation.replace(Routes.Basket);
-      },
-    );
+      })
+      .catch(err => console.log(err));
   };
 
   return (

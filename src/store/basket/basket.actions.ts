@@ -307,7 +307,7 @@ export const addBrandedFoodToBasket = (id: string) => {
         return food;
       }
     } catch (err: any) {
-      throw err;
+      console.log(err);
     }
   };
 };

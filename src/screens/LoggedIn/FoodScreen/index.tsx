@@ -312,6 +312,10 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
         } else {
           navigation.goBack();
         }
+      })
+      .catch(err => {
+        console.log(err);
+        setShowSpinner(false);
       });
   };
 

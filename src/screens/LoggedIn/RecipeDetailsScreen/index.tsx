@@ -153,8 +153,8 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
   useEffect(() => {
     if (route.params?.recipe) {
       setShowPreloader(true);
-      dispatch(getRecipeById(route.params?.recipe.id)).then(
-        (resp: RecipeProps) => {
+      dispatch(getRecipeById(route.params?.recipe.id))
+        .then((resp: RecipeProps) => {
           _.forEach(resp.ingredients, function (foodObj) {
             if (foodObj.alt_measures) {
               const temp = {
@@ -180,8 +180,11 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           setRecipe(resp);
           setDefaultRecipe(resp);
           setShowPreloader(false);
-        },
-      );
+        })
+        .catch(err => {
+          console.log(err);
+          setShowPreloader(false);
+        });
     }
   }, [route.params?.recipe, dispatch]);
 

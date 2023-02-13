@@ -375,7 +375,7 @@ export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
         });
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };
@@ -410,7 +410,7 @@ export const updateExistExercisesToLog = (exercises: ExerciseProps[]) => {
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };
@@ -650,7 +650,7 @@ export const deleteFoodFromLog = (foodIds: Array<{id: string}>) => {
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };
@@ -678,7 +678,7 @@ export const setDayNotes = (targetDate: string, newNotes: string) => {
         });
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };

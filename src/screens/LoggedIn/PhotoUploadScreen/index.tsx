@@ -164,7 +164,6 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
       });
     } catch (err) {
       console.log(err);
-      throw err;
     }
   };
 

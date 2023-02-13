@@ -199,7 +199,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
             }),
           );
         } else {
-          throw err;
+          console.log(err);
         }
       });
   };

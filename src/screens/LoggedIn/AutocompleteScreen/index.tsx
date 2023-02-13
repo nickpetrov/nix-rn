@@ -182,9 +182,13 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   useEffect(() => {
     if (searchQuery) {
       setSearchLoading(true);
-      dispatch(updateSearchResults(searchQuery)).then(() =>
-        setSearchLoading(false),
-      );
+      dispatch(updateSearchResults(searchQuery))
+        .then(() => {
+          setSearchLoading(false);
+        })
+        .catch(() => {
+          setSearchLoading(false);
+        });
     }
   }, [searchQuery, dispatch]);
 
@@ -207,10 +211,10 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
       });
 
     // ger custom foods
-    dispatch(getCustomFoods());
+    dispatch(getCustomFoods()).catch(err => console.log(err));
 
     //get recipes
-    dispatch(getRecipes({newLimit: 300}));
+    dispatch(getRecipes({newLimit: 300})).catch(err => console.log(err));
 
     return () => {
       dispatch(autocompleteActions.clear());
@@ -348,8 +352,8 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   };
 
   const addRecipeToBasket = (id: string) => {
-    dispatch(basketActions.addRecipeToBasket(id)).then(
-      (scaled_recipe: RecipeProps) => {
+    dispatch(basketActions.addRecipeToBasket(id))
+      .then((scaled_recipe: RecipeProps) => {
         dispatch(
           basketActions.mergeBasket({
             consumed_at: selectedDate,
@@ -362,8 +366,8 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
           }),
         );
         navigation.replace(Routes.Basket);
-      },
-    );
+      })
+      .catch(err => console.log(err));
   };
 
   const tryAddRecipeToBasket = (recipe: RecipeProps) => {

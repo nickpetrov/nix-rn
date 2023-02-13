@@ -84,7 +84,7 @@ export const deleteCustomFood = (id: string) => {
         });
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   };
 };

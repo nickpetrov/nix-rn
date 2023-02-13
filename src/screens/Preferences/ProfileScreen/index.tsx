@@ -299,17 +299,21 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       );
       return;
     }
-    dispatch(userActions.updateUserData({email})).then(() => {
-      setChangeEmailPopup(false);
-      setOldEmail(email);
-      setEmail('');
-      dispatch(
-        setInfoMessage({
-          title: 'Success',
-          text: 'Your email has been changed',
-        }),
-      );
-    });
+    dispatch(userActions.updateUserData({email}))
+      .then(() => {
+        setChangeEmailPopup(false);
+        setOldEmail(email);
+        setEmail('');
+        dispatch(
+          setInfoMessage({
+            title: 'Success',
+            text: 'Your email has been changed',
+          }),
+        );
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return (
