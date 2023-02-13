@@ -3,6 +3,10 @@ import React, {useState} from 'react';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
 import {useRoute} from '@react-navigation/native';
+import moment from 'moment-timezone';
+
+// helpers
+import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 // components
 import {View, Text, Linking, TouchableOpacity} from 'react-native';
@@ -43,6 +47,7 @@ interface NaturalFormProps {
 const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
   const route = useRoute();
   const netInfo = useNetInfo();
+  const emptyBasket = useSelector(state => state.basket.foods.length === 0);
   const isVoiceDisclaimerVisible = useSelector(
     state => state.base.isVoiceDisclaimerVisible,
   );
@@ -87,13 +92,15 @@ const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
     analyticTrackEvent('foodlog_natural', naturalQuery);
 
     dispatch(basketActions.addFoodToBasket(naturalQuery))
-      .then(foodsToAdd => {
-        dispatch(
-          basketActions.mergeBasket({
-            meal_type: foodsToAdd[0].meal_type,
-            consumed_at: foodsToAdd[0].consumed_at,
-          }),
-        );
+      .then(() => {
+        if (emptyBasket) {
+          dispatch(
+            basketActions.mergeBasket({
+              meal_type: guessMealTypeByTime(moment().hours()),
+              consumed_at: moment().format('YYYY-MM-DD'),
+            }),
+          );
+        }
         navigation.replace(Routes.Basket);
         analyticTrackEvent('natural_addFoodSmart', naturalQuery);
       })
