@@ -12,10 +12,12 @@ export SENTRY_TOKEN=ef9f490466ad4540856b447cab0216651d916ae99c54400d80fb9e49c62f
 
 RELEASE_NAME_PREFIX=$(cat android/app/build.gradle | grep -o "applicationId \".*" | cut -d " " -f 2 | sed -e "s/\"//g")
 RELEASE_NAME=$(cat android/app/build.gradle | grep -o "versionName \".*" | cut -d " " -f 2 | sed -e "s/\"//g")
+RELEASE_CODE=$(cat android/app/build.gradle | grep -o -m 1 "versionCode .*" | cut -d " " -f 2)
 # DISTRIBUTION_NAME=$(cat android/app/build.gradle | grep -o "versionCode .*" | cut -d " " -f 2)
 
 echo $RELEASE_NAME_PREFIX
 echo $RELEASE_NAME
+echo $RELEASE_CODE
 # echo $DISTRIBUTION_NAME
 
 
@@ -32,7 +34,8 @@ node node_modules/react-native/scripts/compose-source-maps.js index.android.bund
 
 node_modules/@sentry/cli/bin/sentry-cli --auth-token ${SENTRY_TOKEN} \
     releases \
-    files "${RELEASE_NAME_PREFIX}-${RELEASE_NAME}" \
+    files "${RELEASE_NAME_PREFIX}@${RELEASE_NAME}+${RELEASE_CODE}" \
     upload-sourcemaps \
-    ./index.android.bundle.map ./index.android.bundle \
+    --bundle-sourcemap ./index.android.bundle.map \
+    --bundle ./index.android.bundle \
     --rewrite
