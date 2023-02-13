@@ -57,14 +57,18 @@ export const getDayTotals = (
   beginDate: string,
   endDate: string,
   timezone: string,
+  cancelSignal?: AbortSignal,
 ) => {
   return async (dispatch: Dispatch<getDayTotalsUserLogAction>) => {
     try {
-      const response = await userLogService.getTotals({
-        beginDate,
-        endDate,
-        timezone,
-      });
+      const response = await userLogService.getTotals(
+        {
+          beginDate,
+          endDate,
+          timezone,
+        },
+        cancelSignal,
+      );
 
       const totals = response.data;
       // if (__DEV__) {
@@ -76,8 +80,12 @@ export const getDayTotals = (
           totals: totals.dates || [],
         });
       }
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      if (error?.code === 'ERR_CANCELED') {
+        console.log('request canceled');
+      } else {
+        throw error;
+      }
     }
   };
 };
@@ -96,6 +104,7 @@ export const getUserFoodlog = (
   beginDate: string,
   endDate: string,
   offset: number | undefined,
+  cancelSignal?: AbortSignal,
 ) => {
   return async (
     dispatch: Dispatch<getUserFoodLogAction | getDayTotalsUserLogAction>,
@@ -106,12 +115,15 @@ export const getUserFoodlog = (
     const timezone = useState().auth.userData.timezone;
 
     try {
-      const response = await userLogService.getUserFoodlog({
-        beginDate,
-        endDate,
-        offset,
-        timezone,
-      });
+      const response = await userLogService.getUserFoodlog(
+        {
+          beginDate,
+          endDate,
+          offset,
+          timezone,
+        },
+        cancelSignal,
+      );
 
       const userFoodlog = response.data;
       // if (__DEV__) {
@@ -131,8 +143,12 @@ export const getUserFoodlog = (
       }
 
       // dispatch<any>(getDayTotals(beginDateSelected, endDate, timezone));
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      if (error?.code === 'ERR_CANCELED') {
+        console.log('request canceled');
+      } else {
+        throw error;
+      }
     }
   };
 };
@@ -141,6 +157,7 @@ export const getUserWeightlog = (
   begin: string,
   endDate: string,
   offset: number | undefined,
+  cancelSignal?: AbortSignal,
 ) => {
   return async (
     dispatch: Dispatch<getUserWeightsLogAction>,
@@ -153,12 +170,15 @@ export const getUserWeightlog = (
     const timezone = useState().auth.userData.timezone;
 
     try {
-      const response = await userLogService.getUserWeightlog({
-        begin,
-        end,
-        offset,
-        timezone,
-      });
+      const response = await userLogService.getUserWeightlog(
+        {
+          begin,
+          end,
+          offset,
+          timezone,
+        },
+        cancelSignal,
+      );
 
       const result = response.data;
       // if (__DEV__) {
@@ -178,8 +198,12 @@ export const getUserWeightlog = (
           dispatch<any>(pullWeightsFromHK());
         }
       }
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      if (error?.code === 'ERR_CANCELED') {
+        console.log('request canceled');
+      } else {
+        throw error;
+      }
     }
   };
 };
@@ -311,6 +335,7 @@ export const getUserExerciseslog = (
   beginDate: string,
   endDate: string,
   offset: number | undefined,
+  cancelSignal?: AbortSignal,
 ) => {
   return async (
     dispatch: Dispatch<getUserExerciseLogAction>,
@@ -320,12 +345,15 @@ export const getUserExerciseslog = (
 
     const timezone = useState().auth.userData.timezone;
     try {
-      const response = await userLogService.getUserExerciseslog({
-        beginDate,
-        endDate,
-        offset,
-        timezone,
-      });
+      const response = await userLogService.getUserExerciseslog(
+        {
+          beginDate,
+          endDate,
+          offset,
+          timezone,
+        },
+        cancelSignal,
+      );
 
       const result = response.data;
       // if (__DEV__) {
@@ -345,8 +373,12 @@ export const getUserExerciseslog = (
           dispatch<any>(pullExerciseFromHK());
         }
       }
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      if (error?.code === 'ERR_CANCELED') {
+        console.log('request canceled');
+      } else {
+        throw error;
+      }
     }
   };
 };
@@ -755,11 +787,17 @@ export const deleteWaterFromLog = () => {
   };
 };
 
-export const refreshLog = (
-  selectedDate: string,
-  timezone: string,
-  refresh?: boolean,
-) => {
+export const refreshLog = ({
+  selectedDate,
+  timezone,
+  refresh,
+  cancelSignal,
+}: {
+  selectedDate: string;
+  timezone: string;
+  refresh?: boolean;
+  cancelSignal?: AbortSignal;
+}) => {
   return async (dispatch: Dispatch<any>, useState: () => RootState) => {
     const logBeginDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', -7);
     const logEndDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', 7);
@@ -770,10 +808,14 @@ export const refreshLog = (
       ) === -1;
     if (needUpdateAfterChangeSelectedDate || refresh) {
       batch(() => {
-        dispatch(getUserFoodlog(logBeginDate, logEndDate, 0));
-        dispatch(getUserWeightlog(logBeginDate, logEndDate, 0));
-        dispatch(getUserExerciseslog(logBeginDate, logEndDate, 0));
-        dispatch(getDayTotals(logBeginDate, logEndDate, timezone));
+        dispatch(getUserFoodlog(logBeginDate, logEndDate, 0, cancelSignal));
+        dispatch(getUserWeightlog(logBeginDate, logEndDate, 0, cancelSignal));
+        dispatch(
+          getUserExerciseslog(logBeginDate, logEndDate, 0, cancelSignal),
+        );
+        dispatch(
+          getDayTotals(logBeginDate, logEndDate, timezone, cancelSignal),
+        );
       });
     } else {
       return;

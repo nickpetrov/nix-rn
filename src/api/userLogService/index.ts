@@ -10,21 +10,25 @@ import {
 } from 'store/userLog/userLog.types';
 
 const userLogService = {
-  async getTotals({
-    beginDate,
-    endDate,
-    timezone,
-  }: {
-    beginDate: string;
-    endDate: string;
-    timezone: string;
-  }) {
+  async getTotals(
+    {
+      beginDate,
+      endDate,
+      timezone,
+    }: {
+      beginDate: string;
+      endDate: string;
+      timezone: string;
+    },
+    cancelSignal?: AbortSignal,
+  ) {
     return await apiClient.get('reports/totals', {
       params: {
         begin: beginDate,
         end: endDate,
         timezone,
       },
+      signal: cancelSignal,
     });
   },
   async setDayNotes(data: {
@@ -32,17 +36,20 @@ const userLogService = {
   }) {
     return await apiClient.put<{dates: TotalProps[]}>('reports/totals', data);
   },
-  async getUserFoodlog({
-    beginDate,
-    endDate,
-    offset,
-    timezone,
-  }: {
-    beginDate: string;
-    endDate: string;
-    offset: number | undefined;
-    timezone: string;
-  }) {
+  async getUserFoodlog(
+    {
+      beginDate,
+      endDate,
+      offset,
+      timezone,
+    }: {
+      beginDate: string;
+      endDate: string;
+      offset: number | undefined;
+      timezone: string;
+    },
+    cancelSignal?: AbortSignal,
+  ) {
     return await apiClient.get('log', {
       params: {
         begin: beginDate,
@@ -51,15 +58,13 @@ const userLogService = {
         timezone,
         limit: 500,
       },
+      signal: cancelSignal,
     });
   },
-  async getUserWeightlog({
-    begin,
-    end,
-    offset,
-    timezone,
-    limit,
-  }: getWeightParams) {
+  async getUserWeightlog(
+    {begin, end, offset, timezone, limit}: getWeightParams,
+    cancelSignal?: AbortSignal,
+  ) {
     return await apiClient.get<{weights: WeightProps[]}>('weight/log', {
       params: {
         begin,
@@ -68,6 +73,7 @@ const userLogService = {
         timezone,
         limit: limit || 500,
       },
+      signal: cancelSignal,
     });
   },
   async addWeightlog(weights: Array<Partial<WeightProps>>) {
@@ -80,17 +86,20 @@ const userLogService = {
       weights,
     });
   },
-  async getUserExerciseslog({
-    beginDate,
-    endDate,
-    offset,
-    timezone,
-  }: {
-    beginDate: string;
-    endDate: string;
-    offset: number | undefined;
-    timezone: string;
-  }) {
+  async getUserExerciseslog(
+    {
+      beginDate,
+      endDate,
+      offset,
+      timezone,
+    }: {
+      beginDate: string;
+      endDate: string;
+      offset: number | undefined;
+      timezone: string;
+    },
+    cancelSignal?: AbortSignal,
+  ) {
     return await apiClient.get('exercise/log', {
       params: {
         begin: beginDate,
@@ -99,6 +108,7 @@ const userLogService = {
         timezone,
         limit: 500,
       },
+      signal: cancelSignal,
     });
   },
   async getExerciseByQuery(user_data: {

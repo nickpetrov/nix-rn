@@ -1,5 +1,11 @@
 // utils
-import React, {useState, useEffect, useLayoutEffect, useMemo} from 'react';
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import moment from 'moment-timezone';
 import SQLite from 'react-native-sqlite-storage';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
@@ -86,6 +92,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   navigation,
   route,
 }) => {
+  const previousController = useRef<AbortController>();
   const dispatch = useDispatch();
   const netInfo = useNetInfo();
   const isFocused = useIsFocused();
@@ -220,7 +227,19 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   });
 
   useEffect(() => {
-    dispatch(userLogActions.refreshLog(selectedDate, userData.timezone));
+    const newController = new AbortController();
+    if (previousController.current) {
+      console.log('cancel requests');
+      previousController.current.abort();
+    }
+    previousController.current = newController;
+    dispatch(
+      userLogActions.refreshLog({
+        selectedDate,
+        timezone: userData.timezone,
+        cancelSignal: previousController.current?.signal,
+      }),
+    );
     analyticSetUserId(userData.id);
   }, [dispatch, selectedDate, userData.timezone, userData.id]);
 
@@ -609,12 +628,19 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             refreshing={isRefreshing}
             onRefresh={() => {
               setIsRefreshing(true);
+              const newController = new AbortController();
+              if (previousController.current) {
+                console.log('cancel requests');
+                previousController.current.abort();
+              }
+              previousController.current = newController;
               dispatch(
-                userLogActions.refreshLog(
+                userLogActions.refreshLog({
                   selectedDate,
-                  userData.timezone,
-                  true,
-                ),
+                  timezone: userData.timezone,
+                  refresh: true,
+                  cancelSignal: previousController.current?.signal,
+                }),
               ).then(() => {
                 setIsRefreshing(false);
               });
