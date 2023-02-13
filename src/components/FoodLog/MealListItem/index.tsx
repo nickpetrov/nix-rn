@@ -114,7 +114,9 @@ const MealListItem: React.FC<MealListItemProps> = props => {
             searchWords={[searchValue || '']}
             textToHighlight={
               reverse
-                ? '1 Serving'
+                ? recipe
+                  ? '1 Serving'
+                  : `1 ${foodObj.serving_unit}`
                 : capitalize(
                     `${foodObj.brand_name ? `${foodObj.brand_name} ` : ''}${
                       historyTab && !foodObj.brand_name ? 'Common Food, ' : ''
