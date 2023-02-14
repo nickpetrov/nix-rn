@@ -247,9 +247,7 @@ export const SideMenu: React.FC = () => {
                 ? 'Rate us on App Store'
                 : 'Rate us on Google Play'
             }
-            onPress={() => {
-              rateAppHandler();
-            }}
+            onPress={rateAppHandler}
             style={{marginTop: 10}}
           />
           <NixButton

@@ -66,6 +66,7 @@ import {RecipeProps, UpdateRecipeProps} from 'store/recipes/recipes.types';
 // helpers
 import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {multiply} from 'helpers/multiply';
+import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 // styles
 import {styles} from './RecipeDetailsScreen.styles';
@@ -90,6 +91,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
   route,
 }) => {
   const dispatch = useDispatch();
+  const emptyBasket = useSelector(state => state.basket.foods.length === 0);
   const inputRefs = useRef<{[key: string]: TextInput | null}>({});
   const ingridientsInputRefs = useRef<Array<TextInput | null>>([]);
   const [error, setError] = useState<false | string>(false);
@@ -708,6 +710,9 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                     is_user_uploaded: false,
                   }
                 : null,
+            meal_type: emptyBasket
+              ? guessMealTypeByTime(moment().hours())
+              : undefined,
           }),
         );
         navigation.replace(Routes.Basket);

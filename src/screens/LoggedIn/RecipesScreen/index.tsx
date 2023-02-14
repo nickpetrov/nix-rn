@@ -215,13 +215,6 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
   };
 
   const quickLog = (recipe: RecipeProps) => {
-    if (emptyBasket) {
-      dispatch(
-        basketActions.mergeBasket({
-          meal_type: guessMealTypeByTime(moment().hours()),
-        }),
-      );
-    }
     dispatch(basketActions.addRecipeToBasket(recipe.id))
       .then((scaled_recipe: RecipeProps) => {
         analyticTrackEvent(
@@ -242,6 +235,9 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
                     is_user_uploaded: false,
                   }
                 : null,
+            meal_type: emptyBasket
+              ? guessMealTypeByTime(moment().hours())
+              : undefined,
           }),
         );
         navigation.replace(Routes.Basket);

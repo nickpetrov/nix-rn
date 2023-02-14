@@ -7,9 +7,10 @@ import React, {
   useCallback,
 } from 'react';
 import _ from 'lodash';
+import moment from 'moment-timezone';
 
 // hooks
-import {useDispatch} from 'hooks/useRedux';
+import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // components
 import {View, Text, TouchableOpacity, TextInput, Keyboard} from 'react-native';
@@ -32,8 +33,11 @@ import {addExistFoodToBasket, mergeBasket} from 'store/basket/basket.actions';
 import {Routes} from 'navigation/Routes';
 
 // helpres
-import {RouteProp} from '@react-navigation/native';
+import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+
+// types
+import {RouteProp} from '@react-navigation/native';
 import {
   NativeStackHeaderProps,
   NativeStackNavigationProp,
@@ -59,6 +63,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
 }) => {
   const scrollRef = useRef<Element>();
   const inputRefs = useRef<{[key: string]: TextInput | null}>({});
+  const emptyBasket = useSelector(state => state.basket.foods.length === 0);
   const [invalid, setInvalid] = useState(false);
   const [showPreloader, setShowPreloader] = useState(false);
   const [isProcessingFood, setIsProcessingFood] = useState(false);
@@ -152,7 +157,10 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
       if (route.params?.mealType) {
         dispatch(
           mergeBasket({
-            meal_type: route.params?.mealType,
+            meal_type:
+              route.params?.mealType || emptyBasket
+                ? guessMealTypeByTime(moment().hours())
+                : undefined,
           }),
         );
       }
