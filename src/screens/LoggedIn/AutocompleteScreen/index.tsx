@@ -67,6 +67,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   const dispatch = useDispatch();
   const IsFocused = useIsFocused();
   const basketFoods = useSelector(state => state.basket.foods);
+  const emptyBasket = basketFoods.length === 0;
   const customFoods = useSelector(state => state.customFoods.foods);
   const recipes = useSelector(state => state.recipes.recipes);
   const searchValue = useSelector(state => state.autoComplete.searchValue);
@@ -281,7 +282,9 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
         consumed_at: selectedDate,
         meal_type: route.params?.mealType
           ? route.params?.mealType
-          : guessMealTypeByTime(moment().hours()),
+          : emptyBasket
+          ? guessMealTypeByTime(moment().hours())
+          : undefined,
       }),
     );
     navigation.replace(Routes.Basket);
@@ -359,7 +362,9 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
             consumed_at: selectedDate,
             meal_type: route.params?.mealType
               ? route.params?.mealType
-              : guessMealTypeByTime(moment().hours()),
+              : emptyBasket
+              ? guessMealTypeByTime(moment().hours())
+              : undefined,
             recipeBrand: scaled_recipe.brand_name,
             servings: scaled_recipe.serving_qty.toString(),
             recipeName: scaled_recipe.name,

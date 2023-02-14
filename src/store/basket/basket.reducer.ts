@@ -37,7 +37,11 @@ export default (
       }
     }
     case basketActionTypes.MERGE_BASKET: {
-      return {...state, ...action.payload};
+      return {
+        ...state,
+        ...action.payload,
+        meal_type: action.payload.meal_type || state.meal_type,
+      };
     }
     case basketActionTypes.BASKET_RESET:
       return initialState;

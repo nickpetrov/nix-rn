@@ -90,7 +90,6 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     firstMultipleFoodsInBasket,
   } = useSelector(state => state.walkthrough.checkedEvents);
   const helpPopupInfo = route.params?.helpPopup;
-  console.log('helpPopupInfo', helpPopupInfo);
   const [helpPopup, setHelpPopup] = useState(false);
   const {agreedToUsePhoto, reviewCheck} = useSelector(state => state.base);
   const [deleteteModal, setDeleteteModal] = useState(false);
