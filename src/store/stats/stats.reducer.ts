@@ -23,7 +23,7 @@ export default (
       }
       return {...state, weights: newWeights};
     }
-    case statsActionTypes.STATE_CLEAR:
+    case statsActionTypes.STATS_CLEAR:
       return initialState;
     default:
       return state;

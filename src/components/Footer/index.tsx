@@ -20,6 +20,7 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
+import {useSelector} from 'hooks/useRedux';
 
 interface FooterProps {
   hide: boolean;
@@ -35,6 +36,7 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = props => {
   const route = useRoute();
+  const selectedDate = useSelector(state => state.userLog.selectedDate);
   let hideFooterStyle = {marginTop: 0};
   if (props.hide) {
     // hideFooterStyle = hideFooterStyle.marginTop = 50;
@@ -54,7 +56,9 @@ const Footer: React.FC<FooterProps> = props => {
         <FooterItem
           title="Stats"
           onPress={() => {
-            props.navigation.navigate(Routes.Stats);
+            props.navigation.navigate(Routes.Stats, {
+              selectedDate,
+            });
           }}>
           <FontAwesome name="bar-chart" color="#fff" size={30} />
         </FooterItem>

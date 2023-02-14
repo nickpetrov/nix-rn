@@ -2,6 +2,7 @@
 import React, {useState, useEffect} from 'react';
 import InAppReview from 'react-native-in-app-review';
 import moment from 'moment-timezone';
+import SQLite from 'react-native-sqlite-storage';
 
 // components
 import {Linking, Platform, View, Text} from 'react-native';
@@ -21,6 +22,8 @@ import {
   setInfoMessage,
   showAgreementPopup,
 } from 'store/base/base.actions';
+import {checkSubscriptions} from 'store/coach/coach.actions';
+import {setDB} from 'store/base/base.actions';
 
 // styles
 import {styles} from './MainContent.styles';
@@ -28,7 +31,7 @@ import TooltipView from 'components/TooltipView';
 
 const MainContent = () => {
   const dispatch = useDispatch();
-  const {agreementPopup, infoMessage, askForReview, reviewCheck, offline} =
+  const {agreementPopup, infoMessage, askForReview, reviewCheck, offline, db} =
     useSelector(state => state.base);
   const [showRatePopup, setShowRatePopup] = useState(false);
 
@@ -94,6 +97,34 @@ const MainContent = () => {
     reviewCheck.popupShown,
     reviewCheck.scheduleDate,
   ]);
+
+  useEffect(() => {
+    if (!db?.transaction) {
+      dispatch(
+        setDB(
+          SQLite.openDatabase(
+            {
+              name: 'track_db',
+              // createFromLocation: 1,
+              location: Platform.OS === 'ios' ? 'default' : 'Shared',
+            },
+            () => {
+              console.log('Re-open connection success!');
+            },
+            error => {
+              console.log('error open db', error);
+            },
+          ),
+        ),
+      );
+    }
+  }, [db?.transaction, dispatch]);
+
+  useEffect(() => {
+    if (db?.transaction) {
+      dispatch(checkSubscriptions());
+    }
+  }, [db?.transaction, dispatch]);
 
   return (
     <>

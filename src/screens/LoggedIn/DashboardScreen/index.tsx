@@ -1,7 +1,6 @@
 // utils
 import React, {useState, useEffect, useLayoutEffect, useMemo} from 'react';
 import moment from 'moment-timezone';
-import SQLite from 'react-native-sqlite-storage';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import {useDrawerStatus} from '@react-navigation/drawer';
 
@@ -12,7 +11,6 @@ import {
   RefreshControl,
   SectionList,
   TouchableHighlight,
-  Platform,
 } from 'react-native';
 import BasketButton from 'components/BasketButton';
 import Footer from 'components/Footer';
@@ -42,10 +40,8 @@ import useLocalNotification from 'hooks/useLocalNotification';
 // actinos
 import * as userLogActions from 'store/userLog/userLog.actions';
 import {addExistFoodToBasket, mergeBasket} from 'store/basket/basket.actions';
-import {setDB} from 'store/base/base.actions';
 import {setWalkthroughTooltip} from 'store/walkthrough/walkthrough.actions';
 import {setOfflineMode} from 'store/base/base.actions';
-import {checkSubscriptions} from 'store/coach/coach.actions';
 
 // constant
 import {Routes} from 'navigation/Routes';
@@ -97,7 +93,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const {foods, totals, selectedDate, weights, exercises} = useSelector(
     state => state.userLog,
   );
-  const db = useSelector(state => state.base.db);
   let rowRefs = new Map<string | mealTypes, Swipeable>();
   const userData = useSelector(state => state.auth.userData);
   const uncompletedProfile =
@@ -285,31 +280,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     checkedEvents.firstOfflineMode,
     isFocused,
   ]);
-
-  useEffect(() => {
-    if (!db?.transaction) {
-      dispatch(
-        setDB(
-          SQLite.openDatabase(
-            {
-              name: 'track_db',
-              // createFromLocation: 1,
-              location: Platform.OS === 'ios' ? 'default' : 'Shared',
-            },
-            () => {
-              console.log('Re-open connection success!');
-              dispatch(checkSubscriptions());
-            },
-            error => {
-              console.log('error open db', error);
-            },
-          ),
-        ),
-      );
-    } else {
-      dispatch(checkSubscriptions());
-    }
-  }, [db, dispatch]);
 
   const getEmptySectionText = (key: string) => {
     let noLoggedDataText = 'No foods logged yet.';

@@ -97,7 +97,9 @@ export interface StackNavigatorParamList extends ParamListBase {
     from?: string;
     new_product?: boolean;
   };
-  [Routes.Stats]: undefined;
+  [Routes.Stats]: {
+    selectedDate: string;
+  };
   [Routes.Logout]: undefined;
   [Routes.GroceryAgentMode]: undefined;
   [Routes.Camera]: {barcode: string; picType: number};

@@ -3,7 +3,7 @@ import {TotalProps, WeightProps} from 'store/userLog/userLog.types';
 export enum statsActionTypes {
   STATS_GET_DAY_TOTALS = 'STATS_GET_DAY_TOTALS',
   STATS_GET_WEIGHTS = 'STATS_GET_WEIGHTS',
-  STATE_CLEAR = 'STATE_CLEAR',
+  STATS_CLEAR = 'STATS_CLEAR',
 }
 
 export interface StatsState {
@@ -28,8 +28,11 @@ export type statsGetWeights = {
   weights: Array<WeightProps>;
   add: boolean;
 };
-export type clearStats = {
-  type: statsActionTypes.STATE_CLEAR;
+export type clearStatsAction = {
+  type: statsActionTypes.STATS_CLEAR;
 };
 
-export type StatsActions = statsGetDayTotals | statsGetWeights | clearStats;
+export type StatsActions =
+  | statsGetDayTotals
+  | statsGetWeights
+  | clearStatsAction;

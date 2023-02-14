@@ -1,5 +1,5 @@
 // utils
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback, useMemo} from 'react';
 import moment from 'moment';
 
 // components
@@ -36,15 +36,19 @@ interface HeatMapProps {
 const HeatMap: React.FC<HeatMapProps> = props => {
   const dispatch = useDispatch();
   // look for colors https://github.com/nutritionix/angular-diet-graph-directive/blob/master/src/angular-diet-graph-directive.scss
-  const colorsArray = props.colors || [
-    '#ededed',
-    '#58a61c',
-    '#88c25a',
-    '#bbdca2',
-    '#f29898',
-    '#e64a48',
-    '#dc0000',
-  ];
+  const colorsArray = useMemo(
+    () =>
+      props.colors || [
+        '#ededed',
+        '#58a61c',
+        '#88c25a',
+        '#bbdca2',
+        '#f29898',
+        '#e64a48',
+        '#dc0000',
+      ],
+    [props.colors],
+  );
   const [canvasWidth, setCanvasWidth] = useState(200);
   const [canvasHeight, setCanvasHeight] = useState(200);
   const [daysInMonth, setDaysInMonth] = useState<string>(
@@ -79,7 +83,7 @@ const HeatMap: React.FC<HeatMapProps> = props => {
           7,
       ),
     );
-  }, [props]);
+  }, [props.targets, props.values, props.daysInMonth, props.skipFromStart]);
 
   useEffect(() => {
     setCanvasWidth((SQUARE_SIZE + gutterSize) * 7);
@@ -89,92 +93,116 @@ const HeatMap: React.FC<HeatMapProps> = props => {
     setCanvasHeight((SQUARE_SIZE + gutterSize) * weeksInMonth);
   }, [gutterSize, SQUARE_SIZE, weeksInMonth]);
 
-  const getSquareSizeWithGutter = () => {
+  const getSquareSizeWithGutter = useCallback(() => {
     return SQUARE_SIZE + gutterSize;
-  };
+  }, [SQUARE_SIZE, gutterSize]);
 
   // look for percent - legend at https://github.com/nutritionix/angular-diet-graph-directive/blob/master/src/angular-diet-graph-directive.js
-  const getFillColor = (value: number, goal: number) => {
-    const percent = Math.round((value / goal) * 100);
-    let color = colorsArray[0];
-    switch (true) {
-      case percent >= 115:
-        color = colorsArray[6];
-        break;
-      case percent >= 107.5:
-        color = colorsArray[5];
-        break;
-      case percent >= 100:
-        color = colorsArray[4];
-        break;
-      case percent >= 92.5:
-        color = colorsArray[3];
-        break;
-      case percent >= 85:
-        color = colorsArray[2];
-        break;
-      case percent > 0 && percent < 85:
-      case value / goal > 0 && percent === 0:
-      case value < 0:
-        color = colorsArray[1];
-        break;
-      default:
-        color = colorsArray[0];
-    }
-    return color;
-  };
+  const getFillColor = useCallback(
+    (value: number, goal: number) => {
+      const percent = Math.round((value / goal) * 100);
+      let color = colorsArray[0];
+      switch (true) {
+        case percent >= 115:
+          color = colorsArray[6];
+          break;
+        case percent >= 107.5:
+          color = colorsArray[5];
+          break;
+        case percent >= 100:
+          color = colorsArray[4];
+          break;
+        case percent >= 92.5:
+          color = colorsArray[3];
+          break;
+        case percent >= 85:
+          color = colorsArray[2];
+          break;
+        case percent > 0 && percent < 85:
+        case value / goal > 0 && percent === 0:
+        case value < 0:
+          color = colorsArray[1];
+          break;
+        default:
+          color = colorsArray[0];
+      }
+      return color;
+    },
+    [colorsArray],
+  );
 
-  const getSquareCoordinates = (dayIndex: number, weekIndex: number) => {
-    const multiplyer = dayIndex % 7;
-    return [
-      multiplyer * getSquareSizeWithGutter() + '',
-      weekIndex * getSquareSizeWithGutter() + '',
-    ];
-  };
+  const getSquareCoordinates = useCallback(
+    (dayIndex: number, weekIndex: number) => {
+      const multiplyer = dayIndex % 7;
+      return [
+        multiplyer * getSquareSizeWithGutter() + '',
+        weekIndex * getSquareSizeWithGutter() + '',
+      ];
+    },
+    [getSquareSizeWithGutter],
+  );
 
-  const renderSquare = (dayIndex: number, weekIndex: number) => {
-    const [x, y] = getSquareCoordinates(dayIndex, weekIndex);
-    const fillColor = getFillColor(
-      values[dayIndex - parseInt(String(props.skipFromStart)) - 1] || 0,
-      targets[dayIndex - parseInt(String(props.skipFromStart)) - 1] || 2000,
-    );
-    return (
-      <G
-        key={`${dayIndex}-${weekIndex}-${String(props.skipFromStart)}`}
-        onPress={() => {
-          const newDate = moment()
-            .set('year', +props.selectedYear)
-            .set('month', +moment().month(props.selectedMonth).format('M') - 1)
-            .startOf('month')
-            .add(dayIndex - parseInt(String(props.skipFromStart)) - 1, 'days')
-            .format('YYYY-MM-DD');
-          dispatch(changeSelectedDay(newDate));
-          props.navigation.replace(Routes.Dashboard);
-        }}>
-        <Rect
-          key={dayIndex}
-          width={SQUARE_SIZE}
-          height={SQUARE_SIZE}
-          x={x}
-          y={y}
-          // title={getTitleForIndex(index, valueCache, titleForValue)}
-          // onPress={() => handleClick(index)}
-          fill={fillColor}
-          // {...getTooltipDataAttrsForIndex(index, valueCache, tooltipDataAttrs)}
-        />
-        <Text
-          x={parseInt(x) + SQUARE_SIZE / 2}
-          y={parseInt(y) + (SQUARE_SIZE + gutterSize) / 2}
-          fontSize={10}
-          fill={'#000'}
-          textAnchor="middle">
-          {dayIndex - parseInt(String(props.skipFromStart))}
-        </Text>
-      </G>
-    );
-  };
+  const renderSquare = useCallback(
+    (dayIndex: number, weekIndex: number) => {
+      const [x, y] = getSquareCoordinates(dayIndex, weekIndex);
+      const fillColor = getFillColor(
+        values[dayIndex - parseInt(String(props.skipFromStart)) - 1] || 0,
+        targets[dayIndex - parseInt(String(props.skipFromStart)) - 1] || 2000,
+      );
+      return (
+        <G
+          key={`${dayIndex}-${weekIndex}-${String(props.skipFromStart)}`}
+          onPress={() => {
+            const newDate = moment()
+              .set('year', +props.selectedYear)
+              .set(
+                'month',
+                +moment().month(props.selectedMonth).format('M') - 1,
+              )
+              .startOf('month')
+              .add(dayIndex - parseInt(String(props.skipFromStart)) - 1, 'days')
+              .format('YYYY-MM-DD');
+            dispatch(changeSelectedDay(newDate));
+            props.navigation.navigate(Routes.Dashboard);
+          }}>
+          <Rect
+            key={dayIndex}
+            width={SQUARE_SIZE}
+            height={SQUARE_SIZE}
+            x={x}
+            y={y}
+            // title={getTitleForIndex(index, valueCache, titleForValue)}
+            // onPress={() => handleClick(index)}
+            fill={fillColor}
+            // {...getTooltipDataAttrsForIndex(index, valueCache, tooltipDataAttrs)}
+          />
+          <Text
+            x={parseInt(x) + SQUARE_SIZE / 2}
+            y={parseInt(y) + (SQUARE_SIZE + gutterSize) / 2}
+            fontSize={10}
+            fill={'#000'}
+            textAnchor="middle">
+            {dayIndex - parseInt(String(props.skipFromStart))}
+          </Text>
+        </G>
+      );
+    },
+    [
+      SQUARE_SIZE,
+      dispatch,
+      getFillColor,
+      getSquareCoordinates,
+      gutterSize,
+      props.navigation,
+      props.selectedMonth,
+      props.selectedYear,
+      props.skipFromStart,
+      targets,
+      values,
+    ],
+  );
 
-  const renderMonth = () => {
+  const renderMonth = useCallback(() => {
     let month = [];
     let weekIndex = -1;
     for (
@@ -192,7 +220,7 @@ const HeatMap: React.FC<HeatMapProps> = props => {
       }
     }
     return month;
-  };
+  }, [renderSquare, daysInMonth, props.skipFromStart]);
 
   return (
     <View>

@@ -1,6 +1,7 @@
 import userLogService from 'api/userLogService';
 import {Dispatch} from 'redux';
 import {
+  clearStatsAction,
   getWeightParams,
   statsActionTypes,
   statsGetDayTotals,
@@ -60,4 +61,8 @@ export const getStatsWeight = (params?: getWeightParams) => {
       console.log(error);
     }
   };
+};
+
+export const clearStats = (): clearStatsAction => {
+  return {type: statsActionTypes.STATS_CLEAR};
 };

@@ -11,7 +11,7 @@ import HeatMap from './components/HeatMap';
 import {useSelector, useDispatch} from 'hooks/useRedux';
 
 // actions
-import {getDayTotals} from 'store/stats/stats.actions';
+import {clearStats, getDayTotals} from 'store/stats/stats.actions';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -68,7 +68,7 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
   const isNextMonths = moment(props.initialDisplayDate)
     .add(monthOffset, 'month')
     .isAfter(moment());
-  console.log('isNextMonths', isNextMonths);
+
   const dayPassedFromTheStartOfMonth = isNextMonths
     ? 0
     : isCurrentMonth
@@ -102,15 +102,14 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         .startOf('month')
         .format('d'),
     );
-    setDaysInMonth(
-      moment(props.initialDisplayDate)
-        .add(monthOffset, 'month')
-        .endOf('month')
-        .format('DD'),
-    );
-    setValues(new Array(parseInt(daysInMonth)));
-    setTargets(new Array(parseInt(daysInMonth)));
-  }, [monthOffset, props.initialDisplayDate, daysInMonth]);
+    const newDaysInMonth = moment(props.initialDisplayDate)
+      .add(monthOffset, 'month')
+      .endOf('month')
+      .format('DD');
+    setDaysInMonth(newDaysInMonth);
+    setValues(new Array(parseInt(newDaysInMonth)));
+    setTargets(new Array(parseInt(newDaysInMonth)));
+  }, [monthOffset, props.initialDisplayDate]);
 
   useEffect(() => {
     dispatch(getDayTotals(startDate, endDate));
@@ -142,7 +141,11 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         });
       }
     });
-  }, [dates]);
+
+    return () => {
+      dispatch(clearStats());
+    };
+  }, [dates, dispatch]);
 
   return (
     <>
