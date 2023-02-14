@@ -154,16 +154,14 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
     foodToLog = nixApiDataUtilites.convertV1ItemToTrackFood(foodToLog);
 
     dispatch(addExistFoodToBasket([foodToLog])).then(() => {
-      if (route.params?.mealType) {
-        dispatch(
-          mergeBasket({
-            meal_type:
-              route.params?.mealType || emptyBasket
-                ? guessMealTypeByTime(moment().hours())
-                : undefined,
-          }),
-        );
-      }
+      dispatch(
+        mergeBasket({
+          meal_type:
+            route.params?.mealType || emptyBasket
+              ? guessMealTypeByTime(moment().hours())
+              : undefined,
+        }),
+      );
       navigation.navigate(Routes.Basket);
     });
   };
