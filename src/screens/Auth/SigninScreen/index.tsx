@@ -1,8 +1,15 @@
 // utils
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 
 // components
-import {View, Text, Image, SafeAreaView, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  SafeAreaView,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 import {Formik} from 'formik';
 import {NixButton} from 'components/NixButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -32,6 +39,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
   const [validOnChange, setValidOnChange] = useState(false);
   const {isLoading, loginValidationSchema, loginHandler, createAccountHandler} =
     useSignIn(navigation);
+  const passwordRef = useRef<TextInput | null>(null);
 
   useEffect(() => {
     navigation.setOptions({
@@ -81,6 +89,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
     <KeyboardAwareScrollView
       enableOnAndroid={true}
       enableAutomaticScroll={true}
+      keyboardShouldPersistTaps="always"
       style={styles.keyboardView}>
       <SafeAreaView style={styles.loginWrapper}>
         <View style={styles.contentWrapper}>
@@ -123,6 +132,9 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                     withErrorBorder
                     autoCorrect={false}
                     editable={!isLoading}
+                    returnKeyType="next"
+                    onSubmitEditing={() => passwordRef.current?.focus()}
+                    blurOnSubmit={false}
                   />
                   <NixInput
                     rootStyles={{
@@ -134,6 +146,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                     value={values.password}
                     onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
+                    ref={passwordRef}
                     autoCapitalize="none"
                     secureTextEntry={true}
                     error={errors.password}

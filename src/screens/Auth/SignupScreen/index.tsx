@@ -42,6 +42,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
     <KeyboardAwareScrollView
       enableOnAndroid={true}
       enableAutomaticScroll={true}
+      keyboardShouldPersistTaps="always"
       extraHeight={200}
       style={styles.keyboardView}>
       <SafeAreaView style={styles.loginWrapper}>
