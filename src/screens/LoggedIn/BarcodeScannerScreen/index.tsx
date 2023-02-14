@@ -1,15 +1,17 @@
 // utils
 import React, {useState, useEffect, useCallback} from 'react';
+import moment from 'moment-timezone';
 
 // components
 import {Text, View} from 'react-native';
+import Scanner from 'components/Scanner';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
 import {clearSnanedFood, getFoodByQRcode} from 'store/foods/foods.actions';
-import {addFoodToBasket} from 'store/basket/basket.actions';
+import {addFoodToBasket, mergeBasket} from 'store/basket/basket.actions';
 import {addExistFoodToBasket} from 'store/basket/basket.actions';
 
 // constants
@@ -28,11 +30,11 @@ import {
   externalLinkV2,
   externalLinkV3,
 } from 'helpers/externalLinks';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 // styles
 import {styles} from './BarcodeScannerScreen.styles';
-import Scanner from 'components/Scanner';
-import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface BarcodeScannerScreenProps {
   navigation: NativeStackNavigationProp<
@@ -52,23 +54,37 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
     const force_photo_upload = route.params?.force_photo_upload;
     const dispatch = useDispatch();
     const foodFindByQRcode = useSelector(state => state.foods.foodFindByQRcode);
+    const emptyBasket = useSelector(state => state.basket.foods.length === 0);
     const [barcode, setBarcode] = useState<string | null>(null);
+
+    const callBackAfterAddFoodToBasket = useCallback(() => {
+      dispatch(
+        mergeBasket({
+          meal_type: emptyBasket
+            ? guessMealTypeByTime(moment().hours())
+            : undefined,
+          consumed_at: moment().format('YYYY-MM-DD'),
+        }),
+      );
+    }, [dispatch, emptyBasket]);
 
     useEffect(() => {
       if (barcode && barcode.length > 14) {
         if (barcode.includes('nutritionix.com/q1')) {
-          dispatch(addExistFoodToBasket([externalLinkV1(barcode)])).then(() =>
+          dispatch(addExistFoodToBasket([externalLinkV1(barcode)])).then(() => {
+            callBackAfterAddFoodToBasket();
             navigation.navigate(Routes.Basket, {
               from: Routes.BarcodeScanner,
-            }),
-          );
+            });
+          });
         } else if (barcode.includes('nutritionix.com/q2')) {
           dispatch(addFoodToBasket(externalLinkV2(barcode)))
-            .then(() =>
+            .then(() => {
+              callBackAfterAddFoodToBasket();
               navigation.navigate(Routes.Basket, {
                 from: Routes.BarcodeScanner,
-              }),
-            )
+              });
+            })
             .catch(err => console.log(err));
         } else if (barcode.includes('nutritionix.com/q3')) {
           externalLinkV3(barcode).then(foods => {
@@ -90,13 +106,14 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
                   }),
                 );
               }
+              callBackAfterAddFoodToBasket();
             }
           });
         }
       } else if (barcode) {
         dispatch(getFoodByQRcode(barcode, force_photo_upload))
           .then((foods?: FoodProps[] | null) => {
-            console.log('Exist food');
+            callBackAfterAddFoodToBasket();
             // return foods only if foods need to be updated
             if (
               foods &&
@@ -160,6 +177,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
       if (barcode) {
         analyticTrackEvent('foodlog_barcode', barcode);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
       barcode,
       dispatch,

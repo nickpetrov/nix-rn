@@ -115,6 +115,7 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
         dispatch(
           basketActions.mergeBasket({
             meal_type: guessMealTypeByTime(moment().hours()),
+            consumed_at: moment().format('YYYY-MM-DD'),
           }),
         );
       }

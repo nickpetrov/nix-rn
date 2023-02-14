@@ -673,6 +673,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     })),
                   ),
                 );
+                // close all swipes after delete
+                [...rowRefs.values()].forEach(ref => {
+                  if (ref) {
+                    ref.close();
+                  }
+                });
               }
             },
           },

@@ -70,14 +70,14 @@ const History: React.FC<HistoryProps> = () => {
 
   const addFoodToBasket = (food: FoodProps) => {
     batch(() => {
-      dispatch(
-        basketActions.mergeBasket({
-          meal_type: emptyBasket
-            ? guessMealTypeByTime(moment().hours())
-            : undefined,
-          consumed_at: moment().format(),
-        }),
-      );
+      if (emptyBasket) {
+        dispatch(
+          basketActions.mergeBasket({
+            meal_type: guessMealTypeByTime(moment().hours()),
+            consumed_at: moment().format('YYYY-MM-DD'),
+          }),
+        );
+      }
       dispatch(
         basketActions.addFoodToBasketById(food.id || food.uuid || ''),
       ).catch(err => {

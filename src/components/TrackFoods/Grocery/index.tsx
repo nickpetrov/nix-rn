@@ -82,6 +82,7 @@ const Grocery: React.FC<GroceryProps> = () => {
       if (emptyBasket) {
         dispatch(
           basketActions.mergeBasket({
+            consumed_at: moment().format('YYYY-MM-DD'),
             meal_type: guessMealTypeByTime(moment().hours()),
           }),
         );
