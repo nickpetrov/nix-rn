@@ -27,9 +27,11 @@ import {Colors} from 'constants/Colors';
 // types
 import {CountryCodes} from 'screens/LoggedIn/CompleteRegistration/types';
 
-type Props = {};
+type Props = {
+  scrollToInput: (view: TextInput | null) => void;
+};
 
-const StepOneForm: React.FC<Props> = () => {
+const StepOneForm: React.FC<Props> = ({scrollToInput}) => {
   const dispatch = useDispatch();
   const [validOnChange, setValidOnChange] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -155,6 +157,9 @@ const StepOneForm: React.FC<Props> = () => {
                 error={touched.email ? errors.email : undefined}
                 errorStyles={styles.errorStyle}
                 editable={!isLoading}
+                onFocus={() => {
+                  scrollToInput(emailRef.current);
+                }}
               />
               <NixInput
                 rootStyles={styles.inputRoot}
@@ -172,6 +177,9 @@ const StepOneForm: React.FC<Props> = () => {
                 error={touched.confirmEmail ? errors.confirmEmail : undefined}
                 errorStyles={styles.errorStyle}
                 editable={!isLoading}
+                onFocus={() => {
+                  scrollToInput(confirmRef.current);
+                }}
               />
               <NixInput
                 rootStyles={styles.inputRoot}
@@ -187,6 +195,9 @@ const StepOneForm: React.FC<Props> = () => {
                 error={touched.password ? errors.password : undefined}
                 errorStyles={styles.errorStyle}
                 editable={!isLoading}
+                onFocus={() => {
+                  scrollToInput(passwordRef.current);
+                }}
               />
               <View style={styles.countrySelect}>
                 <Text style={styles.countrySelectText}>Country</Text>

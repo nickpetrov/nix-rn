@@ -1,8 +1,16 @@
 // utils
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef, useCallback} from 'react';
 
 // components
-import {View, Image, SafeAreaView, Text} from 'react-native';
+import {
+  View,
+  Image,
+  SafeAreaView,
+  Text,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TextInput,
+} from 'react-native';
 import StepOneForm from './components/StepOneForm';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -23,6 +31,8 @@ interface SignupScreenProps {
 }
 
 export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
+  const scrollRef = useRef<Element>();
+
   useEffect(() => {
     navigation.setOptions({
       headerShadowVisible: false,
@@ -38,25 +48,46 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
     });
   }, [navigation]);
 
+  const scrollToInput = useCallback((view: TextInput | null) => {
+    if (view && scrollRef.current) {
+      view.measureLayout(
+        // @ts-ignores
+        scrollRef.current,
+        (left: number, top: number) => {
+          // @ts-ignore
+          scrollRef.current?.scrollTo({y: top - 100, animated: true});
+        },
+        () => {
+          console.log('fail scroll');
+        },
+      );
+    }
+  }, []);
+
   return (
-    <KeyboardAwareScrollView
-      enableOnAndroid={true}
-      enableAutomaticScroll={true}
-      keyboardShouldPersistTaps="always"
-      extraHeight={200}
-      style={styles.keyboardView}>
-      <SafeAreaView style={styles.loginWrapper}>
-        <View style={styles.contentWrapper}>
-          <View style={styles.logo}>
-            <Image
-              style={styles.logoImage}
-              source={require('assets/images/icon.png')}
-              resizeMode="contain"
-            />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex: 1}}>
+      <KeyboardAwareScrollView
+        innerRef={ref => {
+          scrollRef.current = ref;
+        }}
+        enableOnAndroid={true}
+        enableAutomaticScroll={true}
+        keyboardShouldPersistTaps="handled"
+        extraHeight={200}
+        style={styles.keyboardView}>
+        <SafeAreaView style={styles.loginWrapper}>
+          <View style={styles.contentWrapper}>
+            <View style={styles.logo}>
+              <Image
+                style={styles.logoImage}
+                source={require('assets/images/icon.png')}
+                resizeMode="contain"
+              />
+            </View>
+            <StepOneForm scrollToInput={scrollToInput} />
           </View>
-          <StepOneForm />
-        </View>
-      </SafeAreaView>
-    </KeyboardAwareScrollView>
+        </SafeAreaView>
+      </KeyboardAwareScrollView>
+    </TouchableWithoutFeedback>
   );
 };
