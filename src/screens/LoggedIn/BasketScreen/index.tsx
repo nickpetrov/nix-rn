@@ -74,6 +74,7 @@ import {Routes} from 'navigation/Routes';
 // styles
 import {styles} from './BasketScreen.styles';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {store} from 'store/index';
 
 interface BasketScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Basket>;
@@ -215,7 +216,8 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   const logFoods = () => {
     setLoadingSubmit(true);
     let loggingOptions: Partial<loggingOptionsProps> = {};
-    const clonedFoods = _.cloneDeep(foods);
+    const basketFoods = store.getState().basket.foods;
+    const clonedFoods = _.cloneDeep(basketFoods);
     let adjustedFoods = clonedFoods;
 
     if (isSingleFood) {
@@ -748,8 +750,12 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                   ? 'Log 1 Food'
                   : `Log ${foods.length} Foods`
               }
-              onPressIn={Keyboard.dismiss}
-              onPress={handleSubmit}
+              onPress={() => {
+                Keyboard.dismiss();
+                setTimeout(() => {
+                  handleSubmit();
+                }, 500);
+              }}
               type="primary"
               style={{borderRadius: 0}}
             />
