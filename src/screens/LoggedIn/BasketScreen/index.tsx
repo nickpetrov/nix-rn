@@ -91,6 +91,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   } = useSelector(state => state.walkthrough.checkedEvents);
   const helpPopupInfo = route.params?.helpPopup;
   const [helpPopup, setHelpPopup] = useState(false);
+  const timezone = useSelector(state => state.auth.userData.timezone);
   const {agreedToUsePhoto, reviewCheck} = useSelector(state => state.base);
   const [deleteteModal, setDeleteteModal] = useState(false);
   const [isUploadPhotoLoading, setIsUploadPhotoLoading] = useState(false);
@@ -298,9 +299,12 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
         }
         dispatch(basketActions.reset());
         setLoadingSubmit(false);
-        const consumed_at_data = moment(loggingOptions.consumed_at).format(
-          'YYYY-MM-DD',
-        );
+
+        const consumed_at_data = moment
+          .utc(loggingOptions.consumed_at)
+          .tz(timezone)
+          .format('YYYY-MM-DD');
+
         if (consumed_at_data !== selectedDate) {
           dispatch(userLogActions.changeSelectedDay(consumed_at_data));
         }
