@@ -38,7 +38,7 @@ export const capitalize = (sentence: string) => {
 
   return words
     .map((word: string) => {
-      return word[0].toUpperCase() + word.substring(1);
+      return word[0]?.toUpperCase() + word?.substring(1);
     })
     .join(' ');
 };
