@@ -102,10 +102,20 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           setFoodObj(prevFood => {
             return {
               ...prevFood,
-              ...resp,
+              ..._.pick(resp, [
+                'food_name',
+                'full_nutrients',
+                'photo',
+                'serving_qty',
+                'serving_unit',
+                'serving_weight_grams',
+                'source',
+                'source_key',
+              ]),
               ...nixApiDataUtilites.convertFullNutrientsToNfAttributes(
                 resp?.full_nutrients || [],
               ),
+              id: route.params?.food?.id,
             };
           });
           setShowPreloader(false);
