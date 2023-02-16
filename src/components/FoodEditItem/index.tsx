@@ -162,7 +162,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
             <ModalSelector
               style={styles.picker}
               initValueTextStyle={{
-                fontSize: 16,
+                fontSize: 14,
                 color: '#000',
                 textAlign: 'left',
               }}
@@ -180,8 +180,16 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
               onChange={option => measureChange(option.value)}
               keyExtractor={(item: {label: string; value: string}) =>
                 item.value
-              }
-            />
+              }>
+              <View style={[styles.picker, styles.serving_select]}>
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  style={{fontSize: 14, color: '#000', textAlign: 'left'}}>
+                  {servingUnit}
+                </Text>
+              </View>
+            </ModalSelector>
           ) : (
             <Text style={styles.pickerText}>{servingUnit}</Text>
           )}
