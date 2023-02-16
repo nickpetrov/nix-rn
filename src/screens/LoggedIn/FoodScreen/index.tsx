@@ -4,6 +4,7 @@ import moment from 'moment-timezone';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import _ from 'lodash';
 import {Easing} from 'react-native-reanimated';
+import {Platform} from 'react-native';
 
 // helpers
 import {defaultOption} from 'helpers/nutrionixLabel';
@@ -341,18 +342,20 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   );
 
   const handleShare = () => {
+    const url =
+      'https://nutritionix.app.link/q3?ufl=' +
+      foodObj.id +
+      '&s=' +
+      foodObj.share_key;
     Share.share({
-      url:
-        'https://nutritionix.app.link/q3?ufl=' +
-        foodObj.id +
-        '&s=' +
-        foodObj.share_key,
+      url,
       message:
         'Log ' +
         foodObj.food_name.replace(/\w\S*/g, function (txt) {
           return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         }) +
-        ' on the Nutritionix Track app by tapping this link from your mobile phone: ',
+        ' on the Nutritionix Track app by tapping this link from your mobile phone: ' +
+        `${Platform.OS === 'ios' ? '' : url}`,
       title: 'Pick an app',
     });
   };
