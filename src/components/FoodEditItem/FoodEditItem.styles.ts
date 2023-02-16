@@ -25,12 +25,12 @@ export const styles = StyleSheet.create({
   },
   imageContainer: {
     flexGrow: 1,
-    maxWidth: 48,
+    maxWidth: 45,
   },
   foodThumb: {
     width: 40,
     height: 40,
-    marginRight: 8,
+    marginRight: 5,
   },
   servingWrapper: {
     flexDirection: 'row',
@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
   },
   qty_input: {
-    marginRight: 10,
+    marginRight: 5,
     paddingVertical: 5,
     paddingHorizontal: 2,
     borderWidth: 1,
