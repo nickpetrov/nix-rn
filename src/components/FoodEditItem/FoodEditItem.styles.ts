@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 6,
-    flex: 1,
+    flexGrow: 1,
   },
   qty_input: {
     marginRight: 10,
@@ -65,20 +65,28 @@ export const styles = StyleSheet.create({
     fontFamily: 'System',
   },
   main: {
+    maxWidth: '80%',
     flex: 1,
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'stretch',
     marginRight: 10,
   },
   pickerContainer: {
+    flexBasis: 'auto',
     flexGrow: 1,
+    flexShrink: 1,
+    alignSelf: 'stretch',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   pickerText: {
     color: Colors.Gray8,
   },
   picker: {
     flexGrow: 1,
+    justifyContent: 'center',
+    alignSelf: 'stretch',
+    height: 40,
   },
   footer: {
     minWidth: '20%',

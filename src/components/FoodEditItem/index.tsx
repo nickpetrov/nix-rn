@@ -164,6 +164,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
               initValueTextStyle={{
                 fontSize: 16,
                 color: '#000',
+                textAlign: 'left',
               }}
               optionTextStyle={{
                 fontSize: 16,
