@@ -53,7 +53,7 @@ export const WeightGraph: React.FC = () => {
     state => state.auth.userData.measure_system,
   );
   const weightUnit = measure_system ? 'kg' : 'lbs';
-  console.log('weights', weights);
+
   useEffect(() => {
     const params = {
       begin: moment(dates.from).format('YYYY-MM-DD'),
