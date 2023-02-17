@@ -186,8 +186,16 @@ export const addCustomFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
         'nf_p',
       ];
       const keep = _.pick(nf, accepted);
-      _.extend(foodToLog, keep);
-      const scaled_food = multiply(foodToLog, 1 / serving_qty, 1);
+      const foodToLogWithNeedField = _.pick(foodToLog, [
+        'food_name',
+        'full_nutrients',
+        'photo',
+        'serving_qty',
+        'serving_unit',
+        'serving_weight_grams',
+      ]);
+      _.extend(foodToLogWithNeedField, keep);
+      const scaled_food = multiply(foodToLogWithNeedField, 1 / serving_qty, 1);
       return {
         ...scaled_food,
         consumed_at:
