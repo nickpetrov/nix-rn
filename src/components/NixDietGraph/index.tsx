@@ -11,7 +11,7 @@ import HeatMap from './components/HeatMap';
 import {useSelector, useDispatch} from 'hooks/useRedux';
 
 // actions
-import {clearStats, getDayTotals} from 'store/stats/stats.actions';
+import {getDayTotals} from 'store/stats/stats.actions';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -141,10 +141,6 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         });
       }
     });
-
-    return () => {
-      dispatch(clearStats());
-    };
   }, [dates, dispatch]);
 
   return (

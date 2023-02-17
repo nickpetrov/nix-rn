@@ -1,5 +1,5 @@
 // utils
-import React from 'react';
+import React, {useEffect} from 'react';
 
 // componetns
 import {View, ScrollView} from 'react-native';
@@ -8,7 +8,10 @@ import NixDietGraph from 'components/NixDietGraph';
 import {WeightGraph} from 'components/WeightGraph';
 
 // hooks
-import {useSelector} from 'hooks/useRedux';
+import {useSelector, useDispatch} from 'hooks/useRedux';
+
+// actions
+import {clearStats} from 'store/stats/stats.actions';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -28,8 +31,15 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({
   navigation,
   route,
 }) => {
+  const dispatch = useDispatch();
   const daily_kcal = useSelector(state => state.auth.userData.daily_kcal);
   const selectedDate = route.params.selectedDate;
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearStats());
+    };
+  }, [dispatch]);
 
   return (
     <>
