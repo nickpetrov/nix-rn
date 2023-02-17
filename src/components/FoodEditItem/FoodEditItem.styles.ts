@@ -80,6 +80,10 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pickerText: {
+    width: '100%',
+    paddingLeft: 5,
+    alignSelf: 'flex-start',
+    textAlign: 'left',
     color: Colors.Gray8,
   },
   picker: {

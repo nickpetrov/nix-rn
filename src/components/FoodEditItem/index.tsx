@@ -191,7 +191,12 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
               </View>
             </ModalSelector>
           ) : (
-            <Text style={styles.pickerText}>{servingUnit}</Text>
+            <Text
+              ellipsizeMode="tail"
+              numberOfLines={2}
+              style={styles.pickerText}>
+              {servingUnit}
+            </Text>
           )}
         </View>
       </View>
