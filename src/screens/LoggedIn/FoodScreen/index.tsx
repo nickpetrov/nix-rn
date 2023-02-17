@@ -297,7 +297,6 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       target?: string | undefined;
     }>,
   ) => {
-    Keyboard.dismiss();
     setShowSpinner(true);
     analyticTrackEvent('updatedFood', foodObj.food_name);
     dispatch(updateFoodFromlog([foodObj]))
@@ -668,7 +667,15 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           style={styles.saveBtnContainer}>
           <TouchableOpacity
             style={styles.saveBtn}
-            onPress={() => handleSave()}
+            onPressIn={() => {
+              setShowSpinner(true);
+              Keyboard.dismiss();
+            }}
+            onPress={() => {
+              setTimeout(() => {
+                handleSave();
+              }, 300);
+            }}
             disabled={showSpinner}>
             <Text style={styles.saveBtnText}>Save</Text>
           </TouchableOpacity>
