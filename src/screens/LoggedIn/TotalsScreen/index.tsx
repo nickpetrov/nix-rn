@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
   TextInput,
+  Keyboard,
 } from 'react-native';
 import NutritionPieChart, {
   pieChartDataProps,
@@ -122,7 +123,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           : `${mealType} - ${moment(followDate).format('ddd, MM/DD')}`,
     });
   }, [navigation, mealType, followDate]);
-  console.log('clientTotals', clientTotals);
+
   useEffect(() => {
     if (clientTotals.length) {
       if (clientTotals[0].daily_kcal_limit) {
@@ -269,15 +270,29 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   }, [foods]);
 
   const updateCalorieLimit = () => {
-    if (userData.daily_kcal !== dailyKcal) {
-      dispatch(userActions.updateUserData({daily_kcal: dailyKcal} as User))
-        .then(() => {
-          analyticTrackEvent(
-            'changedCalorieLimit',
-            'From ' + userData.daily_kcal + ' to ' + dailyKcal,
-          );
-        })
-        .catch(err => console.log(err));
+    Keyboard.dismiss();
+    if (dailyKcal) {
+      if (followDate === moment().format('YYYY-MM-DD')) {
+        if (userData.daily_kcal !== dailyKcal) {
+          dispatch(userActions.updateUserData({daily_kcal: dailyKcal} as User))
+            .then(() => {
+              analyticTrackEvent(
+                'changedCalorieLimit',
+                'From ' + userData.daily_kcal + ' to ' + dailyKcal,
+              );
+            })
+            .catch(err => console.log(err));
+        }
+      } else {
+        dispatch(logActions.setDayCalorieLimit(followDate, dailyKcal))
+          .then(() => {
+            analyticTrackEvent(
+              'retroactiveChangeCalorieLimit',
+              ' to ' + dailyKcal,
+            );
+          })
+          .catch(err => console.log(err));
+      }
     }
   };
 
@@ -359,177 +374,185 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     valueIron: total.nf_iron_dv || 0,
     calorieIntake: clientId
       ? clientTotals[0].daily_kcal_limit
-      : userData.daily_kcal,
+      : totals.filter((item: TotalProps) => item.date === followDate)[0]
+          ?.daily_kcal_limit || userData.daily_kcal,
   };
 
   return (
     <SafeAreaView style={styles.root}>
-      <KeyboardAwareScrollView
-        overScrollMode="never"
-        enableOnAndroid={true}
-        extraScrollHeight={showNotes && !caloriesInputFocused ? 200 : 0}
-        enableAutomaticScroll={true}>
-        <View style={styles.mb10}>
-          <NutritionLabel option={labelOptions || defaultOption} />
-        </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex: 1}}>
+        <KeyboardAwareScrollView
+          overScrollMode="never"
+          keyboardShouldPersistTaps="handled"
+          enableOnAndroid={true}
+          extraScrollHeight={showNotes && !caloriesInputFocused ? 200 : 0}
+          enableAutomaticScroll={true}>
+          <View style={styles.mb10}>
+            <NutritionLabel option={labelOptions || defaultOption} />
+          </View>
 
-        <View style={styles.container}>
-          {mealType === 'daily' && !readOnly && (
-            <View style={styles.dailyContainer}>
-              <Text style={styles.dailyText}>Daily Calorie Limit:</Text>
-              <TextInput
-                value={dailyKcal ? dailyKcal + '' : ''}
-                onFocus={() => setCaloriesInputFocuses(true)}
-                onBlur={() => setCaloriesInputFocuses(false)}
-                onChangeText={text => setDailyKcal(parseInt(text))}
-                keyboardType="number-pad"
-                style={styles.dailyInput}
-              />
-              <View style={styles.dailyBtnContainer}>
-                <NixButton
-                  type="primary"
-                  title="Save"
-                  onPress={() => updateCalorieLimit()}
-                  style={styles.dailyBtn}
+          <View style={styles.container}>
+            {mealType === 'daily' && !readOnly && (
+              <View style={styles.dailyContainer}>
+                <Text style={styles.dailyText}>Daily Calorie Limit:</Text>
+                <TextInput
+                  value={dailyKcal ? dailyKcal + '' : ''}
+                  onFocus={() => setCaloriesInputFocuses(true)}
+                  onBlur={() => setCaloriesInputFocuses(false)}
+                  onChangeText={text => setDailyKcal(parseInt(text))}
+                  keyboardType="number-pad"
+                  style={styles.dailyInput}
+                />
+                <View style={styles.dailyBtnContainer}>
+                  <NixButton
+                    type="primary"
+                    title="Save"
+                    onPress={() => updateCalorieLimit()}
+                    style={styles.dailyBtn}
+                  />
+                </View>
+              </View>
+            )}
+
+            {foods.length && pieChartData ? (
+              <View style={styles.mb10}>
+                <NutritionPieChart
+                  data={pieChartData}
+                  totalCalForPieChart={total.totalCalForPieChart}
+                  clientTotals={clientTotals}
                 />
               </View>
-            </View>
-          )}
+            ) : null}
 
-          {foods.length && pieChartData ? (
-            <View style={styles.mb10}>
-              <NutritionPieChart
-                data={pieChartData}
-                totalCalForPieChart={total.totalCalForPieChart}
-                clientTotals={clientTotals}
+            <View>
+              <Text>Net Carbs ** : {(total.net_carbs || 0).toFixed(1)} g</Text>
+              <Text>Phosphorus ** : {(total.nf_p || 0).toFixed(1)} mg</Text>
+              <Text>
+                Potassium ** : {(total.nf_potassium || 0).toFixed(1)} mg
+              </Text>
+              <Text>Caffeine ** : {(total.caffeine || 0).toFixed(1)} mg</Text>
+
+              <View style={styles.hideContainer}>
+                <TouchableWithoutFeedback
+                  onPress={() => setShowMoreNutrients(!showMoreNutrients)}
+                  style={styles.flex1}>
+                  <View style={styles.hideContent}>
+                    <FontAwesome
+                      name={
+                        showMoreNutrients ? 'chevron-down' : 'chevron-right'
+                      }
+                      size={12}
+                      style={styles.hideContentIcon}
+                    />
+                    <Text>
+                      {showMoreNutrients ? 'Hide' : 'View'} more micronutrients{' '}
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
+                {showMoreNutrients ? (
+                  <View style={styles.vitaminContainer}>
+                    <Text>
+                      Vitamin D**: {(total.vitamin_d || 0).toFixed(1)} IU
+                    </Text>
+                    <Text>
+                      Vitamin E**: {(total.vitamin_e || 0).toFixed(1)} IU
+                    </Text>
+                    <Text>
+                      Vitamin K**: {(total.vitamin_k || 0).toFixed(1)} µg
+                    </Text>
+                    <Text>
+                      Thiamine**: {(total.thiamine || 0).toFixed(1)} mg
+                    </Text>
+                    <Text>
+                      Riboflavin**: {(total.riboflavin || 0).toFixed(1)} mg
+                    </Text>
+                    <Text>Niacin**: {(total.niacin || 0).toFixed(1)} mg</Text>
+                    <Text>
+                      Pantothenic Acid**:{' '}
+                      {(total.pantothenic_acid || 0).toFixed(1)} mg
+                    </Text>
+                    <Text>
+                      Vitamin B-6**: {(total.vitamin_b6 || 0).toFixed(1)} mg
+                    </Text>
+                    <Text>Folate**: {(total.folate || 0).toFixed(1)} µg</Text>
+                    <Text>
+                      Vitamin B-12**: {(total.vitamin_b12 || 0).toFixed(1)} µg
+                    </Text>
+                    <Text>
+                      Folic Acid**: {(total.folic_acid || 0).toFixed(1)} µg
+                    </Text>
+                    <Text>Zinc**: {(total.zinc || 0).toFixed(1)} mg</Text>
+                    <Text>
+                      Magnesium**: {(total.magnesium || 0).toFixed(1)} mg
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
+            </View>
+
+            {mealType === 'daily' && !readOnly && (
+              <>
+                <TouchableWithoutFeedback
+                  onPress={() => setShowNotes(!showNotes)}
+                  style={styles.flex1}>
+                  <View style={styles.hideContent}>
+                    <FontAwesome
+                      name="sticky-note-o"
+                      size={12}
+                      style={styles.hideContentIcon}
+                    />
+                    <Text>Notes</Text>
+                    <FontAwesome
+                      name={showNotes ? 'chevron-down' : 'chevron-right'}
+                      size={12}
+                      style={styles.hideContentIconRight}
+                    />
+                  </View>
+                </TouchableWithoutFeedback>
+                {showNotes ? (
+                  <TextInput
+                    multiline
+                    numberOfLines={5}
+                    style={styles.noteInput}
+                    value={dayNote}
+                    onChangeText={text => setDayNote(text)}
+                    onBlur={() => {
+                      if (totals.length && totals[0].notes !== dayNote) {
+                        saveDayNote();
+                      }
+                    }}
+                  />
+                ) : null}
+              </>
+            )}
+
+            <Text style={styles.noteText}>
+              ** Please note that our restaurant and branded grocery food
+              database does not have these attributes available, and if your
+              food log contains restaurant or branded grocery foods, these
+              totals may be incorrect. The data from these these attributes is
+              for reference purpose only, and should not be used for any chronic
+              disease management.
+            </Text>
+          </View>
+          {mealType !== 'daily' && !readOnly && (
+            <View style={styles.btnsContainer}>
+              <NixButton
+                style={styles.btn}
+                title="Copy Meal"
+                type="energized"
+                onPress={handleCopyMeal}
+              />
+              <NixButton
+                style={styles.btn}
+                title="Clear Meal"
+                type="red"
+                onPress={() => setShowDeleteModal(!showDeleteModal)}
               />
             </View>
-          ) : null}
-
-          <View>
-            <Text>Net Carbs ** : {(total.net_carbs || 0).toFixed(1)} g</Text>
-            <Text>Phosphorus ** : {(total.nf_p || 0).toFixed(1)} mg</Text>
-            <Text>
-              Potassium ** : {(total.nf_potassium || 0).toFixed(1)} mg
-            </Text>
-            <Text>Caffeine ** : {(total.caffeine || 0).toFixed(1)} mg</Text>
-
-            <View style={styles.hideContainer}>
-              <TouchableWithoutFeedback
-                onPress={() => setShowMoreNutrients(!showMoreNutrients)}
-                style={styles.flex1}>
-                <View style={styles.hideContent}>
-                  <FontAwesome
-                    name={showMoreNutrients ? 'chevron-down' : 'chevron-right'}
-                    size={12}
-                    style={styles.hideContentIcon}
-                  />
-                  <Text>
-                    {showMoreNutrients ? 'Hide' : 'View'} more micronutrients{' '}
-                  </Text>
-                </View>
-              </TouchableWithoutFeedback>
-              {showMoreNutrients ? (
-                <View style={styles.vitaminContainer}>
-                  <Text>
-                    Vitamin D**: {(total.vitamin_d || 0).toFixed(1)} IU
-                  </Text>
-                  <Text>
-                    Vitamin E**: {(total.vitamin_e || 0).toFixed(1)} IU
-                  </Text>
-                  <Text>
-                    Vitamin K**: {(total.vitamin_k || 0).toFixed(1)} µg
-                  </Text>
-                  <Text>Thiamine**: {(total.thiamine || 0).toFixed(1)} mg</Text>
-                  <Text>
-                    Riboflavin**: {(total.riboflavin || 0).toFixed(1)} mg
-                  </Text>
-                  <Text>Niacin**: {(total.niacin || 0).toFixed(1)} mg</Text>
-                  <Text>
-                    Pantothenic Acid**:{' '}
-                    {(total.pantothenic_acid || 0).toFixed(1)} mg
-                  </Text>
-                  <Text>
-                    Vitamin B-6**: {(total.vitamin_b6 || 0).toFixed(1)} mg
-                  </Text>
-                  <Text>Folate**: {(total.folate || 0).toFixed(1)} µg</Text>
-                  <Text>
-                    Vitamin B-12**: {(total.vitamin_b12 || 0).toFixed(1)} µg
-                  </Text>
-                  <Text>
-                    Folic Acid**: {(total.folic_acid || 0).toFixed(1)} µg
-                  </Text>
-                  <Text>Zinc**: {(total.zinc || 0).toFixed(1)} mg</Text>
-                  <Text>
-                    Magnesium**: {(total.magnesium || 0).toFixed(1)} mg
-                  </Text>
-                </View>
-              ) : null}
-            </View>
-          </View>
-
-          {mealType === 'daily' && !readOnly && (
-            <>
-              <TouchableWithoutFeedback
-                onPress={() => setShowNotes(!showNotes)}
-                style={styles.flex1}>
-                <View style={styles.hideContent}>
-                  <FontAwesome
-                    name="sticky-note-o"
-                    size={12}
-                    style={styles.hideContentIcon}
-                  />
-                  <Text>Notes</Text>
-                  <FontAwesome
-                    name={showNotes ? 'chevron-down' : 'chevron-right'}
-                    size={12}
-                    style={styles.hideContentIconRight}
-                  />
-                </View>
-              </TouchableWithoutFeedback>
-              {showNotes ? (
-                <TextInput
-                  multiline
-                  numberOfLines={5}
-                  style={styles.noteInput}
-                  value={dayNote}
-                  onChangeText={text => setDayNote(text)}
-                  onBlur={() => {
-                    if (totals.length && totals[0].notes !== dayNote) {
-                      saveDayNote();
-                    }
-                  }}
-                />
-              ) : null}
-            </>
           )}
-
-          <Text style={styles.noteText}>
-            ** Please note that our restaurant and branded grocery food database
-            does not have these attributes available, and if your food log
-            contains restaurant or branded grocery foods, these totals may be
-            incorrect. The data from these these attributes is for reference
-            purpose only, and should not be used for any chronic disease
-            management.
-          </Text>
-        </View>
-        {mealType !== 'daily' && !readOnly && (
-          <View style={styles.btnsContainer}>
-            <NixButton
-              style={styles.btn}
-              title="Copy Meal"
-              type="energized"
-              onPress={handleCopyMeal}
-            />
-            <NixButton
-              style={styles.btn}
-              title="Clear Meal"
-              type="red"
-              onPress={() => setShowDeleteModal(!showDeleteModal)}
-            />
-          </View>
-        )}
-      </KeyboardAwareScrollView>
+        </KeyboardAwareScrollView>
+      </TouchableWithoutFeedback>
       <ChooseModal
         modalVisible={showDeleteModal}
         hideModal={() => setShowDeleteModal(false)}

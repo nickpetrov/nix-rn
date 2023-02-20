@@ -89,9 +89,22 @@ export default (
     case userLogActionTypes.GET_DAY_TOTALS:
       const stateWithTotals = {...state, totals: action.totals};
       return stateWithTotals;
-    case userLogActionTypes.SET_DAY_NOTES:
-      const stateWithUpdatedTotals = {...state, totals: action.totals};
+    case userLogActionTypes.UPDATE_DAY_TOTALS: {
+      let newTotals = [...state.totals];
+      let changedDayIndex = newTotals.findIndex(
+        item => item.date === action.totals[0].date,
+      );
+      if (changedDayIndex !== -1) {
+        newTotals[changedDayIndex] = {
+          ...newTotals[changedDayIndex],
+          ...action.totals[0],
+        };
+      } else {
+        newTotals = action.totals;
+      }
+      const stateWithUpdatedTotals = {...state, totals: newTotals};
       return stateWithUpdatedTotals;
+    }
     case userLogActionTypes.CHANGE_SELECTED_DATE:
       const stateWithNewSelectedDate = {
         ...state,

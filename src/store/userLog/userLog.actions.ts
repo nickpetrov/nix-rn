@@ -37,7 +37,7 @@ import {
   addFoodToLogAction,
   updateFoodFromLogAction,
   changeSelectedDateAction,
-  setDayNotesAction,
+  updateDayTotalsAction,
   deleteFoodFromLogAction,
   deleteExerciseFromLogAction,
   getUserWeightsLogAction,
@@ -656,7 +656,7 @@ export const deleteFoodFromLog = (foodIds: Array<{id: string}>) => {
 };
 
 export const setDayNotes = (targetDate: string, newNotes: string) => {
-  return async (dispatch: Dispatch<setDayNotesAction>) => {
+  return async (dispatch: Dispatch<updateDayTotalsAction>) => {
     const data = {
       dates: [
         {
@@ -667,13 +667,44 @@ export const setDayNotes = (targetDate: string, newNotes: string) => {
     };
 
     try {
-      const response = await userLogService.setDayNotes(data);
+      const response = await userLogService.updateDayTotals(data);
 
       const totals = response.data;
 
       if (totals.dates) {
         dispatch({
-          type: userLogActionTypes.SET_DAY_NOTES,
+          type: userLogActionTypes.UPDATE_DAY_TOTALS,
+          totals: totals.dates || [],
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const setDayCalorieLimit = (
+  targetDate: string,
+  daily_kcal_limit: number | null,
+) => {
+  return async (dispatch: Dispatch<updateDayTotalsAction>) => {
+    const data = {
+      dates: [
+        {
+          date: targetDate,
+          daily_kcal_limit: daily_kcal_limit || 0,
+        },
+      ],
+    };
+
+    try {
+      const response = await userLogService.updateDayTotals(data);
+
+      const totals = response.data;
+
+      if (totals.dates) {
+        dispatch({
+          type: userLogActionTypes.UPDATE_DAY_TOTALS,
           totals: totals.dates || [],
         });
       }

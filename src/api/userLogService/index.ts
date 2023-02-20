@@ -27,8 +27,8 @@ const userLogService = {
       },
     });
   },
-  async setDayNotes(data: {
-    dates: Array<{date: string; notes: string | null}>;
+  async updateDayTotals(data: {
+    dates: Array<Pick<TotalProps, 'date'> & Partial<TotalProps>>;
   }) {
     return await apiClient.put<{dates: TotalProps[]}>('reports/totals', data);
   },

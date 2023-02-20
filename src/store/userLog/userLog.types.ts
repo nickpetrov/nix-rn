@@ -8,7 +8,7 @@ export enum userLogActionTypes {
   UPDATE_FOOD_FROM_LOG = 'UPDATE_FOOD_FROM_LOG',
   GET_DAY_TOTALS = 'GET_DAY_TOTALS',
   CHANGE_SELECTED_DATE = 'CHANGE_SELECTED_DATE',
-  SET_DAY_NOTES = 'SET_DAY_TOTALS',
+  UPDATE_DAY_TOTALS = 'UPDATE_DAY_TOTALS',
   DELETE_FOOD_FROM_LOG = 'DELETE_FOOD_FROM_LOG',
   DELETE_WEIGHT_FROM_LOG = 'DELETE_WEIGHT_FROM_LOG',
   DELETE_EXERCISE_FROM_LOG = 'DELETE_EXERCISE_FROM_LOG',
@@ -220,8 +220,8 @@ export type changeSelectedDateAction = {
   type: userLogActionTypes.CHANGE_SELECTED_DATE;
   newDate: string;
 };
-export type setDayNotesAction = {
-  type: userLogActionTypes.SET_DAY_NOTES;
+export type updateDayTotalsAction = {
+  type: userLogActionTypes.UPDATE_DAY_TOTALS;
   totals: Array<TotalProps>;
 };
 export type deleteFoodFromLogAction = {
@@ -274,7 +274,7 @@ export type UserLogActions =
   | updateFoodFromLogAction
   | addFoodToLogAction
   | changeSelectedDateAction
-  | setDayNotesAction
+  | updateDayTotalsAction
   | deleteFoodFromLogAction
   | deleteWeightsFromLogAction
   | deleteExerciseFromLogAction
