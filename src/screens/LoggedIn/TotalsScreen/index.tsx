@@ -27,11 +27,14 @@ import {useSelector, useDispatch} from 'hooks/useRedux';
 import * as userActions from 'store/auth/auth.actions';
 import * as logActions from 'store/userLog/userLog.actions';
 import * as userLogActions from 'store/userLog/userLog.actions';
-import {addExistFoodToBasket} from 'store/basket/basket.actions';
+import {addExistFoodToBasket, mergeBasket} from 'store/basket/basket.actions';
 
 // helpres
 import getAttrValueById from 'helpers/getAttrValueById';
 import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+import {defaultOption} from 'helpers/nutrionixLabel';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 // types
 import {RouteProp} from '@react-navigation/native';
@@ -45,8 +48,6 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './TotalsScreen.styles';
-import {defaultOption} from 'helpers/nutrionixLabel';
-import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface TotalsScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Totals>;
@@ -62,6 +63,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   const readOnly = route.params.readOnly;
   const date = route.params.date;
   const clientId = route.params.clientId;
+  const emptyBasket = useSelector(state => state.basket.foods.length === 0);
   const userData = useSelector(state => state.auth.userData);
   const {totals, selectedDate} = useSelector(state => state.userLog);
   const clientTotals = useSelector(state => state.coach.clientTotals);
@@ -303,6 +305,14 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   const handleCopyMeal = () => {
     dispatch(addExistFoodToBasket(foods)).then(() => {
       analyticTrackEvent('Copy_From_Summary', ' ');
+      dispatch(
+        mergeBasket({
+          consumed_at: moment().format('YYYY-MM-DD'),
+          meal_type: emptyBasket
+            ? guessMealTypeByTime(moment().hours())
+            : undefined,
+        }),
+      );
       navigation.navigate(Routes.Basket);
     });
   };

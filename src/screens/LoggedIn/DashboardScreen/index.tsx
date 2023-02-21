@@ -86,6 +86,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const netInfo = useNetInfo();
   const isFocused = useIsFocused();
   const isDrawerOpen = useDrawerStatus() === 'open';
+  const emptyBasket = useSelector(state => state.basket.foods.length === 0);
   const checkedEvents = useSelector(state => state.walkthrough.checkedEvents);
   const [deleteteModal, setDeleteteModal] = useState<
     {items: Array<FoodProps>; mealName: keyof mealTypes} | false
@@ -375,9 +376,9 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                               dispatch(
                                 mergeBasket({
                                   consumed_at: moment().format('YYYY-MM-DD'),
-                                  meal_type: guessMealTypeByTime(
-                                    moment().hours(),
-                                  ),
+                                  meal_type: emptyBasket
+                                    ? guessMealTypeByTime(moment().hours())
+                                    : undefined,
                                 }),
                               );
                               // close all swipes after copy
