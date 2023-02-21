@@ -43,6 +43,7 @@ import NutritionLabel from 'components/NutrionixLabel/NutritionLabel';
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
 import useFoodLabel from './useFoodLabel';
+import useAsyncState from 'hooks/useAsyncState';
 
 // actions
 import * as basketActions from 'store/basket/basket.actions';
@@ -93,7 +94,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     }>;
   }>(null);
   const userTimezone = useSelector(state => state.auth.userData.timezone);
-  const [foodObj, setFoodObj] = useState<FoodProps>(route.params?.foodObj);
+  const [foodObj, setFoodObj] = useAsyncState<FoodProps>(route.params?.foodObj);
   const [showNotes, setShowNotes] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showChooseGetPhoto, setShowChooseGetPhoto] = useState(false);
@@ -127,7 +128,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
 
   useEffect(() => {
     setFoodObj(route.params?.foodObj);
-  }, [route]);
+  }, [route, setFoodObj]);
 
   useLayoutEffect(() => {
     const getRightIcon = () => {
@@ -210,13 +211,13 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   };
 
   const handleChangeFood = useCallback(
-    (food: Partial<FoodProps> | FoodProps) => {
-      setFoodObj((prev: FoodProps) => ({
+    async (food: Partial<FoodProps> | FoodProps) => {
+      await setFoodObj((prev: FoodProps) => ({
         ...prev,
         ...food,
       }));
     },
-    [],
+    [setFoodObj],
   );
 
   const lauchImageFromGallery = () => {
@@ -668,14 +669,10 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           <TouchableOpacity
             style={styles.saveBtn}
             onPressIn={() => {
-              setShowSpinner(true);
               Keyboard.dismiss();
+              setShowSpinner(true);
             }}
-            onPress={() => {
-              setTimeout(() => {
-                handleSave();
-              }, 300);
-            }}
+            onPress={() => handleSave()}
             disabled={showSpinner}>
             <Text style={styles.saveBtnText}>Save</Text>
           </TouchableOpacity>
