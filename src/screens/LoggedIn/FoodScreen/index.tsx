@@ -291,6 +291,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   };
 
   const handleSave = async (
+    updatedFood: FoodProps,
     backAction?: Readonly<{
       type: string;
       payload?: object | undefined;
@@ -299,8 +300,8 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     }>,
   ) => {
     setShowSpinner(true);
-    analyticTrackEvent('updatedFood', foodObj.food_name);
-    dispatch(updateFoodFromlog([foodObj]))
+    analyticTrackEvent('updatedFood', updatedFood.food_name);
+    dispatch(updateFoodFromlog([updatedFood]))
       .then(() => {
         setTimeout(() => setShowSpinner(false), 800);
         setShowCheck(true);
@@ -672,7 +673,15 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
               Keyboard.dismiss();
               setShowSpinner(true);
             }}
-            onPress={() => handleSave()}
+            onPress={() => {
+              // need for use actual food object when save
+              setTimeout(() => {
+                setFoodObj(food => {
+                  handleSave(food);
+                  return food;
+                });
+              }, 0);
+            }}
             disabled={showSpinner}>
             <Text style={styles.saveBtnText}>Save</Text>
           </TouchableOpacity>
@@ -686,7 +695,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           }}
           disabled={showSpinner}
           save={() => {
-            handleSave(showUnsavedPopup?.backAction);
+            handleSave(foodObj, showUnsavedPopup?.backAction);
           }}
         />
       )}
