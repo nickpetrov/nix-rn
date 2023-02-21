@@ -1,9 +1,10 @@
 # create folder if it not exist for sentry source-maps
 mkdir -p source-maps
-#!/bin/bash
-exec 3>&1 4>&2
-trap 'exec 2>&4 1>&3' 0 1 2 3
-exec 1>source-maps/log.out 2>&1
+#!/bin/bash 
+# uncomment if need log at file log.out
+# exec 3>&1 4>&2
+# trap 'exec 2>&4 1>&3' 0 1 2 3
+# exec 1>source-maps/log.out 2>&1
 # Everything below will go to the file 'log.out':
 
 export NODE_OPTIONS="--max-old-space-size=8192" # Increase to 8 GB to prevent FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
