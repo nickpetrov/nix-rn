@@ -65,3 +65,6 @@ buck-out/
 
 # tokens & secrets
 src/.env
+
+# sentry source-maps
+source-maps/

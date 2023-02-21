@@ -1,7 +1,9 @@
+# create folder if it not exist for sentry source-maps
+mkdir -p source-maps
 #!/bin/bash
-# exec 3>&1 4>&2
-# trap 'exec 2>&4 1>&3' 0 1 2 3
-# exec 1>log.out 2>&1
+exec 3>&1 4>&2
+trap 'exec 2>&4 1>&3' 0 1 2 3
+exec 1>source-maps/log.out 2>&1
 # Everything below will go to the file 'log.out':
 
 export NODE_OPTIONS="--max-old-space-size=8192" # Increase to 8 GB to prevent FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
@@ -25,17 +27,19 @@ node_modules/.bin/react-native bundle \
     --dev false \
     --platform android \
     --entry-file index.js \
-    --bundle-output index.android.bundle \
-    --sourcemap-output index.android.bundle-plain.map
+    --bundle-output ./source-maps/index.android.bundle \
+    --sourcemap-output ./source-maps/index.android.bundle-plain.map
 
-node_modules/react-native/sdks/hermesc/win64-bin/hermesc -O -emit-binary -out android-release.bundle.hbc index.android.bundle -output-source-map
+node_modules/react-native/sdks/hermesc/win64-bin/hermesc -O -emit-binary -out ./source-maps/android-release.bundle.hbc ./source-maps/index.android.bundle -output-source-map
 
-node node_modules/react-native/scripts/compose-source-maps.js index.android.bundle-plain.map android-release.bundle.hbc.map -o index.android.bundle.map
+node node_modules/react-native/scripts/compose-source-maps.js ./source-maps/index.android.bundle-plain.map ./source-maps/android-release.bundle.hbc.map -o ./source-maps/index.android.bundle.map
 
 node_modules/@sentry/cli/bin/sentry-cli --auth-token ${SENTRY_TOKEN} \
     releases \
     files "${RELEASE_NAME_PREFIX}@${RELEASE_NAME}+${RELEASE_CODE}" \
     upload-sourcemaps \
-    --bundle-sourcemap ./index.android.bundle.map \
-    --bundle ./index.android.bundle \
+    --dist ${RELEASE_CODE} \
+    --bundle-sourcemap ./source-maps/index.android.bundle.map \
+    --bundle ./source-maps/index.android.bundle \
     --rewrite
+    
