@@ -32,7 +32,9 @@ export const HealthkitSyncScreen: React.FC = () => {
 
   const toggleHKNutrition = (nutrition: string) => {
     if (nutrition === 'off') {
-      SQLexecute({db, query: 'DROP TABLE hkdata'});
+      SQLexecute({db, query: 'DROP TABLE hkdata'}).catch(err =>
+        console.log(err),
+      );
       analyticTrackEvent('HealthKit_nutrition_sync', 'disable');
     } else {
       //create tables on toggle on; shouldnt exist if toggle off
@@ -94,7 +96,9 @@ export const HealthkitSyncScreen: React.FC = () => {
 
   function toggleHKWeight(weight: string) {
     if (weight === 'off') {
-      SQLexecute({db, query: 'DROP TABLE hkdata_weight'});
+      SQLexecute({db, query: 'DROP TABLE hkdata_weight'}).catch(err =>
+        console.log(err),
+      );
       analyticTrackEvent('HealthKit_weight_sync', 'disable');
     } else if (weight === 'pull') {
       const permissions = {
@@ -137,7 +141,9 @@ export const HealthkitSyncScreen: React.FC = () => {
 
   const toggleHKExercise = (exercise: string) => {
     if (exercise === 'off') {
-      SQLexecute({db, query: 'DROP TABLE hkdata_exercise'});
+      SQLexecute({db, query: 'DROP TABLE hkdata_exercise'}).catch(err =>
+        console.log(err),
+      );
       analyticTrackEvent('HealthKit_exercise_sync', 'disable');
     } else if (exercise === 'pull') {
       const permissions = {
