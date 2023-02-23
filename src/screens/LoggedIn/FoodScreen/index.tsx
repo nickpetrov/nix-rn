@@ -664,6 +664,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       {showSave && (
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
           contentContainerStyle={{flex: 1}}
           style={styles.saveBtnContainer}>
           <TouchableOpacity
