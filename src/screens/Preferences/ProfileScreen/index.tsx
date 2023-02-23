@@ -11,6 +11,7 @@ import {
   TextInput,
   Keyboard,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Formik, FormikProps} from 'formik';
@@ -601,8 +602,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
               </KeyboardAwareScrollView>
               {isValid && (
                 <KeyboardAvoidingView
-                  behavior="position"
-                  keyboardVerticalOffset={100}
+                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                   contentContainerStyle={{flex: 1}}
                   style={styles.saveBtnContainer}>
                   <TouchableOpacity

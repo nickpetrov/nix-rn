@@ -714,8 +714,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
             </View>
           </KeyboardAwareScrollView>
           <KeyboardAvoidingView
-            behavior="position"
-            keyboardVerticalOffset={100}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             contentContainerStyle={{flex: 1}}
             style={styles.saveBtnContainer}>
             <TouchableOpacity
