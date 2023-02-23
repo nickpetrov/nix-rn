@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Platform, StatusBar} from 'react-native';
+import {Text, View} from 'react-native';
 import Tooltip, {TooltipProps as Props} from 'react-native-walkthrough-tooltip';
 import {ReactNode} from 'react';
 import {styles} from './TooltipView.styles';
@@ -57,9 +57,6 @@ const TooltipView: React.FC<TooltipViewProps> = ({
 
   return (
     <Tooltip
-      topAdjustment={
-        Platform.OS === 'android' ? -(StatusBar?.currentHeight || 0) : 0
-      }
       useInteractionManager={true}
       contentStyle={styles.tooltip}
       content={

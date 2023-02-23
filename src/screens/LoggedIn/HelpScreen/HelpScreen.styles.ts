@@ -1,5 +1,5 @@
 import {Colors} from 'constants/Colors';
-import {StyleSheet, Platform, StatusBar} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   root: {flex: 1, backgroundColor: '#fff'},
@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
   walk: {
     flex: 1,
     backgroundColor: Colors.Primary,
-    paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+    paddingTop: 0,
   },
   walkBtn: {
     paddingVertical: 40,

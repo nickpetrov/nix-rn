@@ -1,5 +1,5 @@
 import {Colors} from 'constants/Colors';
-import {StyleSheet, Platform, StatusBar} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   menuItemWrapper: {
@@ -23,10 +23,19 @@ export const styles = StyleSheet.create({
     marginRight: 3,
   },
   track: {
+    position: 'absolute',
+    flexDirection: 'row',
+    top: 0,
+    left: 0,
+    right: 0,
     backgroundColor: Colors.Primary,
-    height: Platform.OS === 'ios' ? 50 : 50 + (StatusBar?.currentHeight || 0),
-    paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+    height: 50,
+    width: '100%',
+    paddingTop: 0,
     justifyContent: 'center',
+  },
+  scrollView: {
+    marginTop: 50,
   },
   trackText: {
     alignSelf: 'center',

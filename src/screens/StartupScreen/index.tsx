@@ -47,7 +47,9 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({navigation}) => {
   }, [dispatch, navigation, userJWT]);
 
   useEffect(() => {
-    SplashScreen.hide();
+    return () => {
+      SplashScreen.hide();
+    };
   }, []);
 
   return (

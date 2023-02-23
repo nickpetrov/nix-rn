@@ -1,11 +1,11 @@
 import {Colors} from 'constants/Colors';
-import {StatusBar, StyleSheet, Platform} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   header: {
     width: '100%',
-    height: Platform.OS === 'ios' ? 50 : 50 + (StatusBar?.currentHeight || 0),
-    paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+    height: 50,
+    paddingTop: 0,
     alignItems: 'center',
     flexDirection: 'row',
     alignSelf: 'center',

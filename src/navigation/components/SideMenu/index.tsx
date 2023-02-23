@@ -193,11 +193,11 @@ export const SideMenu: React.FC = () => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScrollView style={{flex: 1}}>
+      <View style={styles.track}>
+        <Text style={styles.trackText}>Track {appVersion}</Text>
+      </View>
+      <ScrollView style={styles.scrollView}>
         {/* Need to manually add items to the sidedrawer */}
-        <View style={styles.track}>
-          <Text style={styles.trackText}>Track {appVersion}</Text>
-        </View>
         {menuItems.map((item, index) => {
           if (item.hide) {
             return;

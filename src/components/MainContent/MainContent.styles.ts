@@ -1,9 +1,9 @@
-import {Platform, StyleSheet, StatusBar} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   offline: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? 40 : 40 + (StatusBar?.currentHeight || 0),
+    top: 40,
     left: 0,
     right: 0,
     bottom: 0,
