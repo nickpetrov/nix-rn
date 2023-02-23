@@ -13,7 +13,14 @@ import moment from 'moment-timezone';
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // components
-import {View, Text, TouchableOpacity, TextInput, Keyboard} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Keyboard,
+  Platform,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NixButton} from 'components/NixButton';
 import {NavigationHeader} from 'components/NavigationHeader';
@@ -35,6 +42,7 @@ import {Routes} from 'navigation/Routes';
 // helpres
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+import {replaceRegexForNumber} from 'helpers/index';
 
 // types
 import {RouteProp} from '@react-navigation/native';
@@ -224,9 +232,11 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
     fieldName: keyof UpdateCustomFoodProps,
     newValue: string,
   ) => {
+    const val = replaceRegexForNumber(newValue);
+
     setFoodObj(prev => {
       const clonedFoodObj = {...prev};
-      clonedFoodObj[fieldName] = newValue as never;
+      clonedFoodObj[fieldName] = (val || null) as never;
       return clonedFoodObj;
     });
   };
@@ -294,6 +304,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
         enableOnAndroid={true}
         scrollEnabled={true}>
         <NixInput
+          selectTextOnFocus
           label="Food Name"
           required
           style={styles.input}
@@ -314,14 +325,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Serving Info"
           required
           style={styles.input}
           value={(foodObj.serving_qty || '') + ''}
-          onChangeText={value => updateTextField('serving_qty', value)}
-          keyboardType="numeric"
+          onChangeText={value => updateCustomField('serving_qty', value)}
+          keyboardType="number-pad"
           placeholder="Quantity"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.serving_qty = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.serving_unit;
@@ -335,6 +347,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label=""
           style={styles.input}
           value={foodObj.serving_unit || ''}
@@ -354,15 +367,16 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Calories"
           required
           style={styles.input}
           value={(foodObj.nf_calories || '') + ''}
           unit="kcal"
           onChangeText={value => updateCustomField('nf_calories', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_calories = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_total_fat;
@@ -376,14 +390,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Fat"
           style={styles.input}
           value={(foodObj.nf_total_fat || '') + ''}
           unit="g"
           onChangeText={value => updateCustomField('nf_total_fat', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_total_fat = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_saturated_fat;
@@ -397,14 +412,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Saturated Fat"
           style={styles.input}
           value={(foodObj.nf_saturated_fat || '') + ''}
           unit=""
           onChangeText={value => updateCustomField('nf_saturated_fat', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_saturated_fat = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_cholesterol;
@@ -418,14 +434,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Cholesterol"
           style={styles.input}
           value={(foodObj.nf_cholesterol || '') + ''}
           unit="mg"
           onChangeText={value => updateCustomField('nf_cholesterol', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_cholesterol = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_sodium;
@@ -439,14 +456,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Sodium"
           style={styles.input}
           value={(foodObj.nf_sodium || '') + ''}
           unit="mg"
           onChangeText={value => updateCustomField('nf_sodium', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_sodium = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_total_carbohydrate;
@@ -460,6 +478,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Total Carbohydrate"
           style={styles.input}
           value={(foodObj.nf_total_carbohydrate || '') + ''}
@@ -467,9 +486,9 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           onChangeText={value =>
             updateCustomField('nf_total_carbohydrate', value)
           }
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_total_carbohydrate = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_dietary_fiber;
@@ -483,14 +502,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Dietary Fiber"
           style={styles.input}
           value={(foodObj.nf_dietary_fiber || '') + ''}
           unit="g"
           onChangeText={value => updateCustomField('nf_dietary_fiber', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_dietary_fiber = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_sugars;
@@ -504,14 +524,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Sugars"
           style={styles.input}
           value={(foodObj.nf_sugars || '') + ''}
           unit="g"
           onChangeText={value => updateCustomField('nf_sugars', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_sugars = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_protein;
@@ -525,14 +546,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Protein"
           style={styles.input}
           value={(foodObj.nf_protein || '') + ''}
           unit="g"
           onChangeText={value => updateCustomField('nf_protein', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_protein = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_vitamin_a_dv;
@@ -546,14 +568,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Vitamin A"
           style={styles.input}
           value={(foodObj.nf_vitamin_a_dv || '') + ''}
           unit="%dv"
           onChangeText={value => updateCustomField('nf_vitamin_a_dv', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_vitamin_a_dv = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_vitamin_c_dv;
@@ -567,14 +590,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Vitamin C"
           style={styles.input}
           value={(foodObj.nf_vitamin_c_dv || '') + ''}
           unit="%dv"
           onChangeText={value => updateCustomField('nf_vitamin_c_dv', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_vitamin_c_dv = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_vitamin_d_dv;
@@ -588,14 +612,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Vitamin D"
           style={styles.input}
           value={(foodObj.nf_vitamin_d_dv || '') + ''}
           unit="%dv"
           onChangeText={value => updateCustomField('nf_vitamin_d_dv', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_vitamin_d_dv = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_calcium_dv;
@@ -609,14 +634,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Calcium"
           style={styles.input}
           value={(foodObj.nf_calcium_dv || '') + ''}
           unit="%dv"
           onChangeText={value => updateCustomField('nf_calcium_dv', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_calcium_dv = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_iron_dv;
@@ -630,14 +656,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Iron"
           style={styles.input}
           value={(foodObj.nf_iron_dv || '') + ''}
           unit="%dv"
           onChangeText={value => updateCustomField('nf_iron_dv', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_iron_dv = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_p;
@@ -651,14 +678,15 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Phosphorus"
           style={styles.input}
           value={(foodObj.nf_p || '') + ''}
           unit="mg"
           onChangeText={value => updateCustomField('nf_p', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
-          returnKeyType="next"
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_p = ref)}
           onSubmitEditing={() => {
             const nextRef = inputRefs.current.nf_potassium;
@@ -672,12 +700,13 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           }}
         />
         <NixInput
+          selectTextOnFocus
           label="Potassium"
           style={styles.input}
           value={(foodObj.nf_potassium || '') + ''}
           unit="mg"
           onChangeText={value => updateCustomField('nf_potassium', value)}
-          keyboardType="numeric"
+          keyboardType="number-pad"
           placeholder="0"
           ref={ref => (inputRefs.current.nf_potassium = ref)}
           onFocus={() => {

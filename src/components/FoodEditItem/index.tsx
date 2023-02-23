@@ -146,6 +146,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
     <>
       <View style={styles.servingWrapper}>
         <TextInput
+          selectTextOnFocus
           style={styles.qty_input}
           value={servingQty}
           placeholderTextColor="#60605e"

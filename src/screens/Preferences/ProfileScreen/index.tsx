@@ -51,6 +51,8 @@ import {User} from 'store/auth/auth.types';
 
 // validation
 import {validationSchema} from './validation';
+import {replaceRegexForNumber} from 'helpers/index';
+import {Colors} from 'constants/Colors';
 
 interface ProfileScreenProps {
   navigation: NativeStackNavigationProp<
@@ -343,6 +345,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 enableOnAndroid={true}
                 enableAutomaticScroll={true}>
                 <NixInput
+                  selectTextOnFocus
                   label="First Name"
                   placeholder="First Name"
                   column
@@ -363,6 +366,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   }}
                 />
                 <NixInput
+                  selectTextOnFocus
                   label="Last Name"
                   placeholder="Last Name"
                   column
@@ -376,16 +380,31 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 />
                 <ModalSelector
                   data={timezoneList}
-                  initValue={userData.measure_system + ''}
+                  initValue={userData.timezone || ''}
                   onChange={option => {
                     setFieldValue('timezone', option.value);
                     // setTimezone(option.value);
+                  }}
+                  initValueTextStyle={{
+                    fontSize: 14,
+                    color: '#000',
+                    textAlign: 'left',
+                  }}
+                  optionTextStyle={{
+                    fontSize: 16,
+                    color: '#000',
+                  }}
+                  selectedItemTextStyle={{
+                    fontSize: 16,
+                    color: Colors.Info,
+                    fontWeight: '500',
                   }}
                   listType="SCROLLVIEW"
                   keyExtractor={(item: {label: string; value: string}) =>
                     item.value
                   }>
                   <NixInput
+                    selectTextOnFocus
                     label="Time Zone"
                     style={{textAlign: 'right'}}
                     labelContainerStyle={styles.labelContainerStyle}
@@ -411,12 +430,28 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       value: 0,
                     },
                   ]}
-                  initValue={values.measure_system + ''}
+                  initValueTextStyle={{
+                    fontSize: 14,
+                    color: '#000',
+                    textAlign: 'left',
+                  }}
+                  optionTextStyle={{
+                    fontSize: 16,
+                    color: '#000',
+                  }}
+                  selectedItemTextStyle={{
+                    fontSize: 16,
+                    color: Colors.Info,
+                    fontWeight: '500',
+                  }}
+                  initValue={
+                    values.measure_system === 1 ? 'Metric' : 'Imperial (US)'
+                  }
                   onChange={option => {
                     if (+option.value !== +values.measure_system) {
-                      changeValueByMetric(option.value, values, setFieldValue);
+                      changeValueByMetric(+option.value, values, setFieldValue);
                     }
-                    setFieldValue('measure_system', option.value);
+                    setFieldValue('measure_system', +option.value);
                   }}
                   listType="FLATLIST"
                   keyExtractor={(item: {label: string; value: number}) =>
@@ -442,6 +477,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 {values.measure_system === 1 ? (
                   <>
                     <NixInput
+                      selectTextOnFocus
                       label="Weight"
                       placeholder="kg"
                       labelContainerStyle={styles.labelContainerStyleFull}
@@ -449,14 +485,21 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       value={values.weight_kg}
                       unit="kg"
                       unitStyle={styles.unit}
-                      onChangeText={handleChange('weight_kg')}
+                      onChangeText={newVal => {
+                        setFieldValue(
+                          'weight_kg',
+                          String(
+                            _.round(+replaceRegexForNumber(newVal), 1) || '',
+                          ),
+                        );
+                      }}
                       onBlur={handleBlur('weight_kg')}
-                      keyboardType="numeric"
+                      keyboardType="number-pad"
                       autoCapitalize="none"
                       error={errors.weight_kg}
                       errorStyles={styles.errorStyles}
                       blurOnSubmit={false}
-                      returnKeyType="next"
+                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                       ref={ref => (inputRefs.current.weight_kg = ref)}
                       onSubmitEditing={() => {
                         const nextRef = inputRefs.current.height_cm;
@@ -471,10 +514,13 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       />
                     </NixInput>
                     <NixInput
+                      selectTextOnFocus
                       label="Height"
                       labelContainerStyle={styles.labelContainerStyleFull}
                       style={styles.input}
-                      value={_.round(+values.height_cm) + ''}
+                      value={
+                        values.height_cm ? _.round(+values.height_cm) + '' : ''
+                      }
                       unit="cm"
                       unitStyle={styles.unit}
                       onChangeText={newVal => {
@@ -488,7 +534,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       error={errors.height_cm}
                       errorStyles={styles.errorStyles}
                       blurOnSubmit={false}
-                      returnKeyType="next"
+                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                       ref={ref => (inputRefs.current.height_cm = ref)}
                       onSubmitEditing={() => {
                         const nextRef = inputRefs.current.age;
@@ -506,21 +552,29 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 ) : (
                   <>
                     <NixInput
+                      selectTextOnFocus
                       label="Weight"
                       labelContainerStyle={styles.labelContainerStyleFull}
                       style={styles.input}
                       value={values.weight_lb || ''}
                       unit="lbs"
                       unitStyle={styles.unit}
-                      onChangeText={handleChange('weight_lb')}
+                      onChangeText={newVal => {
+                        setFieldValue(
+                          'weight_lb',
+                          String(
+                            _.round(+replaceRegexForNumber(newVal), 1) || '',
+                          ),
+                        );
+                      }}
                       onBlur={handleBlur('weight_lb')}
-                      keyboardType="numeric"
+                      keyboardType="number-pad"
                       autoCapitalize="none"
                       placeholder="lbs."
                       error={errors.weight_lb}
                       errorStyles={styles.errorStyles}
                       blurOnSubmit={false}
-                      returnKeyType="next"
+                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                       ref={ref => (inputRefs.current.weight_lb = ref)}
                       onSubmitEditing={() => {
                         const nextRef = inputRefs.current.height_ft;
@@ -535,6 +589,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       />
                     </NixInput>
                     <NixInput
+                      selectTextOnFocus
                       label="Height"
                       labelContainerStyle={styles.labelContainerStyleFull}
                       style={styles.input}
@@ -544,8 +599,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       unit="ft"
                       unitStyle={styles.unit}
                       onChangeText={newVal => {
-                        const val = newVal.replace(/[^0-9]/g, '');
-                        setFieldValue('height_ft', val);
+                        setFieldValue('height_ft', newVal);
                       }}
                       onBlur={handleBlur('height_ft')}
                       keyboardType="number-pad"
@@ -554,7 +608,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       error={errors.height_ft}
                       errorStyles={styles.errorStyles}
                       blurOnSubmit={false}
-                      returnKeyType="next"
+                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                       ref={ref => (inputRefs.current.height_ft = ref)}
                       onSubmitEditing={() => {
                         const nextRef = inputRefs.current.height_in;
@@ -569,6 +623,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       />
                     </NixInput>
                     <NixInput
+                      selectTextOnFocus
                       label=""
                       labelContainerStyle={styles.labelContainerStyleFull}
                       style={styles.input}
@@ -578,8 +633,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       unit="in"
                       unitStyle={styles.unit}
                       onChangeText={newVal => {
-                        const val = newVal.replace(/[^0-9]/g, '');
-                        setFieldValue('height_in', val);
+                        setFieldValue('height_in', newVal);
                       }}
                       onBlur={handleBlur('height_in')}
                       keyboardType="number-pad"
@@ -588,7 +642,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       error={errors.height_in}
                       errorStyles={styles.errorStyles}
                       blurOnSubmit={false}
-                      returnKeyType="next"
+                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                       ref={ref => (inputRefs.current.height_in = ref)}
                       onSubmitEditing={() => {
                         const nextRef = inputRefs.current.age;
@@ -605,6 +659,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   </>
                 )}
                 <NixInput
+                  selectTextOnFocus
                   label="Age"
                   labelContainerStyle={styles.labelContainerStyleFull}
                   style={styles.input}

@@ -25,6 +25,7 @@ import {styles} from './FitbitSyncScreen.styles';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {Routes} from 'navigation/Routes';
+import {Colors} from 'constants/Colors';
 
 interface FitbitSyncScreenProps {
   navigation: NativeStackNavigationProp<
@@ -91,7 +92,20 @@ export const FitbitSyncScreen: React.FC<FitbitSyncScreenProps> = ({
               key: 'off',
             },
           ]}
-          initValue={nutritionValue === 'push' ? 'push' : 'off'}
+          initValueTextStyle={{
+            fontSize: 16,
+            color: '#000',
+          }}
+          optionTextStyle={{
+            fontSize: 16,
+            color: '#000',
+          }}
+          selectedItemTextStyle={{
+            fontSize: 16,
+            color: Colors.Info,
+            fontWeight: '500',
+          }}
+          initValue={nutritionValue === 'push' ? 'Push' : 'Off'}
           onChange={option => {
             setNutritionValue(option.value);
             if (option.value === 'push') {

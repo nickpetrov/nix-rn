@@ -68,10 +68,11 @@ import {RecipeProps, UpdateRecipeProps} from 'store/recipes/recipes.types';
 import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {multiply} from 'helpers/multiply';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {replaceRegexForNumber} from 'helpers/index';
 
 // styles
 import {styles} from './RecipeDetailsScreen.styles';
-import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface RecipeDetailsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -443,12 +444,14 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
     fieldName: keyof UpdateRecipeProps,
     newValue: string,
   ) => {
+    const val = replaceRegexForNumber(newValue);
+
     setRecipe(prevRecipe => {
       const clonedRecipe = {...prevRecipe};
-      clonedRecipe[fieldName] = parseFloat(newValue) as never;
+      clonedRecipe[fieldName] = parseFloat(val) as never;
       return {...clonedRecipe};
     });
-    if (fieldName === 'serving_qty' && parseFloat(newValue)) {
+    if (fieldName === 'serving_qty' && parseFloat(val)) {
       setErrorMessages(prev => ({
         ...prev,
         serving_qty: '',
@@ -736,6 +739,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         {invalidForm && <Text style={styles.invalid}>Recipe not saved</Text>}
         <View style={styles.itemWrap}>
           <TextInput
+            selectTextOnFocus
             value={recipe.name}
             onChangeText={text => updateTextField('name', text)}
             style={[styles.input, !!errorMessages.name && styles.invalidInput]}
@@ -768,6 +772,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           <View style={styles.inputs}>
             <View style={styles.flex1}>
               <TextInput
+                selectTextOnFocus
                 value={(recipe.serving_qty || '') + ''}
                 onChangeText={text => updateNumberField('serving_qty', text)}
                 style={[
@@ -806,11 +811,17 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           <View style={styles.inputs}>
             <View style={[styles.flex1]}>
               <TextInput
+                selectTextOnFocus
                 value={(recipe.prep_time_min || '') + ''}
-                onChangeText={text => updateNumberField('prep_time_min', text)}
+                onChangeText={text =>
+                  updateNumberField(
+                    'prep_time_min',
+                    text.replace(/[^0-9]/g, ''),
+                  )
+                }
                 placeholder="0 min"
                 keyboardType="numeric"
-                style={styles.numericInput}
+                style={[styles.numericInput, styles.textAlCenter]}
                 returnKeyType="next"
                 ref={ref => (inputRefs.current.prep_time_min = ref)}
                 onSubmitEditing={() => {
@@ -827,11 +838,17 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             </View>
             <View style={[styles.flex1, styles.ml8]}>
               <TextInput
+                selectTextOnFocus
                 value={(recipe.cook_time_min || '') + ''}
-                onChangeText={text => updateNumberField('cook_time_min', text)}
+                onChangeText={text =>
+                  updateNumberField(
+                    'cook_time_min',
+                    text.replace(/[^0-9]/g, ''),
+                  )
+                }
                 placeholder="0 min"
                 keyboardType="numeric"
-                style={styles.numericInput}
+                style={[styles.numericInput, styles.textAlCenter]}
                 ref={ref => (inputRefs.current.cook_time_min = ref)}
               />
               <View style={styles.prepContainer}>

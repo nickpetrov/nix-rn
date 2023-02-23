@@ -54,6 +54,8 @@ import {User} from 'store/auth/auth.types';
 
 // validation
 import {validationSchema} from './validation';
+import {replaceRegexForNumber} from 'helpers/index';
+import {Colors} from 'constants/Colors';
 
 interface DailyCaloriesScreenProps {
   navigation: NativeStackNavigationProp<
@@ -339,7 +341,23 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     value: 0,
                   },
                 ]}
-                initValue={values.measure_system + ''}
+                initValueTextStyle={{
+                  fontSize: 14,
+                  color: '#000',
+                  textAlign: 'left',
+                }}
+                optionTextStyle={{
+                  fontSize: 16,
+                  color: '#000',
+                }}
+                selectedItemTextStyle={{
+                  fontSize: 16,
+                  color: Colors.Info,
+                  fontWeight: '500',
+                }}
+                initValue={
+                  values.measure_system === 1 ? 'Metric' : 'Imperial(US)'
+                }
                 onChange={option => {
                   if (+option.value !== +values.measure_system) {
                     changeValueByMetric(option.value, values, setFieldValue);
@@ -380,7 +398,21 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                       value: 'female',
                     },
                   ]}
-                  initValue={values.gender}
+                  initValueTextStyle={{
+                    fontSize: 14,
+                    color: '#000',
+                    textAlign: 'left',
+                  }}
+                  optionTextStyle={{
+                    fontSize: 16,
+                    color: '#000',
+                  }}
+                  selectedItemTextStyle={{
+                    fontSize: 16,
+                    color: Colors.Info,
+                    fontWeight: '500',
+                  }}
+                  initValue={values.gender === 'male' ? 'Male' : 'Female'}
                   onChange={option => {
                     setFieldValue('gender', option.value);
                   }}
@@ -418,6 +450,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
               {values.measure_system === 1 ? (
                 <>
                   <NixInput
+                    selectTextOnFocus
                     label="Weight"
                     placeholder="kg"
                     labelContainerStyle={styles.labelContainerStyleFull}
@@ -425,7 +458,14 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     value={values.weight_kg}
                     unit="kg"
                     unitStyle={styles.unit}
-                    onChangeText={handleChange('weight_kg')}
+                    onChangeText={newVal => {
+                      setFieldValue(
+                        'weight_kg',
+                        String(
+                          _.round(+replaceRegexForNumber(newVal), 1) || '',
+                        ),
+                      );
+                    }}
                     onBlur={handleBlur('weight_kg')}
                     keyboardType="numeric"
                     autoCapitalize="none"
@@ -447,10 +487,13 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     />
                   </NixInput>
                   <NixInput
+                    selectTextOnFocus
                     label="Height"
                     labelContainerStyle={styles.labelContainerStyleFull}
                     style={styles.input}
-                    value={_.round(+values.height_cm) + ''}
+                    value={
+                      values.height_cm ? _.round(+values.height_cm) + '' : ''
+                    }
                     unit="cm"
                     unitStyle={styles.unit}
                     onChangeText={newVal => {
@@ -464,7 +507,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     error={errors.height_cm}
                     errorStyles={styles.errorStyles}
                     blurOnSubmit={false}
-                    returnKeyType="next"
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                     ref={ref => (inputRefs.current.height_cm = ref)}
                     onSubmitEditing={() => {
                       const nextRef = inputRefs.current.age;
@@ -482,13 +525,21 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
               ) : (
                 <>
                   <NixInput
+                    selectTextOnFocus
                     label="Weight"
                     labelContainerStyle={styles.labelContainerStyleFull}
                     style={styles.input}
                     value={values.weight_lb || ''}
                     unit="lbs"
                     unitStyle={styles.unit}
-                    onChangeText={handleChange('weight_lb')}
+                    onChangeText={newVal => {
+                      setFieldValue(
+                        'weight_lb',
+                        String(
+                          _.round(+replaceRegexForNumber(newVal), 1) || '',
+                        ),
+                      );
+                    }}
                     onBlur={handleBlur('weight_lb')}
                     keyboardType="numeric"
                     autoCapitalize="none"
@@ -511,6 +562,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     />
                   </NixInput>
                   <NixInput
+                    selectTextOnFocus
                     label="Height"
                     labelContainerStyle={styles.labelContainerStyleFull}
                     style={styles.input}
@@ -530,7 +582,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     error={errors.height_ft}
                     errorStyles={styles.errorStyles}
                     blurOnSubmit={false}
-                    returnKeyType="next"
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                     ref={ref => (inputRefs.current.height_ft = ref)}
                     onSubmitEditing={() => {
                       const nextRef = inputRefs.current.height_in;
@@ -545,6 +597,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     />
                   </NixInput>
                   <NixInput
+                    selectTextOnFocus
                     label=""
                     labelContainerStyle={styles.labelContainerStyleFull}
                     style={styles.input}
@@ -564,7 +617,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     error={errors.height_in}
                     errorStyles={styles.errorStyles}
                     blurOnSubmit={false}
-                    returnKeyType="next"
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                     ref={ref => (inputRefs.current.height_in = ref)}
                     onSubmitEditing={() => {
                       const nextRef = inputRefs.current.age;
@@ -581,6 +634,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                 </>
               )}
               <NixInput
+                selectTextOnFocus
                 label="Age"
                 rootStyles={{borderBottomWidth: 0}}
                 labelContainerStyle={styles.labelContainerStyleFull}

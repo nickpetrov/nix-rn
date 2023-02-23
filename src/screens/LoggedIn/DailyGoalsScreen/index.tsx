@@ -2,6 +2,10 @@
 import React, {useRef, useLayoutEffect, useState} from 'react';
 import * as yup from 'yup';
 
+// helpers
+import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {replaceRegexForNumber} from 'helpers/index';
+
 // components
 import {
   View,
@@ -16,12 +20,15 @@ import {NixInput} from 'components/NixInput';
 import {NixButton} from 'components/NixButton';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {NavigationHeader} from 'components/NavigationHeader';
+import ShakeView from 'components/ShakeView';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 // actions
 import * as userActions from 'store/auth/auth.actions';
+import {setInfoMessage} from 'store/base/base.actions';
 
 // styles
 import {styles} from './DailyGoalsScreen.styles';
@@ -36,10 +43,6 @@ import {
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {useNetInfo} from '@react-native-community/netinfo';
-import {setInfoMessage} from 'store/base/base.actions';
-import ShakeView from 'components/ShakeView';
-import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface DailyGoalsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -219,7 +222,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
           validateOnBlur={false}>
           {({
             handleSubmit,
-            handleChange,
+            setFieldValue,
             handleBlur,
             isValid,
             dirty,
@@ -228,6 +231,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
           }) => (
             <View>
               <NixInput
+                selectTextOnFocus
                 label="Daily Calorie Limit:"
                 labelStyle={styles.label}
                 labelContainerStyle={styles.labelContainerStyle}
@@ -235,7 +239,9 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 value={(values.daily_kcal || '') + ''}
                 unit="kcal"
                 unitStyle={styles.unit}
-                onChangeText={handleChange('daily_kcal')}
+                onChangeText={val =>
+                  setFieldValue('daily_kcal', replaceRegexForNumber(val))
+                }
                 onBlur={handleBlur('daily_kcal')}
                 keyboardType="numeric"
                 placeholder="0"
@@ -255,6 +261,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
               />
 
               <NixInput
+                selectTextOnFocus
                 subLabel="% of Calories from"
                 label="Carbohydrates:"
                 labelStyle={styles.label}
@@ -268,7 +275,9 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                   4
                 ).toFixed(1)}g`}
                 unitStyle={{...styles.unit, ...styles.smallUnit}}
-                onChangeText={handleChange('daily_carbs_pct')}
+                onChangeText={val =>
+                  setFieldValue('daily_carbs_pct', replaceRegexForNumber(val))
+                }
                 onBlur={handleBlur('daily_carbs_pct')}
                 keyboardType="numeric"
                 placeholder="0"
@@ -288,6 +297,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
               />
 
               <NixInput
+                selectTextOnFocus
                 subLabel="% of Calories from"
                 label="Protein:"
                 labelStyle={styles.label}
@@ -301,7 +311,9 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                   4
                 ).toFixed(1)}g`}
                 unitStyle={{...styles.unit, ...styles.smallUnit}}
-                onChangeText={handleChange('daily_protein_pct')}
+                onChangeText={val =>
+                  setFieldValue('daily_protein_pct', replaceRegexForNumber(val))
+                }
                 onBlur={handleBlur('daily_protein_pct')}
                 keyboardType="numeric"
                 placeholder="0"
@@ -321,6 +333,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
               />
 
               <NixInput
+                selectTextOnFocus
                 subLabel="% of Calories from"
                 label="Fat:"
                 labelStyle={styles.label}
@@ -334,7 +347,9 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                   9
                 ).toFixed(1)}g`}
                 unitStyle={{...styles.unit, ...styles.smallUnit}}
-                onChangeText={handleChange('daily_fat_pct')}
+                onChangeText={val =>
+                  setFieldValue('daily_fat_pct', replaceRegexForNumber(val))
+                }
                 onBlur={handleBlur('daily_fat_pct')}
                 keyboardType="numeric"
                 placeholder="0"

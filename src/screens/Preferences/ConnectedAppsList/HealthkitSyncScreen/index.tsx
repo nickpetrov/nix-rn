@@ -24,6 +24,7 @@ import {styles} from './HealthkitSyncScreen.styles';
 // helpers
 import {SQLexecute} from 'helpers/sqlite';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {Colors} from 'constants/Colors';
 
 export const HealthkitSyncScreen: React.FC = () => {
   const db = useSelector(state => state.base.db);
@@ -210,8 +211,24 @@ export const HealthkitSyncScreen: React.FC = () => {
             key: 'off',
           },
         ]}
+        initValueTextStyle={{
+          fontSize: 16,
+          color: '#000',
+        }}
+        optionTextStyle={{
+          fontSize: 16,
+          color: '#000',
+        }}
+        selectedItemTextStyle={{
+          fontSize: 16,
+          color: Colors.Info,
+          fontWeight: '500',
+        }}
         style={{marginBottom: 10}}
-        initValue={syncOptions.nutrition}
+        initValue={
+          syncOptions.nutrition.charAt(0).toUpperCase() +
+          syncOptions.nutrition.slice(1)
+        }
         onChange={option => {
           dispatch(mergeHKSyncOptions({nutrition: option.value}));
           adjustSync('nutrition', option.value);
@@ -256,8 +273,24 @@ export const HealthkitSyncScreen: React.FC = () => {
             key: 'off',
           },
         ]}
+        initValueTextStyle={{
+          fontSize: 16,
+          color: '#000',
+        }}
+        optionTextStyle={{
+          fontSize: 16,
+          color: '#000',
+        }}
+        selectedItemTextStyle={{
+          fontSize: 16,
+          color: Colors.Info,
+          fontWeight: '500',
+        }}
         style={{marginBottom: 10}}
-        initValue={syncOptions.weight}
+        initValue={
+          syncOptions.weight.charAt(0).toUpperCase() +
+          syncOptions.weight.slice(1)
+        }
         onChange={option => {
           dispatch(mergeHKSyncOptions({weight: option.value}));
           adjustSync('weight', option.value);
@@ -302,7 +335,23 @@ export const HealthkitSyncScreen: React.FC = () => {
             key: 'off',
           },
         ]}
-        initValue={syncOptions.exercise}
+        initValueTextStyle={{
+          fontSize: 16,
+          color: '#000',
+        }}
+        optionTextStyle={{
+          fontSize: 16,
+          color: '#000',
+        }}
+        selectedItemTextStyle={{
+          fontSize: 16,
+          color: Colors.Info,
+          fontWeight: '500',
+        }}
+        initValue={
+          syncOptions.exercise.charAt(0).toUpperCase() +
+          syncOptions.exercise.slice(1)
+        }
         onChange={option => {
           dispatch(mergeHKSyncOptions({exercise: option.value}));
           adjustSync('exercise', option.value);

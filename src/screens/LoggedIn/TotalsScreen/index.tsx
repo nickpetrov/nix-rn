@@ -406,6 +406,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
               <View style={styles.dailyContainer}>
                 <Text style={styles.dailyText}>Daily Calorie Limit:</Text>
                 <TextInput
+                  selectTextOnFocus
                   value={dailyKcal ? dailyKcal + '' : ''}
                   onFocus={() => setCaloriesInputFocuses(true)}
                   onBlur={() => setCaloriesInputFocuses(false)}
