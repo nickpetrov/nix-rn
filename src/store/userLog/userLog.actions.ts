@@ -77,7 +77,7 @@ export const getDayTotals = (
         });
       }
     } catch (error) {
-      throw error;
+      console.log('error getDayTotals', error);
     }
   };
 };
@@ -132,7 +132,7 @@ export const getUserFoodlog = (
 
       // dispatch<any>(getDayTotals(beginDateSelected, endDate, timezone));
     } catch (error) {
-      throw error;
+      console.log('error getUserFoodlog', error);
     }
   };
 };
@@ -179,7 +179,7 @@ export const getUserWeightlog = (
         }
       }
     } catch (error) {
-      throw error;
+      console.log('error getUserWeightlog', error);
     }
   };
 };
@@ -346,7 +346,7 @@ export const getUserExerciseslog = (
         }
       }
     } catch (error) {
-      throw error;
+      console.log('error getUserExerciseslog', error);
     }
   };
 };
