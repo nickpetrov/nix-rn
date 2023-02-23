@@ -471,7 +471,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     error={errors.weight_kg}
                     errorStyles={styles.errorStyles}
                     blurOnSubmit={false}
-                    returnKeyType="next"
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                     ref={ref => (inputRefs.current.weight_kg = ref)}
                     onSubmitEditing={() => {
                       const nextRef = inputRefs.current.height_cm;
@@ -545,7 +545,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     error={errors.weight_lb}
                     errorStyles={styles.errorStyles}
                     blurOnSubmit={false}
-                    returnKeyType="next"
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                     ref={ref => (inputRefs.current.weight_lb = ref)}
                     onSubmitEditing={() => {
                       const nextRef = inputRefs.current.height_ft;
