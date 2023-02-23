@@ -33,6 +33,7 @@ import {FoodProps} from 'store/userLog/userLog.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {CheckedEventsType} from 'store/walkthrough/walkthrough.types';
+import {replaceRegexForNumber} from 'helpers/index';
 
 interface FoodEditItemProps {
   foodObj: FoodProps;
@@ -152,7 +153,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
           placeholderTextColor="#60605e"
           keyboardType={'numeric'}
           returnKeyType="done"
-          onChangeText={setServingQty}
+          onChangeText={newVal => setServingQty(replaceRegexForNumber(newVal))}
           onBlur={() => {
             Keyboard.dismiss();
             onQtyChange();
