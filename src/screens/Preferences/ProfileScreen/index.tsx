@@ -454,7 +454,16 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       keyboardType="numeric"
                       autoCapitalize="none"
                       error={errors.weight_kg}
-                      errorStyles={styles.errorStyles}>
+                      errorStyles={styles.errorStyles}
+                      blurOnSubmit={false}
+                      returnKeyType="next"
+                      ref={ref => (inputRefs.current.weight_kg = ref)}
+                      onSubmitEditing={() => {
+                        const nextRef = inputRefs.current.height_cm;
+                        if (nextRef) {
+                          nextRef?.focus();
+                        }
+                      }}>
                       <FontAwesome
                         name={'edit'}
                         size={15}
@@ -477,7 +486,16 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       autoCapitalize="none"
                       placeholder="cm"
                       error={errors.height_cm}
-                      errorStyles={styles.errorStyles}>
+                      errorStyles={styles.errorStyles}
+                      blurOnSubmit={false}
+                      returnKeyType="next"
+                      ref={ref => (inputRefs.current.height_cm = ref)}
+                      onSubmitEditing={() => {
+                        const nextRef = inputRefs.current.age;
+                        if (nextRef) {
+                          nextRef?.focus();
+                        }
+                      }}>
                       <FontAwesome
                         name={'edit'}
                         size={15}
@@ -500,7 +518,16 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       autoCapitalize="none"
                       placeholder="lbs."
                       error={errors.weight_lb}
-                      errorStyles={styles.errorStyles}>
+                      errorStyles={styles.errorStyles}
+                      blurOnSubmit={false}
+                      returnKeyType="next"
+                      ref={ref => (inputRefs.current.weight_lb = ref)}
+                      onSubmitEditing={() => {
+                        const nextRef = inputRefs.current.height_ft;
+                        if (nextRef) {
+                          nextRef?.focus();
+                        }
+                      }}>
                       <FontAwesome
                         name={'edit'}
                         size={15}
@@ -525,7 +552,16 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       autoCapitalize="none"
                       placeholder="ft."
                       error={errors.height_ft}
-                      errorStyles={styles.errorStyles}>
+                      errorStyles={styles.errorStyles}
+                      blurOnSubmit={false}
+                      returnKeyType="next"
+                      ref={ref => (inputRefs.current.height_ft = ref)}
+                      onSubmitEditing={() => {
+                        const nextRef = inputRefs.current.height_in;
+                        if (nextRef) {
+                          nextRef?.focus();
+                        }
+                      }}>
                       <FontAwesome
                         name={'edit'}
                         size={15}
@@ -550,7 +586,16 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       autoCapitalize="none"
                       placeholder="in."
                       error={errors.height_in}
-                      errorStyles={styles.errorStyles}>
+                      errorStyles={styles.errorStyles}
+                      blurOnSubmit={false}
+                      returnKeyType="next"
+                      ref={ref => (inputRefs.current.height_in = ref)}
+                      onSubmitEditing={() => {
+                        const nextRef = inputRefs.current.age;
+                        if (nextRef) {
+                          nextRef?.focus();
+                        }
+                      }}>
                       <FontAwesome
                         name={'edit'}
                         size={15}
@@ -576,7 +621,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   autoCapitalize="none"
                   placeholder=""
                   error={errors.age}
-                  errorStyles={styles.errorStyles}>
+                  errorStyles={styles.errorStyles}
+                  ref={ref => (inputRefs.current.age = ref)}>
                   <FontAwesome
                     name={'edit'}
                     size={15}
