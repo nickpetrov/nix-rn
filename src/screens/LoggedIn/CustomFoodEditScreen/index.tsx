@@ -331,7 +331,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           style={styles.input}
           value={(foodObj.serving_qty || '') + ''}
           onChangeText={value => updateCustomField('serving_qty', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="Quantity"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.serving_qty = ref)}
@@ -374,7 +374,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_calories || '') + ''}
           unit="kcal"
           onChangeText={value => updateCustomField('nf_calories', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_calories = ref)}
@@ -396,7 +396,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_total_fat || '') + ''}
           unit="g"
           onChangeText={value => updateCustomField('nf_total_fat', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_total_fat = ref)}
@@ -418,7 +418,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_saturated_fat || '') + ''}
           unit=""
           onChangeText={value => updateCustomField('nf_saturated_fat', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_saturated_fat = ref)}
@@ -440,7 +440,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_cholesterol || '') + ''}
           unit="mg"
           onChangeText={value => updateCustomField('nf_cholesterol', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_cholesterol = ref)}
@@ -462,7 +462,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_sodium || '') + ''}
           unit="mg"
           onChangeText={value => updateCustomField('nf_sodium', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_sodium = ref)}
@@ -486,7 +486,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           onChangeText={value =>
             updateCustomField('nf_total_carbohydrate', value)
           }
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_total_carbohydrate = ref)}
@@ -508,7 +508,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_dietary_fiber || '') + ''}
           unit="g"
           onChangeText={value => updateCustomField('nf_dietary_fiber', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_dietary_fiber = ref)}
@@ -530,7 +530,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_sugars || '') + ''}
           unit="g"
           onChangeText={value => updateCustomField('nf_sugars', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_sugars = ref)}
@@ -552,7 +552,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_protein || '') + ''}
           unit="g"
           onChangeText={value => updateCustomField('nf_protein', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_protein = ref)}
@@ -574,7 +574,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_vitamin_a_dv || '') + ''}
           unit="%dv"
           onChangeText={value => updateCustomField('nf_vitamin_a_dv', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_vitamin_a_dv = ref)}
@@ -596,7 +596,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_vitamin_c_dv || '') + ''}
           unit="%dv"
           onChangeText={value => updateCustomField('nf_vitamin_c_dv', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_vitamin_c_dv = ref)}
@@ -618,7 +618,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_vitamin_d_dv || '') + ''}
           unit="%dv"
           onChangeText={value => updateCustomField('nf_vitamin_d_dv', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_vitamin_d_dv = ref)}
@@ -640,7 +640,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_calcium_dv || '') + ''}
           unit="%dv"
           onChangeText={value => updateCustomField('nf_calcium_dv', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_calcium_dv = ref)}
@@ -662,7 +662,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_iron_dv || '') + ''}
           unit="%dv"
           onChangeText={value => updateCustomField('nf_iron_dv', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_iron_dv = ref)}
@@ -684,7 +684,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_p || '') + ''}
           unit="mg"
           onChangeText={value => updateCustomField('nf_p', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
           ref={ref => (inputRefs.current.nf_p = ref)}
@@ -706,7 +706,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
           value={(foodObj.nf_potassium || '') + ''}
           unit="mg"
           onChangeText={value => updateCustomField('nf_potassium', value)}
-          keyboardType="number-pad"
+          keyboardType="numeric"
           placeholder="0"
           ref={ref => (inputRefs.current.nf_potassium = ref)}
           onFocus={() => {

@@ -494,7 +494,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                         );
                       }}
                       onBlur={handleBlur('weight_kg')}
-                      keyboardType="number-pad"
+                      keyboardType="numeric"
                       autoCapitalize="none"
                       error={errors.weight_kg}
                       errorStyles={styles.errorStyles}
@@ -568,7 +568,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                         );
                       }}
                       onBlur={handleBlur('weight_lb')}
-                      keyboardType="number-pad"
+                      keyboardType="numeric"
                       autoCapitalize="none"
                       placeholder="lbs."
                       error={errors.weight_lb}
