@@ -671,6 +671,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   }}
                   onBlur={handleBlur('age')}
                   keyboardType="number-pad"
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
                   autoCapitalize="none"
                   placeholder=""
                   error={errors.age}

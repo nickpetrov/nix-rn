@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   TextInput,
+  Platform,
 } from 'react-native';
 import {Formik, FormikProps} from 'formik';
 import {NixInput} from 'components/NixInput';
@@ -249,7 +250,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 error={errors.daily_kcal}
                 withoutErorrText
                 editable={!isLoading}
-                returnKeyType="next"
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                 ref={ref => (inputRefs.current.daily_kcal = ref)}
                 onSubmitEditing={() => {
                   const nextRef = inputRefs.current.daily_carbs_pct;
@@ -285,7 +286,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 error={errors.daily_carbs_pct}
                 withoutErorrText
                 editable={!isLoading}
-                returnKeyType="next"
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                 ref={ref => (inputRefs.current.daily_carbs_pct = ref)}
                 onSubmitEditing={() => {
                   const nextRef = inputRefs.current.daily_protein_pct;
@@ -321,7 +322,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 error={errors.daily_protein_pct}
                 withoutErorrText
                 editable={!isLoading}
-                returnKeyType="next"
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                 ref={ref => (inputRefs.current.daily_protein_pct = ref)}
                 onSubmitEditing={() => {
                   const nextRef = inputRefs.current.daily_fat_pct;
@@ -352,6 +353,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                 }
                 onBlur={handleBlur('daily_fat_pct')}
                 keyboardType="numeric"
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
                 placeholder="0"
                 withErrorBorder
                 error={errors.daily_fat_pct}

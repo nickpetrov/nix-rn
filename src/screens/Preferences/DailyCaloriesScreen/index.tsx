@@ -647,6 +647,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                 }}
                 onBlur={handleBlur('age')}
                 keyboardType="number-pad"
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
                 autoCapitalize="none"
                 placeholder=""
                 error={errors.age}
