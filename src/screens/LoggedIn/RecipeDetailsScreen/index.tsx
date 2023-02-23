@@ -781,7 +781,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                   !!errorMessages.serving_qty && styles.invalidInput,
                 ]}
                 keyboardType="numeric"
-                returnKeyType="next"
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                 ref={ref => (inputRefs.current.serving_qty = ref)}
                 onSubmitEditing={() => {
                   const nextRef = inputRefs.current.prep_time_min;
@@ -820,9 +820,9 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                   )
                 }
                 placeholder="0 min"
-                keyboardType="numeric"
+                keyboardType="number-pad"
                 style={[styles.numericInput, styles.textAlCenter]}
-                returnKeyType="next"
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                 ref={ref => (inputRefs.current.prep_time_min = ref)}
                 onSubmitEditing={() => {
                   const nextRef = inputRefs.current.cook_time_min;
@@ -847,7 +847,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                   )
                 }
                 placeholder="0 min"
-                keyboardType="numeric"
+                keyboardType="number-pad"
                 style={[styles.numericInput, styles.textAlCenter]}
                 ref={ref => (inputRefs.current.cook_time_min = ref)}
               />

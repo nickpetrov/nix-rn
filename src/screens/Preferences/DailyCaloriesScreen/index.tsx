@@ -461,11 +461,10 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     onChangeText={newVal => {
                       setFieldValue(
                         'weight_kg',
-                        String(
-                          _.round(+replaceRegexForNumber(newVal), 1) || '',
-                        ),
+                        replaceRegexForNumber(newVal) || '',
                       );
                     }}
+                    maxLength={5}
                     onBlur={handleBlur('weight_kg')}
                     keyboardType="numeric"
                     autoCapitalize="none"
@@ -535,11 +534,10 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     onChangeText={newVal => {
                       setFieldValue(
                         'weight_lb',
-                        String(
-                          _.round(+replaceRegexForNumber(newVal), 1) || '',
-                        ),
+                        replaceRegexForNumber(newVal) || '',
                       );
                     }}
+                    maxLength={5}
                     onBlur={handleBlur('weight_lb')}
                     keyboardType="numeric"
                     autoCapitalize="none"
