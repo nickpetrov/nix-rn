@@ -323,7 +323,10 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
         values,
         errors,
       }) => (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex: 1}}>
+        <TouchableWithoutFeedback
+          onPress={Keyboard.dismiss}
+          style={{flex: 1}}
+          accessible={false}>
           <SafeAreaView style={styles.root}>
             <KeyboardAwareScrollView
               style={styles.container}

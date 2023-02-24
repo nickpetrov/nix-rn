@@ -87,7 +87,10 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex: 1}}>
+    <TouchableWithoutFeedback
+      onPress={Keyboard.dismiss}
+      style={{flex: 1}}
+      accessible={false}>
       <KeyboardAwareScrollView
         enableOnAndroid={true}
         enableAutomaticScroll={true}

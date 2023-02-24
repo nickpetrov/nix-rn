@@ -341,7 +341,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           return (
             <TouchableWithoutFeedback
               onPress={Keyboard.dismiss}
-              style={{flex: 1}}>
+              style={{flex: 1}}
+              accessible={false}>
               <View style={{flex: 1}}>
                 <KeyboardAwareScrollView
                   contentContainerStyle={styles.root}

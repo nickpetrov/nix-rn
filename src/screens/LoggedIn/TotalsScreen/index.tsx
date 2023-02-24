@@ -390,7 +390,10 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.root}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex: 1}}>
+      <TouchableWithoutFeedback
+        onPress={Keyboard.dismiss}
+        style={{flex: 1}}
+        accessible={false}>
         <KeyboardAwareScrollView
           overScrollMode="never"
           keyboardShouldPersistTaps="handled"

@@ -31,7 +31,7 @@ const GoBackModal: React.FC<GoBackModalProps> = props => {
             <Text style={styles.modalText}>You have unsaved changes</Text>
           </View>
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Do yoy want to save changes</Text>
+            <Text style={styles.footerText}>Do you want to save changes</Text>
             <View style={styles.btns}>
               <View style={[styles.btnContainer, styles.mr10]}>
                 <NixButton

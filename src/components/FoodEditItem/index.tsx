@@ -133,6 +133,9 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
 
   const onQtyChange = () => {
     const newValue = parseFloat(servingQty) || 1;
+    if (newValue === food.serving_qty) {
+      return;
+    }
     const multiplyer = newValue / food.serving_qty;
     const newFoodObj = multiply(_.cloneDeep(food), multiplyer, newValue);
     setFoodObj({...newFoodObj});
