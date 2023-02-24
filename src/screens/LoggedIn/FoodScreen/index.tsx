@@ -348,14 +348,14 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       '&s=' +
       foodObj.share_key;
     Share.share({
-      url,
+      // url,
       message:
         'Log ' +
         foodObj.food_name.replace(/\w\S*/g, function (txt) {
           return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         }) +
         ' on the Nutritionix Track app by tapping this link from your mobile phone: ' +
-        `${Platform.OS === 'ios' ? '' : url}`,
+        `${url}`,
       title: 'Pick an app',
     });
   };

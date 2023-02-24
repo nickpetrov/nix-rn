@@ -142,14 +142,14 @@ export const SideMenu: React.FC = () => {
   const shareAppHandler = useCallback(async () => {
     try {
       const result = await Share.share({
-        url:
-          Platform.OS === 'ios'
-            ? 'https://appsto.re/us/o_bs_.i'
-            : 'https://play.google.com/store/apps/details?id=com.nutritionix.nixtrack&hl=en',
+        // url:
+        //   Platform.OS === 'ios'
+        //     ? 'https://appsto.re/us/o_bs_.i'
+        //     : 'https://play.google.com/store/apps/details?id=com.nutritionix.nixtrack&hl=en',
         title: 'Nutritionix Track App - Calorie Counter and Food Tracker',
         message:
           Platform.OS === 'ios'
-            ? "Try out this cool food tracking app I have been using, it's called Nutritionix Track:"
+            ? "Try out this cool food tracking app I have been using, it's called Nutritionix Track: https://appsto.re/us/o_bs_.i"
             : "Try out this cool food tracking app I have been using, it's called Nutritionix Track: https://play.google.com/store/apps/details?id=com.nutritionix.nixtrack&hl=en",
       });
       if (result.action === Share.sharedAction) {
