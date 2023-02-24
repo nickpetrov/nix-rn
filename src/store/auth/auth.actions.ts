@@ -14,6 +14,7 @@ import {
   updateSentryContext,
 } from 'store/base/base.actions';
 import {resetWalkthrogh} from 'store/walkthrough/walkthrough.actions';
+import {clearCustomFoods} from 'store/customFoods/customFoods.actions';
 
 // types
 import {Dispatch} from 'redux';
@@ -32,6 +33,7 @@ import {resetBasketAction} from 'store/basket/basket.types';
 import {clearGroceryAgentModeAction} from 'store/groceryAgentMode/groceryAgentMode.types';
 import {RootState} from '../index';
 import {clearWalkthroghAction} from 'store/walkthrough/walkthrough.types';
+import {clearCustomFoodsAction} from 'store/customFoods/customFoods.types';
 
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch<authAction>) => {
@@ -150,6 +152,7 @@ export const logout = () => {
       | resetBasketAction
       | clearGroceryAgentModeAction
       | clearWalkthroghAction
+      | clearCustomFoodsAction
     >,
   ) => {
     apiClient.defaults.headers.common['x-user-jwt'] = '';
@@ -159,6 +162,7 @@ export const logout = () => {
       dispatch(resetWalkthrogh());
       dispatch(resetGroceryAgentMode());
       dispatch(resetGrocerySetting());
+      dispatch(clearCustomFoods());
       dispatch({type: authActionTypes.LOGOUT});
     });
   };

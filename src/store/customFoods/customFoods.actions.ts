@@ -5,6 +5,7 @@ import {
   getAllCustomFoodsAction,
   UpdateCustomFoodProps,
   updateOrCreateCustomFoodsAction,
+  clearCustomFoodsAction,
 } from './customFoods.types';
 import customFoodsService from 'api/customFoodsService';
 
@@ -87,4 +88,8 @@ export const deleteCustomFood = (id: string) => {
       console.log(error);
     }
   };
+};
+
+export const clearCustomFoods = (): clearCustomFoodsAction => {
+  return {type: customFoodsActionTypes.CUSTOM_FOODS_CLEAR};
 };
