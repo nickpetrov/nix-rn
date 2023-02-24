@@ -10,7 +10,6 @@ import {
   TouchableHighlight,
   Image,
   TouchableWithoutFeedback,
-  Keyboard,
 } from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import ModalSelector from 'react-native-modal-selector';
@@ -155,7 +154,6 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
           returnKeyType="done"
           onChangeText={newVal => setServingQty(replaceRegexForNumber(newVal))}
           onBlur={() => {
-            Keyboard.dismiss();
             onQtyChange();
           }}
         />

@@ -43,7 +43,6 @@ import NutritionLabel from 'components/NutrionixLabel/NutritionLabel';
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
 import useFoodLabel from './useFoodLabel';
-import useAsyncState from 'hooks/useAsyncState';
 
 // actions
 import * as basketActions from 'store/basket/basket.actions';
@@ -94,7 +93,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     }>;
   }>(null);
   const userTimezone = useSelector(state => state.auth.userData.timezone);
-  const [foodObj, setFoodObj] = useAsyncState<FoodProps>(route.params?.foodObj);
+  const [foodObj, setFoodObj] = useState<FoodProps>(route.params?.foodObj);
   const [showNotes, setShowNotes] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showChooseGetPhoto, setShowChooseGetPhoto] = useState(false);
@@ -212,7 +211,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
 
   const handleChangeFood = useCallback(
     async (food: Partial<FoodProps> | FoodProps) => {
-      await setFoodObj((prev: FoodProps) => ({
+      setFoodObj((prev: FoodProps) => ({
         ...prev,
         ...food,
       }));
@@ -670,8 +669,8 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           <TouchableOpacity
             style={styles.saveBtn}
             onPressIn={() => {
-              Keyboard.dismiss();
               setShowSpinner(true);
+              Keyboard.dismiss();
             }}
             onPress={() => {
               // need for use actual food object when save
@@ -680,7 +679,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
                   handleSave(food);
                   return food;
                 });
-              }, 0);
+              }, 1000);
             }}
             disabled={showSpinner}>
             <Text style={styles.saveBtnText}>Save</Text>
