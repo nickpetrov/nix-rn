@@ -733,7 +733,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       )}
       <KeyboardAwareScrollView
         style={styles.root}
-        keyboardShouldPersistTaps="always"
+        keyboardShouldPersistTaps="handled"
         enableOnAndroid={true}
         enableAutomaticScroll={true}>
         {invalidForm && <Text style={styles.invalid}>Recipe not saved</Text>}

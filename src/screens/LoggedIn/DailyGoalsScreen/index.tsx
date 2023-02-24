@@ -15,6 +15,7 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Platform,
+  Keyboard,
 } from 'react-native';
 import {Formik, FormikProps} from 'formik';
 import {NixInput} from 'components/NixInput';
@@ -44,6 +45,7 @@ import {
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
+import {TouchableWithoutFeedback} from 'react-native';
 
 interface DailyGoalsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -205,186 +207,193 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.root}>
-      <KeyboardAvoidingView style={styles.container}>
-        <Formik
-          initialValues={{
-            daily_kcal: userData.daily_kcal ? userData.daily_kcal : 0,
-            daily_carbs_pct: userData.daily_carbs_pct
-              ? userData.daily_carbs_pct
-              : 0,
-            daily_fat_pct: userData.daily_fat_pct ? userData.daily_fat_pct : 0,
-            daily_protein_pct: userData.daily_protein_pct
-              ? userData.daily_protein_pct
-              : 0,
-          }}
-          innerRef={formRef}
-          onSubmit={values => handleUpdate(values)}
-          validationSchema={goalsValidation}
-          validateOnBlur={false}>
-          {({
-            handleSubmit,
-            setFieldValue,
-            handleBlur,
-            isValid,
-            dirty,
-            values,
-            errors,
-          }) => (
-            <View>
-              <NixInput
-                selectTextOnFocus
-                label="Daily Calorie Limit:"
-                labelStyle={styles.label}
-                labelContainerStyle={styles.labelContainerStyle}
-                style={styles.input}
-                value={(values.daily_kcal || '') + ''}
-                unit="kcal"
-                unitStyle={styles.unit}
-                onChangeText={val =>
-                  setFieldValue('daily_kcal', replaceRegexForNumber(val))
-                }
-                onBlur={handleBlur('daily_kcal')}
-                keyboardType="numeric"
-                placeholder="0"
-                withErrorBorder
-                error={errors.daily_kcal}
-                withoutErorrText
-                editable={!isLoading}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                ref={ref => (inputRefs.current.daily_kcal = ref)}
-                onSubmitEditing={() => {
-                  const nextRef = inputRefs.current.daily_carbs_pct;
-                  if (nextRef) {
-                    nextRef?.focus();
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAvoidingView style={styles.container}>
+          <Formik
+            initialValues={{
+              daily_kcal: userData.daily_kcal ? userData.daily_kcal : 0,
+              daily_carbs_pct: userData.daily_carbs_pct
+                ? userData.daily_carbs_pct
+                : 0,
+              daily_fat_pct: userData.daily_fat_pct
+                ? userData.daily_fat_pct
+                : 0,
+              daily_protein_pct: userData.daily_protein_pct
+                ? userData.daily_protein_pct
+                : 0,
+            }}
+            innerRef={formRef}
+            onSubmit={values => handleUpdate(values)}
+            validationSchema={goalsValidation}
+            validateOnBlur={false}>
+            {({
+              handleSubmit,
+              setFieldValue,
+              handleBlur,
+              isValid,
+              dirty,
+              values,
+              errors,
+            }) => (
+              <View>
+                <NixInput
+                  selectTextOnFocus
+                  label="Daily Calorie Limit:"
+                  labelStyle={styles.label}
+                  labelContainerStyle={styles.labelContainerStyle}
+                  style={styles.input}
+                  value={(values.daily_kcal || '') + ''}
+                  unit="kcal"
+                  unitStyle={styles.unit}
+                  onChangeText={val =>
+                    setFieldValue('daily_kcal', replaceRegexForNumber(val))
                   }
-                }}
-                blurOnSubmit={false}
-              />
+                  onBlur={handleBlur('daily_kcal')}
+                  keyboardType="numeric"
+                  placeholder="0"
+                  withErrorBorder
+                  error={errors.daily_kcal}
+                  withoutErorrText
+                  editable={!isLoading}
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                  ref={ref => (inputRefs.current.daily_kcal = ref)}
+                  onSubmitEditing={() => {
+                    const nextRef = inputRefs.current.daily_carbs_pct;
+                    if (nextRef) {
+                      nextRef?.focus();
+                    }
+                  }}
+                  blurOnSubmit={false}
+                />
 
-              <NixInput
-                selectTextOnFocus
-                subLabel="% of Calories from"
-                label="Carbohydrates:"
-                labelStyle={styles.label}
-                labelContainerStyle={styles.labelContainerStyle}
-                style={styles.input}
-                value={(values.daily_carbs_pct || '') + ''}
-                unit="%"
-                unitValue={`${(
-                  (((values.daily_kcal || 0) / 100) *
-                    (values.daily_carbs_pct || 0)) /
-                  4
-                ).toFixed(1)}g`}
-                unitStyle={{...styles.unit, ...styles.smallUnit}}
-                onChangeText={val =>
-                  setFieldValue('daily_carbs_pct', replaceRegexForNumber(val))
-                }
-                onBlur={handleBlur('daily_carbs_pct')}
-                keyboardType="numeric"
-                placeholder="0"
-                withErrorBorder
-                error={errors.daily_carbs_pct}
-                withoutErorrText
-                editable={!isLoading}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                ref={ref => (inputRefs.current.daily_carbs_pct = ref)}
-                onSubmitEditing={() => {
-                  const nextRef = inputRefs.current.daily_protein_pct;
-                  if (nextRef) {
-                    nextRef?.focus();
+                <NixInput
+                  selectTextOnFocus
+                  subLabel="% of Calories from"
+                  label="Carbohydrates:"
+                  labelStyle={styles.label}
+                  labelContainerStyle={styles.labelContainerStyle}
+                  style={styles.input}
+                  value={(values.daily_carbs_pct || '') + ''}
+                  unit="%"
+                  unitValue={`${(
+                    (((values.daily_kcal || 0) / 100) *
+                      (values.daily_carbs_pct || 0)) /
+                    4
+                  ).toFixed(1)}g`}
+                  unitStyle={{...styles.unit, ...styles.smallUnit}}
+                  onChangeText={val =>
+                    setFieldValue('daily_carbs_pct', replaceRegexForNumber(val))
                   }
-                }}
-                blurOnSubmit={false}
-              />
+                  onBlur={handleBlur('daily_carbs_pct')}
+                  keyboardType="numeric"
+                  placeholder="0"
+                  withErrorBorder
+                  error={errors.daily_carbs_pct}
+                  withoutErorrText
+                  editable={!isLoading}
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                  ref={ref => (inputRefs.current.daily_carbs_pct = ref)}
+                  onSubmitEditing={() => {
+                    const nextRef = inputRefs.current.daily_protein_pct;
+                    if (nextRef) {
+                      nextRef?.focus();
+                    }
+                  }}
+                  blurOnSubmit={false}
+                />
 
-              <NixInput
-                selectTextOnFocus
-                subLabel="% of Calories from"
-                label="Protein:"
-                labelStyle={styles.label}
-                labelContainerStyle={styles.labelContainerStyle}
-                style={styles.input}
-                value={(values.daily_protein_pct || '') + ''}
-                unit="%"
-                unitValue={`${(
-                  (((values.daily_kcal || 0) / 100) *
-                    (values.daily_protein_pct || 0)) /
-                  4
-                ).toFixed(1)}g`}
-                unitStyle={{...styles.unit, ...styles.smallUnit}}
-                onChangeText={val =>
-                  setFieldValue('daily_protein_pct', replaceRegexForNumber(val))
-                }
-                onBlur={handleBlur('daily_protein_pct')}
-                keyboardType="numeric"
-                placeholder="0"
-                withErrorBorder
-                error={errors.daily_protein_pct}
-                withoutErorrText
-                editable={!isLoading}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                ref={ref => (inputRefs.current.daily_protein_pct = ref)}
-                onSubmitEditing={() => {
-                  const nextRef = inputRefs.current.daily_fat_pct;
-                  if (nextRef) {
-                    nextRef?.focus();
+                <NixInput
+                  selectTextOnFocus
+                  subLabel="% of Calories from"
+                  label="Protein:"
+                  labelStyle={styles.label}
+                  labelContainerStyle={styles.labelContainerStyle}
+                  style={styles.input}
+                  value={(values.daily_protein_pct || '') + ''}
+                  unit="%"
+                  unitValue={`${(
+                    (((values.daily_kcal || 0) / 100) *
+                      (values.daily_protein_pct || 0)) /
+                    4
+                  ).toFixed(1)}g`}
+                  unitStyle={{...styles.unit, ...styles.smallUnit}}
+                  onChangeText={val =>
+                    setFieldValue(
+                      'daily_protein_pct',
+                      replaceRegexForNumber(val),
+                    )
                   }
-                }}
-                blurOnSubmit={false}
-              />
+                  onBlur={handleBlur('daily_protein_pct')}
+                  keyboardType="numeric"
+                  placeholder="0"
+                  withErrorBorder
+                  error={errors.daily_protein_pct}
+                  withoutErorrText
+                  editable={!isLoading}
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                  ref={ref => (inputRefs.current.daily_protein_pct = ref)}
+                  onSubmitEditing={() => {
+                    const nextRef = inputRefs.current.daily_fat_pct;
+                    if (nextRef) {
+                      nextRef?.focus();
+                    }
+                  }}
+                  blurOnSubmit={false}
+                />
 
-              <NixInput
-                selectTextOnFocus
-                subLabel="% of Calories from"
-                label="Fat:"
-                labelStyle={styles.label}
-                labelContainerStyle={styles.labelContainerStyle}
-                style={styles.input}
-                value={(values.daily_fat_pct || '') + ''}
-                unit="%"
-                unitValue={`${(
-                  (((values.daily_kcal || 0) / 100) *
-                    (values.daily_fat_pct || 0)) /
-                  9
-                ).toFixed(1)}g`}
-                unitStyle={{...styles.unit, ...styles.smallUnit}}
-                onChangeText={val =>
-                  setFieldValue('daily_fat_pct', replaceRegexForNumber(val))
-                }
-                onBlur={handleBlur('daily_fat_pct')}
-                keyboardType="numeric"
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
-                placeholder="0"
-                withErrorBorder
-                error={errors.daily_fat_pct}
-                withoutErorrText
-                editable={!isLoading}
-                ref={ref => (inputRefs.current.daily_fat_pct = ref)}
-              />
-              {Object.values(errors).some(item => item) && (
-                <View style={styles.errorView}>
-                  <Text style={styles.error}>
-                    {errors.daily_kcal ||
-                      errors.daily_carbs_pct ||
-                      errors.daily_protein_pct ||
-                      errors.daily_fat_pct}
-                  </Text>
+                <NixInput
+                  selectTextOnFocus
+                  subLabel="% of Calories from"
+                  label="Fat:"
+                  labelStyle={styles.label}
+                  labelContainerStyle={styles.labelContainerStyle}
+                  style={styles.input}
+                  value={(values.daily_fat_pct || '') + ''}
+                  unit="%"
+                  unitValue={`${(
+                    (((values.daily_kcal || 0) / 100) *
+                      (values.daily_fat_pct || 0)) /
+                    9
+                  ).toFixed(1)}g`}
+                  unitStyle={{...styles.unit, ...styles.smallUnit}}
+                  onChangeText={val =>
+                    setFieldValue('daily_fat_pct', replaceRegexForNumber(val))
+                  }
+                  onBlur={handleBlur('daily_fat_pct')}
+                  keyboardType="numeric"
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
+                  placeholder="0"
+                  withErrorBorder
+                  error={errors.daily_fat_pct}
+                  withoutErorrText
+                  editable={!isLoading}
+                  ref={ref => (inputRefs.current.daily_fat_pct = ref)}
+                />
+                {Object.values(errors).some(item => item) && (
+                  <View style={styles.errorView}>
+                    <Text style={styles.error}>
+                      {errors.daily_kcal ||
+                        errors.daily_carbs_pct ||
+                        errors.daily_protein_pct ||
+                        errors.daily_fat_pct}
+                    </Text>
+                  </View>
+                )}
+                <View style={styles.footer}>
+                  <ShakeView animated={!isValid}>
+                    <NixButton
+                      title="Save"
+                      onPress={handleSubmit}
+                      type="primary"
+                      disabled={!isValid || !dirty || isLoading}
+                    />
+                  </ShakeView>
                 </View>
-              )}
-              <View style={styles.footer}>
-                <ShakeView animated={!isValid}>
-                  <NixButton
-                    title="Save"
-                    onPress={handleSubmit}
-                    type="primary"
-                    disabled={!isValid || !dirty || isLoading}
-                  />
-                </ShakeView>
               </View>
-            </View>
-          )}
-        </Formik>
-      </KeyboardAvoidingView>
+            )}
+          </Formik>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 };

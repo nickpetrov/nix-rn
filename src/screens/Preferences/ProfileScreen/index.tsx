@@ -12,7 +12,6 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Formik, FormikProps} from 'formik';
@@ -339,401 +338,386 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           errors,
         }) => {
           return (
-            <TouchableWithoutFeedback
-              onPress={Keyboard.dismiss}
-              style={{flex: 1}}
-              accessible={false}>
-              <View style={{flex: 1}}>
-                <KeyboardAwareScrollView
-                  contentContainerStyle={styles.root}
-                  keyboardShouldPersistTaps="always"
-                  enableOnAndroid={true}
-                  enableAutomaticScroll={true}>
-                  <NixInput
-                    selectTextOnFocus
-                    label="First Name"
-                    placeholder="First Name"
-                    column
-                    value={values.first_name}
-                    onChangeText={handleChange('first_name')}
-                    onBlur={handleBlur('first_name')}
-                    autoCapitalize="none"
-                    error={errors.first_name}
-                    errorStyles={styles.errorStyles}
-                    blurOnSubmit={false}
-                    returnKeyType="next"
-                    ref={ref => (inputRefs.current.first_name = ref)}
-                    onSubmitEditing={() => {
-                      const nextRef = inputRefs.current.last_name;
-                      if (nextRef) {
-                        nextRef?.focus();
-                      }
-                    }}
-                  />
-                  <NixInput
-                    selectTextOnFocus
-                    label="Last Name"
-                    placeholder="Last Name"
-                    column
-                    value={values.last_name}
-                    onChangeText={handleChange('last_name')}
-                    onBlur={handleBlur('last_name')}
-                    autoCapitalize="none"
-                    error={errors.last_name}
-                    errorStyles={styles.errorStyles}
-                    ref={ref => (inputRefs.current.last_name = ref)}
-                  />
-                  <ModalSelector
-                    data={timezoneList}
-                    initValue={userData.timezone || ''}
-                    onChange={option => {
-                      setFieldValue('timezone', option.value);
-                      // setTimezone(option.value);
-                    }}
-                    initValueTextStyle={{
-                      fontSize: 14,
-                      color: '#000',
-                      textAlign: 'left',
-                    }}
-                    optionTextStyle={{
-                      fontSize: 16,
-                      color: '#000',
-                    }}
-                    selectedItemTextStyle={{
-                      fontSize: 16,
-                      color: Colors.Info,
-                      fontWeight: '500',
-                    }}
-                    listType="SCROLLVIEW"
-                    keyExtractor={(item: {label: string; value: string}) =>
-                      item.value
-                    }>
-                    <NixInput
-                      selectTextOnFocus
-                      label="Time Zone"
-                      style={{textAlign: 'right'}}
-                      labelContainerStyle={styles.labelContainerStyle}
-                      value={values.timezone}
-                      onChangeText={handleChange('timezone')}
-                      onBlur={handleBlur('timezone')}
-                      autoCapitalize="none">
-                      <FontAwesome
-                        name={'sort-down'}
-                        size={15}
-                        style={styles.selectIcon}
-                      />
-                    </NixInput>
-                  </ModalSelector>
-                  <ModalSelector
-                    data={[
-                      {
-                        label: 'Metric',
-                        value: 1,
-                      },
-                      {
-                        label: 'Imperial (US)',
-                        value: 0,
-                      },
-                    ]}
-                    initValueTextStyle={{
-                      fontSize: 14,
-                      color: '#000',
-                      textAlign: 'left',
-                    }}
-                    optionTextStyle={{
-                      fontSize: 16,
-                      color: '#000',
-                    }}
-                    selectedItemTextStyle={{
-                      fontSize: 16,
-                      color: Colors.Info,
-                      fontWeight: '500',
-                    }}
-                    initValue={
-                      values.measure_system === 1 ? 'Metric' : 'Imperial (US)'
+            <View style={{flex: 1}}>
+              <KeyboardAwareScrollView
+                contentContainerStyle={styles.root}
+                keyboardShouldPersistTaps="handled"
+                enableOnAndroid={true}
+                enableAutomaticScroll={true}>
+                <NixInput
+                  selectTextOnFocus
+                  label="First Name"
+                  placeholder="First Name"
+                  column
+                  value={values.first_name}
+                  onChangeText={handleChange('first_name')}
+                  onBlur={handleBlur('first_name')}
+                  autoCapitalize="none"
+                  error={errors.first_name}
+                  errorStyles={styles.errorStyles}
+                  blurOnSubmit={false}
+                  returnKeyType="next"
+                  ref={ref => (inputRefs.current.first_name = ref)}
+                  onSubmitEditing={() => {
+                    const nextRef = inputRefs.current.last_name;
+                    if (nextRef) {
+                      nextRef?.focus();
                     }
-                    onChange={option => {
-                      if (+option.value !== +values.measure_system) {
-                        changeValueByMetric(
-                          +option.value,
-                          values,
-                          setFieldValue,
-                        );
-                      }
-                      setFieldValue('measure_system', +option.value);
-                    }}
-                    listType="FLATLIST"
-                    keyExtractor={(item: {label: string; value: number}) =>
-                      String(item.value)
-                    }>
-                    <NixInput
-                      label="Measure system"
-                      style={{textAlign: 'right'}}
-                      labelContainerStyle={styles.labelContainerStyle}
-                      value={
-                        values.measure_system === 1 ? 'Metric' : 'Imperial (US)'
-                      }
-                      onChangeText={handleChange('measure_system')}
-                      onBlur={handleBlur('measure_system')}
-                      autoCapitalize="none">
-                      <FontAwesome
-                        name={'sort-down'}
-                        size={15}
-                        style={styles.selectIcon}
-                      />
-                    </NixInput>
-                  </ModalSelector>
-                  {values.measure_system === 1 ? (
-                    <>
-                      <NixInput
-                        selectTextOnFocus
-                        label="Weight"
-                        placeholder="kg"
-                        labelContainerStyle={styles.labelContainerStyleFull}
-                        style={styles.input}
-                        value={values.weight_kg}
-                        unit="kg"
-                        unitStyle={styles.unit}
-                        onChangeText={newVal => {
-                          setFieldValue(
-                            'weight_kg',
-                            replaceRegexForNumber(newVal) || '',
-                          );
-                        }}
-                        maxLength={5}
-                        onBlur={handleBlur('weight_kg')}
-                        keyboardType="numeric"
-                        autoCapitalize="none"
-                        error={errors.weight_kg}
-                        errorStyles={styles.errorStyles}
-                        blurOnSubmit={false}
-                        returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                        ref={ref => (inputRefs.current.weight_kg = ref)}
-                        onSubmitEditing={() => {
-                          const nextRef = inputRefs.current.height_cm;
-                          if (nextRef) {
-                            nextRef?.focus();
-                          }
-                        }}>
-                        <FontAwesome
-                          name={'edit'}
-                          size={15}
-                          style={styles.inputIcon}
-                        />
-                      </NixInput>
-                      <NixInput
-                        selectTextOnFocus
-                        label="Height"
-                        labelContainerStyle={styles.labelContainerStyleFull}
-                        style={styles.input}
-                        value={
-                          values.height_cm
-                            ? _.round(+values.height_cm) + ''
-                            : ''
-                        }
-                        unit="cm"
-                        unitStyle={styles.unit}
-                        onChangeText={newVal => {
-                          const val = newVal.replace(/[^0-9]/g, '');
-                          setFieldValue('height_cm', val);
-                        }}
-                        onBlur={handleBlur('height_cm')}
-                        keyboardType="number-pad"
-                        autoCapitalize="none"
-                        placeholder="cm"
-                        error={errors.height_cm}
-                        errorStyles={styles.errorStyles}
-                        blurOnSubmit={false}
-                        returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                        ref={ref => (inputRefs.current.height_cm = ref)}
-                        onSubmitEditing={() => {
-                          const nextRef = inputRefs.current.age;
-                          if (nextRef) {
-                            nextRef?.focus();
-                          }
-                        }}>
-                        <FontAwesome
-                          name={'edit'}
-                          size={15}
-                          style={styles.inputIcon}
-                        />
-                      </NixInput>
-                    </>
-                  ) : (
-                    <>
-                      <NixInput
-                        selectTextOnFocus
-                        label="Weight"
-                        labelContainerStyle={styles.labelContainerStyleFull}
-                        style={styles.input}
-                        value={values.weight_lb || ''}
-                        unit="lbs"
-                        unitStyle={styles.unit}
-                        onChangeText={newVal => {
-                          setFieldValue(
-                            'weight_lb',
-                            replaceRegexForNumber(newVal) || '',
-                          );
-                        }}
-                        maxLength={5}
-                        onBlur={handleBlur('weight_lb')}
-                        keyboardType="numeric"
-                        autoCapitalize="none"
-                        placeholder="lbs."
-                        error={errors.weight_lb}
-                        errorStyles={styles.errorStyles}
-                        blurOnSubmit={false}
-                        returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                        ref={ref => (inputRefs.current.weight_lb = ref)}
-                        onSubmitEditing={() => {
-                          const nextRef = inputRefs.current.height_ft;
-                          if (nextRef) {
-                            nextRef?.focus();
-                          }
-                        }}>
-                        <FontAwesome
-                          name={'edit'}
-                          size={15}
-                          style={styles.inputIcon}
-                        />
-                      </NixInput>
-                      <NixInput
-                        selectTextOnFocus
-                        label="Height"
-                        labelContainerStyle={styles.labelContainerStyleFull}
-                        style={styles.input}
-                        value={
-                          values.height_ft
-                            ? _.round(+values.height_ft) + ''
-                            : ''
-                        }
-                        unit="ft"
-                        unitStyle={styles.unit}
-                        onChangeText={newVal => {
-                          setFieldValue('height_ft', newVal);
-                        }}
-                        onBlur={handleBlur('height_ft')}
-                        keyboardType="number-pad"
-                        autoCapitalize="none"
-                        placeholder="ft."
-                        error={errors.height_ft}
-                        errorStyles={styles.errorStyles}
-                        blurOnSubmit={false}
-                        returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                        ref={ref => (inputRefs.current.height_ft = ref)}
-                        onSubmitEditing={() => {
-                          const nextRef = inputRefs.current.height_in;
-                          if (nextRef) {
-                            nextRef?.focus();
-                          }
-                        }}>
-                        <FontAwesome
-                          name={'edit'}
-                          size={15}
-                          style={styles.inputIcon}
-                        />
-                      </NixInput>
-                      <NixInput
-                        selectTextOnFocus
-                        label=""
-                        labelContainerStyle={styles.labelContainerStyleFull}
-                        style={styles.input}
-                        value={
-                          values.height_in
-                            ? _.round(+values.height_in) + ''
-                            : ''
-                        }
-                        unit="in"
-                        unitStyle={styles.unit}
-                        onChangeText={newVal => {
-                          setFieldValue('height_in', newVal);
-                        }}
-                        onBlur={handleBlur('height_in')}
-                        keyboardType="number-pad"
-                        autoCapitalize="none"
-                        placeholder="in."
-                        error={errors.height_in}
-                        errorStyles={styles.errorStyles}
-                        blurOnSubmit={false}
-                        returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                        ref={ref => (inputRefs.current.height_in = ref)}
-                        onSubmitEditing={() => {
-                          const nextRef = inputRefs.current.age;
-                          if (nextRef) {
-                            nextRef?.focus();
-                          }
-                        }}>
-                        <FontAwesome
-                          name={'edit'}
-                          size={15}
-                          style={styles.inputIcon}
-                        />
-                      </NixInput>
-                    </>
-                  )}
+                  }}
+                />
+                <NixInput
+                  selectTextOnFocus
+                  label="Last Name"
+                  placeholder="Last Name"
+                  column
+                  value={values.last_name}
+                  onChangeText={handleChange('last_name')}
+                  onBlur={handleBlur('last_name')}
+                  autoCapitalize="none"
+                  error={errors.last_name}
+                  errorStyles={styles.errorStyles}
+                  ref={ref => (inputRefs.current.last_name = ref)}
+                />
+                <ModalSelector
+                  data={timezoneList}
+                  initValue={userData.timezone || ''}
+                  onChange={option => {
+                    setFieldValue('timezone', option.value);
+                    // setTimezone(option.value);
+                  }}
+                  initValueTextStyle={{
+                    fontSize: 14,
+                    color: '#000',
+                    textAlign: 'left',
+                  }}
+                  optionTextStyle={{
+                    fontSize: 16,
+                    color: '#000',
+                  }}
+                  selectedItemTextStyle={{
+                    fontSize: 16,
+                    color: Colors.Info,
+                    fontWeight: '500',
+                  }}
+                  listType="SCROLLVIEW"
+                  keyExtractor={(item: {label: string; value: string}) =>
+                    item.value
+                  }>
                   <NixInput
                     selectTextOnFocus
-                    label="Age"
-                    labelContainerStyle={styles.labelContainerStyleFull}
-                    style={styles.input}
-                    value={values.age || ''}
-                    unit="years"
-                    unitStyle={styles.unit}
-                    onChangeText={(newVal: string) => {
-                      const val = newVal.replace(/[^0-9]/g, '');
-                      setFieldValue('birth_year', moment().year() - +val);
-                      setFieldValue('age', val);
-                    }}
-                    onBlur={handleBlur('age')}
-                    keyboardType="number-pad"
-                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
-                    autoCapitalize="none"
-                    placeholder=""
-                    error={errors.age}
-                    errorStyles={styles.errorStyles}
-                    ref={ref => (inputRefs.current.age = ref)}>
+                    label="Time Zone"
+                    style={{textAlign: 'right'}}
+                    labelContainerStyle={styles.labelContainerStyle}
+                    value={values.timezone}
+                    onChangeText={handleChange('timezone')}
+                    onBlur={handleBlur('timezone')}
+                    autoCapitalize="none">
                     <FontAwesome
-                      name={'edit'}
+                      name={'sort-down'}
                       size={15}
-                      style={styles.inputIcon}
+                      style={styles.selectIcon}
                     />
                   </NixInput>
-                  <View style={styles.footer}>
-                    <View style={styles.btnContainer}>
-                      <NixButton
-                        title="Reset Password"
-                        type="outline"
-                        onPress={() => setResetPassPopup(true)}
-                      />
-                    </View>
-                    <View style={styles.btnContainer}>
-                      <NixButton
-                        title="Change email"
-                        type="outline"
-                        onPress={() => setChangeEmailPopup(true)}
-                      />
-                    </View>
-                  </View>
-                </KeyboardAwareScrollView>
-                {isValid && (
-                  <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
-                    contentContainerStyle={{flex: 1}}
-                    style={styles.saveBtnContainer}>
-                    <TouchableOpacity
-                      style={styles.saveBtn}
-                      onPress={() => {
-                        setValidOnChange(true);
-                        handleSubmit();
+                </ModalSelector>
+                <ModalSelector
+                  data={[
+                    {
+                      label: 'Metric',
+                      value: 1,
+                    },
+                    {
+                      label: 'Imperial (US)',
+                      value: 0,
+                    },
+                  ]}
+                  initValueTextStyle={{
+                    fontSize: 14,
+                    color: '#000',
+                    textAlign: 'left',
+                  }}
+                  optionTextStyle={{
+                    fontSize: 16,
+                    color: '#000',
+                  }}
+                  selectedItemTextStyle={{
+                    fontSize: 16,
+                    color: Colors.Info,
+                    fontWeight: '500',
+                  }}
+                  initValue={
+                    values.measure_system === 1 ? 'Metric' : 'Imperial (US)'
+                  }
+                  onChange={option => {
+                    if (+option.value !== +values.measure_system) {
+                      changeValueByMetric(+option.value, values, setFieldValue);
+                    }
+                    setFieldValue('measure_system', +option.value);
+                  }}
+                  listType="FLATLIST"
+                  keyExtractor={(item: {label: string; value: number}) =>
+                    String(item.value)
+                  }>
+                  <NixInput
+                    label="Measure system"
+                    style={{textAlign: 'right'}}
+                    labelContainerStyle={styles.labelContainerStyle}
+                    value={
+                      values.measure_system === 1 ? 'Metric' : 'Imperial (US)'
+                    }
+                    onChangeText={handleChange('measure_system')}
+                    onBlur={handleBlur('measure_system')}
+                    autoCapitalize="none">
+                    <FontAwesome
+                      name={'sort-down'}
+                      size={15}
+                      style={styles.selectIcon}
+                    />
+                  </NixInput>
+                </ModalSelector>
+                {values.measure_system === 1 ? (
+                  <>
+                    <NixInput
+                      selectTextOnFocus
+                      label="Weight"
+                      placeholder="kg"
+                      labelContainerStyle={styles.labelContainerStyleFull}
+                      style={styles.input}
+                      value={values.weight_kg}
+                      unit="kg"
+                      unitStyle={styles.unit}
+                      onChangeText={newVal => {
+                        setFieldValue(
+                          'weight_kg',
+                          replaceRegexForNumber(newVal) || '',
+                        );
                       }}
-                      disabled={!isValid || loadingSubmit}>
-                      <Text style={styles.saveBtnText}>Save</Text>
-                    </TouchableOpacity>
-                  </KeyboardAvoidingView>
+                      maxLength={5}
+                      onBlur={handleBlur('weight_kg')}
+                      keyboardType="numeric"
+                      autoCapitalize="none"
+                      error={errors.weight_kg}
+                      errorStyles={styles.errorStyles}
+                      blurOnSubmit={false}
+                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                      ref={ref => (inputRefs.current.weight_kg = ref)}
+                      onSubmitEditing={() => {
+                        const nextRef = inputRefs.current.height_cm;
+                        if (nextRef) {
+                          nextRef?.focus();
+                        }
+                      }}>
+                      <FontAwesome
+                        name={'edit'}
+                        size={15}
+                        style={styles.inputIcon}
+                      />
+                    </NixInput>
+                    <NixInput
+                      selectTextOnFocus
+                      label="Height"
+                      labelContainerStyle={styles.labelContainerStyleFull}
+                      style={styles.input}
+                      value={
+                        values.height_cm ? _.round(+values.height_cm) + '' : ''
+                      }
+                      unit="cm"
+                      unitStyle={styles.unit}
+                      onChangeText={newVal => {
+                        const val = newVal.replace(/[^0-9]/g, '');
+                        setFieldValue('height_cm', val);
+                      }}
+                      onBlur={handleBlur('height_cm')}
+                      keyboardType="number-pad"
+                      autoCapitalize="none"
+                      placeholder="cm"
+                      error={errors.height_cm}
+                      errorStyles={styles.errorStyles}
+                      blurOnSubmit={false}
+                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                      ref={ref => (inputRefs.current.height_cm = ref)}
+                      onSubmitEditing={() => {
+                        const nextRef = inputRefs.current.age;
+                        if (nextRef) {
+                          nextRef?.focus();
+                        }
+                      }}>
+                      <FontAwesome
+                        name={'edit'}
+                        size={15}
+                        style={styles.inputIcon}
+                      />
+                    </NixInput>
+                  </>
+                ) : (
+                  <>
+                    <NixInput
+                      selectTextOnFocus
+                      label="Weight"
+                      labelContainerStyle={styles.labelContainerStyleFull}
+                      style={styles.input}
+                      value={values.weight_lb || ''}
+                      unit="lbs"
+                      unitStyle={styles.unit}
+                      onChangeText={newVal => {
+                        setFieldValue(
+                          'weight_lb',
+                          replaceRegexForNumber(newVal) || '',
+                        );
+                      }}
+                      maxLength={5}
+                      onBlur={handleBlur('weight_lb')}
+                      keyboardType="numeric"
+                      autoCapitalize="none"
+                      placeholder="lbs."
+                      error={errors.weight_lb}
+                      errorStyles={styles.errorStyles}
+                      blurOnSubmit={false}
+                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                      ref={ref => (inputRefs.current.weight_lb = ref)}
+                      onSubmitEditing={() => {
+                        const nextRef = inputRefs.current.height_ft;
+                        if (nextRef) {
+                          nextRef?.focus();
+                        }
+                      }}>
+                      <FontAwesome
+                        name={'edit'}
+                        size={15}
+                        style={styles.inputIcon}
+                      />
+                    </NixInput>
+                    <NixInput
+                      selectTextOnFocus
+                      label="Height"
+                      labelContainerStyle={styles.labelContainerStyleFull}
+                      style={styles.input}
+                      value={
+                        values.height_ft ? _.round(+values.height_ft) + '' : ''
+                      }
+                      unit="ft"
+                      unitStyle={styles.unit}
+                      onChangeText={newVal => {
+                        setFieldValue('height_ft', newVal);
+                      }}
+                      onBlur={handleBlur('height_ft')}
+                      keyboardType="number-pad"
+                      autoCapitalize="none"
+                      placeholder="ft."
+                      error={errors.height_ft}
+                      errorStyles={styles.errorStyles}
+                      blurOnSubmit={false}
+                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                      ref={ref => (inputRefs.current.height_ft = ref)}
+                      onSubmitEditing={() => {
+                        const nextRef = inputRefs.current.height_in;
+                        if (nextRef) {
+                          nextRef?.focus();
+                        }
+                      }}>
+                      <FontAwesome
+                        name={'edit'}
+                        size={15}
+                        style={styles.inputIcon}
+                      />
+                    </NixInput>
+                    <NixInput
+                      selectTextOnFocus
+                      label=""
+                      labelContainerStyle={styles.labelContainerStyleFull}
+                      style={styles.input}
+                      value={
+                        values.height_in ? _.round(+values.height_in) + '' : ''
+                      }
+                      unit="in"
+                      unitStyle={styles.unit}
+                      onChangeText={newVal => {
+                        setFieldValue('height_in', newVal);
+                      }}
+                      onBlur={handleBlur('height_in')}
+                      keyboardType="number-pad"
+                      autoCapitalize="none"
+                      placeholder="in."
+                      error={errors.height_in}
+                      errorStyles={styles.errorStyles}
+                      blurOnSubmit={false}
+                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                      ref={ref => (inputRefs.current.height_in = ref)}
+                      onSubmitEditing={() => {
+                        const nextRef = inputRefs.current.age;
+                        if (nextRef) {
+                          nextRef?.focus();
+                        }
+                      }}>
+                      <FontAwesome
+                        name={'edit'}
+                        size={15}
+                        style={styles.inputIcon}
+                      />
+                    </NixInput>
+                  </>
                 )}
-              </View>
-            </TouchableWithoutFeedback>
+                <NixInput
+                  selectTextOnFocus
+                  label="Age"
+                  labelContainerStyle={styles.labelContainerStyleFull}
+                  style={styles.input}
+                  value={values.age || ''}
+                  unit="years"
+                  unitStyle={styles.unit}
+                  onChangeText={(newVal: string) => {
+                    const val = newVal.replace(/[^0-9]/g, '');
+                    setFieldValue('birth_year', moment().year() - +val);
+                    setFieldValue('age', val);
+                  }}
+                  onBlur={handleBlur('age')}
+                  keyboardType="number-pad"
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
+                  autoCapitalize="none"
+                  placeholder=""
+                  error={errors.age}
+                  errorStyles={styles.errorStyles}
+                  ref={ref => (inputRefs.current.age = ref)}>
+                  <FontAwesome
+                    name={'edit'}
+                    size={15}
+                    style={styles.inputIcon}
+                  />
+                </NixInput>
+                <View style={styles.footer}>
+                  <View style={styles.btnContainer}>
+                    <NixButton
+                      title="Reset Password"
+                      type="outline"
+                      onPress={() => setResetPassPopup(true)}
+                    />
+                  </View>
+                  <View style={styles.btnContainer}>
+                    <NixButton
+                      title="Change email"
+                      type="outline"
+                      onPress={() => setChangeEmailPopup(true)}
+                    />
+                  </View>
+                </View>
+              </KeyboardAwareScrollView>
+              {isValid && (
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                  keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+                  contentContainerStyle={{flex: 1}}
+                  style={styles.saveBtnContainer}>
+                  <TouchableOpacity
+                    style={styles.saveBtn}
+                    onPress={() => {
+                      setValidOnChange(true);
+                      handleSubmit();
+                    }}
+                    disabled={!isValid || loadingSubmit}>
+                    <Text style={styles.saveBtnText}>Save</Text>
+                  </TouchableOpacity>
+                </KeyboardAvoidingView>
+              )}
+            </View>
           );
         }}
       </Formik>

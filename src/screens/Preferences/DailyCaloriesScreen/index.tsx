@@ -323,26 +323,79 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
         values,
         errors,
       }) => (
-        <TouchableWithoutFeedback
-          onPress={Keyboard.dismiss}
-          style={{flex: 1}}
-          accessible={false}>
-          <SafeAreaView style={styles.root}>
-            <KeyboardAwareScrollView
-              style={styles.container}
-              keyboardShouldPersistTaps="always"
-              enableOnAndroid={true}
-              enableAutomaticScroll={true}>
-              <View style={styles.fields}>
+        <SafeAreaView style={styles.root}>
+          <KeyboardAwareScrollView
+            style={styles.container}
+            keyboardShouldPersistTaps="handled"
+            enableOnAndroid={true}
+            enableAutomaticScroll={true}>
+            <View style={styles.fields}>
+              <ModalSelector
+                data={[
+                  {
+                    label: 'Metric',
+                    value: 1,
+                  },
+                  {
+                    label: 'Imperial(US)',
+                    value: 0,
+                  },
+                ]}
+                initValueTextStyle={{
+                  fontSize: 14,
+                  color: '#000',
+                  textAlign: 'left',
+                }}
+                optionTextStyle={{
+                  fontSize: 16,
+                  color: '#000',
+                }}
+                selectedItemTextStyle={{
+                  fontSize: 16,
+                  color: Colors.Info,
+                  fontWeight: '500',
+                }}
+                initValue={
+                  values.measure_system === 1 ? 'Metric' : 'Imperial(US)'
+                }
+                onChange={option => {
+                  if (+option.value !== +values.measure_system) {
+                    changeValueByMetric(option.value, values, setFieldValue);
+                  }
+                  setFieldValue('measure_system', option.value);
+                }}
+                listType="FLATLIST"
+                keyExtractor={(item: {label: string; value: number}) =>
+                  String(item.value)
+                }>
+                <NixInput
+                  label="Units"
+                  style={{textAlign: 'right'}}
+                  labelContainerStyle={styles.labelContainerStyle}
+                  value={
+                    values.measure_system === 1 ? 'Metric' : 'Imperial(US)'
+                  }
+                  onChangeText={handleChange('measure_system')}
+                  onBlur={handleBlur('measure_system')}
+                  autoCapitalize="none">
+                  <FontAwesome
+                    name={'sort-down'}
+                    size={15}
+                    style={styles.selectIcon}
+                  />
+                </NixInput>
+              </ModalSelector>
+
+              <View>
                 <ModalSelector
                   data={[
                     {
-                      label: 'Metric',
-                      value: 1,
+                      label: 'Male',
+                      value: 'male',
                     },
                     {
-                      label: 'Imperial(US)',
-                      value: 0,
+                      label: 'Female',
+                      value: 'female',
                     },
                   ]}
                   initValueTextStyle={{
@@ -359,440 +412,378 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     color: Colors.Info,
                     fontWeight: '500',
                   }}
-                  initValue={
-                    values.measure_system === 1 ? 'Metric' : 'Imperial(US)'
-                  }
+                  initValue={values.gender === 'male' ? 'Male' : 'Female'}
                   onChange={option => {
-                    if (+option.value !== +values.measure_system) {
-                      changeValueByMetric(option.value, values, setFieldValue);
-                    }
-                    setFieldValue('measure_system', option.value);
+                    setFieldValue('gender', option.value);
                   }}
                   listType="FLATLIST"
-                  keyExtractor={(item: {label: string; value: number}) =>
-                    String(item.value)
+                  keyExtractor={(item: {label: string; value: string}) =>
+                    item.value
                   }>
-                  <NixInput
-                    label="Units"
-                    style={{textAlign: 'right'}}
-                    labelContainerStyle={styles.labelContainerStyle}
-                    value={
-                      values.measure_system === 1 ? 'Metric' : 'Imperial(US)'
-                    }
-                    onChangeText={handleChange('measure_system')}
-                    onBlur={handleBlur('measure_system')}
-                    autoCapitalize="none">
+                  <View>
+                    <NixInput
+                      label="Sex"
+                      style={{textAlign: 'right'}}
+                      labelContainerStyle={styles.labelContainerStyle}
+                      value={values.gender === 'male' ? 'Male' : 'Female'}
+                      onChangeText={handleChange('gender')}
+                      onBlur={handleBlur('gender')}
+                      autoCapitalize="none">
+                      <FontAwesome
+                        name={'sort-down'}
+                        size={15}
+                        style={styles.selectIcon}
+                      />
+                    </NixInput>
+                  </View>
+                </ModalSelector>
+                <View style={styles.infoCircle}>
+                  <TouchableWithoutFeedback onPress={showDisclaimer}>
                     <FontAwesome
-                      name={'sort-down'}
+                      name={'info-circle'}
+                      size={18}
+                      style={styles.infoCircleIcon}
+                    />
+                  </TouchableWithoutFeedback>
+                </View>
+              </View>
+              {values.measure_system === 1 ? (
+                <>
+                  <NixInput
+                    selectTextOnFocus
+                    label="Weight"
+                    placeholder="kg"
+                    labelContainerStyle={styles.labelContainerStyleFull}
+                    style={styles.input}
+                    value={values.weight_kg}
+                    unit="kg"
+                    unitStyle={styles.unit}
+                    onChangeText={newVal => {
+                      setFieldValue(
+                        'weight_kg',
+                        replaceRegexForNumber(newVal) || '',
+                      );
+                    }}
+                    maxLength={5}
+                    onBlur={handleBlur('weight_kg')}
+                    keyboardType="numeric"
+                    autoCapitalize="none"
+                    error={errors.weight_kg}
+                    errorStyles={styles.errorStyles}
+                    blurOnSubmit={false}
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                    ref={ref => (inputRefs.current.weight_kg = ref)}
+                    onSubmitEditing={() => {
+                      const nextRef = inputRefs.current.height_cm;
+                      if (nextRef) {
+                        nextRef?.focus();
+                      }
+                    }}>
+                    <FontAwesome
+                      name={'edit'}
                       size={15}
-                      style={styles.selectIcon}
+                      style={styles.inputIcon}
                     />
                   </NixInput>
-                </ModalSelector>
-
-                <View>
-                  <ModalSelector
-                    data={[
-                      {
-                        label: 'Male',
-                        value: 'male',
-                      },
-                      {
-                        label: 'Female',
-                        value: 'female',
-                      },
-                    ]}
-                    initValueTextStyle={{
-                      fontSize: 14,
-                      color: '#000',
-                      textAlign: 'left',
+                  <NixInput
+                    selectTextOnFocus
+                    label="Height"
+                    labelContainerStyle={styles.labelContainerStyleFull}
+                    style={styles.input}
+                    value={
+                      values.height_cm ? _.round(+values.height_cm) + '' : ''
+                    }
+                    unit="cm"
+                    unitStyle={styles.unit}
+                    onChangeText={newVal => {
+                      const val = newVal.replace(/[^0-9]/g, '');
+                      setFieldValue('height_cm', val);
                     }}
-                    optionTextStyle={{
-                      fontSize: 16,
-                      color: '#000',
-                    }}
-                    selectedItemTextStyle={{
-                      fontSize: 16,
-                      color: Colors.Info,
-                      fontWeight: '500',
-                    }}
-                    initValue={values.gender === 'male' ? 'Male' : 'Female'}
-                    onChange={option => {
-                      setFieldValue('gender', option.value);
-                    }}
-                    listType="FLATLIST"
-                    keyExtractor={(item: {label: string; value: string}) =>
-                      item.value
-                    }>
-                    <View>
-                      <NixInput
-                        label="Sex"
-                        style={{textAlign: 'right'}}
-                        labelContainerStyle={styles.labelContainerStyle}
-                        value={values.gender === 'male' ? 'Male' : 'Female'}
-                        onChangeText={handleChange('gender')}
-                        onBlur={handleBlur('gender')}
-                        autoCapitalize="none">
-                        <FontAwesome
-                          name={'sort-down'}
-                          size={15}
-                          style={styles.selectIcon}
-                        />
-                      </NixInput>
-                    </View>
-                  </ModalSelector>
-                  <View style={styles.infoCircle}>
-                    <TouchableWithoutFeedback onPress={showDisclaimer}>
-                      <FontAwesome
-                        name={'info-circle'}
-                        size={18}
-                        style={styles.infoCircleIcon}
-                      />
-                    </TouchableWithoutFeedback>
-                  </View>
-                </View>
-                {values.measure_system === 1 ? (
-                  <>
-                    <NixInput
-                      selectTextOnFocus
-                      label="Weight"
-                      placeholder="kg"
-                      labelContainerStyle={styles.labelContainerStyleFull}
-                      style={styles.input}
-                      value={values.weight_kg}
-                      unit="kg"
-                      unitStyle={styles.unit}
-                      onChangeText={newVal => {
-                        setFieldValue(
-                          'weight_kg',
-                          replaceRegexForNumber(newVal) || '',
-                        );
-                      }}
-                      maxLength={5}
-                      onBlur={handleBlur('weight_kg')}
-                      keyboardType="numeric"
-                      autoCapitalize="none"
-                      error={errors.weight_kg}
-                      errorStyles={styles.errorStyles}
-                      blurOnSubmit={false}
-                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                      ref={ref => (inputRefs.current.weight_kg = ref)}
-                      onSubmitEditing={() => {
-                        const nextRef = inputRefs.current.height_cm;
-                        if (nextRef) {
-                          nextRef?.focus();
-                        }
-                      }}>
-                      <FontAwesome
-                        name={'edit'}
-                        size={15}
-                        style={styles.inputIcon}
-                      />
-                    </NixInput>
-                    <NixInput
-                      selectTextOnFocus
-                      label="Height"
-                      labelContainerStyle={styles.labelContainerStyleFull}
-                      style={styles.input}
-                      value={
-                        values.height_cm ? _.round(+values.height_cm) + '' : ''
+                    onBlur={handleBlur('height_cm')}
+                    keyboardType="number-pad"
+                    autoCapitalize="none"
+                    placeholder="cm"
+                    error={errors.height_cm}
+                    errorStyles={styles.errorStyles}
+                    blurOnSubmit={false}
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                    ref={ref => (inputRefs.current.height_cm = ref)}
+                    onSubmitEditing={() => {
+                      const nextRef = inputRefs.current.age;
+                      if (nextRef) {
+                        nextRef?.focus();
                       }
-                      unit="cm"
-                      unitStyle={styles.unit}
-                      onChangeText={newVal => {
-                        const val = newVal.replace(/[^0-9]/g, '');
-                        setFieldValue('height_cm', val);
-                      }}
-                      onBlur={handleBlur('height_cm')}
-                      keyboardType="number-pad"
-                      autoCapitalize="none"
-                      placeholder="cm"
-                      error={errors.height_cm}
-                      errorStyles={styles.errorStyles}
-                      blurOnSubmit={false}
-                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                      ref={ref => (inputRefs.current.height_cm = ref)}
-                      onSubmitEditing={() => {
-                        const nextRef = inputRefs.current.age;
-                        if (nextRef) {
-                          nextRef?.focus();
-                        }
-                      }}>
-                      <FontAwesome
-                        name={'edit'}
-                        size={15}
-                        style={styles.inputIcon}
-                      />
-                    </NixInput>
-                  </>
-                ) : (
-                  <>
-                    <NixInput
-                      selectTextOnFocus
-                      label="Weight"
-                      labelContainerStyle={styles.labelContainerStyleFull}
-                      style={styles.input}
-                      value={values.weight_lb || ''}
-                      unit="lbs"
-                      unitStyle={styles.unit}
-                      onChangeText={newVal => {
-                        setFieldValue(
-                          'weight_lb',
-                          replaceRegexForNumber(newVal) || '',
-                        );
-                      }}
-                      maxLength={5}
-                      onBlur={handleBlur('weight_lb')}
-                      keyboardType="numeric"
-                      autoCapitalize="none"
-                      placeholder="lbs."
-                      error={errors.weight_lb}
-                      errorStyles={styles.errorStyles}
-                      blurOnSubmit={false}
-                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                      ref={ref => (inputRefs.current.weight_lb = ref)}
-                      onSubmitEditing={() => {
-                        const nextRef = inputRefs.current.height_ft;
-                        if (nextRef) {
-                          nextRef?.focus();
-                        }
-                      }}>
-                      <FontAwesome
-                        name={'edit'}
-                        size={15}
-                        style={styles.inputIcon}
-                      />
-                    </NixInput>
-                    <NixInput
-                      selectTextOnFocus
-                      label="Height"
-                      labelContainerStyle={styles.labelContainerStyleFull}
-                      style={styles.input}
-                      value={
-                        values.height_ft ? _.round(+values.height_ft) + '' : ''
+                    }}>
+                    <FontAwesome
+                      name={'edit'}
+                      size={15}
+                      style={styles.inputIcon}
+                    />
+                  </NixInput>
+                </>
+              ) : (
+                <>
+                  <NixInput
+                    selectTextOnFocus
+                    label="Weight"
+                    labelContainerStyle={styles.labelContainerStyleFull}
+                    style={styles.input}
+                    value={values.weight_lb || ''}
+                    unit="lbs"
+                    unitStyle={styles.unit}
+                    onChangeText={newVal => {
+                      setFieldValue(
+                        'weight_lb',
+                        replaceRegexForNumber(newVal) || '',
+                      );
+                    }}
+                    maxLength={5}
+                    onBlur={handleBlur('weight_lb')}
+                    keyboardType="numeric"
+                    autoCapitalize="none"
+                    placeholder="lbs."
+                    error={errors.weight_lb}
+                    errorStyles={styles.errorStyles}
+                    blurOnSubmit={false}
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                    ref={ref => (inputRefs.current.weight_lb = ref)}
+                    onSubmitEditing={() => {
+                      const nextRef = inputRefs.current.height_ft;
+                      if (nextRef) {
+                        nextRef?.focus();
                       }
-                      unit="ft"
-                      unitStyle={styles.unit}
-                      onChangeText={newVal => {
-                        const val = newVal.replace(/[^0-9]/g, '');
-                        setFieldValue('height_ft', val);
-                      }}
-                      onBlur={handleBlur('height_ft')}
-                      keyboardType="number-pad"
-                      autoCapitalize="none"
-                      placeholder="ft."
-                      error={errors.height_ft}
-                      errorStyles={styles.errorStyles}
-                      blurOnSubmit={false}
-                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                      ref={ref => (inputRefs.current.height_ft = ref)}
-                      onSubmitEditing={() => {
-                        const nextRef = inputRefs.current.height_in;
-                        if (nextRef) {
-                          nextRef?.focus();
-                        }
-                      }}>
-                      <FontAwesome
-                        name={'edit'}
-                        size={15}
-                        style={styles.inputIcon}
-                      />
-                    </NixInput>
-                    <NixInput
-                      selectTextOnFocus
-                      label=""
-                      labelContainerStyle={styles.labelContainerStyleFull}
-                      style={styles.input}
-                      value={
-                        values.height_in ? _.round(+values.height_in) + '' : ''
+                    }}>
+                    <FontAwesome
+                      name={'edit'}
+                      size={15}
+                      style={styles.inputIcon}
+                    />
+                  </NixInput>
+                  <NixInput
+                    selectTextOnFocus
+                    label="Height"
+                    labelContainerStyle={styles.labelContainerStyleFull}
+                    style={styles.input}
+                    value={
+                      values.height_ft ? _.round(+values.height_ft) + '' : ''
+                    }
+                    unit="ft"
+                    unitStyle={styles.unit}
+                    onChangeText={newVal => {
+                      const val = newVal.replace(/[^0-9]/g, '');
+                      setFieldValue('height_ft', val);
+                    }}
+                    onBlur={handleBlur('height_ft')}
+                    keyboardType="number-pad"
+                    autoCapitalize="none"
+                    placeholder="ft."
+                    error={errors.height_ft}
+                    errorStyles={styles.errorStyles}
+                    blurOnSubmit={false}
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                    ref={ref => (inputRefs.current.height_ft = ref)}
+                    onSubmitEditing={() => {
+                      const nextRef = inputRefs.current.height_in;
+                      if (nextRef) {
+                        nextRef?.focus();
                       }
-                      unit="in"
-                      unitStyle={styles.unit}
-                      onChangeText={newVal => {
-                        const val = newVal.replace(/[^0-9]/g, '');
-                        setFieldValue('height_in', val);
-                      }}
-                      onBlur={handleBlur('height_in')}
-                      keyboardType="number-pad"
-                      autoCapitalize="none"
-                      placeholder="in."
-                      error={errors.height_in}
-                      errorStyles={styles.errorStyles}
-                      blurOnSubmit={false}
-                      returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                      ref={ref => (inputRefs.current.height_in = ref)}
-                      onSubmitEditing={() => {
-                        const nextRef = inputRefs.current.age;
-                        if (nextRef) {
-                          nextRef?.focus();
-                        }
-                      }}>
-                      <FontAwesome
-                        name={'edit'}
-                        size={15}
-                        style={styles.inputIcon}
-                      />
-                    </NixInput>
-                  </>
-                )}
-                <NixInput
-                  selectTextOnFocus
-                  label="Age"
-                  rootStyles={{borderBottomWidth: 0}}
-                  labelContainerStyle={styles.labelContainerStyleFull}
-                  style={styles.input}
-                  value={values.age || ''}
-                  unit="years"
-                  unitStyle={styles.unit}
-                  onChangeText={(newVal: string) => {
-                    const val = newVal.replace(/[^0-9]/g, '');
-                    setFieldValue('birth_year', moment().year() - +val);
-                    setFieldValue('age', val);
-                  }}
-                  onBlur={handleBlur('age')}
-                  keyboardType="number-pad"
-                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
-                  autoCapitalize="none"
-                  placeholder=""
-                  error={errors.age}
-                  errorStyles={styles.errorStyles}
-                  ref={ref => (inputRefs.current.age = ref)}>
-                  <FontAwesome
-                    name={'edit'}
-                    size={15}
-                    style={styles.inputIcon}
-                  />
-                </NixInput>
-              </View>
-              {!!getRecommendedCalories(values) && (
-                <View
-                  style={[
-                    styles.panel,
-                    Platform.OS === 'ios' ? styles.elevation : styles.shadow,
-                  ]}>
-                  <View style={styles.panelHeader}>
-                    <Text>Recommended Calorie Values</Text>
-                  </View>
-                  <View style={styles.panelBody}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginBottom: 10,
-                      }}>
-                      <Text style={styles.recommendedKcal}>
-                        {getRecommendedCalories(values)}
-                      </Text>
-                      <Text>Maintain Current Weight</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginBottom: 10,
-                      }}>
-                      <Text style={styles.recommendedKcal}>
-                        {getRecommendedCalories(values) - 500}
-                      </Text>
-                      <Text>
-                        Lose {values.measure_system === 1 ? '~0.5 kg' : '~1 lb'}{' '}
-                        per week
-                      </Text>
-                    </View>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={styles.recommendedKcal}>
-                        {getRecommendedCalories(values) + 500}
-                      </Text>
-                      <Text>
-                        Gain {values.measure_system === 1 ? '~0.5 kg' : '~1 lb'}{' '}
-                        per week
-                      </Text>
-                    </View>
-                  </View>
-                </View>
+                    }}>
+                    <FontAwesome
+                      name={'edit'}
+                      size={15}
+                      style={styles.inputIcon}
+                    />
+                  </NixInput>
+                  <NixInput
+                    selectTextOnFocus
+                    label=""
+                    labelContainerStyle={styles.labelContainerStyleFull}
+                    style={styles.input}
+                    value={
+                      values.height_in ? _.round(+values.height_in) + '' : ''
+                    }
+                    unit="in"
+                    unitStyle={styles.unit}
+                    onChangeText={newVal => {
+                      const val = newVal.replace(/[^0-9]/g, '');
+                      setFieldValue('height_in', val);
+                    }}
+                    onBlur={handleBlur('height_in')}
+                    keyboardType="number-pad"
+                    autoCapitalize="none"
+                    placeholder="in."
+                    error={errors.height_in}
+                    errorStyles={styles.errorStyles}
+                    blurOnSubmit={false}
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                    ref={ref => (inputRefs.current.height_in = ref)}
+                    onSubmitEditing={() => {
+                      const nextRef = inputRefs.current.age;
+                      if (nextRef) {
+                        nextRef?.focus();
+                      }
+                    }}>
+                    <FontAwesome
+                      name={'edit'}
+                      size={15}
+                      style={styles.inputIcon}
+                    />
+                  </NixInput>
+                </>
               )}
+              <NixInput
+                selectTextOnFocus
+                label="Age"
+                rootStyles={{borderBottomWidth: 0}}
+                labelContainerStyle={styles.labelContainerStyleFull}
+                style={styles.input}
+                value={values.age || ''}
+                unit="years"
+                unitStyle={styles.unit}
+                onChangeText={(newVal: string) => {
+                  const val = newVal.replace(/[^0-9]/g, '');
+                  setFieldValue('birth_year', moment().year() - +val);
+                  setFieldValue('age', val);
+                }}
+                onBlur={handleBlur('age')}
+                keyboardType="number-pad"
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
+                autoCapitalize="none"
+                placeholder=""
+                error={errors.age}
+                errorStyles={styles.errorStyles}
+                ref={ref => (inputRefs.current.age = ref)}>
+                <FontAwesome name={'edit'} size={15} style={styles.inputIcon} />
+              </NixInput>
+            </View>
+            {!!getRecommendedCalories(values) && (
               <View
                 style={[
                   styles.panel,
                   Platform.OS === 'ios' ? styles.elevation : styles.shadow,
                 ]}>
                 <View style={styles.panelHeader}>
-                  <Text>Enter daily calorie limit: </Text>
+                  <Text>Recommended Calorie Values</Text>
                 </View>
-                <NixInput
-                  label="My Daily Calorie Limit:"
-                  rootStyles={{paddingHorizontal: 10, borderBottomWidth: 0}}
-                  labelContainerStyle={styles.kcalLabelContainer}
-                  style={styles.kcalInput}
-                  value={values.daily_kcal}
-                  onChangeText={handleChange('daily_kcal')}
-                  onBlur={handleBlur('daily_kcal')}
-                  autoCapitalize="none"
-                  error={errors.daily_kcal}
-                  errorStyles={styles.errorStyles}
-                  keyboardType="numeric"
-                />
+                <View style={styles.panelBody}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginBottom: 10,
+                    }}>
+                    <Text style={styles.recommendedKcal}>
+                      {getRecommendedCalories(values)}
+                    </Text>
+                    <Text>Maintain Current Weight</Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginBottom: 10,
+                    }}>
+                    <Text style={styles.recommendedKcal}>
+                      {getRecommendedCalories(values) - 500}
+                    </Text>
+                    <Text>
+                      Lose {values.measure_system === 1 ? '~0.5 kg' : '~1 lb'}{' '}
+                      per week
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={styles.recommendedKcal}>
+                      {getRecommendedCalories(values) + 500}
+                    </Text>
+                    <Text>
+                      Gain {values.measure_system === 1 ? '~0.5 kg' : '~1 lb'}{' '}
+                      per week
+                    </Text>
+                  </View>
+                </View>
               </View>
-              {!!updateCalorieMessage && (
-                <Text style={styles.updateCalorieMessage}>
-                  {updateCalorieMessage}
-                </Text>
-              )}
-              <View style={styles.disclaimer}>
-                <Text style={styles.disclaimerText}>
-                  <Text style={{fontWeight: 'bold'}}>Disclaimer: </Text>
-                  This information is for use in adults defined as individuals
-                  18 years of age or older and not by younger people, or
-                  pregnant or breastfeeding women.This information is not
-                  intended to provide medical advice.A health care provider who
-                  has examined you and knows your medical history is the best
-                  person to diagnose and treat your health problem. If you have
-                  specific health questions, please consult your health care
-                  provider.Calorie calculations are based on the Harris Benedict
-                  equation, and corrected MET values are provided as referenced
-                  at these sources:
-                </Text>
-                <TouchableWithoutFeedback
-                  onPress={() => {
-                    navigation.navigate(Routes.WebView, {
-                      url: 'https://sites.google.com/site/compendiumofphysicalactivities/corrected-mets',
-                    });
-                  }}>
-                  <Text style={styles.hyperlink}>
-                    Compendium of Physical Activities
-                  </Text>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback
-                  onPress={() => {
-                    navigation.navigate(Routes.WebView, {
-                      url: 'http://www.umass.edu/physicalactivity/newsite/publications/Sarah%20Keadle/papers/1.pdf',
-                    });
-                  }}>
-                  <Text style={styles.hyperlink}>
-                    Corrected Metabolic Equivalents
-                  </Text>
-                </TouchableWithoutFeedback>
+            )}
+            <View
+              style={[
+                styles.panel,
+                Platform.OS === 'ios' ? styles.elevation : styles.shadow,
+              ]}>
+              <View style={styles.panelHeader}>
+                <Text>Enter daily calorie limit: </Text>
               </View>
-            </KeyboardAwareScrollView>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
-              contentContainerStyle={{flex: 1}}
-              style={styles.saveBtnContainer}>
-              <TouchableOpacity
-                style={styles.saveBtn}
+              <NixInput
+                label="My Daily Calorie Limit:"
+                rootStyles={{paddingHorizontal: 10, borderBottomWidth: 0}}
+                labelContainerStyle={styles.kcalLabelContainer}
+                style={styles.kcalInput}
+                value={values.daily_kcal}
+                onChangeText={handleChange('daily_kcal')}
+                onBlur={handleBlur('daily_kcal')}
+                autoCapitalize="none"
+                error={errors.daily_kcal}
+                errorStyles={styles.errorStyles}
+                keyboardType="numeric"
+              />
+            </View>
+            {!!updateCalorieMessage && (
+              <Text style={styles.updateCalorieMessage}>
+                {updateCalorieMessage}
+              </Text>
+            )}
+            <View style={styles.disclaimer}>
+              <Text style={styles.disclaimerText}>
+                <Text style={{fontWeight: 'bold'}}>Disclaimer: </Text>
+                This information is for use in adults defined as individuals 18
+                years of age or older and not by younger people, or pregnant or
+                breastfeeding women.This information is not intended to provide
+                medical advice.A health care provider who has examined you and
+                knows your medical history is the best person to diagnose and
+                treat your health problem. If you have specific health
+                questions, please consult your health care provider.Calorie
+                calculations are based on the Harris Benedict equation, and
+                corrected MET values are provided as referenced at these
+                sources:
+              </Text>
+              <TouchableWithoutFeedback
                 onPress={() => {
-                  setValidOnChange(true);
-                  handleSubmit();
-                }}
-                disabled={!isValid || loadingSubmit}>
-                <Text style={styles.saveBtnText}>Save</Text>
-              </TouchableOpacity>
-            </KeyboardAvoidingView>
+                  navigation.navigate(Routes.WebView, {
+                    url: 'https://sites.google.com/site/compendiumofphysicalactivities/corrected-mets',
+                  });
+                }}>
+                <Text style={styles.hyperlink}>
+                  Compendium of Physical Activities
+                </Text>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  navigation.navigate(Routes.WebView, {
+                    url: 'http://www.umass.edu/physicalactivity/newsite/publications/Sarah%20Keadle/papers/1.pdf',
+                  });
+                }}>
+                <Text style={styles.hyperlink}>
+                  Corrected Metabolic Equivalents
+                </Text>
+              </TouchableWithoutFeedback>
+            </View>
+          </KeyboardAwareScrollView>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+            contentContainerStyle={{flex: 1}}
+            style={styles.saveBtnContainer}>
+            <TouchableOpacity
+              style={styles.saveBtn}
+              onPress={() => {
+                setValidOnChange(true);
+                handleSubmit();
+              }}
+              disabled={!isValid || loadingSubmit}>
+              <Text style={styles.saveBtnText}>Save</Text>
+            </TouchableOpacity>
+          </KeyboardAvoidingView>
 
-            {loadingSubmit && <LoadIndicator withShadow />}
-          </SafeAreaView>
-        </TouchableWithoutFeedback>
+          {loadingSubmit && <LoadIndicator withShadow />}
+        </SafeAreaView>
       )}
     </Formik>
   );
