@@ -348,7 +348,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
       '&s=' +
       foodObj.share_key;
     Share.share({
-      // url,
+      url,
       message:
         'Log ' +
         foodObj.food_name.replace(/\w\S*/g, function (txt) {
