@@ -331,6 +331,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         {({
           handleChange,
           isValid,
+          dirty,
           handleSubmit,
           handleBlur,
           setFieldValue,
@@ -666,7 +667,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   unitStyle={styles.unit}
                   onChangeText={(newVal: string) => {
                     const val = newVal.replace(/[^0-9]/g, '');
-                    setFieldValue('birth_year', moment().year() - +val);
+                    setFieldValue('birth_year', String(moment().year() - +val));
                     setFieldValue('age', val);
                   }}
                   onBlur={handleBlur('age')}
@@ -700,7 +701,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   </View>
                 </View>
               </KeyboardAwareScrollView>
-              {isValid && (
+              {isValid && dirty && (
                 <KeyboardAvoidingView
                   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                   keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}

@@ -318,6 +318,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
         handleChange,
         handleSubmit,
         isValid,
+        dirty,
         handleBlur,
         setFieldValue,
         values,
@@ -642,7 +643,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                 unitStyle={styles.unit}
                 onChangeText={(newVal: string) => {
                   const val = newVal.replace(/[^0-9]/g, '');
-                  setFieldValue('birth_year', moment().year() - +val);
+                  setFieldValue('birth_year', String(moment().year() - +val));
                   setFieldValue('age', val);
                 }}
                 onBlur={handleBlur('age')}
@@ -766,21 +767,23 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
               </TouchableWithoutFeedback>
             </View>
           </KeyboardAwareScrollView>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
-            contentContainerStyle={{flex: 1}}
-            style={styles.saveBtnContainer}>
-            <TouchableOpacity
-              style={styles.saveBtn}
-              onPress={() => {
-                setValidOnChange(true);
-                handleSubmit();
-              }}
-              disabled={!isValid || loadingSubmit}>
-              <Text style={styles.saveBtnText}>Save</Text>
-            </TouchableOpacity>
-          </KeyboardAvoidingView>
+          {dirty && (
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+              contentContainerStyle={{flex: 1}}
+              style={styles.saveBtnContainer}>
+              <TouchableOpacity
+                style={styles.saveBtn}
+                onPress={() => {
+                  setValidOnChange(true);
+                  handleSubmit();
+                }}
+                disabled={!isValid || loadingSubmit}>
+                <Text style={styles.saveBtnText}>Save</Text>
+              </TouchableOpacity>
+            </KeyboardAvoidingView>
+          )}
 
           {loadingSubmit && <LoadIndicator withShadow />}
         </SafeAreaView>
