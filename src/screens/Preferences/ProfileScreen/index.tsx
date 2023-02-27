@@ -527,6 +527,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                         const val = newVal.replace(/[^0-9]/g, '');
                         setFieldValue('height_cm', val);
                       }}
+                      maxLength={3}
                       onBlur={handleBlur('height_cm')}
                       keyboardType="number-pad"
                       autoCapitalize="none"
@@ -600,6 +601,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       onChangeText={newVal => {
                         setFieldValue('height_ft', newVal);
                       }}
+                      maxLength={3}
                       onBlur={handleBlur('height_ft')}
                       keyboardType="number-pad"
                       autoCapitalize="none"
@@ -634,6 +636,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       onChangeText={newVal => {
                         setFieldValue('height_in', newVal);
                       }}
+                      maxLength={3}
                       onBlur={handleBlur('height_in')}
                       keyboardType="number-pad"
                       autoCapitalize="none"
@@ -671,6 +674,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                     setFieldValue('age', val);
                   }}
                   onBlur={handleBlur('age')}
+                  maxLength={3}
                   keyboardType="number-pad"
                   returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
                   autoCapitalize="none"

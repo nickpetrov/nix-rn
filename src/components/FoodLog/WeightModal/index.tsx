@@ -3,6 +3,10 @@ import React, {useEffect, useState} from 'react';
 import moment from 'moment-timezone';
 import {useNavigation} from '@react-navigation/native';
 
+// helpers
+import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {replaceRegexForNumber} from 'helpers/index';
+
 // components
 import {
   KeyboardAvoidingView,
@@ -34,7 +38,6 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './WeightModal.styles';
-import {analyticTrackEvent} from 'helpers/analytics.ts';
 
 interface WeightModalProps {
   visible: boolean;
@@ -126,8 +129,11 @@ const WeightModal: React.FC<WeightModalProps> = ({
               <TextInput
                 style={styles.weightModalInput}
                 value={value}
-                onChangeText={(val: string) => setValue(val)}
+                onChangeText={(val: string) =>
+                  setValue(replaceRegexForNumber(val))
+                }
                 keyboardType="numeric"
+                maxLength={5}
                 editable={!isLoading}
               />
               <View style={styles.units}>

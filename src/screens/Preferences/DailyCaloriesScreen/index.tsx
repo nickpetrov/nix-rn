@@ -501,6 +501,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                       setFieldValue('height_cm', val);
                     }}
                     onBlur={handleBlur('height_cm')}
+                    maxLength={3}
                     keyboardType="number-pad"
                     autoCapitalize="none"
                     placeholder="cm"
@@ -575,6 +576,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                       setFieldValue('height_ft', val);
                     }}
                     onBlur={handleBlur('height_ft')}
+                    maxLength={3}
                     keyboardType="number-pad"
                     autoCapitalize="none"
                     placeholder="ft."
@@ -610,6 +612,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                       setFieldValue('height_in', val);
                     }}
                     onBlur={handleBlur('height_in')}
+                    maxLength={3}
                     keyboardType="number-pad"
                     autoCapitalize="none"
                     placeholder="in."
@@ -647,6 +650,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                   setFieldValue('age', val);
                 }}
                 onBlur={handleBlur('age')}
+                maxLength={3}
                 keyboardType="number-pad"
                 returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
                 autoCapitalize="none"
