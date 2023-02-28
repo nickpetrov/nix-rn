@@ -319,7 +319,7 @@ const CompleteRegistration: React.FC<Props> = ({navigation}) => {
                             style={styles.link}
                             onPress={() =>
                               Linking.openURL(
-                                'https://www.iubenda.com/privacy-policy/7754814',
+                                'https://www.nutritionix.com/terms',
                               )
                             }>
                             Terms of Service
