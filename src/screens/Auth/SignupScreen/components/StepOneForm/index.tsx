@@ -225,9 +225,7 @@ const StepOneForm: React.FC<Props> = ({scrollToInput}) => {
                       <Text
                         style={styles.link}
                         onPress={() =>
-                          Linking.openURL(
-                            'https://www.iubenda.com/privacy-policy/7754814',
-                          )
+                          Linking.openURL('https://www.nutritionix.com/terms')
                         }>
                         Terms of Service
                       </Text>{' '}
