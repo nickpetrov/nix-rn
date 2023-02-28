@@ -9,7 +9,7 @@
 
 1. `cd android`
 2. `gradlew assembleDebug` or `gradlew assembleRelease`
-3. create source-maps(android) for sentry when upload new version to store `yarn run post-build`
+3. create source-maps(android) for sentry when upload new version to store `yarn run post-build` (see line 28 at this file - replace at script OS with your system)
 
 ### create bundle for TF (ios)
 
@@ -25,7 +25,7 @@
 
 ### produce source-map for android and upload it to sentry automaticaly (need done because of Hermes)
 
-1. change line 27 at script scripts/sentry-sourcemaps.sh - replace "win64-bin" with your current sestem(OS-BIN is osx-bin, win64-bin, or linux64-bin, depending on which operating system you are using.)
+1. change line 27 at script scripts/sentry-sourcemaps.sh - replace "win64-bin" with your current system(OS-BIN is osx-bin, win64-bin, or linux64-bin, depending on which operating system you are using.)
 2. run script `yarn run post-build`
 
 ### produce source-map for sentry manualy (optionally)
