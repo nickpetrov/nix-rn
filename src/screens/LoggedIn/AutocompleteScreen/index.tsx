@@ -287,7 +287,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
           : undefined,
       }),
     );
-    navigation.replace(Routes.Basket);
+    navigation.navigate(Routes.Basket);
   };
 
   const addSuggestedFood = async (item: Partial<FoodProps>) => {
@@ -370,7 +370,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
             recipeName: scaled_recipe.name,
           }),
         );
-        navigation.replace(Routes.Basket);
+        navigation.navigate(Routes.Basket);
       })
       .catch(err => console.log(err));
   };
