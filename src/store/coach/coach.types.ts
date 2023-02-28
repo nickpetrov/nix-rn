@@ -82,7 +82,7 @@ export type changeClientSelectedDateAction = {
 
 export type changeClientLogDateRangeLogAction = {
   type: coachActionTypes.CHANGE_CLIENT_LOG_DATE_RANGE;
-  payload: [string, string];
+  payload: [string, string] | null;
 };
 
 export type CoachActions =

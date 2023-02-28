@@ -305,7 +305,9 @@ export const changeClientSelectedDay = (newDate: string) => {
   };
 };
 
-export const changeClientLogDateRange = (dateRange: [string, string]) => {
+export const changeClientLogDateRange = (
+  dateRange: [string, string] | null,
+) => {
   return async (dispatch: Dispatch<changeClientLogDateRangeLogAction>) => {
     dispatch({
       type: coachActionTypes.CHANGE_CLIENT_LOG_DATE_RANGE,

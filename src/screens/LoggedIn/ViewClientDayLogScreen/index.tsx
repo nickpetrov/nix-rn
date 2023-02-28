@@ -21,7 +21,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
-import {refreshClientLog} from 'store/coach/coach.actions';
+import {
+  changeClientLogDateRange,
+  refreshClientLog,
+} from 'store/coach/coach.actions';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -152,6 +155,12 @@ const ViewClientDayLogScreen: React.FC<ViewClientDayLogScreenProps> = ({
     };
     dispatch(refreshClientLog(options, selectedDate));
   }, [dispatch, selectedDate, client.timezone, client.id]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(changeClientLogDateRange(null));
+    };
+  }, [dispatch]);
 
   useLayoutEffect(() => {
     navigation.setOptions({

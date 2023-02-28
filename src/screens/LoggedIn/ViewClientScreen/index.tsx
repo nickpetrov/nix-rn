@@ -30,7 +30,7 @@ import {Routes} from 'navigation/Routes';
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useIsFocused} from '@react-navigation/native';
 import {FoodProps} from 'store/userLog/userLog.types';
 
 // styles
@@ -51,6 +51,7 @@ const ViewClientScreen: React.FC<ViewClientScreenProps> = ({
 }) => {
   const {client, clientId} = route.params;
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const {clientTotals: totals, clientFoods} = useSelector(state => state.coach);
   const [age] = useState(
     moment().diff(moment(client.birth_year, 'YYYY'), 'years') || '',
@@ -64,34 +65,36 @@ const ViewClientScreen: React.FC<ViewClientScreenProps> = ({
   });
 
   useEffect(() => {
-    setShowPreloader(true);
-    const options = {
-      clientId: client.id || clientId,
-      timezone: client.timezone,
-      begin: moment(months.currentMonth, 'YYYY-MM-DD')
-        .startOf('month')
-        .format('YYYY-MM-DD'),
-      end: moment(months.currentMonth, 'YYYY-MM-DD')
-        .endOf('month')
-        .add(1, 'day')
-        .format('YYYY-MM-DD'),
-    };
-    dispatch(getClientTotals(options))
-      .then(() => {
-        dispatch(getClientFoodLog(options))
-          .then(() => {
-            setShowPreloader(false);
-          })
-          .catch(err => console.log(err));
-      })
-      .catch(() => {
-        setShowPreloader(false);
-      });
+    if (isFocused) {
+      setShowPreloader(true);
+      const options = {
+        clientId: client.id || clientId,
+        timezone: client.timezone,
+        begin: moment(months.currentMonth, 'YYYY-MM-DD')
+          .startOf('month')
+          .format('YYYY-MM-DD'),
+        end: moment(months.currentMonth, 'YYYY-MM-DD')
+          .endOf('month')
+          .add(1, 'day')
+          .format('YYYY-MM-DD'),
+      };
+      dispatch(getClientTotals(options))
+        .then(() => {
+          dispatch(getClientFoodLog(options))
+            .then(() => {
+              setShowPreloader(false);
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(() => {
+          setShowPreloader(false);
+        });
+    }
 
     return () => {
       dispatch(clearClientTotalsAndFoods());
     };
-  }, [clientId, client, months.currentMonth, dispatch]);
+  }, [clientId, client, months.currentMonth, dispatch, isFocused]);
 
   const changeMonth = (count: number) => {
     if (!count) return;
