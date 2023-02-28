@@ -17,6 +17,7 @@ const initialState: UserLogState = {
   weights: [],
   exercises: [],
   selectedDate: moment().format('YYYY-MM-DD'),
+  dateRange: null,
 };
 
 export default (
@@ -26,6 +27,8 @@ export default (
   switch (action.type) {
     case userLogActionTypes.GET_USER_FOODLOG:
       return {...state, foods: action.foodLog};
+    case userLogActionTypes.CHANGE_FOOD_LOG_DATE_RANGE:
+      return {...state, dateRange: action.payload};
     case userLogActionTypes.GET_USER_WEIGHT_LOG:
       return {...state, weights: action.weights || []};
     case userLogActionTypes.ADD_WEIGHT_LOG:

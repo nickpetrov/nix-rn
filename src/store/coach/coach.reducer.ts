@@ -9,12 +9,15 @@ const initialState: CoachsState = {
   clientFoods: [],
   clientExercises: [],
   clientSelectedDate: moment().format('YYYY-MM-DD'),
+  clientDateRange: null,
 };
 
 export default (state: CoachsState = initialState, action: CoachActions) => {
   switch (action.type) {
     case coachActionTypes.GET_CLIENT_TOTTALS:
       return {...state, clientTotals: action.payload};
+    case coachActionTypes.CHANGE_CLIENT_LOG_DATE_RANGE:
+      return {...state, clientDateRange: action.payload};
     case coachActionTypes.GET_CLIENT_FOODLOG:
       return {...state, clientFoods: action.payload};
     case coachActionTypes.GET_COACHES:

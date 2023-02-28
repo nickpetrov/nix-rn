@@ -48,6 +48,7 @@ import {
   getUserExerciseLogAction,
   addUserExerciseLogAction,
   updateUserExerciseLogAction,
+  changeFoodLogDateRangeLogAction,
 } from './userLog.types';
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
@@ -723,6 +724,15 @@ export const changeSelectedDay = (newDate: string) => {
   };
 };
 
+export const changeFoodLogDateRange = (dateRange: [string, string]) => {
+  return async (dispatch: Dispatch<changeFoodLogDateRangeLogAction>) => {
+    dispatch({
+      type: userLogActionTypes.CHANGE_FOOD_LOG_DATE_RANGE,
+      payload: dateRange,
+    });
+  };
+};
+
 export const addWaterlog = (water: Array<WaterLogProps>) => {
   return async (dispatch: Dispatch<updateWaterLogAction>) => {
     try {
@@ -792,15 +802,19 @@ export const refreshLog = (
   refresh?: boolean,
 ) => {
   return async (dispatch: Dispatch<any>, useState: () => RootState) => {
-    const logBeginDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', -7);
-    const logEndDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', 7);
-    const totals = useState().userLog.totals;
+    const dateRange = useState().userLog.dateRange;
     const needUpdateAfterChangeSelectedDate =
-      totals.findIndex(
-        item => moment(item.date).format('YYYY-MM-DD') === selectedDate,
-      ) === -1;
-    if (needUpdateAfterChangeSelectedDate || refresh) {
+      dateRange &&
+      !moment(selectedDate).isBetween(dateRange[0], dateRange[1], 'days');
+    if (needUpdateAfterChangeSelectedDate || refresh || !dateRange) {
+      const logBeginDate = timeHelper.offsetDays(
+        selectedDate,
+        'YYYY-MM-DD',
+        -7,
+      );
+      const logEndDate = timeHelper.offsetDays(selectedDate, 'YYYY-MM-DD', 7);
       batch(() => {
+        dispatch(changeFoodLogDateRange([logBeginDate, logEndDate]));
         dispatch(getUserFoodlog(logBeginDate, logEndDate, 0));
         dispatch(getUserWeightlog(logBeginDate, logEndDate, 0));
         dispatch(getUserExerciseslog(logBeginDate, logEndDate, 0));

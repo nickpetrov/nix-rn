@@ -23,6 +23,7 @@ import {
   changeClientSelectedDateAction,
   getClientExercisesAction,
   clearCoachAction,
+  changeClientLogDateRangeLogAction,
 } from './coach.types';
 import {OptionsProps} from 'api/coachService/types';
 import {RootState} from '../index';
@@ -304,6 +305,15 @@ export const changeClientSelectedDay = (newDate: string) => {
   };
 };
 
+export const changeClientLogDateRange = (dateRange: [string, string]) => {
+  return async (dispatch: Dispatch<changeClientLogDateRangeLogAction>) => {
+    dispatch({
+      type: coachActionTypes.CHANGE_CLIENT_LOG_DATE_RANGE,
+      payload: dateRange,
+    });
+  };
+};
+
 export const refreshClientLog = (
   options: Partial<OptionsProps>,
   selectedDate: string,
@@ -314,13 +324,16 @@ export const refreshClientLog = (
     if (_.isEmpty(newOptions)) {
       newOptions = {};
     }
-    const clientTotals = useState().coach.clientTotals;
+    const clientDateRange = useState().coach.clientDateRange;
     const needUpdateAfterChangeSelectedDate =
-      clientTotals.findIndex(
-        item => moment(item.date).format('YYYY-MM-DD') === selectedDate,
-      ) === -1;
+      clientDateRange &&
+      !moment(selectedDate).isBetween(
+        clientDateRange[0],
+        clientDateRange[1],
+        'days',
+      );
 
-    if (needUpdateAfterChangeSelectedDate || refresh) {
+    if (needUpdateAfterChangeSelectedDate || refresh || !clientDateRange) {
       if (!newOptions.begin) {
         newOptions.begin = timeHelper.offsetDays(
           selectedDate,
@@ -335,9 +348,14 @@ export const refreshClientLog = (
         newOptions.timezone = 'US/Eastern';
       }
       batch(() => {
-        dispatch(getClientFoodLog(options));
-        dispatch(getClientExercisesLog(options));
-        dispatch(getClientTotals(options));
+        if (newOptions.begin && newOptions.end) {
+          dispatch(
+            changeClientLogDateRange([newOptions.begin, newOptions.end]),
+          );
+        }
+        dispatch(getClientFoodLog(newOptions));
+        dispatch(getClientExercisesLog(newOptions));
+        dispatch(getClientTotals(newOptions));
       });
     } else {
       return;

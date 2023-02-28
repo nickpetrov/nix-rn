@@ -20,6 +20,7 @@ export enum userLogActionTypes {
   GET_USER_EXERCISES_LOG = 'GET_USER_EXERCISES_LOG',
   ADD_USER_EXERCISES_LOG = 'ADD_USER_EXERCISES_LOG',
   UPDATE_USER_EXERCISES_LOG = 'UPDATE_USER_EXERCISES_LOG',
+  CHANGE_FOOD_LOG_DATE_RANGE = 'CHANGE_FOOD_LOG_DATE_RANGE',
 }
 
 export enum foodLogSections {
@@ -191,6 +192,7 @@ export interface UserLogState {
   weights: Array<WeightProps>;
   exercises: Array<ExerciseProps>;
   selectedDate: string;
+  dateRange: [string, string] | null;
 }
 
 export type mealNameProps =
@@ -267,6 +269,10 @@ export type updateUserExerciseLogAction = {
   type: userLogActionTypes.UPDATE_USER_EXERCISES_LOG;
   exercises: Array<ExerciseProps>;
 };
+export type changeFoodLogDateRangeLogAction = {
+  type: userLogActionTypes.CHANGE_FOOD_LOG_DATE_RANGE;
+  payload: [string, string];
+};
 
 export type UserLogActions =
   | getUserFoodLogAction
@@ -286,4 +292,5 @@ export type UserLogActions =
   | addUserExerciseLogAction
   | updateUserExerciseLogAction
   | updateWeightsLogAction
-  | updateUserAction;
+  | updateUserAction
+  | changeFoodLogDateRangeLogAction;

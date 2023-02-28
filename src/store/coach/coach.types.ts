@@ -18,6 +18,7 @@ export enum coachActionTypes {
   CLEAR_CLIENT_TOTALS_AND_FOODS = 'CLEAR_CLIENT_TOTALS_AND_FOODS',
   CHANGE_CLIENT_SELECTED_DATE = 'CHANGE_CLIENT_SELECTED_DATE',
   GET_CLIENT_EXERCISES_LOG = 'GET_CLIENT_EXERCISES_LOG',
+  CHANGE_CLIENT_LOG_DATE_RANGE = 'CHANGE_CLIENT_LOG_DATE_RANGE',
 }
 
 export interface Coach {
@@ -34,6 +35,7 @@ export interface CoachsState {
   clientFoods: Array<FoodProps>;
   clientExercises: Array<ExerciseProps>;
   clientSelectedDate: string;
+  clientDateRange: [string, string] | null;
 }
 
 export type getClientTotalsAction = {
@@ -78,6 +80,11 @@ export type changeClientSelectedDateAction = {
   newDate: string;
 };
 
+export type changeClientLogDateRangeLogAction = {
+  type: coachActionTypes.CHANGE_CLIENT_LOG_DATE_RANGE;
+  payload: [string, string];
+};
+
 export type CoachActions =
   | getClientTotalsAction
   | becomeCoachAction
@@ -89,4 +96,5 @@ export type CoachActions =
   | getClientFoogLogAction
   | changeClientSelectedDateAction
   | getClientExercisesAction
-  | clearCoachAction;
+  | clearCoachAction
+  | changeClientLogDateRangeLogAction;
