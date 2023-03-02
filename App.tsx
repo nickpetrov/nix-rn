@@ -41,7 +41,7 @@ Sentry.init({
   // We recommend adjusting this value in production.
   tracesSampleRate: 1.0,
   environment: __DEV__ ? 'development' : 'production',
-  release: getBundleId() + '-' + getVersion(),
+  release: `${getBundleId()}@${getVersion()}+${getBuildNumber()}`,
   dist: getBuildNumber(),
   integrations: [
     new Sentry.ReactNativeTracing({
