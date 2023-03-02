@@ -10,9 +10,8 @@ public class MainActivity extends ReactActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    androidx.core.splashscreen.SplashScreen.installSplashScreen(this); // native splash screen which will be skipped
-    org.devio.rn.splashscreen.SplashScreen.show(this, true); // custom splash screen from this lib
-    super.onCreate(null);
+    SplashScreen.show(this);  // here
+    super.onCreate(savedInstanceState);
   }
 
   /**
