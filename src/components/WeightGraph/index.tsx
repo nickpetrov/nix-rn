@@ -73,11 +73,12 @@ export const WeightGraph: React.FC = () => {
     setWeightData(
       weights.map(item => ({
         ...item,
-        kg: measure_system
-          ? item.kg
-          : item.kg > 0
-          ? +(parseFloat(String(item.kg)) * 2.20462)?.toFixed(1)
-          : item.kg,
+        kg:
+          (measure_system
+            ? item.kg
+            : item.kg && item.kg > 0
+            ? +(parseFloat(String(item.kg)) * 2.20462)?.toFixed(1)
+            : item.kg) || 0,
       })),
     );
   }, [weights, measure_system]);

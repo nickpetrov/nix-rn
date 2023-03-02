@@ -71,7 +71,7 @@ export const getWeightChartData = (weightLog: any, from: any, to: any) => {
   const weightLogBoundaries = weightLog
     .filter(
       (record: {timestamp: string}) =>
-        moment(record.timestamp).isBefore(moment(to)) &&
+        moment(record.timestamp).isBefore(moment(to).add('1', 'day')) &&
         moment(record.timestamp).isAfter(moment(from)),
     )
     .sort((a: any, b: any) => moment(a.timestamp).isBefore(moment(b.timestamp)))
