@@ -33,7 +33,7 @@ const WeighInListItem: React.FC<WeighInListItemProps> = ({
         .local()
         .format('h:mm a')}   ${
         measure_system === 1
-          ? `${item.kg ? item.kg.toFixed(1) : 0} kg`
+          ? `${item.kg ? item.kg?.toFixed(1) : 0} kg`
           : `${Math.round(parseFloat(String(item.kg)) * 2.20462)} lbs`
       }`}</Text>
     </TouchableHighlight>

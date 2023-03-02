@@ -34,7 +34,7 @@ const RestaurantFoodItem: React.FC<RestaurantFoodItemProps> = ({
             </Text>
             <Text numberOfLines={1} style={styles.brandName}>
               {food.brand_name}{' '}
-              {(food.nf_serving_size_qty || food.serving_qty || 1).toFixed(2)}{' '}
+              {(food.nf_serving_size_qty || food.serving_qty || 1)?.toFixed(2)}{' '}
               {food.nf_serving_size_unit || food.serving_unit}
             </Text>
           </View>
@@ -44,9 +44,9 @@ const RestaurantFoodItem: React.FC<RestaurantFoodItemProps> = ({
             {food.full_nutrients
               ? food.full_nutrients
                   .filter((item: NutrientProps) => item.attr_id === 208)[0]
-                  .value.toFixed(0)
+                  .value?.toFixed(0)
               : food.nf_calories
-              ? food.nf_calories.toFixed(0)
+              ? food.nf_calories?.toFixed(0)
               : food.nf_calories}
           </Text>
           <Text style={styles.textCal}>Cal</Text>

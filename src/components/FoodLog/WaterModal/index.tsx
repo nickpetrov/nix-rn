@@ -127,7 +127,7 @@ const WaterModal: React.FC<WaterModalProps> = ({
         ? String(
             measure_system === 1
               ? consumedWater
-              : (consumedWater * 33.814).toFixed(),
+              : (consumedWater * 33.814)?.toFixed(),
           )
         : '',
     );

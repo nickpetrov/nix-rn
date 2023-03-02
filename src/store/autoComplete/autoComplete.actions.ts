@@ -36,7 +36,7 @@ export const updateSearchResults = (query: string) => {
         payload: searchResult,
       });
     } catch (err: any) {
-      throw new Error(err.message || 'Oops, something go wrong');
+      throw new Error(err?.message || 'Oops, something go wrong');
     }
   };
 };

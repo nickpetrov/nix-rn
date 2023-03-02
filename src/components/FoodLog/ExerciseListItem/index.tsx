@@ -43,7 +43,7 @@ const ExerciseListItem: React.FC<ExerciseListItemProps> = ({
           </View>
         </View>
         <Text style={styles.calories}>
-          -{exercise.nf_calories.toFixed(0)} Cal
+          -{exercise.nf_calories?.toFixed(0)} Cal
         </Text>
       </View>
     </TouchableHighlight>

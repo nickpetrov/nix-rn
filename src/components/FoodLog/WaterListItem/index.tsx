@@ -24,7 +24,7 @@ const WaterListItem: React.FC<WaterListItemProps> = props => {
       <Text style={styles.text}>
         {props.measure_system === 1
           ? `${props.consumed || 0} L`
-          : `${(props.consumed * 33.814).toFixed()} oz`}
+          : `${(props.consumed * 33.814)?.toFixed()} oz`}
       </Text>
     </TouchableHighlight>
   );

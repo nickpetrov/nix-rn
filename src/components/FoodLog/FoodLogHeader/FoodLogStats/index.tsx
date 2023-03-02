@@ -78,7 +78,7 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = ({
     caloriesLimit -
     Math.round(total.caloriesIntake || 0) +
     Math.round(caloriesBurned || 0)
-  ).toFixed(0);
+  )?.toFixed(0);
   let remaining_calories_text = 'remaining';
 
   if (remaining_calories < 0) {
@@ -108,12 +108,12 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = ({
         }>
         <View style={styles.caloriesProgressLabel}>
           <Text style={styles.caloriesProgressLabelText}>
-            {total.caloriesIntake.toFixed(0)} cal intake
+            {total.caloriesIntake?.toFixed(0)} cal intake
           </Text>
         </View>
         <View style={styles.caloriesProgressLabel}>
           <Text style={styles.caloriesProgressLabelText}>
-            {caloriesBurned.toFixed(0)} cal burned
+            {caloriesBurned?.toFixed(0)} cal burned
           </Text>
         </View>
         <View style={styles.caloriesProgressLabel}>
@@ -136,18 +136,18 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = ({
       </View>
       <View style={styles.macroTotals}>
         <View style={styles.macroTotalsTile}>
-          <Text style={styles.macroValue}>{total.nf_protein.toFixed(0)}g</Text>
+          <Text style={styles.macroValue}>{total.nf_protein?.toFixed(0)}g</Text>
           <Text style={styles.macroTitle}>Protein</Text>
         </View>
         <View style={styles.macroTotalsTile}>
           <Text style={styles.macroValue}>
-            {total.nf_total_carbohydrate.toFixed(0)}g
+            {total.nf_total_carbohydrate?.toFixed(0)}g
           </Text>
           <Text style={styles.macroTitle}>Carb</Text>
         </View>
         <View style={styles.macroTotalsTile}>
           <Text style={styles.macroValue}>
-            {total.nf_total_fat.toFixed(0)}g
+            {total.nf_total_fat?.toFixed(0)}g
           </Text>
           <Text style={styles.macroTitle}>Fat</Text>
         </View>

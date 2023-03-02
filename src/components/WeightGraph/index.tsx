@@ -76,7 +76,7 @@ export const WeightGraph: React.FC = () => {
         kg: measure_system
           ? item.kg
           : item.kg > 0
-          ? +(parseFloat(String(item.kg)) * 2.20462).toFixed(1)
+          ? +(parseFloat(String(item.kg)) * 2.20462)?.toFixed(1)
           : item.kg,
       })),
     );
@@ -174,13 +174,13 @@ export const WeightGraph: React.FC = () => {
             <View style={styles.labels}>
               <View>
                 <Text style={styles.labelTitle}>
-                  {chartData.values[0].toFixed(1)} {weightUnit}
+                  {chartData.values[0]?.toFixed(1)} {weightUnit}
                 </Text>
                 <Text style={styles.labelNote}>Start</Text>
               </View>
               <View>
                 <Text style={styles.labelTitle}>
-                  {chartData.values[chartData.values.length - 1].toFixed(1)}{' '}
+                  {chartData.values[chartData.values.length - 1]?.toFixed(1)}{' '}
                   {weightUnit}
                 </Text>
                 <Text style={styles.labelNote}>{endText}</Text>

@@ -140,7 +140,7 @@ const MealListItem: React.FC<MealListItemProps> = props => {
           )}
           <View style={styles.caloriesContainer}>
             <Text style={styles.calories}>
-              {calories ? calories.toFixed(0) : ''}
+              {calories ? calories?.toFixed(0) : ''}
             </Text>
             {withCal && <Text style={styles.caloriesSub}>Cal</Text>}
           </View>

@@ -279,7 +279,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                     (((values.daily_kcal || 0) / 100) *
                       (values.daily_carbs_pct || 0)) /
                     4
-                  ).toFixed(1)}g`}
+                  )?.toFixed(1)}g`}
                   unitStyle={{...styles.unit, ...styles.smallUnit}}
                   onChangeText={val =>
                     setFieldValue('daily_carbs_pct', replaceRegexForNumber(val))
@@ -315,7 +315,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                     (((values.daily_kcal || 0) / 100) *
                       (values.daily_protein_pct || 0)) /
                     4
-                  ).toFixed(1)}g`}
+                  )?.toFixed(1)}g`}
                   unitStyle={{...styles.unit, ...styles.smallUnit}}
                   onChangeText={val =>
                     setFieldValue(
@@ -354,7 +354,7 @@ export const DailyGoalsScreen: React.FC<DailyGoalsScreenProps> = ({
                     (((values.daily_kcal || 0) / 100) *
                       (values.daily_fat_pct || 0)) /
                     9
-                  ).toFixed(1)}g`}
+                  )?.toFixed(1)}g`}
                   unitStyle={{...styles.unit, ...styles.smallUnit}}
                   onChangeText={val =>
                     setFieldValue('daily_fat_pct', replaceRegexForNumber(val))

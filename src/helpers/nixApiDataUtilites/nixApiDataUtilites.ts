@@ -115,7 +115,7 @@ function buildFullNutrientsArray(data: any) {
             value = (dailyValueTransforms[attr_id] / 100) * value;
           }
           //round to 4 decimal places
-          value = parseFloat(value.toFixed(4));
+          value = parseFloat(value?.toFixed(4));
           accum.push({
             attr_id: nutrDetails.attr_id,
             value: value,

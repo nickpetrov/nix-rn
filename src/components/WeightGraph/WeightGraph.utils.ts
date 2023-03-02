@@ -131,6 +131,6 @@ export const getWeightChartData = (weightLog: any, from: any, to: any) => {
 
   return {
     labels: datesKeys,
-    values: datesKeys.map(key => +dates[key].toFixed(1)),
+    values: datesKeys.map(key => +dates[key]?.toFixed(1)),
   };
 };

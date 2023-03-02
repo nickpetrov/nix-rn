@@ -76,7 +76,7 @@ const MealBuilder = () => {
                   <Text style={styles.mealBuilderQty}>
                     <CountUp
                       isCounting
-                      end={+totalCalories.toFixed(0)}
+                      end={+totalCalories?.toFixed(0)}
                       duration={2}
                     />
                     <Text style={styles.mealBuilderCal}>cal</Text>

@@ -22,19 +22,19 @@ const Totals: React.FC<TotalsProps> = props => {
       <View>
         <View style={styles.overviewWrapper}>
           <Text style={styles.overviewLabel}>Total Calories</Text>
-          <Text style={styles.caloriesValue}>{totalCalories.toFixed(0)}</Text>
+          <Text style={styles.caloriesValue}>{totalCalories?.toFixed(0)}</Text>
         </View>
         <View style={styles.macroTotals}>
           <View style={styles.macroTotalsTile}>
-            <Text style={styles.macroValue}>{protein.toFixed(0)}g</Text>
+            <Text style={styles.macroValue}>{protein?.toFixed(0)}g</Text>
             <Text style={styles.macroTitle}>Protein</Text>
           </View>
           <View style={styles.macroTotalsTile}>
-            <Text style={styles.macroValue}>{carbohydrates.toFixed(0)}g</Text>
+            <Text style={styles.macroValue}>{carbohydrates?.toFixed(0)}g</Text>
             <Text style={styles.macroTitle}>Carb</Text>
           </View>
           <View style={styles.macroTotalsTile}>
-            <Text style={styles.macroValue}>{fat.toFixed(0)}g</Text>
+            <Text style={styles.macroValue}>{fat?.toFixed(0)}g</Text>
             <Text style={styles.macroTitle}>Fat</Text>
           </View>
         </View>

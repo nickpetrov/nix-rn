@@ -119,7 +119,7 @@ const FoodLogSectionHeader: React.FC<FoodLogSectionHeaderProps> = ({
               )}
               {foods && (
                 <Text style={styles.mealTotalCalories}>
-                  {totalMealCalories.toFixed(0)}
+                  {totalMealCalories?.toFixed(0)}
                 </Text>
               )}
             </TouchableOpacity>
