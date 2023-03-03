@@ -8,5 +8,8 @@ export const styles = StyleSheet.create({
   webView: {
     flex: 1,
     width: '100%',
+    // says it's prevent crush when navigate from page with webview
+    opacity: 0.99,
+    overflow: 'hidden',
   },
 });

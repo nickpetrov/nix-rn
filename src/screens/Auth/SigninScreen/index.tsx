@@ -78,6 +78,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
       <View style={styles.webViewContainer}>
         <WebView
           style={styles.webView}
+          androidHardwareAccelerationDisabled
           source={{
             uri: 'https://www.nutritionix.com/account/forgot-password',
           }}

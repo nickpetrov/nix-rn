@@ -63,6 +63,7 @@ const WebViewScreen: React.FC<WebViewScreenProps> = ({route, navigation}) => {
       <WebView
         style={styles.webView}
         source={{uri: route.params.url}}
+        androidHardwareAccelerationDisabled
         onMessage={route.params.onMessage}
         onNavigationStateChange={route.params.onNavigationStateChange}
       />
