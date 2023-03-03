@@ -287,6 +287,10 @@ const LoggedInNavigation = () => {
         component={WebViewScreen}
         options={{
           headerShown: false,
+          animation: Platform.select({
+            ios: 'default',
+            android: 'none',
+          }),
         }}
       />
       <Stack.Screen
