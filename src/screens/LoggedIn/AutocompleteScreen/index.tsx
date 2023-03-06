@@ -328,7 +328,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
       .catch(err => {
         dispatch(
           setInfoMessage({
-            title: `${err.data.message} for:`,
+            title: `${err?.data?.message || 'Error'} for:`,
             text: item_name,
           }),
         );
@@ -341,7 +341,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
       .catch(err => {
         dispatch(
           setInfoMessage({
-            title: `${err.data.message} for:`,
+            title: `${err?.data?.message || 'Error'} for:`,
             text: id,
           }),
         );
