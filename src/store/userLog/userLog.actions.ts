@@ -268,7 +268,7 @@ export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
         }
         dispatch({
           type: userLogActionTypes.DELETE_WEIGHT_FROM_LOG,
-          weights: weights.map(item => item.id),
+          weights: deletedIds,
         });
         dispatch(refreshUserLogTotals());
       }
