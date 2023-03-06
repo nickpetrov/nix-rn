@@ -71,15 +71,19 @@ export const WeightGraph: React.FC = () => {
 
   useEffect(() => {
     setWeightData(
-      weights.map(item => ({
-        ...item,
-        kg:
-          (measure_system
+      weights
+        .filter(item => item.kg)
+        .map(item => {
+          const kgValue = measure_system
             ? item.kg
-            : item.kg && item.kg > 0
+            : item.kg > 0
             ? +(parseFloat(String(item.kg)) * 2.20462)?.toFixed(1)
-            : item.kg) || 0,
-      })),
+            : item.kg;
+          return {
+            ...item,
+            kg: isNaN(kgValue) ? 0 : kgValue,
+          };
+        }),
     );
   }, [weights, measure_system]);
 
