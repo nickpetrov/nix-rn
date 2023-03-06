@@ -328,8 +328,8 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
       .catch(err => {
         dispatch(
           setInfoMessage({
-            title: `${err?.data?.message || 'Error'} for:`,
-            text: item_name,
+            title: `${err?.data?.message || 'Something went wrong'} for:`,
+            text: searchQuery || item_name,
           }),
         );
       });
@@ -341,8 +341,8 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
       .catch(err => {
         dispatch(
           setInfoMessage({
-            title: `${err?.data?.message || 'Error'} for:`,
-            text: id,
+            title: `${err?.data?.message || 'Something went wrong'} for:`,
+            text: searchQuery || id,
           }),
         );
       });
