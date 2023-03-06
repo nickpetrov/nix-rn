@@ -132,12 +132,13 @@ export const addExistFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
       if (!item.serving_qty) {
         item.serving_qty = 1;
       } else {
-        item.serving_qty = +item.serving_qty.toFixed(2);
+        item.serving_qty = _.round(+item.serving_qty, 2);
       }
 
       if (!item.serving_unit) {
         item.serving_unit = 'Serving';
       }
+
       return {
         ...item,
         consumed_at:

@@ -171,17 +171,19 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
     _.extend(foodToLog, nf);
     foodToLog = nixApiDataUtilites.convertV1ItemToTrackFood(foodToLog);
 
-    dispatch(addExistFoodToBasket([foodToLog])).then(() => {
-      dispatch(
-        mergeBasket({
-          meal_type:
-            route.params?.mealType || emptyBasket
-              ? guessMealTypeByTime(moment().hours())
-              : undefined,
-        }),
-      );
-      navigation.navigate(Routes.Basket);
-    });
+    dispatch(addExistFoodToBasket([foodToLog]))
+      .then(() => {
+        dispatch(
+          mergeBasket({
+            meal_type:
+              route.params?.mealType || emptyBasket
+                ? guessMealTypeByTime(moment().hours())
+                : undefined,
+          }),
+        );
+        navigation.navigate(Routes.Basket);
+      })
+      .catch(err => console.log(err));
   };
 
   const saveCustomFood = (log?: boolean) => {
