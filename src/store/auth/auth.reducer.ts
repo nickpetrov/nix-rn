@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 //types
 import {AuthActions, authActionTypes, UserData} from './auth.types';
+import {userLogActionTypes} from 'store/userLog/userLog.types';
 
 export type AuthState = UserData;
 
@@ -60,6 +61,19 @@ export default (
       const stateWithNewUserData = {
         ...state,
         userData: _.merge(oldUser, action.newUserObj),
+      };
+      return stateWithNewUserData;
+    }
+    case userLogActionTypes.ADD_WEIGHT_LOG: {
+      const oldUser = _.cloneDeep(state.userData);
+      const needUpdate =
+        moment(action.weights[0].timestamp).format('YYYY-MM-DD') ===
+        moment().format('YYYY-MM-DD');
+      const stateWithNewUserData = {
+        ...state,
+        userData: needUpdate
+          ? _.merge(oldUser, {weight_kg: action.weights[0].kg})
+          : oldUser,
       };
       return stateWithNewUserData;
     }

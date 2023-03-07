@@ -1,6 +1,7 @@
 // utils
 import React from 'react';
 import moment from 'moment-timezone';
+import round from 'lodash/round';
 
 // components
 import {Text, TouchableHighlight} from 'react-native';
@@ -34,7 +35,7 @@ const WeighInListItem: React.FC<WeighInListItemProps> = ({
         .format('h:mm a')}   ${
         measure_system === 1
           ? `${item.kg ? item.kg?.toFixed(1) : 0} kg`
-          : `${Math.round(parseFloat(String(item.kg)) * 2.20462)} lbs`
+          : `${round(parseFloat(String(item.kg)) * 2.20462, 1)} lbs`
       }`}</Text>
     </TouchableHighlight>
   );

@@ -116,7 +116,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
     } else {
       //convert metric to imperial
       const lbFromKg = String(
-        _.round((values.weight_kg ? +values.weight_kg : 0) * 2.20462, 1),
+        _.round((values.weight_kg ? +values.weight_kg : 0) * 2.20462, 2),
       );
       setFieldValue('weight_lb', lbFromKg);
 

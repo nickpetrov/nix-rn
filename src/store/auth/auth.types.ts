@@ -1,3 +1,5 @@
+import {addWeightToLogAction} from 'store/userLog/userLog.types';
+
 export enum authActionTypes {
   SIGNIN = 'SIGNIN',
   SIGNUP = 'SIGNUP',
@@ -79,4 +81,8 @@ export type logoutAction = {
   type: authActionTypes.LOGOUT;
 };
 
-export type AuthActions = authAction | updateUserAction | logoutAction;
+export type AuthActions =
+  | authAction
+  | updateUserAction
+  | logoutAction
+  | addWeightToLogAction;

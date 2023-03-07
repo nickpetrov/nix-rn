@@ -2,6 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import moment from 'moment-timezone';
 import {useNavigation} from '@react-navigation/native';
+import round from 'lodash/round';
 
 // helpers
 import {analyticTrackEvent} from 'helpers/analytics.ts';
@@ -64,7 +65,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
 
   const handleSave = () => {
     const currentValue =
-      measureSystem === 1 ? +value : Math.round(parseFloat(value) / 2.20462);
+      measureSystem === 1 ? +value : round(parseFloat(value) / 2.20462, 2);
     if (currentValue > 0) {
       setIsLoading(true);
       analyticTrackEvent('loggedWeight', currentValue);
@@ -105,7 +106,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
       String(
         userData.measure_system === 1
           ? weight?.kg || ''
-          : Math.round(parseFloat(String(weight?.kg)) * 2.20462),
+          : round(parseFloat(String(weight?.kg)) * 2.20462, 1),
       ),
     );
     setMeasureSystem(userData.measure_system);
@@ -145,9 +146,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
                   onPress={() => {
                     setMeasureSystem((prev: number) => {
                       if (prev !== 1 && value) {
-                        const lbFromKg = Math.round(
-                          parseFloat(value) / 2.20462,
-                        );
+                        const lbFromKg = round(parseFloat(value) / 2.20462, 1);
                         setValue(String(lbFromKg));
                       }
                       return 1;
@@ -161,9 +160,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
                   onPress={() =>
                     setMeasureSystem((prev: number) => {
                       if (prev !== 0 && value) {
-                        const kgFromLbs = Math.round(
-                          parseFloat(value) * 2.20462,
-                        );
+                        const kgFromLbs = round(parseFloat(value) * 2.20462, 2);
                         setValue(String(kgFromLbs));
                       }
                       return 0;
