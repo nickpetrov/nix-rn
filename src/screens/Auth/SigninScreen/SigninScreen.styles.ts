@@ -100,4 +100,11 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     marginRight: 5,
   },
+  testView: {
+    padding: 10,
+  },
+  testInput: {
+    borderWidth: 1,
+    borderColor: Colors.LightGray,
+  },
 });

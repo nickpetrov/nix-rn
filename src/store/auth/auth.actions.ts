@@ -35,6 +35,27 @@ import {RootState} from '../index';
 import {clearWalkthroghAction} from 'store/walkthrough/walkthrough.types';
 import {clearCustomFoodsAction} from 'store/customFoods/customFoods.types';
 
+export const testLogin = (jwt_token: string) => {
+  return async (dispatch: Dispatch<authAction>, useState: () => RootState) => {
+    try {
+      const timezone = moment.tz.guess(true) || 'US/Eastern';
+      const defualtUser = useState().auth.userData;
+      const userData = {
+        user: {
+          ...defualtUser,
+          timezone,
+        },
+        'x-user-jwt': jwt_token,
+      };
+      apiClient.defaults.headers.common['x-user-jwt'] = jwt_token;
+      dispatch({type: authActionTypes.SIGNIN, userData});
+      updateSentryContext(userData.user, jwt_token);
+    } catch (err: any) {
+      console.log('error test login by jwt', err);
+    }
+  };
+};
+
 export const fbLogin = (access_token: string) => {
   return async (dispatch: Dispatch<authAction>) => {
     try {

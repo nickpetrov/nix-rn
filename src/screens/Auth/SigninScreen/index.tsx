@@ -9,6 +9,8 @@ import {
   SafeAreaView,
   TouchableOpacity,
   TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import {Formik} from 'formik';
 import {NixButton} from 'components/NixButton';
@@ -19,6 +21,7 @@ import {NixInput} from 'components/NixInput';
 
 // hooks
 import {useSignIn} from './hooks/useSignIn';
+import {useDispatch} from 'hooks/useRedux';
 
 // styles
 import {styles} from './SigninScreen.styles';
@@ -29,13 +32,17 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
 import {Routes} from 'navigation/Routes';
-import {TouchableWithoutFeedback, Keyboard} from 'react-native';
+import {testLogin} from 'store/auth/auth.actions';
 
 interface SigninScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Signin>;
 }
 
 export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
+  const dispatch = useDispatch();
+  const [testJwt, setTestJwt] = useState(
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTUwNTQzNywiaWF0IjoxNjc3NzcwOTQ2LCJleHAiOjE2ODA0NDkzNDZ9.ekFU2-NXKeOo6YlZdIcE4SkYV30ANEBucayBDfYMK9Y',
+  );
   const [showWebView, setShowWebView] = useState(false);
   const [validOnChange, setValidOnChange] = useState(false);
   const {isLoading, loginValidationSchema, loginHandler, createAccountHandler} =
@@ -188,6 +195,26 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
               )}
             </Formik>
           </View>
+          {__DEV__ && (
+            <View style={styles.testView}>
+              <NixInput
+                label="JWT"
+                rootStyles={styles.testInput}
+                value={testJwt}
+                onChangeText={setTestJwt}
+              />
+              <NixButton
+                title="Login by jwt"
+                onPress={() => {
+                  if (testJwt) {
+                    dispatch(testLogin(testJwt));
+                  }
+                }}
+                type="default"
+                withMarginTop
+              />
+            </View>
+          )}
         </SafeAreaView>
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
