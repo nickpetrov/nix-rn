@@ -119,9 +119,13 @@ export const getWeightChartData = (weightLog: any, from: any, to: any) => {
 
       let index = (startIndex + endIndex) / 2;
 
-      index = i <= (maxPoints - 2) / 2 ? Math.ceil(index) : Math.floor(index);
+      index = Math.abs(
+        i <= (maxPoints - 2) / 2 ? Math.ceil(index) : Math.floor(index),
+      );
 
-      tmp.push(datesKeys[index]);
+      if (datesKeys[index]) {
+        tmp.push(datesKeys[index]);
+      }
     }
 
     tmp.unshift(datesKeys[0]);

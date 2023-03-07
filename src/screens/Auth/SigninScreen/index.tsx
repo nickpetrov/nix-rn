@@ -40,9 +40,7 @@ interface SigninScreenProps {
 
 export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
-  const [testJwt, setTestJwt] = useState(
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTUwNTQzNywiaWF0IjoxNjc3NzcwOTQ2LCJleHAiOjE2ODA0NDkzNDZ9.ekFU2-NXKeOo6YlZdIcE4SkYV30ANEBucayBDfYMK9Y',
-  );
+  const [testJwt, setTestJwt] = useState('');
   const [showWebView, setShowWebView] = useState(false);
   const [validOnChange, setValidOnChange] = useState(false);
   const {isLoading, loginValidationSchema, loginHandler, createAccountHandler} =
