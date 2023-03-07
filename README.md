@@ -9,7 +9,7 @@
 
 1. `cd android`
 2. `gradlew assembleDebug` or `gradlew assembleRelease`
-3. create source-maps(android) for sentry when upload new version to store `yarn run post-build` (see line 28 at this file - replace at script OS with your system)
+3. `cd ..`, create source-maps(android) for sentry when upload new version to store `yarn run post-build` (see line 28 at this file - replace at script OS with your system)
 
 ### create bundle for TF (ios)
 
