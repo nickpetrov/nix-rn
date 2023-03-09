@@ -95,8 +95,8 @@ const MealListItem: React.FC<MealListItemProps> = props => {
         <Image
           style={[styles.foodThumb, smallImage && styles.smallImage]}
           source={
-            foodObj.photo.thumb
-              ? {uri: foodObj.photo.thumb}
+            foodObj.photo?.thumb
+              ? {uri: foodObj.photo?.thumb}
               : require('assets/gray_nix_apple_small.png')
           }
           resizeMode={'contain'}
