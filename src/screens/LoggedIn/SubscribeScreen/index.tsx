@@ -270,7 +270,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         analyticTrackEvent('subscribe', Platform.OS);
       }
     } catch (err: any) {
-      console.warn(err.code, err.message);
+      console.warn(err?.code, err?.message);
     }
     setSubsLoading(false);
   };

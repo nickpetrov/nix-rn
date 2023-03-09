@@ -107,7 +107,7 @@ const NaturalForm: React.FC<NaturalFormProps> = ({navigation}) => {
       .catch(err => {
         dispatch(
           setInfoMessage({
-            title: err.data.message + ' for:',
+            title: `${err?.data?.message || 'Something went wrong'}` + ' for:',
             text: naturalQuery,
             btnText: 'Ok',
           }),

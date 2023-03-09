@@ -300,7 +300,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
               !!err.data.message &&
               err.data.message === 'resource already exists'
             ) {
-              setError(err.data.message);
+              setError(err?.data?.message);
             }
           });
       }
@@ -407,7 +407,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           })
           .catch(res => {
             setAddIngredientsQuery('');
-            setError(res?.data?.message);
+            setError(res?.data?.message || 'Something went wrong');
             setInvalidForm(true);
 
             if (!!res.errors && res.errors.length) {
@@ -549,7 +549,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             err?.data?.message ===
             'child "query" fails because ["query" is not allowed to be empty]'
               ? 'No food found.'
-              : err?.data?.message + ' for:',
+              : `${err?.data?.message || 'Something went wrong'}` + ' for:',
           text,
           index,
         });
