@@ -36,7 +36,7 @@ const CommonFoodItem: React.FC<CommonFoodItemProps> = ({
   return (
     <TouchableHighlight onPress={onTap}>
       <View style={[styles.foodItem, withoutBorder && styles.withoutBorder]}>
-        {image && (
+        {!!image && (
           <Image
             style={styles.foodThumb}
             source={{uri: image}}
@@ -44,7 +44,7 @@ const CommonFoodItem: React.FC<CommonFoodItemProps> = ({
           />
         )}
         <View style={styles.flex1}>
-          {name && (
+          {!!name && (
             <HighlightText
               searchWords={[searchValue || '']}
               textToHighlight={capitalize(name)}
@@ -52,7 +52,7 @@ const CommonFoodItem: React.FC<CommonFoodItemProps> = ({
               highlightStyle={{fontWeight: '600'}}
             />
           )}
-          {text && (
+          {!!text && (
             <HighlightText
               searchWords={[searchValue || '']}
               textToHighlight={capitalize(text)}
