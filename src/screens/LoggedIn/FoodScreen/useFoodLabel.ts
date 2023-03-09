@@ -68,6 +68,7 @@ const useFoodLabel = (food: FoodProps) => {
       newTotal.nf_potassium = foodExtendedNf.nf_potassium;
       newTotal.nf_vitamin_a_dv = foodExtendedNf.nf_vitamin_a_dv || 0;
       newTotal.nf_vitamin_c_dv = foodExtendedNf.nf_vitamin_c_dv || 0;
+      newTotal.nf_vitamin_d_dv = foodExtendedNf.nf_vitamin_d_dv || 0;
       newTotal.nf_calcium_dv = foodExtendedNf.nf_calcium_dv || 0;
       newTotal.nf_iron_dv = foodExtendedNf.nf_iron_dv || 0;
       newTotal.caffeine = getAttrValueById(food.full_nutrients, 262) || 0;
@@ -142,8 +143,10 @@ const useFoodLabel = (food: FoodProps) => {
     valueProteins: total.nf_protein,
     valueVitaminA: total.nf_vitamin_a_dv,
     valueVitaminC: total.nf_vitamin_c_dv,
+    valueVitaminD: total.nf_vitamin_d_dv,
     valueCalcium: total.nf_calcium_dv,
     valueIron: total.nf_iron_dv,
+    valuePotassium_2018: total.nf_potassium,
 
     calorieIntake: userData.daily_kcal || 0,
   };

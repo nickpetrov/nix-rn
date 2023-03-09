@@ -185,6 +185,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           );
         newTotal.nf_vitamin_a_dv += foodExtendedNf.nf_vitamin_a_dv || 0;
         newTotal.nf_vitamin_c_dv += foodExtendedNf.nf_vitamin_c_dv || 0;
+        newTotal.nf_vitamin_d_dv = foodExtendedNf.nf_vitamin_d_dv || 0;
         newTotal.nf_calcium_dv += foodExtendedNf.nf_calcium_dv || 0;
         newTotal.nf_iron_dv += foodExtendedNf.nf_iron_dv || 0;
 
@@ -380,8 +381,10 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     valueProteins: total.nf_protein || 0,
     valueVitaminA: total.nf_vitamin_a_dv || 0,
     valueVitaminC: total.nf_vitamin_c_dv || 0,
+    valueVitaminD: total.nf_vitamin_d_dv || 0,
     valueCalcium: total.nf_calcium_dv || 0,
     valueIron: total.nf_iron_dv || 0,
+    valuePotassium_2018: total.nf_potassium,
     calorieIntake: clientId
       ? clientTotals[0].daily_kcal_limit
       : totals.filter((item: TotalProps) => item.date === followDate)[0]
