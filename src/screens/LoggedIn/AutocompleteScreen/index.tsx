@@ -315,7 +315,11 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   const handleAddCommonFood = (item_name: string, is_freeform: boolean) => {
     // log user interaction with autocomplete for analytics purpose
     if (!is_freeform) {
-      autoCompleteService.logAutocompleteStats(item_name, 1, item_name);
+      try {
+        autoCompleteService.logAutocompleteStats(item_name, 1, item_name);
+      } catch (err) {
+        console.log(err);
+      }
     }
     dispatch(basketActions.addFoodToBasket(item_name))
       .then(callBackAfterAddFoodToBasket)
@@ -384,7 +388,11 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   };
 
   const addBrandedFoodToBasket = (id: string) => {
-    autoCompleteService.logAutocompleteStats(searchQuery, 8, id);
+    try {
+      autoCompleteService.logAutocompleteStats(searchQuery, 8, id);
+    } catch (err) {
+      console.log(err);
+    }
     dispatch(basketActions.addBrandedFoodToBasket(id)).then(
       callBackAfterAddFoodToBasket,
     );
