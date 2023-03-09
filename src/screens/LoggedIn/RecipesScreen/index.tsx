@@ -228,10 +228,10 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
             servings: scaled_recipe.serving_qty.toString(),
             recipeName: scaled_recipe.name,
             customPhoto:
-              !!scaled_recipe.photo && !!scaled_recipe.photo.highres
+              !!scaled_recipe.photo && !!scaled_recipe.photo?.highres
                 ? {
-                    full: scaled_recipe.photo.highres,
-                    thumb: scaled_recipe.photo.thumb,
+                    full: scaled_recipe.photo?.highres,
+                    thumb: scaled_recipe.photo?.thumb,
                     is_user_uploaded: false,
                   }
                 : null,

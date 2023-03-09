@@ -707,10 +707,10 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             servings: scaled_recipe.serving_qty.toString(),
             recipeName: scaled_recipe.name,
             customPhoto:
-              !!savedRecipe.photo && !!savedRecipe.photo.highres
+              !!savedRecipe.photo && !!savedRecipe.photo?.highres
                 ? {
-                    full: savedRecipe.photo.highres,
-                    thumb: savedRecipe.photo.thumb,
+                    full: savedRecipe.photo?.highres,
+                    thumb: savedRecipe.photo?.thumb,
                     is_user_uploaded: false,
                   }
                 : null,
@@ -896,7 +896,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                     <Image
                       style={styles.ingridientItemImage}
                       source={
-                        ingredient.photo.thumb
+                        ingredient.photo?.thumb
                           ? {uri: ingredient.photo.thumb}
                           : require('assets/gray_nix_apple_small.png')
                       }

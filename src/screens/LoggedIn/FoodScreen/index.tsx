@@ -507,7 +507,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
                     source={{
                       uri: image
                         ? image.uri
-                        : foodObj.photo.highres || foodObj.photo.thumb || '',
+                        : foodObj.photo?.highres || foodObj.photo?.thumb || '',
                     }}
                     resizeMode="contain"
                   />

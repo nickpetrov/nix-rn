@@ -256,7 +256,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
             style={styles.foodThumb}
             source={
               food.photo
-                ? {uri: food.photo.thumb}
+                ? {uri: food.photo?.thumb}
                 : require('assets/gray_nix_apple_small.png')
             }
             resizeMode="contain"
