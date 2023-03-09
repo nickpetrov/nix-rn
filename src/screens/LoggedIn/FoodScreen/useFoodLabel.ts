@@ -66,11 +66,11 @@ const useFoodLabel = (food: FoodProps) => {
       newTotal.nf_protein = foodExtendedNf.nf_protein;
       newTotal.nf_p = foodExtendedNf.nf_p;
       newTotal.nf_potassium = foodExtendedNf.nf_potassium;
-      (newTotal.nf_vitamin_a_dv = foodExtendedNf.nf_vitamin_a_dv || 0),
-        (newTotal.nf_vitamin_c_dv = foodExtendedNf.nf_vitamin_c_dv || 0),
-        (newTotal.nf_calcium_dv = foodExtendedNf.nf_calcium_dv || 0),
-        (newTotal.nf_iron_dv = foodExtendedNf.nf_iron_dv || 0),
-        (newTotal.caffeine = getAttrValueById(food.full_nutrients, 262) || 0);
+      newTotal.nf_vitamin_a_dv = foodExtendedNf.nf_vitamin_a_dv || 0;
+      newTotal.nf_vitamin_c_dv = foodExtendedNf.nf_vitamin_c_dv || 0;
+      newTotal.nf_calcium_dv = foodExtendedNf.nf_calcium_dv || 0;
+      newTotal.nf_iron_dv = foodExtendedNf.nf_iron_dv || 0;
+      newTotal.caffeine = getAttrValueById(food.full_nutrients, 262) || 0;
       newTotal.vitamin_d = getAttrValueById(food.full_nutrients, 324) || 0;
       if (
         newTotal.nf_total_carbohydrate === 0 ||
