@@ -118,8 +118,8 @@ const MealListItem: React.FC<MealListItemProps> = props => {
                   ? `${foodObj.serving_qty || 1} Serving`
                   : `${foodObj.serving_qty || 1} ${foodObj.serving_unit}`
                 : capitalize(
-                    `${foodObj.brand_name ? `${foodObj.brand_name} ` : ''}${
-                      historyTab && !foodObj.brand_name ? 'Common Food, ' : ''
+                    `${foodObj.brand_name ? foodObj.brand_name : ''}${
+                      historyTab && !foodObj.brand_name ? 'Common Food, ' : ' '
                     }${foodObj.serving_qty} ${foodObj.serving_unit}`,
                   )
             }
