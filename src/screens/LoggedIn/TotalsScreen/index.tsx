@@ -334,6 +334,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   const labelOptions = {
     showLegacyVersion: false,
     useBaseValueFor2018LabelAndNotDVPercentage: true,
+    legacyVersion: 2,
     hideModeSwitcher: true,
     textNutritionFacts: '',
     showDisclaimer: false,
@@ -368,6 +369,12 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     showTransFat: false,
     showVitaminA: true,
     showVitaminC: true,
+
+    dailyValueTotalFat: 78,
+    dailyValueSodium: 2300,
+    dailyValueCarb: 275,
+    dailyValueFiber: 28,
+
     valueServingUnitQuantity: 1,
     valueServingSizeUnit: 'Serving',
 

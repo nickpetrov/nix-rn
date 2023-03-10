@@ -96,6 +96,7 @@ const useFoodLabel = (food: FoodProps) => {
   const labelData = {
     showLegacyVersion: false,
     useBaseValueFor2018LabelAndNotDVPercentage: true,
+    legacyVersion: 2,
     hideModeSwitcher: true,
     showItemName: false,
     showServingUnitQuantity: false,
@@ -130,9 +131,14 @@ const useFoodLabel = (food: FoodProps) => {
     showTransFat: false,
     showVitaminA: true,
     showVitaminC: true,
+
+    dailyValueTotalFat: 78,
+    dailyValueSodium: 2300,
+    dailyValueCarb: 275,
+    dailyValueFiber: 28,
+
     valueServingUnitQuantity: total.serving_qty,
     valueServingSizeUnit: total.serving_unit,
-
     valueCalories: total.calories,
     valueFatCalories: total.total_fat * 9,
     valueTotalFat: total.total_fat,
@@ -150,7 +156,7 @@ const useFoodLabel = (food: FoodProps) => {
     valueIron: total.nf_iron_dv,
     valuePotassium_2018: total.nf_potassium,
 
-    calorieIntake: userData.daily_kcal || 0,
+    calorieIntake: userData.daily_kcal || 2000,
   };
   return total.serving_qty ? {labelData, total} : null;
 };

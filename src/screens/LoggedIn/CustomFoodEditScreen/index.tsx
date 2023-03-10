@@ -204,6 +204,10 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
     delete clonedFood.source;
     delete clonedFood.source_key;
 
+    //not allowed when update custom food
+    delete clonedFood.nf_calcium_mg;
+    delete clonedFood.nf_iron_mg;
+
     dispatch(updateOrCreateCustomFood(clonedFood))
       .then(result => {
         if (result && result.food_name) {
