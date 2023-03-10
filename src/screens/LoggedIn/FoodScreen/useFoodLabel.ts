@@ -1,8 +1,10 @@
 import {useState, useEffect} from 'react';
 import {FoodProps} from 'store/userLog/userLog.types';
 import getAttrValueById from 'helpers/getAttrValueById';
-import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+// import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {useSelector} from 'hooks/useRedux';
+// @ts-ignore
+import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 
 const useFoodLabel = (food: FoodProps) => {
   const userData = useSelector(state => state.auth.userData);
@@ -50,7 +52,7 @@ const useFoodLabel = (food: FoodProps) => {
       const newTotal: Record<string, any> = {...prev};
 
       var foodExtendedNf =
-        nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+        nutritionixApiDataUtilities.convertFullNutrientsToNfAttributes(
           food.full_nutrients,
         );
 

@@ -2,10 +2,12 @@
 import React, {useCallback, useState, useEffect, useLayoutEffect} from 'react';
 import moment from 'moment-timezone';
 import _ from 'lodash';
+// @ts-ignore
+import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 
 // helpers
 import {multiply} from 'helpers/multiply';
-import NixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+// import NixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import requestCameraPermission from 'helpers/cameraPermision';
 
@@ -126,7 +128,9 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   foods.map((food: FoodProps) => {
     food = {
       ...food,
-      ...NixHelpers.convertFullNutrientsToNfAttributes(food?.full_nutrients),
+      ...nutritionixApiDataUtilities.convertFullNutrientsToNfAttributes(
+        food?.full_nutrients,
+      ),
     };
 
     totalCalories +=

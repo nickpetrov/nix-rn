@@ -3,6 +3,8 @@ import React, {useEffect, useState} from 'react';
 import {batch} from 'react-redux';
 import moment from 'moment-timezone';
 import {useDebounce} from 'use-debounce';
+// @ts-ignore
+import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 
 // components
 import {
@@ -24,7 +26,7 @@ import {NixButton} from 'components/NixButton';
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // helpers
-import nixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+// import nixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 // actions
@@ -131,10 +133,12 @@ const RestaurantFoods: React.FC<RestaurantFoodsProps> = ({
     try {
       const foodObj = JSON.parse(e.nativeEvent.data);
       if (!foodObj.full_nutrients) {
-        foodObj.full_nutrients = nixHelpers.buildFullNutrientsArray(foodObj);
+        foodObj.full_nutrients =
+          nutritionixApiDataUtilities.buildFullNutrientsArray(foodObj);
       }
 
-      const food = nixHelpers.convertV1ItemToTrackFood(foodObj);
+      const food =
+        nutritionixApiDataUtilities.convertV1ItemToTrackFood(foodObj);
       dispatch(basketActions.addExistFoodToBasket([food]));
     } catch (err) {
       console.log(err);

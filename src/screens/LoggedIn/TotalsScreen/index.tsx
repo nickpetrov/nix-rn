@@ -1,6 +1,8 @@
 // utils
 import React, {useEffect, useState, useLayoutEffect} from 'react';
 import moment from 'moment-timezone';
+// @ts-ignore
+import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 
 // components
 import {
@@ -31,7 +33,7 @@ import {addExistFoodToBasket, mergeBasket} from 'store/basket/basket.actions';
 
 // helpres
 import getAttrValueById from 'helpers/getAttrValueById';
-import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+// import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {defaultOption} from 'helpers/nutrionixLabel';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
@@ -180,7 +182,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
         newTotal.magnesium += getAttrValueById(food.full_nutrients, 304) || 0;
 
         let foodExtendedNf =
-          nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+          nutritionixApiDataUtilities.convertFullNutrientsToNfAttributes(
             food.full_nutrients,
           );
         newTotal.nf_vitamin_a_dv += foodExtendedNf.nf_vitamin_a_dv || 0;
