@@ -450,7 +450,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
                     <View style={styles.photoBtn}>
                       <FontAwesome name="plus" color="#000" size={11} />
                       <Text style={styles.photoBtnText}>
-                        {foodObj.photo.is_user_uploaded
+                        {foodObj.photo?.is_user_uploaded
                           ? 'Change Photo'
                           : 'Add Photo'}
                       </Text>
@@ -481,7 +481,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
             )}
             {photoVisible && (
               <>
-                {!image && !foodObj.photo.highres && !foodObj.photo.thumb ? (
+                {!image && !foodObj.photo?.highres && !foodObj.photo?.thumb ? (
                   <Text style={styles.noPhoto}>This food has no photo.</Text>
                 ) : null}
                 <View style={styles.imageContainer}>

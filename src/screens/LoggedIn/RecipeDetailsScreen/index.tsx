@@ -897,7 +897,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                       style={styles.ingridientItemImage}
                       source={
                         ingredient.photo?.thumb
-                          ? {uri: ingredient.photo.thumb}
+                          ? {uri: ingredient.photo?.thumb}
                           : require('assets/gray_nix_apple_small.png')
                       }
                       resizeMode="contain"

@@ -30,7 +30,7 @@ const ExerciseListItem: React.FC<ExerciseListItemProps> = ({
       onPress={onPress}>
       <View style={[styles.root, !last ? styles.borderBottom : {}]}>
         <View style={styles.left}>
-          <Image source={{uri: exercise.photo.thumb}} style={styles.image} />
+          <Image source={{uri: exercise.photo?.thumb}} style={styles.image} />
           <View style={styles.header}>
             <Text>
               {exercise.name.charAt(0).toUpperCase() + exercise.name.slice(1)}
