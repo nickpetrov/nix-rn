@@ -19,6 +19,10 @@ export const styles = StyleSheet.create({
     color: Colors.Primary,
     fontSize: 20,
   },
+  topBorder: {
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+  },
   macroTotals: {
     width: '100%',
     alignItems: 'center',
