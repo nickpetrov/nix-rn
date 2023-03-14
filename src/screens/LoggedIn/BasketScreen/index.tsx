@@ -7,7 +7,6 @@ import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 
 // helpers
 import {multiply} from 'helpers/multiply';
-// import NixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import requestCameraPermission from 'helpers/cameraPermision';
 

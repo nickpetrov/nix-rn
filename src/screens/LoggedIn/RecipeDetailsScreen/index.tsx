@@ -67,7 +67,6 @@ import {RouteProp} from '@react-navigation/native';
 import {RecipeProps, UpdateRecipeProps} from 'store/recipes/recipes.types';
 
 // helpers
-// import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {multiply} from 'helpers/multiply';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import {analyticTrackEvent} from 'helpers/analytics.ts';

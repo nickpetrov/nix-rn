@@ -106,9 +106,8 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     (foodObj.nf_total_carbohydrate || 0) - (foodObj.nf_dietary_fiber || 0) <= 0
       ? 0
       : (foodObj.nf_total_carbohydrate || 0) - (foodObj.nf_dietary_fiber || 0);
-  const labelOption = useFoodLabel(foodObj);
-  const labelData = labelOption?.labelData;
-  const total = labelOption?.total;
+  const phosphorus = foodObj.nf_p;
+  const labelData = useFoodLabel(foodObj);
   const spinValue = new Animated.Value(0);
 
   Animated.loop(
@@ -558,36 +557,37 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
             )}
           </View>
           <View style={styles.p10}>
-            <NutritionLabel option={labelData || defaultOption} />
+            <NutritionLabel option={{...defaultOption, ...labelData}} />
           </View>
           {(!!net_carbs ||
-            !!total?.nf_p ||
-            !!total?.caffeine ||
-            !!total?.nf_potassium) && (
+            !!phosphorus ||
+            !!labelData?.valueCaffeine ||
+            !!labelData?.valuePotassium_2018) && (
             <View style={styles.listContainer}>
               {!!net_carbs && (
                 <Text style={styles.text}>
-                  Net Carbs**: {(net_carbs || 0).toFixed(1)} g
+                  Net Carbs**: {_.round(net_carbs || 0)} g
                 </Text>
               )}
-              {!!total?.vitamin_d && (
+              {!!labelData?.valueVitaminD && (
                 <Text style={styles.text}>
-                  Vitamin D** : {(total?.vitamin_d || 0).toFixed(1)} IU
+                  Vitamin D** : {_.round(labelData?.valueVitaminD || 0)} IU
                 </Text>
               )}
-              {!!total?.nf_p && (
+              {!!phosphorus && (
                 <Text style={styles.text}>
-                  Phosphorus** : {(total?.nf_p || 0).toFixed(1)} mg
+                  Phosphorus** : {_.round(phosphorus || 0)} mg
                 </Text>
               )}
-              {!!total?.nf_potassium && (
+              {!!labelData?.valuePotassium_2018 && (
                 <Text style={styles.text}>
-                  Potassium** : {(total?.nf_potassium || 0).toFixed(1)} mg
+                  Potassium** : {_.round(labelData?.valuePotassium_2018 || 0)}{' '}
+                  mg
                 </Text>
               )}
-              {!!total?.caffeine && (
+              {!!labelData?.valueCaffeine && (
                 <Text style={styles.text}>
-                  Caffeine** : {(total?.caffeine || 0).toFixed(1)} mg
+                  Caffeine** : {_.round(labelData?.valueCaffeine || 0)} mg
                 </Text>
               )}
             </View>

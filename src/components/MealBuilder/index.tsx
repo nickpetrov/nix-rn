@@ -16,9 +16,6 @@ import {CountUp} from 'use-count-up';
 // types
 import {FoodProps, NutrientProps} from 'store/userLog/userLog.types';
 
-// helpres
-// import NixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
-
 // styles
 import {styles} from './MealBuilder.styles';
 

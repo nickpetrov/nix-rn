@@ -43,7 +43,6 @@ import {Routes} from 'navigation/Routes';
 
 // helpres
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
-// import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {replaceRegexForNumber} from 'helpers/index';
 
 // types

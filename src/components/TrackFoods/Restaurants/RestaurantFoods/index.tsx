@@ -26,7 +26,6 @@ import {NixButton} from 'components/NixButton';
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // helpers
-// import nixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 // actions
