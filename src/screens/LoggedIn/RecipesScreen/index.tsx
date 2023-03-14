@@ -225,7 +225,7 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
           basketActions.mergeBasket({
             isSingleFood: true,
             recipeBrand: scaled_recipe.brand_name,
-            servings: scaled_recipe.serving_qty.toString(),
+            servings: recipe.serving_qty.toString(),
             recipeName: scaled_recipe.name,
             customPhoto:
               !!scaled_recipe.photo && !!scaled_recipe.photo?.highres

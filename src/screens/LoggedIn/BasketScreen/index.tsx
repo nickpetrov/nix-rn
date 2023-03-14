@@ -9,6 +9,8 @@ import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 import {multiply} from 'helpers/multiply';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import requestCameraPermission from 'helpers/cameraPermision';
+import {analyticTrackEvent} from 'helpers/analytics.ts';
+import {replaceRegexForNumber} from 'helpers/index';
 
 // components
 import BasketButton from 'components/BasketButton';
@@ -74,7 +76,6 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './BasketScreen.styles';
-import {analyticTrackEvent} from 'helpers/analytics.ts';
 import {store} from 'store/index';
 
 interface BasketScreenProps {
@@ -375,7 +376,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
   };
 
   const handleSingleFoodServingsChange = (qty: string) => {
-    dispatch(basketActions.mergeBasket({servings: qty}));
+    dispatch(basketActions.mergeBasket({servings: replaceRegexForNumber(qty)}));
   };
 
   const onDateChange = (newDate: string) => {
@@ -536,6 +537,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
               protein={totalProtein}
               carbohydrates={totalCarb}
               fat={totalFat}
+              singleFoodQty={isSingleFood ? parseFloat(servings) : undefined}
             />
             <View>
               {foods.length > 1 ? (

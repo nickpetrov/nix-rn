@@ -133,6 +133,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
     ingredients: [],
     directions: '',
   });
+  const [servingQty, setServingQty] = useState('');
   let rowRefs = new Map<string, Swipeable>();
   const [caloriesPerServing, setCaloriesPerServing] = useState(0);
   const [showNewIngredientsInput, setShowNewIngredientInput] = useState(false);
@@ -183,6 +184,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             }
           });
           setRecipe(resp);
+          setServingQty(resp.serving_qty + '');
           setDefaultRecipe(resp);
           setShowPreloader(false);
         })
@@ -447,12 +449,15 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
   ) => {
     const val = replaceRegexForNumber(newValue);
 
+    if (fieldName === 'serving_qty') {
+      setServingQty(val);
+    }
     setRecipe(prevRecipe => {
       const clonedRecipe = {...prevRecipe};
-      clonedRecipe[fieldName] = parseFloat(val) as never;
+      clonedRecipe[fieldName] = +val as never;
       return {...clonedRecipe};
     });
-    if (fieldName === 'serving_qty' && parseFloat(val)) {
+    if (fieldName === 'serving_qty' && +val) {
       setErrorMessages(prev => ({
         ...prev,
         serving_qty: '',
@@ -706,7 +711,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
           basketActions.mergeBasket({
             isSingleFood: true,
             recipeBrand: scaled_recipe.brand_name,
-            servings: scaled_recipe.serving_qty.toString(),
+            servings: recipeToLog.serving_qty.toString(),
             recipeName: scaled_recipe.name,
             customPhoto:
               !!savedRecipe.photo && !!savedRecipe.photo?.highres
@@ -775,7 +780,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
             <View style={styles.flex1}>
               <TextInput
                 selectTextOnFocus
-                value={(recipe.serving_qty || '') + ''}
+                value={servingQty}
                 onChangeText={text => updateNumberField('serving_qty', text)}
                 style={[
                   styles.input,
@@ -821,9 +826,11 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                     text.replace(/[^0-9]/g, ''),
                   )
                 }
+                multiline={true}
+                numberOfLines={1}
                 placeholder="0 min"
                 keyboardType="number-pad"
-                style={[styles.numericInput, styles.textAlCenter]}
+                style={styles.numericInput}
                 returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                 ref={ref => (inputRefs.current.prep_time_min = ref)}
                 onSubmitEditing={() => {
@@ -848,9 +855,11 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                     text.replace(/[^0-9]/g, ''),
                   )
                 }
+                multiline={true}
+                numberOfLines={1}
                 placeholder="0 min"
                 keyboardType="number-pad"
-                style={[styles.numericInput, styles.textAlCenter]}
+                style={styles.numericInput}
                 ref={ref => (inputRefs.current.cook_time_min = ref)}
               />
               <View style={styles.prepContainer}>
