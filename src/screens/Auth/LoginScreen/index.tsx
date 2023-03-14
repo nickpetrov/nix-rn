@@ -54,7 +54,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
 
   const fbLoginHandler = () => {
-    LoginManager.logInWithPermissions(['public_profile']).then(
+    LoginManager.logInWithPermissions(['public_profile', 'email']).then(
       result => {
         if (result.isCancelled) {
           console.log('Login cancelled');

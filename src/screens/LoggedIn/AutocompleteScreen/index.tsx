@@ -554,7 +554,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
                     } else if (section.key === searchSections.COMMON) {
                       return (
                         <CommonFoodItem
-                          image={item.photo.thumb}
+                          image={item.photo?.thumb}
                           name={item.food_name}
                           onTap={() =>
                             handleAddCommonFood(item.food_name, false)

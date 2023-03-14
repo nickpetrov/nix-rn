@@ -130,7 +130,7 @@ const MealListItem: React.FC<MealListItemProps> = props => {
           />
         </View>
         <View style={styles.right}>
-          {foodObj.photo.is_user_uploaded && !withoutPhotoUploadIcon && (
+          {foodObj.photo?.is_user_uploaded && !withoutPhotoUploadIcon && (
             <FontAwesome
               style={styles.icon}
               name="camera"

@@ -729,8 +729,8 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                             customPhoto?.thumb ||
                             (foods.length === 1 &&
                               !!foods[0].photo &&
-                              !!foods[0].photo.highres)
-                          ? foods[0].photo.highres || ''
+                              !!foods[0].photo?.highres)
+                          ? foods[0].photo?.highres || ''
                           : '',
                       }}
                       resizeMode="cover"
