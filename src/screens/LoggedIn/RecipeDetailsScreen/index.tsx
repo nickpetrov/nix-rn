@@ -448,7 +448,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
 
     setRecipe(prevRecipe => {
       const clonedRecipe = {...prevRecipe};
-      clonedRecipe[fieldName] = parseFloat(val) as never;
+      clonedRecipe[fieldName] = Number(val) as never;
       return {...clonedRecipe};
     });
     if (fieldName === 'serving_qty' && parseFloat(val)) {
@@ -819,9 +819,11 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                     text.replace(/[^0-9]/g, ''),
                   )
                 }
+                multiline={true}
+                numberOfLines={1}
                 placeholder="0 min"
                 keyboardType="number-pad"
-                style={[styles.numericInput, styles.textAlCenter]}
+                style={styles.numericInput}
                 returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
                 ref={ref => (inputRefs.current.prep_time_min = ref)}
                 onSubmitEditing={() => {
@@ -846,9 +848,11 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
                     text.replace(/[^0-9]/g, ''),
                   )
                 }
+                multiline={true}
+                numberOfLines={1}
                 placeholder="0 min"
                 keyboardType="number-pad"
-                style={[styles.numericInput, styles.textAlCenter]}
+                style={styles.numericInput}
                 ref={ref => (inputRefs.current.cook_time_min = ref)}
               />
               <View style={styles.prepContainer}>

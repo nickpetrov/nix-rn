@@ -124,6 +124,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     textAlign: 'center',
+    textAlignVertical: 'top',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     backgroundColor: '#eee',
