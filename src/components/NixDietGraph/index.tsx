@@ -3,7 +3,7 @@ import React, {useEffect, useState, useMemo, useCallback} from 'react';
 import moment from 'moment-timezone';
 
 // components
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Calendar} from 'react-native-calendars';
 
@@ -149,10 +149,6 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         </View>
         <Calendar
           initialDate={props.initialDisplayDate}
-          onDayPress={day => {
-            dispatch(changeSelectedDay(day.dateString));
-            props.navigation.navigate(Routes.Dashboard);
-          }}
           onMonthChange={month => {
             setCurrentDate(month.dateString);
           }}
@@ -164,18 +160,26 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
           dayComponent={({date, marking}) => {
             return (
               <View>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    backgroundColor: marking
-                      ? marking.customStyles?.container?.backgroundColor
-                      : colorsArray[0],
-                    width: 32,
-                    height: 32,
-                    lineHeight: 32,
+                <TouchableOpacity
+                  onPress={() => {
+                    if (date?.dateString) {
+                      dispatch(changeSelectedDay(date?.dateString));
+                      props.navigation.navigate(Routes.Dashboard);
+                    }
                   }}>
-                  {date?.day}
-                </Text>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      backgroundColor: marking
+                        ? marking.customStyles?.container?.backgroundColor
+                        : colorsArray[0],
+                      width: 32,
+                      height: 32,
+                      lineHeight: 32,
+                    }}>
+                    {date?.day}
+                  </Text>
+                </TouchableOpacity>
               </View>
             );
           }}
@@ -192,11 +196,6 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
                 {moment(currentDate).format('MMMM, YYYY')}
               </Text>
             );
-          }}
-          theme={{
-            arrowStyle: {
-              backgroundColor: colorsArray[0],
-            },
           }}
         />
         <View
