@@ -30,11 +30,11 @@ const Totals: React.FC<TotalsProps> = ({
           <Text style={styles.overviewLabel}>Total Calories</Text>
           <Text style={styles.caloriesValue}>{round(totalCalories)}</Text>
         </View>
-        {!!singleFoodQty && (
+        {(!!singleFoodQty || singleFoodQty === 0) && (
           <View style={[styles.overviewWrapper, styles.topBorder]}>
             <Text style={styles.overviewLabel}>Calories Per Serving</Text>
             <Text style={styles.caloriesValue}>
-              {round(totalCalories / singleFoodQty)}
+              {singleFoodQty > 0 ? round(totalCalories / singleFoodQty) : 0}
             </Text>
           </View>
         )}
