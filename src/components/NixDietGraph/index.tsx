@@ -1,21 +1,21 @@
 // utils
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo, useCallback} from 'react';
 import moment from 'moment-timezone';
 
 // components
 import {View, Text} from 'react-native';
-import {NixButton} from 'components/NixButton';
-import HeatMap from './components/HeatMap';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {Calendar} from 'react-native-calendars';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
 
 // actions
 import {getDayTotals} from 'store/stats/stats.actions';
+import {changeSelectedDay} from 'store/userLog/userLog.actions';
 
 // types
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {TotalProps} from 'store/userLog/userLog.types';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 
 // constants
@@ -36,112 +36,110 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
   const showMissedDays = true;
   const dispatch = useDispatch();
   const dates = useSelector(state => state.stats.dates);
-  const [monthOffset, setMonthOffset] = useState(0);
-  const [startDate, setStartDate] = useState(
-    moment(props.initialDisplayDate).startOf('month').format('YYYY-MM-DD'),
+  const [currentDate, setCurrentDate] = useState(
+    moment(props.initialDisplayDate).format('YYYY-MM-DD'),
   );
-  const [endDate, setEndDate] = useState(
-    moment(props.initialDisplayDate).endOf('month').format('YYYY-MM-DD'),
-  );
-  const [selectedMonth, setSelectedMonth] = useState(
-    moment(props.initialDisplayDate).add(monthOffset, 'month').format('MMMM'),
-  );
-  const [firstWeekdayNumber, setFirstWeekdayNumber] = useState(
-    moment(props.initialDisplayDate)
-      .add(monthOffset, 'month')
-      .startOf('month')
-      .format('d'),
-  );
-  const [daysInMonth, setDaysInMonth] = useState(
-    moment(props.initialDisplayDate)
-      .add(monthOffset, 'month')
-      .endOf('month')
-      .format('DD'),
-  );
-  const [values, setValues] = useState(new Array(parseInt(daysInMonth)));
-  const [targets, setTargets] = useState(new Array(parseInt(daysInMonth)));
 
-  const [trackedDays, setTrackedDays] = useState(0);
-  const [greenDays, setGreenDays] = useState(0);
+  const [markedDates, setMarkedDates] = useState<{[value: string]: any}>({});
+  const trackedDays = dates.reduce((prev, curr) => {
+    const val = curr.total_cal > 0 || curr.total_cal_burned > 0 ? 1 : 0;
+    return prev + val;
+  }, 0);
+  const greenDays = dates.reduce((prev, curr) => {
+    if (curr.total_cal > 0 || curr.total_cal_burned > 0) {
+      const val = curr.total_cal - curr.total_cal_burned;
+      return prev + (val > curr.daily_kcal_limit ? 0 : 1);
+    } else {
+      return prev;
+    }
+  }, 0);
   const currentDay = moment();
-  const isCurrentMonth = selectedMonth === moment().format('MMMM');
-  const isNextMonths = moment(props.initialDisplayDate)
-    .add(monthOffset, 'month')
-    .isAfter(moment());
+  const selectedMonth = moment(currentDate).month();
+  const isCurrentMonth = selectedMonth === moment().month();
+  const isNextMonths = moment(currentDate).isAfter(moment());
 
   const dayPassedFromTheStartOfMonth = isNextMonths
     ? 0
     : isCurrentMonth
-    ? currentDay.diff(startDate, 'days')
-    : moment(props.initialDisplayDate).add(monthOffset, 'month').daysInMonth();
+    ? currentDay.diff(
+        moment(currentDate).startOf('month').format('YYYY-MM-DD'),
+        'days',
+      ) + 1
+    : moment(currentDate).daysInMonth();
   let missed = dayPassedFromTheStartOfMonth - trackedDays;
   missed = missed > 0 ? missed : 0;
   const title = props.title || 'Diet Logging Graph';
 
   useEffect(() => {
-    setTrackedDays(0);
-    setGreenDays(0);
-    setStartDate(
-      moment(props.initialDisplayDate)
-        .add(monthOffset, 'month')
-        .startOf('month')
-        .format('YYYY-MM-DD'),
+    dispatch(
+      getDayTotals(
+        moment(currentDate).startOf('month').format('YYYY-MM-DD'),
+        moment(currentDate).endOf('month').format('YYYY-MM-DD'),
+      ),
     );
-    setEndDate(
-      moment(props.initialDisplayDate)
-        .add(monthOffset, 'month')
-        .endOf('month')
-        .format('YYYY-MM-DD'),
-    );
-    setSelectedMonth(
-      moment(props.initialDisplayDate).add(monthOffset, 'month').format('MMMM'),
-    );
-    setFirstWeekdayNumber(
-      moment(props.initialDisplayDate)
-        .add(monthOffset, 'month')
-        .startOf('month')
-        .format('d'),
-    );
-    const newDaysInMonth = moment(props.initialDisplayDate)
-      .add(monthOffset, 'month')
-      .endOf('month')
-      .format('DD');
-    setDaysInMonth(newDaysInMonth);
-    setValues(new Array(parseInt(newDaysInMonth)));
-    setTargets(new Array(parseInt(newDaysInMonth)));
-  }, [monthOffset, props.initialDisplayDate]);
+  }, [dispatch, currentDate]);
 
-  useEffect(() => {
-    dispatch(getDayTotals(startDate, endDate));
-  }, [dispatch, startDate, endDate]);
+  const colorsArray = useMemo(
+    () => [
+      '#ededed',
+      '#58a61c',
+      '#88c25a',
+      '#bbdca2',
+      '#f29898',
+      '#e64a48',
+      '#dc0000',
+    ],
+    [],
+  );
 
-  useEffect(() => {
-    dates.map((day: TotalProps) => {
-      if (day.total_cal > 0 || day.total_cal_burned > 0) {
-        let val = day.total_cal - day.total_cal_burned;
-        setValues(prev => {
-          prev[parseInt(moment(day.date).format('D')) - 1] = val;
-          return prev;
-        });
-        setTargets(prev => {
-          prev[parseInt(moment(day.date).format('D')) - 1] =
-            day.daily_kcal_limit;
-          return prev;
-        });
-        setTrackedDays(prev => prev + 1);
-        setGreenDays(prev => prev + (val > day.daily_kcal_limit ? 0 : 1));
-      } else {
-        setValues(prev => {
-          prev[parseInt(moment(day.date).format('D')) - 1] = 0;
-          return prev;
-        });
-        setTargets(prev => {
-          prev[parseInt(moment(day.date).format('D')) - 1] = 0;
-          return prev;
-        });
+  const getFillColor = useCallback(
+    (value: number, goal: number) => {
+      const percent = Math.round((value / goal) * 100);
+      let color = colorsArray[0];
+      switch (true) {
+        case percent >= 115:
+          color = colorsArray[6];
+          break;
+        case percent >= 107.5:
+          color = colorsArray[5];
+          break;
+        case percent >= 100:
+          color = colorsArray[4];
+          break;
+        case percent >= 92.5:
+          color = colorsArray[3];
+          break;
+        case percent >= 85:
+          color = colorsArray[2];
+          break;
+        case percent > 0 && percent < 85:
+        case value / goal > 0 && percent === 0:
+        case value < 0:
+          color = colorsArray[1];
+          break;
+        default:
+          color = colorsArray[0];
       }
+      return color;
+    },
+    [colorsArray],
+  );
+
+  useEffect(() => {
+    const newMarkDates: {[value: string]: any} = {};
+    dates.forEach(item => {
+      const value = item.total_cal - item.total_cal_burned;
+      newMarkDates[item.date] = {
+        customStyles: {
+          container: {
+            backgroundColor: getFillColor(value, item.daily_kcal_limit),
+            borderRadius: 0,
+          },
+        },
+      };
     });
-  }, [dates, dispatch]);
+    setMarkedDates(newMarkDates);
+  }, [dates, getFillColor]);
 
   return (
     <>
@@ -149,39 +147,70 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{title}</Text>
         </View>
-        <View style={styles.content}>
-          <View style={styles.btnsContainer}>
-            <View style={[styles.btn, styles.mr3]}>
-              <NixButton
-                iconName="chevron-left"
-                type="calm"
-                onPress={() => setMonthOffset(prevState => prevState - 1)}
-                iconStyles={styles.iconStyle}
-              />
-            </View>
-            <View style={[styles.btn, styles.ml3]}>
-              <NixButton
-                iconName="chevron-right"
-                type="calm"
-                onPress={() => setMonthOffset(prevState => prevState + 1)}
-                iconStyles={styles.iconStyle}
-              />
-            </View>
-          </View>
-          <View style={styles.main}>
-            <Text style={styles.text}>
-              {selectedMonth}, {moment(startDate).format('YYYY')}
-            </Text>
-            <HeatMap
-              targets={targets}
-              values={values}
-              skipFromStart={+firstWeekdayNumber - 1}
-              daysInMonth={daysInMonth}
-              selectedMonth={selectedMonth}
-              selectedYear={moment(startDate).format('YYYY')}
-              navigation={props.navigation}
+        <Calendar
+          initialDate={props.initialDisplayDate}
+          onDayPress={day => {
+            dispatch(changeSelectedDay(day.dateString));
+            props.navigation.navigate(Routes.Dashboard);
+          }}
+          onMonthChange={month => {
+            setCurrentDate(month.dateString);
+          }}
+          monthFormat={'yyyy MM'}
+          hideExtraDays={true}
+          enableSwipeMonths={true}
+          markingType={'custom'}
+          markedDates={markedDates}
+          dayComponent={({date, marking}) => {
+            return (
+              <View>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    backgroundColor: marking
+                      ? marking.customStyles?.container?.backgroundColor
+                      : colorsArray[0],
+                    width: 32,
+                    height: 32,
+                    lineHeight: 32,
+                  }}>
+                  {date?.day}
+                </Text>
+              </View>
+            );
+          }}
+          renderArrow={direction => {
+            return direction === 'left' ? (
+              <FontAwesome name="chevron-left" style={styles.iconStyle} />
+            ) : (
+              <FontAwesome name="chevron-right" style={styles.iconStyle} />
+            );
+          }}
+          renderHeader={() => {
+            return (
+              <Text style={styles.text}>
+                {moment(currentDate).format('MMMM, YYYY')}
+              </Text>
+            );
+          }}
+          theme={{
+            arrowStyle: {
+              backgroundColor: colorsArray[0],
+            },
+          }}
+        />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            paddingVertical: 10,
+          }}>
+          {colorsArray.slice(1, 7).map(item => (
+            <View
+              key={item}
+              style={{backgroundColor: item, width: 10, height: 10, margin: 2}}
             />
-          </View>
+          ))}
         </View>
         {(!!missed || !!trackedDays) && (
           <View style={styles.footer}>

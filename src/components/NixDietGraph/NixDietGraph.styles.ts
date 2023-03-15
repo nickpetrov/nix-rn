@@ -91,8 +91,10 @@ export const styles = StyleSheet.create({
   },
   iconStyle: {
     position: 'relative',
+
     alignSelf: 'center',
     marginRight: 0,
-    fontSize: 15,
+    fontSize: 16,
+    color: '#11c1f3',
   },
 });
