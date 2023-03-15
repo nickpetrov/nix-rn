@@ -159,28 +159,26 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
           markedDates={markedDates}
           dayComponent={({date, marking}) => {
             return (
-              <View>
-                <TouchableOpacity
-                  onPress={() => {
-                    if (date?.dateString) {
-                      dispatch(changeSelectedDay(date?.dateString));
-                      props.navigation.navigate(Routes.Dashboard);
-                    }
+              <TouchableOpacity
+                onPress={() => {
+                  if (date?.dateString) {
+                    dispatch(changeSelectedDay(date?.dateString));
+                    props.navigation.navigate(Routes.Dashboard);
+                  }
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    backgroundColor: marking
+                      ? marking.customStyles?.container?.backgroundColor
+                      : colorsArray[0],
+                    width: 32,
+                    height: 32,
+                    lineHeight: 32,
                   }}>
-                  <Text
-                    style={{
-                      textAlign: 'center',
-                      backgroundColor: marking
-                        ? marking.customStyles?.container?.backgroundColor
-                        : colorsArray[0],
-                      width: 32,
-                      height: 32,
-                      lineHeight: 32,
-                    }}>
-                    {date?.day}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                  {date?.day}
+                </Text>
+              </TouchableOpacity>
             );
           }}
           renderArrow={direction => {
@@ -198,12 +196,7 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
             );
           }}
         />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            paddingVertical: 10,
-          }}>
+        <View style={styles.colorMarkers}>
           {colorsArray.slice(1, 7).map(item => (
             <View
               key={item}
