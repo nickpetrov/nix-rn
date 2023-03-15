@@ -28,56 +28,24 @@ interface NixDietGraphProps {
   initialDisplayDate: string;
   title: string;
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Stats>;
-  target: number;
-  nutrientId?: number;
 }
 
 const NixDietGraph: React.FC<NixDietGraphProps> = props => {
   const showMissedDays = true;
   const dispatch = useDispatch();
-  const dates = useSelector(state => state.stats.dates);
+  const user_daily_kcal = useSelector(state => state.auth.userData.daily_kcal);
   const [currentDate, setCurrentDate] = useState(
     moment(props.initialDisplayDate).format('YYYY-MM-DD'),
   );
+  const allDates = useSelector(state => state.stats.dates);
+
+  const [trackedDays, setTrackedDays] = useState(0);
+  const [greenDays, setGreenDays] = useState(0);
+  const [missed, setMissed] = useState(0);
 
   const [markedDates, setMarkedDates] = useState<{[value: string]: any}>({});
-  const trackedDays = dates.reduce((prev, curr) => {
-    const val = curr.total_cal > 0 || curr.total_cal_burned > 0 ? 1 : 0;
-    return prev + val;
-  }, 0);
-  const greenDays = dates.reduce((prev, curr) => {
-    if (curr.total_cal > 0 || curr.total_cal_burned > 0) {
-      const val = curr.total_cal - curr.total_cal_burned;
-      return prev + (val > curr.daily_kcal_limit ? 0 : 1);
-    } else {
-      return prev;
-    }
-  }, 0);
-  const currentDay = moment();
-  const selectedMonth = moment(currentDate).month();
-  const isCurrentMonth = selectedMonth === moment().month();
-  const isNextMonths = moment(currentDate).isAfter(moment());
 
-  const dayPassedFromTheStartOfMonth = isNextMonths
-    ? 0
-    : isCurrentMonth
-    ? currentDay.diff(
-        moment(currentDate).startOf('month').format('YYYY-MM-DD'),
-        'days',
-      ) + 1
-    : moment(currentDate).daysInMonth();
-  let missed = dayPassedFromTheStartOfMonth - trackedDays;
-  missed = missed > 0 ? missed : 0;
   const title = props.title || 'Diet Logging Graph';
-
-  useEffect(() => {
-    dispatch(
-      getDayTotals(
-        moment(currentDate).startOf('month').format('YYYY-MM-DD'),
-        moment(currentDate).endOf('month').format('YYYY-MM-DD'),
-      ),
-    );
-  }, [dispatch, currentDate]);
 
   const colorsArray = useMemo(
     () => [
@@ -126,20 +94,75 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
   );
 
   useEffect(() => {
-    const newMarkDates: {[value: string]: any} = {};
-    dates.forEach(item => {
-      const value = item.total_cal - item.total_cal_burned;
-      newMarkDates[item.date] = {
-        customStyles: {
-          container: {
-            backgroundColor: getFillColor(value, item.daily_kcal_limit),
-            borderRadius: 0,
+    dispatch(
+      getDayTotals(
+        moment(currentDate).startOf('month').format('YYYY-MM-DD'),
+        moment(currentDate).endOf('month').format('YYYY-MM-DD'),
+      ),
+    );
+  }, [dispatch, currentDate]);
+
+  useEffect(() => {
+    const startOfMonth = moment(currentDate)
+      .startOf('month')
+      .format('YYYY-MM-DD');
+    const dates = allDates[startOfMonth];
+    if (dates) {
+      const newTrackedDays = dates.reduce((prev, curr) => {
+        const val = curr.total_cal > 0 || curr.total_cal_burned > 0 ? 1 : 0;
+        return prev + val;
+      }, 0);
+      const newGreenDays = dates.reduce((prev, curr) => {
+        if (curr.total_cal > 0 || curr.total_cal_burned > 0) {
+          const val = curr.total_cal - curr.total_cal_burned;
+          return (
+            prev +
+            (val > (curr.daily_kcal_limit || user_daily_kcal || 2000) ? 0 : 1)
+          );
+        } else {
+          return prev;
+        }
+      }, 0);
+
+      const currentDay = moment();
+      const selectedMonth = moment(currentDate).month();
+      const isCurrentMonth = selectedMonth === moment().month();
+      const isNextMonths = moment(currentDate).isAfter(moment());
+
+      const dayPassedFromTheStartOfMonth = isNextMonths
+        ? 0
+        : isCurrentMonth
+        ? currentDay.diff(
+            moment(currentDate).startOf('month').format('YYYY-MM-DD'),
+            'days',
+          ) + 1
+        : moment(currentDate).daysInMonth();
+      let newMissed = dayPassedFromTheStartOfMonth - newTrackedDays;
+      newMissed = newMissed > 0 ? newMissed : 0;
+
+      //change marking
+      const newMarkDates: {[value: string]: any} = {};
+      dates.forEach(item => {
+        const value = item.total_cal - item.total_cal_burned;
+        newMarkDates[item.date] = {
+          customStyles: {
+            container: {
+              backgroundColor: getFillColor(
+                value,
+                item.daily_kcal_limit || user_daily_kcal || 2000,
+              ),
+              borderRadius: 0,
+            },
           },
-        },
-      };
-    });
-    setMarkedDates(newMarkDates);
-  }, [dates, getFillColor]);
+        };
+      });
+
+      setMissed(newMissed);
+      setGreenDays(newGreenDays);
+      setTrackedDays(newTrackedDays);
+      setMarkedDates(newMarkDates);
+    }
+  }, [allDates, getFillColor, user_daily_kcal, currentDate]);
 
   return (
     <>
