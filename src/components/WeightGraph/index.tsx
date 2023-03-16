@@ -35,6 +35,14 @@ import PowerWithGradientProps from 'components/PowerWithGradient';
 
 export const WeightGraph: React.FC = () => {
   const dispatch = useDispatch();
+  const defaulTooltip = {
+    x: 0,
+    y: 0,
+    visible: false,
+    value: 0,
+    date: '',
+  };
+  let [tooltipPos, setTooltipPos] = useState(defaulTooltip);
   const timezone = useSelector(state => state.auth.userData.timezone);
   const weights = useSelector(state => state.stats.weights);
   const [showDatePickers, setShowDatePickers] = useState({
@@ -102,6 +110,7 @@ export const WeightGraph: React.FC = () => {
     if (!interval) return;
     const {from, to} = getDatesByInterval(interval);
     setDates({from, to});
+    setTooltipPos(defaulTooltip);
   };
 
   const chartData = getWeightChartData(weightData, dates.from, dates.to);
@@ -224,10 +233,14 @@ export const WeightGraph: React.FC = () => {
                 labels: chartData.labels,
                 datasets: [
                   {
+                    data: [Math.round(Math.min(...chartData.values) / 10) * 10],
+                    withDots: false,
+                  },
+                  {
                     data: chartData.values,
                   },
                   {
-                    data: [Math.round(Math.min(...chartData.values)) - 10],
+                    data: [Math.round(Math.max(...chartData.values) / 10) * 10],
                     withDots: false,
                   },
                 ],
@@ -249,7 +262,52 @@ export const WeightGraph: React.FC = () => {
                   stroke: 'rgb(0, 0, 180)',
                 },
               }}
-              bezier
+              bezier={chartData.values.length < 3 ? false : true}
+              decorator={() => {
+                return tooltipPos.visible ? (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: tooltipPos.y - 20,
+                      left:
+                        tooltipPos.x > 200
+                          ? tooltipPos.x - 65
+                          : tooltipPos.x + 5,
+                      backgroundColor: 'rgba(0,0,0,0.8)',
+                      padding: 5,
+                      borderRadius: 5,
+                      width: 60,
+                    }}>
+                    <Text
+                      style={{color: '#fff', fontSize: 12, fontWeight: '600'}}>
+                      {tooltipPos.date}
+                    </Text>
+                    <Text style={{color: '#fff', fontSize: 12}}>
+                      {tooltipPos.value} {weightUnit}
+                    </Text>
+                  </View>
+                ) : null;
+              }}
+              onDataPointClick={data => {
+                let isSamePoint =
+                  tooltipPos.x === data.x && tooltipPos.y === data.y;
+
+                isSamePoint
+                  ? setTooltipPos(previousState => {
+                      return {
+                        ...previousState,
+                        value: data.value,
+                        visible: !previousState.visible,
+                      };
+                    })
+                  : setTooltipPos({
+                      x: data.x,
+                      value: data.value,
+                      y: data.y,
+                      visible: true,
+                      date: chartData.labels[data.index],
+                    });
+              }}
               style={styles.lineChart}
             />
           </>
