@@ -534,7 +534,9 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
               protein={totalProtein}
               carbohydrates={totalCarb}
               fat={totalFat}
-              singleFoodQty={isSingleFood ? parseFloat(servings) : undefined}
+              singleFoodQty={
+                isSingleFood ? (servings ? parseFloat(servings) : 0) : undefined
+              }
             />
             <View>
               {foods.length > 1 ? (
