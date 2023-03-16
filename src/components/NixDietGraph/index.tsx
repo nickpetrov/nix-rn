@@ -128,6 +128,12 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
       const selectedMonth = moment(currentDate).month();
       const isCurrentMonth = selectedMonth === moment().month();
       const isNextMonths = moment(currentDate).isAfter(moment());
+      const isLogedToday = !!dates.find(
+        item =>
+          moment(item.date).format('YYYY-MM-DD') ===
+            moment().format('YYYY-MM-DD') &&
+          (item.total_cal > 0 || item.total_cal_burned > 0),
+      );
 
       const dayPassedFromTheStartOfMonth = isNextMonths
         ? 0
@@ -135,7 +141,7 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         ? currentDay.diff(
             moment(currentDate).startOf('month').format('YYYY-MM-DD'),
             'days',
-          ) + 1
+          ) + (isLogedToday ? 1 : 0)
         : moment(currentDate).daysInMonth();
       let newMissed = dayPassedFromTheStartOfMonth - newTrackedDays;
       newMissed = newMissed > 0 ? newMissed : 0;
