@@ -11,7 +11,12 @@ import {
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {NixButton} from 'components/NixButton';
-import {Asset, launchCamera, MediaType} from 'react-native-image-picker';
+import {
+  Asset,
+  launchCamera,
+  MediaType,
+  PhotoQuality,
+} from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // hooks
@@ -171,6 +176,9 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
+      maxWidth: 1600,
+      maxHeight: 1600,
+      quality: 0.9 as PhotoQuality,
     };
     launchCamera(options, response => {
       if (response) {

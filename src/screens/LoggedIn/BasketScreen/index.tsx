@@ -43,6 +43,7 @@ import {
   launchCamera,
   launchImageLibrary,
   MediaType,
+  PhotoQuality,
 } from 'react-native-image-picker';
 import TooltipView from 'components/TooltipView';
 
@@ -395,6 +396,9 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     setShowChooseGetPhoto(false);
     const options = {
       mediaType: 'photo' as MediaType,
+      maxWidth: 1600,
+      maxHeight: 1600,
+      quality: 0.9 as PhotoQuality,
     };
 
     launchImageLibrary(options, response => {
@@ -412,6 +416,9 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
+      maxWidth: 1600,
+      maxHeight: 1600,
+      quality: 0.9 as PhotoQuality,
     };
 
     requestCameraPermission().then(result => {

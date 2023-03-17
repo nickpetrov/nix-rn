@@ -20,6 +20,7 @@ import {
   launchCamera,
   launchImageLibrary,
   MediaType,
+  PhotoQuality,
 } from 'react-native-image-picker';
 
 // styles
@@ -56,6 +57,9 @@ const AddPhotoView: React.FC<AddPhotoViewProps> = ({
     setShowChooseGetPhoto(false);
     const options = {
       mediaType: 'photo' as MediaType,
+      maxWidth: 1600,
+      maxHeight: 1600,
+      quality: 0.9 as PhotoQuality,
     };
 
     launchImageLibrary(options, response => {
@@ -73,6 +77,9 @@ const AddPhotoView: React.FC<AddPhotoViewProps> = ({
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
+      maxWidth: 1600,
+      maxHeight: 1600,
+      quality: 0.9 as PhotoQuality,
     };
 
     requestCameraPermission().then(result => {
