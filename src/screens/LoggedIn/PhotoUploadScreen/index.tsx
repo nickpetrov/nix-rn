@@ -38,7 +38,7 @@ import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {TouchableOpacity} from 'react-native';
-import {aws_config} from 'config/index';
+import {aws_config, grocery_photo_upload} from 'config/index';
 
 interface PhotoUploadScreenProps {
   navigation: NativeStackNavigationProp<
@@ -176,8 +176,8 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
-      maxWidth: 1600,
-      maxHeight: 1600,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
       quality: 0.9 as PhotoQuality,
     };
     launchCamera(options, response => {

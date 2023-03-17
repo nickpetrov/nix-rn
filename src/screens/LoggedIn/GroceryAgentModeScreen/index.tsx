@@ -89,8 +89,8 @@ const GroceryAgentModeScreen: React.FC<GroceryAgentModeScreenProps> = ({
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
-      maxWidth: 1600,
-      maxHeight: 1600,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
       quality: 0.9 as PhotoQuality,
     };
     launchCamera(options, response => {
@@ -108,12 +108,6 @@ const GroceryAgentModeScreen: React.FC<GroceryAgentModeScreenProps> = ({
             timestamp +
             '.jpg';
           const photo = response.assets[0];
-          if (photo.height && photo.width) {
-            photo.height =
-              photo.height *
-              (grocery_photo_upload.max_photo_width / photo.width);
-          }
-          photo.width = grocery_photo_upload.max_photo_width;
           dispatch(
             mergePhotoByKey(key, {
               photo_src: photo.uri,

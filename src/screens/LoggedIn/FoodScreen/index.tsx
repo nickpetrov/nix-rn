@@ -77,6 +77,7 @@ import {mealTypes} from 'store/basket/basket.types';
 
 // styles
 import {styles} from './FoodScreen.styles';
+import {grocery_photo_upload} from 'config/index';
 
 interface FoodScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Food>;
@@ -230,8 +231,8 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
-      maxWidth: 1600,
-      maxHeight: 1600,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
       quality: 0.9 as PhotoQuality,
     };
     setPhotoVisible(true);
@@ -251,8 +252,8 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
-      maxWidth: 1600,
-      maxHeight: 1600,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
       quality: 0.9 as PhotoQuality,
     };
     setPhotoVisible(true);

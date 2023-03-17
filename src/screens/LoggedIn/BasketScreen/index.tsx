@@ -77,6 +77,7 @@ import {Routes} from 'navigation/Routes';
 // styles
 import {styles} from './BasketScreen.styles';
 import {store} from 'store/index';
+import {grocery_photo_upload} from 'config/index';
 
 interface BasketScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Basket>;
@@ -396,8 +397,8 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     setShowChooseGetPhoto(false);
     const options = {
       mediaType: 'photo' as MediaType,
-      maxWidth: 1600,
-      maxHeight: 1600,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
       quality: 0.9 as PhotoQuality,
     };
 
@@ -416,8 +417,8 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
-      maxWidth: 1600,
-      maxHeight: 1600,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
       quality: 0.9 as PhotoQuality,
     };
 
