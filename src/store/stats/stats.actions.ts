@@ -15,6 +15,10 @@ export const getDayTotals = (beginDate: string, endDate: string) => {
     useState: () => RootState,
   ) => {
     const timezone = useState().auth.userData.timezone;
+    const alreadyLoaded = useState().stats.dates[beginDate];
+    if (alreadyLoaded) {
+      return;
+    }
     try {
       const response = await userLogService.getTotals({
         beginDate,
@@ -30,6 +34,7 @@ export const getDayTotals = (beginDate: string, endDate: string) => {
         dispatch({
           type: statsActionTypes.STATS_GET_DAY_TOTALS,
           dates: totals.dates || [],
+          day: beginDate,
         });
       }
     } catch (error) {
