@@ -9,7 +9,7 @@ interface HighlightTextProps extends FindAllArgs, TextProps {
 }
 
 const HighlightText = ({
-  autoEscape,
+  autoEscape = true,
   caseSensitive,
   sanitize,
   searchWords,
