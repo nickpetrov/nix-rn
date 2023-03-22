@@ -34,7 +34,11 @@ apiClient.interceptors.response.use(
     if (__DEV__) {
       console.log('API Response error:', error);
     }
-    throw error.response;
+    if (error?.response) {
+      throw error?.response;
+    } else {
+      throw new Error('Wrong response from api');
+    }
   },
 );
 
