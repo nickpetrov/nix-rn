@@ -85,7 +85,7 @@ export const WeightGraph: React.FC = () => {
           const kgValue = measure_system
             ? item.kg
             : item.kg > 0
-            ? _.round(item.kg * 2.20462, 1)
+            ? _.round(item.kg * 2.20462, 2)
             : item.kg;
           return {
             ...item,
@@ -188,13 +188,13 @@ export const WeightGraph: React.FC = () => {
             <View style={styles.labels}>
               <View>
                 <Text style={styles.labelTitle}>
-                  {chartData.values[0]?.toFixed(1)} {weightUnit}
+                  {_.round(chartData.values[0], 1)} {weightUnit}
                 </Text>
                 <Text style={styles.labelNote}>Start</Text>
               </View>
               <View>
                 <Text style={styles.labelTitle}>
-                  {chartData.values[chartData.values.length - 1]?.toFixed(1)}{' '}
+                  {_.round(chartData.values[chartData.values.length - 1], 1)}{' '}
                   {weightUnit}
                 </Text>
                 <Text style={styles.labelNote}>{endText}</Text>
@@ -228,7 +228,7 @@ export const WeightGraph: React.FC = () => {
               </View>
             </View>
             <LineChart
-              verticalLabelRotation={60}
+              verticalLabelRotation={-60}
               data={{
                 labels: chartData.labels,
                 datasets: [
@@ -240,13 +240,24 @@ export const WeightGraph: React.FC = () => {
                     data: chartData.values,
                   },
                   {
-                    data: [Math.round(Math.max(...chartData.values) / 10) * 10],
+                    data: [
+                      Math.round(Math.max(...chartData.values) / 10) * 10 +
+                        (Math.max(...chartData.values) -
+                          Math.min(...chartData.values) <
+                        2
+                          ? 1
+                          : 0),
+                    ],
                     withDots: false,
                   },
                 ],
               }}
-              width={Dimensions.get('window').width - 40}
-              height={280}
+              width={
+                Dimensions.get('window').width +
+                (Dimensions.get('window').width / chartData.values.length - 1) -
+                50
+              }
+              height={300}
               chartConfig={{
                 propsForLabels: {
                   fontSize: 11,
@@ -260,6 +271,10 @@ export const WeightGraph: React.FC = () => {
                   r: '3',
                   strokeWidth: '1',
                   stroke: 'rgb(0, 0, 180)',
+                },
+                propsForVerticalLabels: {
+                  translateY: 15,
+                  translateX: -10,
                 },
               }}
               bezier={chartData.values.length < 3 ? false : true}
