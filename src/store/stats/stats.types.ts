@@ -7,7 +7,7 @@ export enum statsActionTypes {
 }
 
 export interface StatsState {
-  dates: Array<TotalProps>;
+  dates: {[day: string]: Array<TotalProps>};
   weights: Array<WeightProps>;
 }
 
@@ -22,6 +22,7 @@ export type getWeightParams = {
 export type statsGetDayTotals = {
   type: statsActionTypes.STATS_GET_DAY_TOTALS;
   dates: Array<TotalProps>;
+  day: string;
 };
 export type statsGetWeights = {
   type: statsActionTypes.STATS_GET_WEIGHTS;

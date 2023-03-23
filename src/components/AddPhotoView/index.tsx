@@ -20,6 +20,7 @@ import {
   launchCamera,
   launchImageLibrary,
   MediaType,
+  PhotoQuality,
 } from 'react-native-image-picker';
 
 // styles
@@ -28,6 +29,7 @@ import {showAgreementPopup} from 'store/base/base.actions';
 import {PhotoProps} from 'store/autoComplete/autoComplete.types';
 import requestCameraPermission from 'helpers/cameraPermision';
 import {Modal, SafeAreaView} from 'react-native';
+import {grocery_photo_upload} from 'config/index';
 
 interface AddPhotoViewProps {
   image?: PhotoProps;
@@ -56,6 +58,9 @@ const AddPhotoView: React.FC<AddPhotoViewProps> = ({
     setShowChooseGetPhoto(false);
     const options = {
       mediaType: 'photo' as MediaType,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
+      quality: 0.9 as PhotoQuality,
     };
 
     launchImageLibrary(options, response => {
@@ -73,6 +78,9 @@ const AddPhotoView: React.FC<AddPhotoViewProps> = ({
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
+      quality: 0.9 as PhotoQuality,
     };
 
     requestCameraPermission().then(result => {

@@ -1,7 +1,13 @@
 // utils
 import React, {useEffect, useState, useCallback, useLayoutEffect} from 'react';
 import moment from 'moment-timezone';
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import {
+  launchImageLibrary,
+  launchCamera,
+  PhotoQuality,
+  MediaType,
+  Asset,
+} from 'react-native-image-picker';
 import _ from 'lodash';
 import {Easing} from 'react-native-reanimated';
 import {Platform} from 'react-native';
@@ -68,10 +74,10 @@ import {RouteProp} from '@react-navigation/native';
 import {FoodProps} from 'store/userLog/userLog.types';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {mealTypes} from 'store/basket/basket.types';
-import {MediaType, Asset} from 'react-native-image-picker/lib/typescript/types';
 
 // styles
 import {styles} from './FoodScreen.styles';
+import {grocery_photo_upload} from 'config/index';
 
 interface FoodScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Food>;
@@ -225,6 +231,9 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
+      quality: 0.9 as PhotoQuality,
     };
     setPhotoVisible(true);
 
@@ -243,6 +252,9 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
+      quality: 0.9 as PhotoQuality,
     };
     setPhotoVisible(true);
     requestCameraPermission().then(result => {

@@ -11,7 +11,12 @@ import {
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {NixButton} from 'components/NixButton';
-import {Asset, launchCamera, MediaType} from 'react-native-image-picker';
+import {
+  Asset,
+  launchCamera,
+  MediaType,
+  PhotoQuality,
+} from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // hooks
@@ -33,7 +38,7 @@ import {RouteProp} from '@react-navigation/native';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {TouchableOpacity} from 'react-native';
-import {aws_config} from 'config/index';
+import {aws_config, grocery_photo_upload} from 'config/index';
 
 interface PhotoUploadScreenProps {
   navigation: NativeStackNavigationProp<
@@ -171,6 +176,9 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
+      quality: 0.9 as PhotoQuality,
     };
     launchCamera(options, response => {
       if (response) {

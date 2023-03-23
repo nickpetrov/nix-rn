@@ -8,7 +8,7 @@ import NixDietGraph from 'components/NixDietGraph';
 import {WeightGraph} from 'components/WeightGraph';
 
 // hooks
-import {useSelector, useDispatch} from 'hooks/useRedux';
+import {useDispatch} from 'hooks/useRedux';
 
 // actions
 import {clearStats} from 'store/stats/stats.actions';
@@ -32,7 +32,6 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({
   route,
 }) => {
   const dispatch = useDispatch();
-  const daily_kcal = useSelector(state => state.auth.userData.daily_kcal);
   const selectedDate = route.params.selectedDate;
 
   useEffect(() => {
@@ -47,7 +46,6 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({
         <View style={styles.flex1}>
           <NixDietGraph
             title="Food Logging Calendar"
-            target={daily_kcal || 0}
             initialDisplayDate={selectedDate}
             navigation={navigation}
           />

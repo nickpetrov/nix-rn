@@ -1,6 +1,6 @@
 // utils
 import React, {useState, useLayoutEffect, useEffect, useCallback} from 'react';
-import {launchCamera} from 'react-native-image-picker';
+import {launchCamera, PhotoQuality, MediaType} from 'react-native-image-picker';
 import {NetInfoStateType, useNetInfo} from '@react-native-community/netinfo';
 import RNFS from 'react-native-fs';
 import {useIsFocused} from '@react-navigation/native';
@@ -46,7 +46,6 @@ import {grocery_photo_upload, pictureFolder} from 'config/index';
 import {photoTemplateKeys} from 'store/groceryAgentMode/groceryAgentMode.types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {MediaType} from 'react-native-image-picker/lib/typescript/types';
 
 interface GroceryAgentModeScreenProps {
   navigation: NativeStackNavigationProp<
@@ -90,6 +89,9 @@ const GroceryAgentModeScreen: React.FC<GroceryAgentModeScreenProps> = ({
     const options = {
       mediaType: 'photo' as MediaType,
       noData: true,
+      maxWidth: grocery_photo_upload.max_photo_width,
+      maxHeight: grocery_photo_upload.max_photo_height,
+      quality: 0.9 as PhotoQuality,
     };
     launchCamera(options, response => {
       if (response) {
@@ -106,12 +108,6 @@ const GroceryAgentModeScreen: React.FC<GroceryAgentModeScreenProps> = ({
             timestamp +
             '.jpg';
           const photo = response.assets[0];
-          if (photo.height && photo.width) {
-            photo.height =
-              photo.height *
-              (grocery_photo_upload.max_photo_width / photo.width);
-          }
-          photo.width = grocery_photo_upload.max_photo_width;
           dispatch(
             mergePhotoByKey(key, {
               photo_src: photo.uri,
