@@ -43,7 +43,7 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({
 
   return (
     <>
-      <ScrollView style={styles.layout}>
+      <ScrollView style={styles.layout} overScrollMode="never">
         <View style={styles.flex1}>
           <NixDietGraph
             title="Food Logging Calendar"

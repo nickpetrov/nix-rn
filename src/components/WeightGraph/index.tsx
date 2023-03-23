@@ -4,9 +4,8 @@ import moment from 'moment-timezone';
 import _ from 'lodash';
 
 // components
-import {Text, View, TouchableOpacity, Dimensions} from 'react-native';
+import {Text, View, TouchableOpacity} from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import {LineChart} from 'react-native-chart-kit';
 import ModalSelector from 'react-native-modal-selector';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -32,6 +31,7 @@ import {Colors} from 'constants/Colors';
 // types
 import {WeightProps} from 'store/userLog/userLog.types';
 import PowerWithGradientProps from 'components/PowerWithGradient';
+import Graph from './components/Graph';
 
 export const WeightGraph: React.FC = () => {
   const dispatch = useDispatch();
@@ -107,9 +107,7 @@ export const WeightGraph: React.FC = () => {
   const chartData = getWeightChartData(weightData, dates.from, dates.to);
   const endText =
     chartData.values.length &&
-    moment(chartData.values[chartData.values.length - 1]).format(
-      'YYYY-MM-DD',
-    ) === moment().format('YYYY-MM-DD')
+    moment(dates.to).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD')
       ? 'Current'
       : 'End';
   const change = _.round(
@@ -193,6 +191,7 @@ export const WeightGraph: React.FC = () => {
               <View>
                 <View style={{flexDirection: 'row'}}>
                   <PowerWithGradientProps
+                    key={`gradient-${change < 0 ? 'down' : 'up'}`}
                     maskStyle={{height: 12}}
                     gradient={
                       change > 0 ? ['#DC0000', '#fff'] : ['#fff', '#6AB316']
@@ -218,40 +217,7 @@ export const WeightGraph: React.FC = () => {
                 </Text>
               </View>
             </View>
-            <LineChart
-              verticalLabelRotation={60}
-              data={{
-                labels: chartData.labels,
-                datasets: [
-                  {
-                    data: chartData.values,
-                  },
-                  {
-                    data: [Math.round(Math.min(...chartData.values)) - 10],
-                    withDots: false,
-                  },
-                ],
-              }}
-              width={Dimensions.get('window').width - 40}
-              height={280}
-              chartConfig={{
-                propsForLabels: {
-                  fontSize: 11,
-                },
-                backgroundColor: '#fff',
-                backgroundGradientFrom: '#fff',
-                backgroundGradientTo: '#fff',
-                color: (opacity = 1) => `rgba(0, 0, 230, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                propsForDots: {
-                  r: '3',
-                  strokeWidth: '1',
-                  stroke: 'rgb(0, 0, 180)',
-                },
-              }}
-              bezier
-              style={styles.lineChart}
-            />
+            <Graph weightUnit={weightUnit} chartData={chartData} />
           </>
         ) : (
           <View style={styles.footer}>
