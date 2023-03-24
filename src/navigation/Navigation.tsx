@@ -280,6 +280,10 @@ const LoggedInNavigation = () => {
         component={StatsScreen}
         options={{
           headerTitle: 'Stats',
+          animation: Platform.select({
+            ios: 'default',
+            android: 'none',
+          }),
         }}
       />
       <Stack.Screen

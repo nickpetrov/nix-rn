@@ -77,6 +77,7 @@ export const getWeightChartData = (weightLog: any, from: any, to: any) => {
     )
     .sort((a: any, b: any) => moment(a.timestamp).isBefore(moment(b.timestamp)))
     .reverse();
+
   weightLogBoundaries.forEach(function (weight: any) {
     const date = moment(weight.timestamp).format(dateFormat);
     if (!dates[date]) {
