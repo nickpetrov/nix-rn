@@ -57,7 +57,7 @@ export default function Graph({weightUnit, chartData}: Props) {
           tooltip: {
             displayColors: false,
             callbacks: {
-              // label: (context: any) => ((context.dataset.label || '') + ${weightUnit})
+              label: (context) => (context.formattedValue || '') + "${` ${weightUnit}`}",
             },
           },
         },

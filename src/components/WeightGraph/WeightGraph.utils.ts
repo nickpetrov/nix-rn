@@ -77,7 +77,7 @@ export const getWeightChartData = (weightLog: any, from: any, to: any) => {
     )
     .sort((a: any, b: any) => moment(a.timestamp).isBefore(moment(b.timestamp)))
     .reverse();
-  console.log('weightLogBoundaries', weightLogBoundaries);
+
   weightLogBoundaries.forEach(function (weight: any) {
     const date = moment(weight.timestamp).format(dateFormat);
     if (!dates[date]) {
@@ -97,7 +97,7 @@ export const getWeightChartData = (weightLog: any, from: any, to: any) => {
       dates[date].veryFirst = weight;
     }
   });
-  console.log('dates', dates);
+
   let datesKeys = Object.keys(dates);
 
   Object.entries(dates).forEach(function ([date, weights]) {
