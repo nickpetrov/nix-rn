@@ -2,6 +2,8 @@
 import {v4 as uuidv4} from 'uuid';
 import _ from 'lodash';
 import moment from 'moment-timezone';
+// @ts-ignore
+import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 
 // api services
 import basketService from 'api/basketService';
@@ -9,9 +11,7 @@ import autoCompleteService from 'api/autoCompleteService';
 
 // helpers
 import {multiply} from 'helpers/multiply';
-import nixApiDataUtilites, {
-  addGramsToAltMeasures,
-} from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+import {addGramsToAltMeasures} from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 
 // types
 import {Dispatch} from 'redux';
@@ -106,7 +106,7 @@ export const addExistFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
     const clonedFoods = _.cloneDeep(foods);
     const newFoods = clonedFoods.map(item => {
       if (!item.full_nutrients && !item.alt_measures) {
-        item = nixApiDataUtilites.convertV1ItemToTrackFood(item);
+        item = nutritionixApiDataUtilities.convertV1ItemToTrackFood(item);
         if (!item.alt_measures) {
           if (item.serving_weight_grams) {
             item.alt_measures = [
@@ -170,7 +170,7 @@ export const addCustomFoodToBasket = (foods: Array<Partial<FoodProps>>) => {
       delete foodToLog.public_id;
 
       // need to do this for top level
-      const nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+      const nf = nutritionixApiDataUtilities.convertFullNutrientsToNfAttributes(
         foodToLog.full_nutrients,
       );
       const accepted = [
@@ -237,9 +237,10 @@ export const addRecipeToBasket = (id: string) => {
         const recipeToLog = _.cloneDeep(recipe);
 
         // need to do this for top level as well as each ingredient
-        const nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
-          recipeToLog.full_nutrients,
-        );
+        const nf =
+          nutritionixApiDataUtilities.convertFullNutrientsToNfAttributes(
+            recipeToLog.full_nutrients,
+          );
         const accepted = [
           'nf_calories',
           'nf_total_fat',
@@ -257,9 +258,10 @@ export const addRecipeToBasket = (id: string) => {
         _.extend(recipeToLog, keep);
 
         _.forEach(recipeToLog.ingredients, function (ingredient) {
-          const ing_nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
-            ingredient.full_nutrients,
-          );
+          const ing_nf =
+            nutritionixApiDataUtilities.convertFullNutrientsToNfAttributes(
+              ingredient.full_nutrients,
+            );
           const ing_keep = _.pick(ing_nf, accepted);
           _.extend(ingredient, ing_keep);
         });

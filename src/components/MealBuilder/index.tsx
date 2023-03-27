@@ -1,5 +1,7 @@
 // utils
 import React, {useState, useEffect} from 'react';
+// @ts-ignore
+import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 
 // hooks
 import {useNavigation} from '@react-navigation/native';
@@ -13,9 +15,6 @@ import {CountUp} from 'use-count-up';
 
 // types
 import {FoodProps, NutrientProps} from 'store/userLog/userLog.types';
-
-// helpres
-import NixHelpers from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 
 // styles
 import {styles} from './MealBuilder.styles';
@@ -32,7 +31,9 @@ const MealBuilder = () => {
   basketFoods.map((food: FoodProps) => {
     food = {
       ...food,
-      ...NixHelpers.convertFullNutrientsToNfAttributes(food?.full_nutrients),
+      ...nutritionixApiDataUtilities.convertFullNutrientsToNfAttributes(
+        food?.full_nutrients,
+      ),
     };
 
     totalCalories +=

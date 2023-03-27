@@ -24,7 +24,7 @@ export interface pieChartDataProps {
   totalFatCalories: number;
   totalCarbohydratesCalories: number;
   totalProteinCalories: number;
-  totalAlcoholCalories?: number;
+  totalAlcoholCalories: number | null;
 }
 
 interface NutritionPieChartProps {
@@ -60,11 +60,19 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
         0,
       ),
     ];
-    // adjustment to make sure that pie chart will not show more than 100%
-    if (_.sum(newPiChartPercent) > 100) {
-      var i = newPiChartPercent.indexOf(_.max(newPiChartPercent) as number);
-      newPiChartPercent[i] =
-        newPiChartPercent[i] - (_.sum(newPiChartPercent) - 100);
+
+    let sum = _.sum(newPiChartPercent);
+    if (sum > 102 || sum < 98) {
+      const coefficient = 100 / sum;
+      newPiChartPercent = newPiChartPercent.map(v =>
+        _.round(v * coefficient, 0),
+      );
+      sum = _.sum(newPiChartPercent);
+    }
+    if (sum !== 100) {
+      newPiChartPercent[
+        newPiChartPercent.indexOf(_.max(newPiChartPercent) as number)
+      ] -= sum - 100;
     }
     return newPiChartPercent;
   }, [data, totalCalForPieChart]);

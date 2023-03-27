@@ -8,6 +8,8 @@ import React, {
 } from 'react';
 import _ from 'lodash';
 import moment from 'moment-timezone';
+// @ts-ignore
+import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -41,7 +43,6 @@ import {Routes} from 'navigation/Routes';
 
 // helpres
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
-import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {replaceRegexForNumber} from 'helpers/index';
 
 // types
@@ -120,7 +121,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
                 'source',
                 'source_key',
               ]),
-              ...nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+              ...nutritionixApiDataUtilities.convertFullNutrientsToNfAttributes(
                 resp?.full_nutrients || [],
               ),
               id: route.params?.food?.id,
@@ -164,12 +165,12 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
       return '_dv' === e.substr(-3);
     }) as Partial<FoodProps>;
     foodToLog.full_nutrients =
-      nixApiDataUtilites.buildFullNutrientsArray(foodToLog);
-    const nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+      nutritionixApiDataUtilities.buildFullNutrientsArray(foodToLog);
+    const nf = nutritionixApiDataUtilities.convertFullNutrientsToNfAttributes(
       foodToLog.full_nutrients,
     );
     _.extend(foodToLog, nf);
-    foodToLog = nixApiDataUtilites.convertV1ItemToTrackFood(foodToLog);
+    foodToLog = nutritionixApiDataUtilities.convertV1ItemToTrackFood(foodToLog);
 
     dispatch(addExistFoodToBasket([foodToLog]))
       .then(() => {
@@ -197,10 +198,14 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
       return '_dv' === e.substr(-3);
     }) as UpdateCustomFoodProps;
     clonedFood.full_nutrients =
-      nixApiDataUtilites.buildFullNutrientsArray(foodObj);
+      nutritionixApiDataUtilities.buildFullNutrientsArray(foodObj);
 
     delete clonedFood.source;
     delete clonedFood.source_key;
+
+    //not allowed when update custom food
+    delete clonedFood.nf_calcium_mg;
+    delete clonedFood.nf_iron_mg;
 
     dispatch(updateOrCreateCustomFood(clonedFood))
       .then(result => {

@@ -22,7 +22,7 @@ import autoCompleteService, {
   InstantQueryDataProps,
 } from 'api/autoCompleteService';
 import moment from 'moment-timezone';
-import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
+import {addGramsToAltMeasures} from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {addExistFoodToBasket} from 'store/basket/basket.actions';
 import {grocery_photo_upload} from 'config/index';
 import {addFoodToBasketAction} from 'store/basket/basket.types';
@@ -48,7 +48,7 @@ export const getFoodByQRcode = (
 
         foods[0].upc = barcode;
         if (!foods[0].alt_measures && !!foods[0].serving_weight_grams) {
-          foods[0] = nixApiDataUtilites.addGramsToAltMeasures(foods[0]);
+          foods[0] = addGramsToAltMeasures(foods[0]);
         } else if (!!foods[0].alt_measures && !!foods[0].serving_weight_grams) {
           let temp = {
             serving_weight: foods[0].serving_weight_grams,
@@ -57,7 +57,7 @@ export const getFoodByQRcode = (
             qty: foods[0].serving_qty,
           };
           foods[0].alt_measures.unshift(temp);
-          foods[0] = nixApiDataUtilites.addGramsToAltMeasures(foods[0]);
+          foods[0] = addGramsToAltMeasures(foods[0]);
         }
 
         // if barcode scanned from 'report' popup - don't add food to the basket.

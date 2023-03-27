@@ -50,6 +50,7 @@ export default function NutritionLabel(props: Props) {
       'valueCholesterol',
       'valueSodium',
       'valuePotassium',
+      'valuePotassium_2018',
       'valueTotalCarb',
       'valueFibers',
       'valueSugars',

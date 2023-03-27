@@ -6480,6 +6480,11 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha512-4jbtZXNAsfZbAHiiqjLPBiCl16dES1zI4Hpzzxw61Tk+loF+sBDBKx1ICKKKwIqQ7M0mFn1TmkN7euSncWgHiQ==
 
+nutritionix-api-data-utilities@^2.0.6:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/nutritionix-api-data-utilities/-/nutritionix-api-data-utilities-2.15.0.tgz#0828af01ef6688cd89a821f96f76fb3a4c1e0abd"
+  integrity sha512-XvEoBqgYWnCRfCpZfpGJasYEgOpyfq+l/W5RIgpwDPl1xgk50TpmO91r1YGsHLzmcVvhl6ZRIwtu7fdcqPiLUQ==
+
 nwsapi@^2.2.0:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.2.2.tgz#e5418863e7905df67d51ec95938d67bf801f0bb0"

@@ -1,6 +1,7 @@
 // utils
 import React, {useEffect, useState, useLayoutEffect} from 'react';
 import moment from 'moment-timezone';
+import max from 'lodash/max';
 
 // components
 import {
@@ -31,7 +32,6 @@ import {addExistFoodToBasket, mergeBasket} from 'store/basket/basket.actions';
 
 // helpres
 import getAttrValueById from 'helpers/getAttrValueById';
-import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {defaultOption} from 'helpers/nutrionixLabel';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
@@ -151,17 +151,22 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
       const newTotal: Record<string, any> = {...prev};
 
       foods.forEach(food => {
-        let foodCalories = food.nf_calories;
+        let foodCalories = getAttrValueById(food.full_nutrients, 208) || 0;
         newTotal.metric_qty += food.serving_weight_grams;
-        newTotal.total_fat += food.nf_total_fat;
-        newTotal.nf_saturated_fat += food.nf_saturated_fat;
-        newTotal.nf_cholesterol += food.nf_cholesterol;
-        newTotal.nf_sodium += food.nf_sodium;
-        newTotal.nf_total_carbohydrate += food.nf_total_carbohydrate;
-        newTotal.nf_dietary_fiber += food.nf_dietary_fiber;
-        newTotal.nf_sugars += food.nf_sugars;
-        newTotal.nf_protein += food.nf_protein;
-        newTotal.nf_potassium += food.nf_potassium;
+        newTotal.total_fat += getAttrValueById(food.full_nutrients, 204) || 0;
+        newTotal.nf_saturated_fat +=
+          getAttrValueById(food.full_nutrients, 606) || 0;
+        newTotal.nf_cholesterol +=
+          getAttrValueById(food.full_nutrients, 601) || 0;
+        newTotal.nf_sodium += getAttrValueById(food.full_nutrients, 307) || 0;
+        newTotal.nf_total_carbohydrate +=
+          getAttrValueById(food.full_nutrients, 205) || 0;
+        newTotal.nf_dietary_fiber +=
+          getAttrValueById(food.full_nutrients, 291) || 0;
+        newTotal.nf_sugars += getAttrValueById(food.full_nutrients, 269) || 0;
+        newTotal.nf_protein += getAttrValueById(food.full_nutrients, 203) || 0;
+        newTotal.nf_potassium +=
+          getAttrValueById(food.full_nutrients, 306) || 0;
         newTotal.nf_p += food.nf_p;
         newTotal.caffeine += getAttrValueById(food.full_nutrients, 262) || 0;
         newTotal.vitamin_d += getAttrValueById(food.full_nutrients, 324) || 0;
@@ -179,45 +184,36 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
         newTotal.zinc += getAttrValueById(food.full_nutrients, 309) || 0;
         newTotal.magnesium += getAttrValueById(food.full_nutrients, 304) || 0;
 
-        let foodExtendedNf =
-          nixApiDataUtilites.convertFullNutrientsToNfAttributes(
-            food.full_nutrients,
-          );
-        newTotal.nf_vitamin_a_dv += foodExtendedNf.nf_vitamin_a_dv || 0;
-        newTotal.nf_vitamin_c_dv += foodExtendedNf.nf_vitamin_c_dv || 0;
-        newTotal.nf_vitamin_d_dv = foodExtendedNf.nf_vitamin_d_dv || 0;
-        newTotal.nf_calcium_dv += foodExtendedNf.nf_calcium_dv || 0;
-        newTotal.nf_iron_dv += foodExtendedNf.nf_iron_dv || 0;
+        newTotal.nf_vitamin_a_dv +=
+          getAttrValueById(food.full_nutrients, 318) || 0;
+        newTotal.nf_vitamin_c_dv +=
+          getAttrValueById(food.full_nutrients, 401) || 0;
+        newTotal.nf_vitamin_d_dv =
+          getAttrValueById(food.full_nutrients, 328) || 0;
+        newTotal.nf_calcium_dv +=
+          getAttrValueById(food.full_nutrients, 301) || 0;
+        newTotal.nf_iron_dv += getAttrValueById(food.full_nutrients, 303) || 0;
 
         newTotal.alcohol += getAttrValueById(food.full_nutrients, 221) || 0;
 
-        var calories_calculated_by_formula =
+        var totalMacroCalories =
           (food.nf_protein || 0) * 4 +
           (food.nf_total_carbohydrate || 0) * 4 +
           (food.nf_total_fat || 0) * 9;
-        if (
-          getAttrValueById(food.full_nutrients, 221) !== null &&
-          getAttrValueById(food.full_nutrients, 221) !== undefined
-        ) {
-          //if have alcohol in nutrients - calculate totals based on the nutients
-          foodCalories =
-            calories_calculated_by_formula +
-            (getAttrValueById(food.full_nutrients, 221) || 0) * 7;
-        } else {
-          //if no alcohol in nutrients - check if it's missing in the total calories number
 
-          if (calories_calculated_by_formula / (food.nf_calories || 0) > 0.85) {
-            // if total calories calculated by formula not lesser than 85% of food.nf_calories field - use this value.
-            foodCalories = calories_calculated_by_formula;
+        if (!(newTotal.alcohol > 0 || newTotal.alcohol === 0)) {
+          foodCalories = max([newTotal.calories, totalMacroCalories]);
+
+          if (foodCalories - totalMacroCalories >= (foodCalories / 100) * 15) {
+            newTotal.alcohol = (foodCalories - totalMacroCalories) / 7;
           } else {
-            // if total calories calculated by formula is lesser than 85% of nf_valories field - use nf_calories and count the rest as an alcohol calories.
-            foodCalories = food.nf_calories;
-            newTotal.alcohol +=
-              ((foodCalories || 0) - calories_calculated_by_formula) / 7;
+            foodCalories = totalMacroCalories;
           }
+        } else {
+          foodCalories = totalMacroCalories + newTotal.alcohol * 7;
         }
 
-        newTotal.calories += food.nf_calories;
+        newTotal.calories += getAttrValueById(food.full_nutrients, 208) || 0;
         newTotal.totalCalForPieChart += foodCalories;
       });
       newTotal.serving_qty = 1;
@@ -257,16 +253,15 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
         (foodObj
           ? foodObj.nf_protein || getAttrValueById(foodObj.full_nutrients, 203)
           : 0) * 4;
-      if (newPieChartData.totalAlcoholCalories) {
-        newPieChartData.totalAlcoholCalories +=
-          (foodObj && foodObj.full_nutrients
-            ? getAttrValueById(foodObj.full_nutrients, 221)
-            : 0) * 7;
-      }
+
+      newPieChartData.totalAlcoholCalories =
+        ((foodObj && foodObj.full_nutrients
+          ? getAttrValueById(foodObj.full_nutrients, 221)
+          : 0) * 7 || 0) + (newPieChartData.totalAlcoholCalories || 0);
     });
 
     if (newPieChartData.totalAlcoholCalories === 0) {
-      delete newPieChartData.totalAlcoholCalories;
+      newPieChartData.totalAlcoholCalories = null;
     }
 
     setPieChartData(newPieChartData);
@@ -330,15 +325,9 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     });
 
   const labelOptions = {
-    showLegacyVersion: false,
-    useBaseValueFor2018LabelAndNotDVPercentage: true,
-    hideModeSwitcher: true,
     textNutritionFacts: '',
-    showDisclaimer: false,
     allowCustomWidth: true,
     adjustUserDailyValues: true,
-    allowFDARounding: false,
-    applyMathRounding: true,
     brandName: 'Nutritionix',
     decimalPlacesForQuantityTextbox: 2,
     itemName: 'cheeseburger',
@@ -366,11 +355,18 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     showTransFat: false,
     showVitaminA: true,
     showVitaminC: true,
+    showVitaminD: true,
+
+    dailyValueTotalFat: 65,
+    dailyValueSodium: 2400,
+    dailyValueCarb: 300,
+    dailyValueFiber: 25,
+
     valueServingUnitQuantity: 1,
     valueServingSizeUnit: 'Serving',
+    valueServingWeightGrams: total.metric_qty,
 
     valueCalories: total.calories || 0,
-    valueFatCalories: (total.total_fat || 0) * 9,
     valueTotalFat: total.total_fat || 0,
     valueSatFat: total.nf_saturated_fat || 0,
     valueCholesterol: total.nf_cholesterol || 0,
@@ -382,9 +378,11 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     valueVitaminA: total.nf_vitamin_a_dv || 0,
     valueVitaminC: total.nf_vitamin_c_dv || 0,
     valueVitaminD: total.nf_vitamin_d_dv || 0,
+    vitamin_d: total.vitamin_d || 0,
     valueCalcium: total.nf_calcium_dv || 0,
     valueIron: total.nf_iron_dv || 0,
     valuePotassium_2018: total.nf_potassium,
+    valuePotassium: total.nf_potassium,
     calorieIntake: clientId
       ? clientTotals[0].daily_kcal_limit
       : totals.filter((item: TotalProps) => item.date === followDate)[0]
@@ -404,7 +402,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           extraScrollHeight={showNotes && !caloriesInputFocused ? 200 : 0}
           enableAutomaticScroll={true}>
           <View style={styles.mb10}>
-            <NutritionLabel option={labelOptions || defaultOption} />
+            <NutritionLabel option={{...defaultOption, ...labelOptions}} />
           </View>
 
           <View style={styles.container}>
@@ -435,7 +433,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
               <View style={styles.mb10}>
                 <NutritionPieChart
                   data={pieChartData}
-                  totalCalForPieChart={total.totalCalForPieChart}
+                  totalCalForPieChart={total.calories}
                   clientTotals={clientTotals}
                 />
               </View>

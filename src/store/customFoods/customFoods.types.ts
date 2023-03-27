@@ -31,6 +31,8 @@ export type UpdateCustomFoodProps = {
   serving_unit: string;
   source?: number;
   source_key?: string | null;
+  nf_calcium_mg?: string | null;
+  nf_iron_mg?: string | null;
   full_nutrients?: Array<NutrientProps>;
 };
 

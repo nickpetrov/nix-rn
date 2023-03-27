@@ -8,6 +8,8 @@ import React, {
 } from 'react';
 import _ from 'lodash';
 import moment from 'moment-timezone';
+// @ts-ignore
+import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
@@ -65,7 +67,6 @@ import {RouteProp} from '@react-navigation/native';
 import {RecipeProps, UpdateRecipeProps} from 'store/recipes/recipes.types';
 
 // helpers
-import nixApiDataUtilites from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 import {multiply} from 'helpers/multiply';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
@@ -667,7 +668,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       const recipeToLog = _.cloneDeep(savedRecipe);
 
       // need to do this for top level as well as each ingredient
-      const nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
+      const nf = nutritionixApiDataUtilities.convertFullNutrientsToNfAttributes(
         recipeToLog.full_nutrients,
       );
       const accepted = [
@@ -687,9 +688,10 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
       _.extend(recipeToLog, keep);
 
       _.forEach(recipeToLog.ingredients, function (ingredient) {
-        const ing_nf = nixApiDataUtilites.convertFullNutrientsToNfAttributes(
-          ingredient.full_nutrients,
-        );
+        const ing_nf =
+          nutritionixApiDataUtilities.convertFullNutrientsToNfAttributes(
+            ingredient.full_nutrients,
+          );
         const ing_keep = _.pick(ing_nf, accepted);
         _.extend(ingredient, ing_keep);
       });

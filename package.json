@@ -43,6 +43,7 @@
     "hk": "git+https://github.com/VladyslavRoom4/react-native-healthkit.git",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.37",
+    "nutritionix-api-data-utilities": "^2.0.6",
     "q": "^1.5.1",
     "react": "18.1.0",
     "react-native": "0.70.0",
