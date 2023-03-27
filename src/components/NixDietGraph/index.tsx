@@ -147,7 +147,13 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         : moment(currentDate).daysInMonth();
 
       let newMissed = dayPassedFromTheStartOfMonth - newTrackedDays;
-      newMissed = newMissed > 0 ? newMissed : 0;
+      newMissed = moment()
+        .endOf('month')
+        .isBefore(moment(currentDate).endOf('month'))
+        ? 0
+        : newMissed > 0
+        ? newMissed
+        : 0;
 
       //change marking
       const newMarkDates: {[value: string]: any} = {};
