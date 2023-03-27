@@ -108,9 +108,14 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
       .format('YYYY-MM-DD');
     const dates = allDates[startOfMonth];
     if (dates) {
-      const newTrackedDays = dates.reduce((prev, curr) => {
+      const newTrackedDaysForAllMonth = dates.reduce((prev, curr) => {
         const val = curr.total_cal > 0 || curr.total_cal_burned > 0 ? 1 : 0;
         return prev + val;
+      }, 0);
+      const newTrackedDays = dates.reduce((prev, curr) => {
+        const isAfterToday = moment(curr.date).isAfter(moment());
+        const val = curr.total_cal > 0 || curr.total_cal_burned > 0 ? 1 : 0;
+        return isAfterToday ? prev : prev + val;
       }, 0);
       const newGreenDays = dates.reduce((prev, curr) => {
         if (curr.total_cal > 0 || curr.total_cal_burned > 0) {
@@ -127,7 +132,6 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
       const currentDay = moment();
       const selectedMonth = moment(currentDate).month();
       const isCurrentMonth = selectedMonth === moment().month();
-      const isNextMonths = moment(currentDate).isAfter(moment());
       const isLogedToday = !!dates.find(
         item =>
           moment(item.date).format('YYYY-MM-DD') ===
@@ -135,14 +139,13 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
           (item.total_cal > 0 || item.total_cal_burned > 0),
       );
 
-      const dayPassedFromTheStartOfMonth = isNextMonths
-        ? 0
-        : isCurrentMonth
+      const dayPassedFromTheStartOfMonth = isCurrentMonth
         ? currentDay.diff(
             moment(currentDate).startOf('month').format('YYYY-MM-DD'),
             'days',
           ) + (isLogedToday ? 1 : 0)
         : moment(currentDate).daysInMonth();
+
       let newMissed = dayPassedFromTheStartOfMonth - newTrackedDays;
       newMissed = newMissed > 0 ? newMissed : 0;
 
@@ -165,7 +168,7 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
 
       setMissed(newMissed);
       setGreenDays(newGreenDays);
-      setTrackedDays(newTrackedDays);
+      setTrackedDays(newTrackedDaysForAllMonth);
       setMarkedDates(newMarkDates);
     }
   }, [allDates, getFillColor, user_daily_kcal, currentDate]);
