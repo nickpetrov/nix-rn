@@ -16,6 +16,12 @@ import ModalSelector from 'react-native-modal-selector';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import TooltipView from 'components/TooltipView';
 
+// hooks
+import {useDispatch} from 'hooks/useRedux';
+
+// actions
+import {deleteFoodFromBasket} from 'store/basket/basket.actions';
+
 // helpers
 import {multiply} from 'helpers/multiply';
 
@@ -43,6 +49,7 @@ interface FoodEditItemProps {
   withoutBorder?: boolean;
   withTooltip?: boolean;
   tooltipEventName?: keyof CheckedEventsType;
+  withDeleteAtZero?: boolean;
 }
 
 const FoodEditItem: React.FC<FoodEditItemProps> = ({
@@ -54,8 +61,10 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
   withoutBorder,
   withTooltip,
   tooltipEventName,
+  withDeleteAtZero,
 }) => {
   const route = useRoute();
+  const dispatch = useDispatch();
   const navigation =
     useNavigation<
       NativeStackNavigationProp<StackNavigatorParamList, Routes.Food>
@@ -132,8 +141,17 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
   };
 
   const onQtyChange = () => {
-    const newValue = parseFloat(servingQty) || 1;
+    let newValue = 1;
+    if (servingQty === '') {
+      newValue = food.serving_qty;
+    } else if (servingQty === '0' && withDeleteAtZero) {
+      dispatch(deleteFoodFromBasket(food.basketId || '-1'));
+      return;
+    } else {
+      newValue = parseFloat(servingQty) || 1;
+    }
     if (newValue === food.serving_qty) {
+      setServingQty(String(food.serving_qty));
       return;
     }
     const multiplyer = newValue / food.serving_qty;

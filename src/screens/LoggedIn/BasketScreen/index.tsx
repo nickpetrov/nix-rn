@@ -489,6 +489,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                 foodObj={item}
                 itemChangeCallback={changeFoodAtBasket}
                 withInfo
+                withDeleteAtZero
                 withTooltip={
                   index === 0 &&
                   (!firstFoodAddedToBasket.value ||

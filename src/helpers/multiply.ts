@@ -1,5 +1,10 @@
 export const multiply = (foodObj: any, multiplier: number, newQty: number) => {
-  if (!multiplier) return;
+  if (!multiplier) {
+    return {
+      ...foodObj,
+      serving_qty: newQty,
+    };
+  }
 
   function nutrientMultiply(fullNutrientArray: any) {
     if (fullNutrientArray.length < 1 || !fullNutrientArray) {
