@@ -357,10 +357,10 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     showVitaminC: true,
     showVitaminD: true,
 
-    dailyValueTotalFat: 65,
-    dailyValueSodium: 2400,
-    dailyValueCarb: 300,
-    dailyValueFiber: 25,
+    dailyValueTotalFat: 78,
+    dailyValueSodium: 2300,
+    dailyValueCarb: 275,
+    dailyValueFiber: 28,
 
     valueServingUnitQuantity: 1,
     valueServingSizeUnit: 'Serving',
