@@ -151,7 +151,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
       const newTotal: Record<string, any> = {...prev};
 
       foods.forEach(food => {
-        let foodCalories = getAttrValueById(food.full_nutrients, 208) || 0;
+        let foodCalories;
         newTotal.metric_qty += food.serving_weight_grams;
         newTotal.total_fat += getAttrValueById(food.full_nutrients, 204) || 0;
         newTotal.nf_saturated_fat +=
@@ -433,7 +433,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
               <View style={styles.mb10}>
                 <NutritionPieChart
                   data={pieChartData}
-                  totalCalForPieChart={total.calories}
+                  totalCalForPieChart={total.totalCalForPieChart}
                   clientTotals={clientTotals}
                 />
               </View>

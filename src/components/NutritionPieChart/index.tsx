@@ -50,25 +50,34 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
       legendFontSize: number;
     }>
   >([]);
-
-  const piChartPercent = useMemo(() => {
-    let newPiChartPercent = [
+  const dataForPieChart = useMemo(() => {
+    let newDataForPieChart = [
       (data.totalProteinCalories / totalCalForPieChart) * 100,
       (data.totalCarbohydratesCalories / totalCalForPieChart) * 100,
       (data.totalFatCalories / totalCalForPieChart) * 100,
     ];
     if (data.totalAlcoholCalories && data.totalAlcoholCalories > 0) {
-      newPiChartPercent.push(
+      newDataForPieChart.push(
         ((data.totalAlcoholCalories || 0) / totalCalForPieChart) * 100,
       );
     }
+    return newDataForPieChart;
+  }, [data, totalCalForPieChart]);
 
-    let sum = _.round(_.sum(newPiChartPercent));
+  const pieChartPercent = useMemo(() => {
+    let newPiChartPercent = [
+      _.round(dataForPieChart[0]),
+      _.round(dataForPieChart[1]),
+      _.round(dataForPieChart[2]),
+    ];
+    if (dataForPieChart[3]) {
+      newPiChartPercent.push(_.round(dataForPieChart[3]));
+    }
+
+    let sum = _.sum(newPiChartPercent);
     if (sum > 102 || sum < 98) {
       const coefficient = 100 / sum;
-      newPiChartPercent = newPiChartPercent.map(v =>
-        _.round(v * coefficient, 0),
-      );
+      newPiChartPercent = newPiChartPercent.map(v => _.round(v * coefficient));
       sum = _.sum(newPiChartPercent);
     }
 
@@ -79,35 +88,35 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
     }
 
     return newPiChartPercent;
-  }, [data, totalCalForPieChart]);
+  }, [dataForPieChart]);
 
   const dailyGoals = clientId
     ? {
         protein_pct: clientTotals[0].daily_protein_pct,
         protein_progress: Math.round(
-          (piChartPercent[0] / clientTotals[0].daily_protein_pct) * 100,
+          (dataForPieChart[0] / clientTotals[0].daily_protein_pct) * 100,
         ),
         carbohydrate_pct: clientTotals[0].daily_carbs_pct,
         carbohydrate_progress: Math.round(
-          (piChartPercent[1] / clientTotals[0].daily_carbs_pct) * 100,
+          (dataForPieChart[1] / clientTotals[0].daily_carbs_pct) * 100,
         ),
         fat_pct: clientTotals[0].daily_fat_pct,
         fat_progress: Math.round(
-          (piChartPercent[2] / clientTotals[0].daily_fat_pct) * 100,
+          (dataForPieChart[2] / clientTotals[0].daily_fat_pct) * 100,
         ),
       }
     : {
         protein_pct: userData.daily_protein_pct,
         protein_progress: Math.round(
-          (piChartPercent[0] / (userData.daily_protein_pct || 0)) * 100,
+          (dataForPieChart[0] / (userData.daily_protein_pct || 0)) * 100,
         ),
         carbohydrate_pct: userData.daily_carbs_pct,
         carbohydrate_progress: Math.round(
-          (piChartPercent[1] / (userData.daily_carbs_pct || 0)) * 100,
+          (dataForPieChart[1] / (userData.daily_carbs_pct || 0)) * 100,
         ),
         fat_pct: userData.daily_fat_pct,
         fat_progress: Math.round(
-          (piChartPercent[2] / (userData.daily_fat_pct || 0)) * 100,
+          (dataForPieChart[2] / (userData.daily_fat_pct || 0)) * 100,
         ),
       };
 
@@ -115,30 +124,30 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
     const newPieChartData = [
       {
         name: 'Protein',
-        calories: _.round(piChartPercent[0]) || 0,
+        calories: pieChartPercent[0] || 0,
         color: '#1aa6b7',
         legendFontColor: '#666',
         legendFontSize: 12,
       },
       {
         name: 'Carbs',
-        calories: _.round(piChartPercent[1]) || 0,
+        calories: pieChartPercent[1] || 0,
         color: '#f0ab00',
         legendFontColor: '#666',
         legendFontSize: 12,
       },
       {
         name: 'Fat',
-        calories: _.round(piChartPercent[2]) || 0,
+        calories: pieChartPercent[2] || 0,
         color: '#b3217c',
         legendFontColor: '#666',
         legendFontSize: 12,
       },
     ];
-    if (piChartPercent.length > 3 && piChartPercent[3] > 0) {
+    if (pieChartPercent.length > 3 && pieChartPercent[3] > 0) {
       newPieChartData.push({
         name: 'Alcohol',
-        calories: _.round(piChartPercent[3]) || 0,
+        calories: pieChartPercent[3] || 0,
         color: '#808080',
         legendFontColor: '#666',
         legendFontSize: 12,
@@ -146,7 +155,7 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
     }
 
     setPieChartData(newPieChartData);
-  }, [piChartPercent]);
+  }, [pieChartPercent]);
 
   return (
     <View style={styles.root}>
@@ -162,7 +171,7 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
                 <View style={styles.progressBarItemHeader}>
                   <Text
                     style={[
-                      piChartPercent[0] > dailyGoals.protein_pct &&
+                      pieChartPercent[0] > dailyGoals.protein_pct &&
                         styles.redText,
                     ]}>
                     Protein
@@ -170,10 +179,10 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
                   <Text>
                     <Text
                       style={[
-                        piChartPercent[0] > dailyGoals.protein_pct &&
+                        pieChartPercent[0] > dailyGoals.protein_pct &&
                           styles.redText,
                       ]}>
-                      {_.round(piChartPercent[0])}%
+                      {pieChartPercent[0]}%
                     </Text>{' '}
                     / {dailyGoals.protein_pct}%
                   </Text>
@@ -190,7 +199,7 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
                             : 100
                         }%`,
                       },
-                      piChartPercent[0] > dailyGoals.protein_pct &&
+                      pieChartPercent[0] > dailyGoals.protein_pct &&
                         styles.redBg,
                     ]}></View>
                 </View>
@@ -201,7 +210,7 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
                 <View style={styles.progressBarItemHeader}>
                   <Text
                     style={[
-                      piChartPercent[1] > dailyGoals.carbohydrate_pct &&
+                      pieChartPercent[1] > dailyGoals.carbohydrate_pct &&
                         styles.redText,
                     ]}>
                     Carbohydrate
@@ -209,10 +218,10 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
                   <Text>
                     <Text
                       style={[
-                        piChartPercent[1] > dailyGoals.carbohydrate_pct &&
+                        pieChartPercent[1] > dailyGoals.carbohydrate_pct &&
                           styles.redText,
                       ]}>
-                      {_.round(piChartPercent[1])}%
+                      {pieChartPercent[1]}%
                     </Text>{' '}
                     / {dailyGoals.carbohydrate_pct}%
                   </Text>
@@ -229,7 +238,7 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
                             : 100
                         }%`,
                       },
-                      piChartPercent[1] > dailyGoals.carbohydrate_pct &&
+                      pieChartPercent[1] > dailyGoals.carbohydrate_pct &&
                         styles.redBg,
                     ]}></View>
                 </View>
@@ -240,17 +249,17 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
                 <View style={styles.progressBarItemHeader}>
                   <Text
                     style={[
-                      piChartPercent[2] > dailyGoals.fat_pct && styles.redText,
+                      pieChartPercent[2] > dailyGoals.fat_pct && styles.redText,
                     ]}>
                     Fat
                   </Text>
                   <Text>
                     <Text
                       style={[
-                        piChartPercent[2] > dailyGoals.fat_pct &&
+                        pieChartPercent[2] > dailyGoals.fat_pct &&
                           styles.redText,
                       ]}>
-                      {_.round(piChartPercent[2])}%
+                      {pieChartPercent[2]}%
                     </Text>{' '}
                     / {dailyGoals.fat_pct}%
                   </Text>
@@ -267,7 +276,7 @@ const NutritionPieChart: React.FC<NutritionPieChartProps> = ({
                             : 100
                         }%`,
                       },
-                      piChartPercent[2] > dailyGoals.fat_pct && styles.redBg,
+                      pieChartPercent[2] > dailyGoals.fat_pct && styles.redBg,
                     ]}></View>
                 </View>
               </View>
