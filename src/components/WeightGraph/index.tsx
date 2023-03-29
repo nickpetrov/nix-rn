@@ -158,8 +158,13 @@ export const WeightGraph: React.FC = () => {
           onPress={handleShowDatePickers(pickerType)}>
           <View style={styles.section}>
             <Text style={styles.textEmphasized}>{pickerType}</Text>
-            <Text>{new Date(dates[pickerType] as Date).toDateString()}</Text>
+            <Text>
+              {dates[pickerType]
+                ? moment(dates[pickerType]).format('MM/DD/YYYY')
+                : ''}
+            </Text>
             <DatePicker
+              key={pickerType}
               modal
               open={showDatePickers[pickerType]}
               mode="date"
@@ -168,6 +173,7 @@ export const WeightGraph: React.FC = () => {
               onCancel={handleShowDatePickers(pickerType)}
               maximumDate={new Date()}
             />
+            <FontAwesome name="calendar" size={20} />
           </View>
         </TouchableOpacity>
       ))}

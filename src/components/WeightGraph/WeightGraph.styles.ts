@@ -40,6 +40,7 @@ export const styles = StyleSheet.create({
   textEmphasized: {
     fontWeight: 'bold',
     textTransform: 'capitalize',
+    width: 40,
   },
   picker: {
     width: '100%',
