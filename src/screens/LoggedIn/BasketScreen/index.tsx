@@ -746,7 +746,7 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                           ? foods[0].photo?.highres || ''
                           : '',
                       }}
-                      resizeMode="cover"
+                      resizeMode="contain"
                     />
                   ) : null}
                   {isUploadPhotoLoading && (
