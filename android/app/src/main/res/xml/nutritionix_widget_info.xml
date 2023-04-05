@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:updatePeriodMillis="3600000"
+  android:minWidth="250dp"
+  android:minHeight="40dp"
+  android:maxHeight="60dp"
+  android:minResizeWidth="180dp"
+  android:resizeMode="horizontal"
+  android:previewImage="@drawable/nutritionix_widget_preview"
+  android:initialLayout="@layout/nutritionix_widget_layout">
+</appwidget-provider>
