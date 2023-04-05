@@ -6,12 +6,13 @@ import {
 } from './widget.types';
 import {Dispatch} from 'redux';
 import {NativeModules} from 'react-native';
-const {SharedPreferencesModule} = NativeModules;
+const {NutritionixWidget} = NativeModules;
 
 export const mergeWidget = (data: Partial<WidgetState>) => {
   return async (dispatch: Dispatch<mergeWidgetAction>) => {
     try {
-      await SharedPreferencesModule.writeData('widget', JSON.stringify(data));
+      console.log('data', data);
+      await NutritionixWidget.updateData(data);
       console.log('Data saved successfully');
     } catch (error) {
       console.log('Error saving data: ', error);

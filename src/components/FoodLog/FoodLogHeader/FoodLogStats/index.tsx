@@ -112,9 +112,9 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = ({
       dispatch(
         mergeWidget({
           limit: caloriesLimit,
-          consumed: total.caloriesIntake,
-          burned: caloriesBurned,
-          date: selectedDate,
+          consumed: Math.round(total.caloriesIntake || 0),
+          burned: Math.round(caloriesBurned || 0),
+          date: moment.utc().format('MM-DD-YYYY'),
         }),
       );
     }

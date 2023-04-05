@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MySharedPreferencesPackage implements ReactPackage {
+public class NutritionixWidgetPackage implements ReactPackage {
 
    @Override
    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
@@ -20,7 +20,7 @@ public class MySharedPreferencesPackage implements ReactPackage {
            ReactApplicationContext reactContext) {
        List<NativeModule> modules = new ArrayList<>();
 
-       modules.add(new SharedPreferencesModule(reactContext));
+       modules.add(new NutritionixWidget(reactContext));
 
        return modules;
    }
