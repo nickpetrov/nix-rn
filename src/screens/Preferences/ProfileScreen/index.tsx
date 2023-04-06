@@ -737,7 +737,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         btns={[
           {
             type: 'primary',
-            title: 'Sumbit',
+            title: 'Submit',
             onPress: () => {
               handleChangeEmail();
             },
@@ -778,7 +778,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         btns={[
           {
             type: 'primary',
-            title: 'Sumbit',
+            title: 'Submit',
             onPress: () => {
               handleResetPass();
             },
