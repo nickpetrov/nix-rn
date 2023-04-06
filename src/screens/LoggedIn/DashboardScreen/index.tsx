@@ -69,6 +69,7 @@ import {analyticSetUserId, analyticTrackEvent} from 'helpers/analytics.ts';
 import {styles} from './DashboardScreen.styles';
 import {Colors} from 'constants/Colors';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
+import {mergeWidget} from 'store/widget/widget.actions';
 
 interface DashboardScreenProps {
   navigation: NativeStackNavigationProp<
@@ -280,6 +281,52 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     isDrawerOpen,
     checkedEvents.firstOfflineMode,
     isFocused,
+  ]);
+
+  // update widget data
+
+  // update widget
+  useEffect(() => {
+    if (selectedDate === moment().format('YYYY-MM-DD')) {
+      let caloriesIntake = 0;
+      foods
+        .filter(
+          (item: FoodProps) =>
+            moment
+              .utc(item.consumed_at)
+              .tz(userData.timezone)
+              .format('YYYY-MM-DD') === selectedDate,
+        )
+        .forEach(item => {
+          caloriesIntake += item.nf_calories || 0;
+        });
+
+      const newSelectedDay: {
+        totals: TotalProps;
+      } = {
+        totals:
+          totals.filter(
+            (dayTotal: TotalProps) =>
+              moment(dayTotal.date).format('YYYY-MM-DD') === selectedDate,
+          )[0] || {},
+      };
+      dispatch(
+        mergeWidget({
+          limit:
+            newSelectedDay.totals.daily_kcal_limit || userData.daily_kcal || 0,
+          consumed: Math.round(caloriesIntake || 0),
+          burned: Math.round(newSelectedDay.totals.total_cal_burned || 0),
+          date: moment.utc().format('MM-DD-YYYY'),
+        }),
+      );
+    }
+  }, [
+    dispatch,
+    totals,
+    foods,
+    selectedDate,
+    userData.daily_kcal,
+    userData.timezone,
   ]);
 
   const getEmptySectionText = (key: string) => {

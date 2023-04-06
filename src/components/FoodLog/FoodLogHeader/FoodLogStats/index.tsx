@@ -1,18 +1,11 @@
 // utils
 import React, {useEffect, useState} from 'react';
 import {ParamListBase, useNavigation, useRoute} from '@react-navigation/native';
-import moment from 'moment-timezone';
 
 // components
 import {View, Text, TouchableOpacity} from 'react-native';
 import TooltipView from 'components/TooltipView';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-// hooks
-import {useSelector, useDispatch} from 'hooks/useRedux';
-
-// actions
-import {mergeWidget} from 'store/widget/widget.actions';
 
 // constants
 import {Colors} from 'constants/Colors';
@@ -45,8 +38,6 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = ({
   clientSelectedDate,
 }) => {
   const route = useRoute();
-  const dispatch = useDispatch();
-  const selectedDate = useSelector(state => state.userLog.selectedDate);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [total, setTotal] = useState<Record<string, any>>({
     caloriesIntake: 0,
@@ -105,26 +96,6 @@ const FoodLogStats: React.FC<FoodLogStatsProps> = ({
       }
     });
   }, [progressValue]);
-
-  // update widget
-  useEffect(() => {
-    if (selectedDate === moment().format('YYYY-MM-DD')) {
-      dispatch(
-        mergeWidget({
-          limit: caloriesLimit,
-          consumed: Math.round(total.caloriesIntake || 0),
-          burned: Math.round(caloriesBurned || 0),
-          date: moment.utc().format('MM-DD-YYYY'),
-        }),
-      );
-    }
-  }, [
-    dispatch,
-    caloriesLimit,
-    total.caloriesIntake,
-    caloriesBurned,
-    selectedDate,
-  ]);
 
   const content = (
     <>
