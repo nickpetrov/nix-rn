@@ -6,8 +6,8 @@
     android:background="@drawable/widget_background"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp">
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp">
   <TextView
     android:id="@+id/widget_title_text"
     android:layout_height="wrap_content"

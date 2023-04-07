@@ -86,7 +86,7 @@ public class NutritionixWidgetProvider extends android.appwidget.AppWidgetProvid
             try {
                 Intent launchActivity = new Intent(context, Class.forName(context.getPackageName() + ".MainActivity"));
                 if (launchActivity != null){
-                    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, launchActivity, 0);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, launchActivity, PendingIntent.FLAG_IMMUTABLE);
                     pendingIntent.send();
                 }
             }
@@ -164,19 +164,27 @@ public class NutritionixWidgetProvider extends android.appwidget.AppWidgetProvid
         } else {
             rv.setViewVisibility(getOutdatedMessageResourceId(context), View.VISIBLE);
         }
+        
 
         try {
             Intent intent = new Intent(context, NutritionixWidgetProvider.class);
             if (intent != null){
                 intent.setAction(ACTION_WIDGET_REFRESH);
-                PendingIntent actionPendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+                // Add FLAG_IMMUTABLE or FLAG_MUTABLE depending on your use case.
+                PendingIntent actionPendingIntent = PendingIntent.getBroadcast(
+                        context,
+                        0,
+                        intent,
+                        PendingIntent.FLAG_IMMUTABLE // or PendingIntent.FLAG_MUTABLE
+                );
+
                 rv.setOnClickPendingIntent(getViewResourceId(context), actionPendingIntent);
             }
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Toast.makeText(context, ex.toString(), Toast.LENGTH_LONG).show();
         }
+
 
         appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
       }
