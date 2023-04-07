@@ -15,12 +15,16 @@ export const mergeWidget = (data: Partial<WidgetState>) => {
     dispatch: Dispatch<mergeWidgetAction>,
     useState: () => RootState,
   ) => {
-    const oldWidgetData = useState().widget;
-
-    if (!isEqual(oldWidgetData, data)) {
+    const widgetData = useState().widget;
+    const oldWidgetData = {
+      burned: widgetData.burned,
+      consumed: widgetData.consumed,
+      limit: widgetData.limit,
+      date: widgetData.date,
+    };
+    if (!isEqual({...oldWidgetData}, data)) {
       try {
         await NutritionixWidget.updateData(data);
-        console.log('Data saved successfully');
       } catch (error) {
         console.log('Error saving data: ', error);
       }
