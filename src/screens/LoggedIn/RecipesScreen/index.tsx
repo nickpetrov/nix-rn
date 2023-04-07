@@ -354,7 +354,7 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
           },
           {
             type: 'primary',
-            title: 'Sumbit',
+            title: 'Submit',
             onPress: () => {
               handleCopyRecipe();
             },
