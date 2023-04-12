@@ -5,7 +5,7 @@ import {
   widgetActionTypes,
 } from './widget.types';
 import {Dispatch} from 'redux';
-import {NativeModules} from 'react-native';
+import {NativeModules, Platform, Settings} from 'react-native';
 import {RootState} from '../index';
 const {NutritionixWidget} = NativeModules;
 import isEqual from 'lodash/isEqual';
@@ -22,11 +22,21 @@ export const mergeWidget = (data: Partial<WidgetState>) => {
       limit: widgetData.limit,
       date: widgetData.date,
     };
+
     if (!isEqual({...oldWidgetData}, data)) {
-      try {
-        await NutritionixWidget.updateData(data);
-      } catch (error) {
-        console.log('Error saving data: ', error);
+      if (Platform.OS === 'ios') {
+        Settings.set({
+          caloriesBurned: data.burned,
+          caloriesConsumed: data.consumed,
+          caloriesLimit: data.limit,
+          caloriesUpdateDate: data.date,
+        });
+      } else {
+        try {
+          await NutritionixWidget.updateData(data);
+        } catch (error) {
+          console.log('Error saving data: ', error);
+        }
       }
       dispatch({
         type: widgetActionTypes.MERGE_WIDGET,

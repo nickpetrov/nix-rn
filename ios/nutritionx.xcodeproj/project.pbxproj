@@ -17,6 +17,12 @@
 		0FB8C0002937B7C80073BCB6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0FB8BFFF2937B7C80073BCB6 /* GoogleService-Info.plist */; };
 		0FB8C0022937B84B0073BCB6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0FB8C0012937B84B0073BCB6 /* GoogleService-Info.plist */; };
 		0FC7F4D028E217C9008B25BB /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 0FC7F4CF28E217C9008B25BB /* main.jsbundle */; };
+		0FDB6CC729E69C90001A7906 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FDB6CC629E69C90001A7906 /* WidgetKit.framework */; };
+		0FDB6CC929E69C90001A7906 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FDB6CC829E69C90001A7906 /* SwiftUI.framework */; };
+		0FDB6CCC29E69C91001A7906 /* Nutritionix_TrackBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FDB6CCB29E69C91001A7906 /* Nutritionix_TrackBundle.swift */; };
+		0FDB6CCE29E69C91001A7906 /* Nutritionix_Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FDB6CCD29E69C91001A7906 /* Nutritionix_Track.swift */; };
+		0FDB6CD029E69C94001A7906 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0FDB6CCF29E69C94001A7906 /* Assets.xcassets */; };
+		0FDB6CD429E69C94001A7906 /* Nutritionix TrackExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0FDB6CC529E69C90001A7906 /* Nutritionix TrackExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0FEA4B29297AB6C70074192B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FEA4B28297AB6C70074192B /* StoreKit.framework */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -33,7 +39,28 @@
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = nutritionx;
 		};
+		0FDB6CD229E69C94001A7906 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0FDB6CC429E69C90001A7906;
+			remoteInfo = "Nutritionix TrackExtension";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		0FDB6CD529E69C94001A7906 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				0FDB6CD429E69C94001A7906 /* Nutritionix TrackExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		00E356EE1AD99517003FC87E /* nutritionxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = nutritionxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,6 +75,14 @@
 		0FB8BFFF2937B7C80073BCB6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0FB8C0012937B84B0073BCB6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0FC7F4CF28E217C9008B25BB /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
+		0FDB6CC529E69C90001A7906 /* Nutritionix TrackExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Nutritionix TrackExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0FDB6CC629E69C90001A7906 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		0FDB6CC829E69C90001A7906 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		0FDB6CCB29E69C91001A7906 /* Nutritionix_TrackBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nutritionix_TrackBundle.swift; sourceTree = "<group>"; };
+		0FDB6CCD29E69C91001A7906 /* Nutritionix_Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nutritionix_Track.swift; sourceTree = "<group>"; };
+		0FDB6CCF29E69C94001A7906 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0FDB6CD129E69C94001A7906 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0FDB6CD929E69CAE001A7906 /* Nutritionix TrackExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Nutritionix TrackExtension.entitlements"; sourceTree = "<group>"; };
 		0FEA4B28297AB6C70074192B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		13B07F961A680F5B00A75B9A /* nutritionx.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nutritionx.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = nutritionx/AppDelegate.h; sourceTree = "<group>"; };
@@ -71,6 +106,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				03E1937AF6329C992431A78B /* libPods-nutritionx-nutritionxTests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0FDB6CC229E69C90001A7906 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FDB6CC929E69C90001A7906 /* SwiftUI.framework in Frameworks */,
+				0FDB6CC729E69C90001A7906 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,6 +149,17 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		0FDB6CCA29E69C91001A7906 /* Nutritionix Track */ = {
+			isa = PBXGroup;
+			children = (
+				0FDB6CCB29E69C91001A7906 /* Nutritionix_TrackBundle.swift */,
+				0FDB6CCD29E69C91001A7906 /* Nutritionix_Track.swift */,
+				0FDB6CCF29E69C94001A7906 /* Assets.xcassets */,
+				0FDB6CD129E69C94001A7906 /* Info.plist */,
+			);
+			path = "Nutritionix Track";
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* nutritionx */ = {
 			isa = PBXGroup;
 			children = (
@@ -129,6 +184,8 @@
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				D05D3271FFE62B54F7351053 /* libPods-nutritionx.a */,
 				F636BEA2A3E5754B07981E08 /* libPods-nutritionx-nutritionxTests.a */,
+				0FDB6CC629E69C90001A7906 /* WidgetKit.framework */,
+				0FDB6CC829E69C90001A7906 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -143,6 +200,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				0FDB6CD929E69CAE001A7906 /* Nutritionix TrackExtension.entitlements */,
 				0F6704E929701A19002250CE /* Subscriptions.storekit */,
 				0FB8BFFD2937B6260073BCB6 /* GoogleService-Info.plist */,
 				0FB8BFFF2937B7C80073BCB6 /* GoogleService-Info.plist */,
@@ -151,6 +209,7 @@
 				13B07FAE1A68108700A75B9A /* nutritionx */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* nutritionxTests */,
+				0FDB6CCA29E69C91001A7906 /* Nutritionix Track */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
@@ -165,6 +224,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* nutritionx.app */,
 				00E356EE1AD99517003FC87E /* nutritionxTests.xctest */,
+				0FDB6CC529E69C90001A7906 /* Nutritionix TrackExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -204,6 +264,23 @@
 			productReference = 00E356EE1AD99517003FC87E /* nutritionxTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		0FDB6CC429E69C90001A7906 /* Nutritionix TrackExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0FDB6CD829E69C94001A7906 /* Build configuration list for PBXNativeTarget "Nutritionix TrackExtension" */;
+			buildPhases = (
+				0FDB6CC129E69C90001A7906 /* Sources */,
+				0FDB6CC229E69C90001A7906 /* Frameworks */,
+				0FDB6CC329E69C90001A7906 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Nutritionix TrackExtension";
+			productName = "Nutritionix TrackExtension";
+			productReference = 0FDB6CC529E69C90001A7906 /* Nutritionix TrackExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		13B07F861A680F5B00A75B9A /* nutritionx */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "nutritionx" */;
@@ -218,10 +295,12 @@
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
 				01AB86A33E034E5290799E1A /* Upload Debug Symbols to Sentry */,
 				4F2DAB0C7C12424910E22B96 /* [CP-User] [RNFB] Core Configuration */,
+				0FDB6CD529E69C94001A7906 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				0FDB6CD329E69C94001A7906 /* PBXTargetDependency */,
 			);
 			name = nutritionx;
 			productName = nutritionx;
@@ -234,11 +313,15 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1420;
 				LastUpgradeCheck = 1210;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					0FDB6CC429E69C90001A7906 = {
+						CreatedOnToolsVersion = 14.2;
 					};
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1120;
@@ -260,6 +343,7 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* nutritionx */,
 				00E356ED1AD99517003FC87E /* nutritionxTests */,
+				0FDB6CC429E69C90001A7906 /* Nutritionix TrackExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -270,6 +354,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				0F6704EB29701A19002250CE /* Subscriptions.storekit in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0FDB6CC329E69C90001A7906 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FDB6CD029E69C94001A7906 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,6 +567,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0FDB6CC129E69C90001A7906 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FDB6CCC29E69C91001A7906 /* Nutritionix_TrackBundle.swift in Sources */,
+				0FDB6CCE29E69C91001A7906 /* Nutritionix_Track.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -491,6 +592,11 @@
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* nutritionx */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+		0FDB6CD329E69C94001A7906 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0FDB6CC429E69C90001A7906 /* Nutritionix TrackExtension */;
+			targetProxy = 0FDB6CD229E69C94001A7906 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -546,10 +652,93 @@
 			};
 			name = Release;
 		};
+		0FDB6CD629E69C94001A7906 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "Nutritionix TrackExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 37ULW87657;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Nutritionix Track/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Nutritionix Track";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nutritionix.nixtrack.Nutritionix-Track";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0FDB6CD729E69C94001A7906 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "Nutritionix TrackExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 37ULW87657;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Nutritionix Track/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Nutritionix Track";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nutritionix.nixtrack.Nutritionix-Track";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-nutritionx.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = nutritionx/nutritionxDebug.entitlements;
@@ -584,6 +773,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-nutritionx.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = nutritionx/nutritionx.entitlements;
@@ -758,6 +948,15 @@
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
 				00E356F71AD99517003FC87E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0FDB6CD829E69C94001A7906 /* Build configuration list for PBXNativeTarget "Nutritionix TrackExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FDB6CD629E69C94001A7906 /* Debug */,
+				0FDB6CD729E69C94001A7906 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
