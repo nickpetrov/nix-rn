@@ -176,6 +176,7 @@ struct CalorieWidgetEntryView : View {
                 Text("Data is outdated. Please run the app to update data.")
                     .foregroundColor(.red)
                     .multilineTextAlignment(.center)
+                    .font(.system(size: 12)) // This sets the font size to 12 points
             }
         }
         .padding()
