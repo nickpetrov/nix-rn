@@ -40,7 +40,8 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   RCTAppSetupPrepareApp(application);
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-  [bridge registerModule:[[RNUserDefaults alloc] init]];
+  [bridge moduleForClass:[RNUserDefaults class]];
+
 
 
 #if RCT_NEW_ARCH_ENABLED

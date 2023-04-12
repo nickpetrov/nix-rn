@@ -2,7 +2,7 @@
 
 @implementation RNUserDefaults
 
-RCT_EXPORT_MODULE(UserDefaults)
+RCT_EXPORT_MODULE(RNUserDefaults)
 
 RCT_EXPORT_METHOD(set:(NSString*)key value:(id)value suiteName:(NSString*)suiteName) {
   NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:suiteName];

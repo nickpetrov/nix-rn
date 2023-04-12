@@ -23,6 +23,7 @@
 		0FDB6CCE29E69C91001A7906 /* Nutritionix_Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FDB6CCD29E69C91001A7906 /* Nutritionix_Track.swift */; };
 		0FDB6CD029E69C94001A7906 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0FDB6CCF29E69C94001A7906 /* Assets.xcassets */; };
 		0FDB6CD429E69C94001A7906 /* Nutritionix TrackExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0FDB6CC529E69C90001A7906 /* Nutritionix TrackExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		0FDB6CE929E6DED6001A7906 /* RNUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FDB6CE829E6DED6001A7906 /* RNUserDefaults.m */; };
 		0FEA4B29297AB6C70074192B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FEA4B28297AB6C70074192B /* StoreKit.framework */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -83,6 +84,8 @@
 		0FDB6CCF29E69C94001A7906 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0FDB6CD129E69C94001A7906 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0FDB6CD929E69CAE001A7906 /* Nutritionix TrackExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Nutritionix TrackExtension.entitlements"; sourceTree = "<group>"; };
+		0FDB6CE729E6DED5001A7906 /* RNUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNUserDefaults.h; path = RNUserDefaults/RNUserDefaults.h; sourceTree = SOURCE_ROOT; };
+		0FDB6CE829E6DED6001A7906 /* RNUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNUserDefaults.m; path = RNUserDefaults/RNUserDefaults.m; sourceTree = SOURCE_ROOT; };
 		0FEA4B28297AB6C70074192B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		13B07F961A680F5B00A75B9A /* nutritionx.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nutritionx.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = nutritionx/AppDelegate.h; sourceTree = "<group>"; };
@@ -160,6 +163,15 @@
 			path = "Nutritionix Track";
 			sourceTree = "<group>";
 		};
+		0FDB6CE629E6DE33001A7906 /* RNUserDefaults */ = {
+			isa = PBXGroup;
+			children = (
+				0FDB6CE729E6DED5001A7906 /* RNUserDefaults.h */,
+				0FDB6CE829E6DED6001A7906 /* RNUserDefaults.m */,
+			);
+			path = RNUserDefaults;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* nutritionx */ = {
 			isa = PBXGroup;
 			children = (
@@ -200,6 +212,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				0FDB6CE629E6DE33001A7906 /* RNUserDefaults */,
 				0FDB6CD929E69CAE001A7906 /* Nutritionix TrackExtension.entitlements */,
 				0F6704E929701A19002250CE /* Subscriptions.storekit */,
 				0FB8BFFD2937B6260073BCB6 /* GoogleService-Info.plist */,
@@ -581,6 +594,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				0FDB6CE929E6DED6001A7906 /* RNUserDefaults.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
