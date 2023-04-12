@@ -184,8 +184,11 @@ struct CalorieWidgetEntryView : View {
     func isToday(_ dateStr: String) -> Bool {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        let date = dateFormatter.date(from: dateStr)!
-        return Calendar.current.isDateInToday(date)
+        if let date = dateFormatter.date(from: dateStr) {
+            return Calendar.current.isDateInToday(date)
+        } else {
+        return false // or handle the error in some other way
+        }
     }
 
     func getBarColor(progressValue: Float) -> Color {
