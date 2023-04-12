@@ -5,9 +5,9 @@ import {
   widgetActionTypes,
 } from './widget.types';
 import {Dispatch} from 'redux';
-import {NativeModules, Platform, Settings} from 'react-native';
+import {NativeModules, Platform} from 'react-native';
 import {RootState} from '../index';
-const {NutritionixWidget} = NativeModules;
+const {NutritionixWidget, RNUserDefaults} = NativeModules;
 import isEqual from 'lodash/isEqual';
 
 export const mergeWidget = (data: Partial<WidgetState>) => {
@@ -25,12 +25,26 @@ export const mergeWidget = (data: Partial<WidgetState>) => {
 
     if (!isEqual({...oldWidgetData}, data)) {
       if (Platform.OS === 'ios') {
-        Settings.set({
-          caloriesBurned: data.burned,
-          caloriesConsumed: data.consumed,
-          caloriesLimit: data.limit,
-          caloriesUpdateDate: data.date,
-        });
+        RNUserDefaults.set(
+          'caloriesBurned',
+          data.burned,
+          'group.nutritionix.nixtrack',
+        );
+        RNUserDefaults.set(
+          'caloriesConsumed',
+          data.consumed,
+          'group.nutritionix.nixtrack',
+        );
+        RNUserDefaults.set(
+          'caloriesLimit',
+          data.limit,
+          'group.nutritionix.nixtrack',
+        );
+        RNUserDefaults.set(
+          'caloriesUpdateDate',
+          data.date,
+          'group.nutritionix.nixtrack',
+        );
       } else {
         try {
           await NutritionixWidget.updateData(data);
