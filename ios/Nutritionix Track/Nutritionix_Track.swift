@@ -51,7 +51,6 @@ class UserData: ObservableObject {
     }
     
     @objc func update() {
-        print(sharedUserDefaults, "Update")
         caloriesConsumed = sharedUserDefaults.float(forKey: "caloriesConsumed")
         caloriesBurned = sharedUserDefaults.float(forKey: "caloriesBurned")
         caloriesLimit = sharedUserDefaults.float(forKey: "caloriesLimit")
@@ -60,8 +59,8 @@ class UserData: ObservableObject {
 
 
         if #available(iOS 14.0, *) {
-            // Reload widget timelines to ensure changes are reflected immediately
-            WidgetCenter.shared.reloadAllTimelines()
+            // Reload the timeline for this widget immediately
+            WidgetCenter.shared.reloadTimelines(ofKind: "Nutritionix_Track")
         }
     }
 }
@@ -109,11 +108,11 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<CalorieSummaryWidgetEntry>) -> Void) {
      let entries: [CalorieSummaryWidgetEntry] = []
         guard let sharedUserDefaults = UserDefaults(suiteName: "group.nutritionix.nixtrack") else {
-            let timeline = Timeline(entries: entries, policy: .never)
+            let timeline = Timeline(entries: entries, policy: .atEnd)
             completion(timeline)
             return
         }
-        print(sharedUserDefaults, "timeline")
+
         let caloriesConsumed = sharedUserDefaults.float(forKey: "caloriesConsumed")
         let caloriesBurned = sharedUserDefaults.float(forKey: "caloriesBurned")
         let caloriesLimit = sharedUserDefaults.float(forKey: "caloriesLimit")
@@ -139,7 +138,7 @@ struct Provider: TimelineProvider {
             entryDate = midnight
         }
 
-        if currentDate.timeIntervalSince(entryDate) < 60 * 1 { // update at most every 1 minutes
+        if currentDate.timeIntervalSince(entryDate) < 60 * 30 { // update at most every 30 minutes
             let entry = CalorieSummaryWidgetEntry(
                 date: entryDate,
                 progressValue: progressValue,
@@ -152,32 +151,6 @@ struct Provider: TimelineProvider {
             let timeline = Timeline(entries: [entry], policy: .atEnd)
             completion(timeline)
             return
-        }
-
-
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: nil) { _ in
-            self.userData.update()
-            print(self.userData, "notificObserver")
-            if (self.userData.caloriesConsumed != 0){
-                caloriesRemaining = self.userData.caloriesLimit - self.userData.caloriesConsumed + self.userData.caloriesBurned
-                progressValue = (Float(self.userData.caloriesConsumed) - Float(self.userData.caloriesBurned) ) / Float(self.userData.caloriesLimit)
-            } else {
-                caloriesRemaining = self.userData.caloriesLimit + self.userData.caloriesBurned
-                progressValue = 0
-            }
-
-            let timeline = Timeline(entries: [CalorieSummaryWidgetEntry(
-                date: midnight,
-                progressValue: progressValue,
-                caloriesConsumed: self.userData.caloriesConsumed,
-                caloriesBurned: self.userData.caloriesBurned,
-                caloriesLimit: self.userData.caloriesLimit,
-                caloriesRemaining: caloriesRemaining,
-                caloriesUpdateDate: self.userData.caloriesUpdateDate
-            )], policy: .atEnd)
-
-            completion(timeline)
         }
 
         // update entry
