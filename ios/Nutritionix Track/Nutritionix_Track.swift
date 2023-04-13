@@ -8,6 +8,7 @@
 import WidgetKit
 import SwiftUI
 
+
 struct Nutritionix_Track: Widget {
     private let kind: String = "Nutritionix_Track"
 
@@ -31,7 +32,49 @@ struct CalorieSummaryWidgetEntry: TimelineEntry {
     let caloriesUpdateDate: String
 }
 
+class UserData: ObservableObject {
+    let sharedUserDefaults: UserDefaults
+    
+    init(sharedUserDefaults: UserDefaults) {
+        self.sharedUserDefaults = sharedUserDefaults
+    }
+    
+    @Published var caloriesConsumed: Float = 0
+    @Published var caloriesBurned: Float = 0
+    @Published var caloriesLimit: Float = 2000
+    @Published var caloriesUpdateDate: String = ""
+    @Published var lastUpdateDate: Date = Date()
+
+    func start() {
+        NotificationCenter.default.addObserver(self, selector: #selector(update), name: UserDefaults.didChangeNotification, object: nil)
+        self.update()
+    }
+    
+    @objc func update() {
+        print(sharedUserDefaults, "Update")
+        caloriesConsumed = sharedUserDefaults.float(forKey: "caloriesConsumed")
+        caloriesBurned = sharedUserDefaults.float(forKey: "caloriesBurned")
+        caloriesLimit = sharedUserDefaults.float(forKey: "caloriesLimit")
+        caloriesUpdateDate = sharedUserDefaults.string(forKey: "caloriesUpdateDate") ?? ""
+        lastUpdateDate = Date()
+
+
+        if #available(iOS 14.0, *) {
+            // Reload widget timelines to ensure changes are reflected immediately
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+    }
+}
+
 struct Provider: TimelineProvider {
+    @ObservedObject private var userData: UserData
+    
+    init() {
+        let sharedUserDefaults = UserDefaults(suiteName: "group.nutritionix.nixtrack")!
+        self.userData = UserData(sharedUserDefaults: sharedUserDefaults)
+        self.userData.start()
+    }
+
     func todayString() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -70,7 +113,7 @@ struct Provider: TimelineProvider {
             completion(timeline)
             return
         }
-
+        print(sharedUserDefaults, "timeline")
         let caloriesConsumed = sharedUserDefaults.float(forKey: "caloriesConsumed")
         let caloriesBurned = sharedUserDefaults.float(forKey: "caloriesBurned")
         let caloriesLimit = sharedUserDefaults.float(forKey: "caloriesLimit")
@@ -96,7 +139,7 @@ struct Provider: TimelineProvider {
             entryDate = midnight
         }
 
-        if currentDate.timeIntervalSince(entryDate) < 60 * 30 { // update at most every 30 minutes
+        if currentDate.timeIntervalSince(entryDate) < 60 * 1 { // update at most every 1 minutes
             let entry = CalorieSummaryWidgetEntry(
                 date: entryDate,
                 progressValue: progressValue,
@@ -109,6 +152,32 @@ struct Provider: TimelineProvider {
             let timeline = Timeline(entries: [entry], policy: .atEnd)
             completion(timeline)
             return
+        }
+
+
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: nil) { _ in
+            self.userData.update()
+            print(self.userData, "notificObserver")
+            if (self.userData.caloriesConsumed != 0){
+                caloriesRemaining = self.userData.caloriesLimit - self.userData.caloriesConsumed + self.userData.caloriesBurned
+                progressValue = (Float(self.userData.caloriesConsumed) - Float(self.userData.caloriesBurned) ) / Float(self.userData.caloriesLimit)
+            } else {
+                caloriesRemaining = self.userData.caloriesLimit + self.userData.caloriesBurned
+                progressValue = 0
+            }
+
+            let timeline = Timeline(entries: [CalorieSummaryWidgetEntry(
+                date: midnight,
+                progressValue: progressValue,
+                caloriesConsumed: self.userData.caloriesConsumed,
+                caloriesBurned: self.userData.caloriesBurned,
+                caloriesLimit: self.userData.caloriesLimit,
+                caloriesRemaining: caloriesRemaining,
+                caloriesUpdateDate: self.userData.caloriesUpdateDate
+            )], policy: .atEnd)
+
+            completion(timeline)
         }
 
         // update entry
@@ -157,7 +226,6 @@ struct CalorieWidgetEntryView : View {
                 VStack(alignment: .center, spacing: 5) {
                     Text("\(Int(entry.caloriesBurned))")
                         .font(.headline)
-                        .foregroundColor(.gray)
                     Text("Burned")
                         .font(.caption)
                         .foregroundColor(.gray)
@@ -184,7 +252,7 @@ struct CalorieWidgetEntryView : View {
 
     func isToday(_ dateStr: String) -> Bool {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "MM-dd-yyyy"
         if let date = dateFormatter.date(from: dateStr) {
             return Calendar.current.isDateInToday(date)
         } else {
