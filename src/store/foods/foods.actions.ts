@@ -89,7 +89,6 @@ export const getFoodByQRcode = (
         }
       }
     } catch (error: any) {
-      captureException(error);
       if (error.status === 404) {
         dispatch({
           type: foodsActionTypes.GET_FOOD_BY_QR_CODE,
@@ -98,6 +97,9 @@ export const getFoodByQRcode = (
             photo: {thumb: null},
           },
         });
+        throw error;
+      } else {
+        captureException(error);
         throw error;
       }
     }
