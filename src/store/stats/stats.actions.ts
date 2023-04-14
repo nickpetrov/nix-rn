@@ -1,5 +1,6 @@
 import userLogService from 'api/userLogService';
 import {Dispatch} from 'redux';
+import {captureException} from '@sentry/react-native';
 import {
   clearStatsAction,
   getWeightParams,
@@ -38,6 +39,7 @@ export const getDayTotals = (beginDate: string, endDate: string) => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log('error getDayTotals stats reducer', error);
     }
   };
@@ -63,6 +65,7 @@ export const getStatsWeight = (params?: getWeightParams) => {
         return result.weights;
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };

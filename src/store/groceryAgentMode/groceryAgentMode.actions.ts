@@ -2,6 +2,7 @@ import {
   existingBarcodesTableName,
   recordsForSyncTableName,
 } from 'constants/barcode';
+import {captureException} from '@sentry/react-native';
 import {SQLexecute} from 'helpers/sqlite';
 import {Dispatch} from 'redux';
 import {RootState} from '../index';
@@ -154,6 +155,7 @@ const requestExistingBarcodes = async function () {
     const response = await baseService.getGroceryPhotoUploadUPCList();
     return _.pull(response.data, null);
   } catch (error) {
+    captureException(error);
     console.log(error);
   }
 };
@@ -258,6 +260,7 @@ export const needToUpdateExistingBarcodes = () => {
                 })
                 .catch(function (error) {
                   dispatch(setInfoMessage(null));
+                  captureException(error);
                   throw error;
                 });
             }, Q.when(''));
@@ -271,6 +274,7 @@ export const needToUpdateExistingBarcodes = () => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
       dispatch(
         setInfoMessage({
@@ -455,6 +459,7 @@ export const uploadToS3 = (record: RecordType) => {
       }
     });
   } catch (error) {
+    captureException(error);
     deferred.reject(error);
   }
 

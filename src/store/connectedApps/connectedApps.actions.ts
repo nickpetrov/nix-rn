@@ -1,4 +1,5 @@
 import {Dispatch} from 'redux';
+import {captureException} from '@sentry/react-native';
 import connectedAppsService from 'api/connectedAppsService';
 import {
   connectedAppsActionTypes,
@@ -40,6 +41,7 @@ export const fitbitSign = () => {
         return result.state;
       }
     } catch (err) {
+      captureException(err);
       console.log(err);
     }
   };
@@ -59,6 +61,7 @@ export const fitbitUnlink = () => {
         });
       }
     } catch (err) {
+      captureException(err);
       console.log(err);
     }
   };

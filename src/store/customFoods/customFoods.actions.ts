@@ -1,4 +1,5 @@
 import {Dispatch} from 'redux';
+import {captureException} from '@sentry/react-native';
 import {
   customFoodsActionTypes,
   deleteCustomFoodsAction,
@@ -30,6 +31,7 @@ export const getCustomFoods = (limit?: number, offset?: number) => {
         });
       }
     } catch (err) {
+      captureException(err);
       throw err;
     }
   };
@@ -52,6 +54,9 @@ export const updateOrCreateCustomFood = (food: UpdateCustomFoodProps) => {
         return result;
       }
     } catch (err: any) {
+      if (err?.data?.message !== 'resource already exists') {
+        captureException(err);
+      }
       throw err;
     }
   };
@@ -68,6 +73,7 @@ export const getCustomFoodById = (id: string) => {
         return result;
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -85,6 +91,7 @@ export const deleteCustomFood = (id: string) => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };

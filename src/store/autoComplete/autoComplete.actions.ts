@@ -1,4 +1,5 @@
 import autoCompleteService from 'api/autoCompleteService';
+import {captureException} from '@sentry/react-native';
 import {Dispatch} from 'redux';
 import {
   autoCompleteActionTypes,
@@ -36,6 +37,7 @@ export const updateSearchResults = (query: string) => {
         payload: searchResult,
       });
     } catch (err: any) {
+      captureException(err);
       throw new Error(err?.message || 'Oops, something go wrong');
     }
   };
@@ -66,6 +68,7 @@ export const showSuggestedFoods = (mealType: number) => {
         payload: suggestedFoods,
       });
     } catch (err: any) {
+      captureException(err);
       throw new Error(err.message || 'Oops, something go wrong');
     }
   };

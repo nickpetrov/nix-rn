@@ -1,9 +1,12 @@
+//utils
+import {captureException} from '@sentry/react-native';
+import {batch} from 'react-redux';
+import moment from 'moment-timezone';
+
 // api
 import authService from 'api/authService';
 import apiClient from 'api/index';
 import userService from 'api/userService';
-import {batch} from 'react-redux';
-import moment from 'moment-timezone';
 
 //actions
 import {clear as clearAutocomplete} from 'store/autoComplete/autoComplete.actions';
@@ -52,6 +55,7 @@ export const testLogin = (jwt_token: string) => {
       updateSentryContext(userData.user, jwt_token);
     } catch (err: any) {
       console.log('error test login by jwt', err);
+      captureException(err);
     }
   };
 };
@@ -67,6 +71,7 @@ export const fbLogin = (access_token: string) => {
       dispatch({type: authActionTypes.SIGNIN, userData});
       updateSentryContext(userData.user, userData['x-user-jwt']);
     } catch (err: any) {
+      captureException(err);
       if (err.status === 400 || err.status === 500) {
         throw new Error(err.status.toString());
       }
@@ -84,6 +89,7 @@ export const appleLogin = (apple_user_data: AppleRequestResponse) => {
       dispatch({type: authActionTypes.SIGNIN, userData});
       updateSentryContext(userData.user, userData['x-user-jwt']);
     } catch (err: any) {
+      captureException(err);
       throw err;
     }
   };
@@ -99,6 +105,7 @@ export const signin = (email: string, password: string) => {
       dispatch({type: authActionTypes.SIGNIN, userData});
       updateSentryContext(userData.user, userData['x-user-jwt']);
     } catch (err: any) {
+      captureException(err);
       if (err.status === 400) {
         throw new Error(err.status.toString());
       }
@@ -117,6 +124,7 @@ export const signup = (data: SignUpRequest) => {
       updateSentryContext(userData.user, userData['x-user-jwt']);
       return userData;
     } catch (err: any) {
+      captureException(err);
       throw err;
     }
   };
@@ -137,6 +145,7 @@ export const updateUserData = (newUserObj: Partial<User>) => {
 
       return userData;
     } catch (err: any) {
+      captureException(err);
       if (err.status === 400) {
         throw new Error(err.status.toString());
       }
@@ -159,6 +168,7 @@ export const getUserDataFromAPI = () => {
       updateSentryContext(result, userJWT);
       return result;
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };

@@ -2,6 +2,7 @@
 import moment from 'moment-timezone';
 import {batch} from 'react-redux';
 import {Platform} from 'react-native';
+import {captureException} from '@sentry/react-native';
 
 //helpers
 import {
@@ -78,6 +79,7 @@ export const getDayTotals = (
         });
       }
     } catch (error) {
+      captureException(error);
       console.log('error getDayTotals', error);
     }
   };
@@ -133,6 +135,7 @@ export const getUserFoodlog = (
 
       // dispatch<any>(getDayTotals(beginDateSelected, endDate, timezone));
     } catch (error) {
+      captureException(error);
       console.log('error getUserFoodlog', error);
     }
   };
@@ -180,6 +183,7 @@ export const getUserWeightlog = (
         }
       }
     } catch (error) {
+      captureException(error);
       console.log('error getUserWeightlog', error);
     }
   };
@@ -209,6 +213,7 @@ export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -245,6 +250,7 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -273,6 +279,7 @@ export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
         dispatch(refreshUserLogTotals());
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -303,6 +310,7 @@ export const deleteExerciseFromLog = (exercises: Array<{id: string}>) => {
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -347,6 +355,7 @@ export const getUserExerciseslog = (
         }
       }
     } catch (error) {
+      captureException(error);
       console.log('error getUserExerciseslog', error);
     }
   };
@@ -376,6 +385,7 @@ export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };
@@ -411,6 +421,7 @@ export const updateExistExercisesToLog = (exercises: ExerciseProps[]) => {
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };
@@ -477,6 +488,7 @@ export const addExerciseToLog = (query: string) => {
           btnText: 'Ok',
         }),
       );
+      captureException(error);
       throw error;
     }
   };
@@ -535,6 +547,7 @@ export const updateExerciseToLog = (query: string, exercise: ExerciseProps) => {
         }
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -597,6 +610,7 @@ export const addFoodToLog = (
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -633,6 +647,7 @@ export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -651,6 +666,7 @@ export const deleteFoodFromLog = (foodIds: Array<{id: string}>) => {
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };
@@ -679,6 +695,7 @@ export const setDayNotes = (targetDate: string, newNotes: string) => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };
@@ -710,6 +727,7 @@ export const setDayCalorieLimit = (
         });
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };
@@ -748,6 +766,7 @@ export const addWaterlog = (water: Array<WaterLogProps>) => {
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -768,6 +787,7 @@ export const updateWaterlog = (water: Array<WaterLogProps>) => {
         dispatch(refreshUserLogTotals());
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -791,6 +811,7 @@ export const deleteWaterFromLog = () => {
         dispatch<any>(refreshUserLogTotals());
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -839,6 +860,7 @@ export const uploadImage = async (entity: string, id: string, data: Asset) => {
     console.log('response upload image', response);
     return response.data;
   } catch (error) {
+    captureException(error);
     throw new Error('Image upload failed: Uploaded file type is not supported');
   }
 };

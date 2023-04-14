@@ -2,6 +2,7 @@
 import {v4 as uuidv4} from 'uuid';
 import _ from 'lodash';
 import moment from 'moment-timezone';
+import {captureException} from '@sentry/react-native';
 // @ts-ignore
 import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 
@@ -62,6 +63,7 @@ export const addFoodToBasket = (query: string) => {
       dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: foods});
       return foods;
     } catch (err: any) {
+      captureException(err);
       throw err;
     }
   };
@@ -91,6 +93,7 @@ export const addFoodToBasketById = (id: string) => {
       dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]});
       return [food];
     } catch (err: any) {
+      captureException(err);
       throw err;
     }
   };
@@ -280,6 +283,7 @@ export const addRecipeToBasket = (id: string) => {
         return scaled_recipe;
       }
     } catch (err: any) {
+      captureException(err);
       throw err;
     }
   };
@@ -318,6 +322,7 @@ export const addBrandedFoodToBasket = (id: string) => {
         return food;
       }
     } catch (err: any) {
+      captureException(err);
       console.log(err);
     }
   };

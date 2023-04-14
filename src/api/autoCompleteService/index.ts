@@ -1,5 +1,6 @@
 import apiClient from 'api';
 import {SearchResponse} from 'store/autoComplete/autoComplete.types';
+import {captureException} from '@sentry/react-native';
 
 export interface InstantQueryDataProps {
   query: string;
@@ -63,7 +64,10 @@ const autoCompleteService = {
           'x-app-key': '59bcfe12c0e9965162798a31ff38ec1f',
         },
       })
-      .catch(err => console.log('logAutocompleteStats error', err));
+      .catch(err => {
+        console.log('logAutocompleteStats error', err);
+        captureException(err);
+      });
   },
 };
 

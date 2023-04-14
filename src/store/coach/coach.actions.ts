@@ -2,6 +2,7 @@
 import {Dispatch} from 'redux';
 import _ from 'lodash';
 import moment from 'moment-timezone';
+import {captureException} from '@sentry/react-native';
 
 // services
 import coachService from 'api/coachService';
@@ -64,6 +65,7 @@ export const getClientTotals = (options: Partial<OptionsProps>) => {
         });
       }
     } catch (err) {
+      captureException(err);
       throw err;
     }
   };
@@ -101,6 +103,7 @@ export const getClientFoodLog = (options: Partial<OptionsProps>) => {
         });
       }
     } catch (err) {
+      captureException(err);
       throw err;
     }
   };
@@ -137,6 +140,7 @@ export const getClientExercisesLog = (options: Partial<OptionsProps>) => {
         });
       }
     } catch (err) {
+      captureException(err);
       throw err;
     }
   };
@@ -166,6 +170,7 @@ export const becomeCoach = () => {
         dispatch<any>(getUserDataFromAPI());
       }
     } catch (error) {
+      captureException(error);
       console.log('error become coach', error);
     }
   };
@@ -175,6 +180,7 @@ export const stopBeingCoach = () => {
     try {
       await coachService.stopBeingCoach();
     } catch (error) {
+      captureException(error);
       console.log('error stop being a coach', error);
     }
   };
@@ -197,6 +203,7 @@ export const getClients = () => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log('error get clients', error);
     }
   };
@@ -211,6 +218,7 @@ export const getCoaches = () => {
         payload: res.data.coaches,
       });
     } catch (error) {
+      captureException(error);
       console.log('error get coaches', error);
     }
   };
@@ -225,6 +233,7 @@ export const addCoach = (coachCode: string) => {
         payload: res.data,
       });
     } catch (err) {
+      captureException(err);
       throw err;
     }
   };
@@ -238,6 +247,7 @@ export const removeCoach = (coachCode: string) => {
         payload: coachCode,
       });
     } catch (err) {
+      captureException(err);
       console.log('error remove coach', err);
     }
   };
@@ -291,6 +301,7 @@ export const checkSubscriptions = () => {
         }
       })
       .catch(function (err) {
+        captureException(err);
         console.log(err);
       });
   };

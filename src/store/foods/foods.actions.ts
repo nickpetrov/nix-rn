@@ -1,4 +1,5 @@
 import {Dispatch} from 'redux';
+import {captureException} from '@sentry/react-native';
 import {
   clearGroceryFoodsAction,
   clearHistoryFoodsAction,
@@ -88,6 +89,7 @@ export const getFoodByQRcode = (
         }
       }
     } catch (error: any) {
+      captureException(error);
       if (error.status === 404) {
         dispatch({
           type: foodsActionTypes.GET_FOOD_BY_QR_CODE,
@@ -122,6 +124,7 @@ export const getSuggestedFoods = () => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };
@@ -151,6 +154,7 @@ export const getGroceries = (query: string) => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };
@@ -172,6 +176,7 @@ export const getHistoryFoods = (data: InstantQueryDataProps) => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };
@@ -192,6 +197,7 @@ export const getRestorants = () => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };
@@ -213,6 +219,7 @@ export const getRestorantsWithCalc = () => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };
@@ -233,6 +240,7 @@ export const getRestorantsFoods = (data: InstantQueryDataProps) => {
         });
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };

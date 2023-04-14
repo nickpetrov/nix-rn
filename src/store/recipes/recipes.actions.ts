@@ -1,5 +1,6 @@
 import recipesService from 'api/recipeService';
 import {Dispatch} from 'redux';
+import {captureException} from '@sentry/react-native';
 import {
   recipesActionTypes,
   UpdateRecipeProps,
@@ -44,6 +45,7 @@ export const getRecipes = ({
         return result.recipes;
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -60,6 +62,7 @@ export const getRecipeById = (id: string) => {
         return result;
       }
     } catch (error) {
+      captureException(error);
       throw error;
     }
   };
@@ -77,7 +80,10 @@ export const updateRecipe = (recipe: UpdateRecipeProps) => {
         });
         return result;
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.data?.message !== 'resource already exists') {
+        captureException(err);
+      }
       throw err;
     }
   };
@@ -97,8 +103,11 @@ export const createRecipe = (recipe: UpdateRecipeProps) => {
         });
         return result;
       }
-    } catch (error) {
-      throw error;
+    } catch (err: any) {
+      if (err?.data?.message !== 'resource already exists') {
+        captureException(err);
+      }
+      throw err;
     }
   };
 };
@@ -123,6 +132,9 @@ export const copyRecipe = (
         return result;
       }
     } catch (err: any) {
+      if (err?.data?.message !== 'resource already exists') {
+        captureException(err);
+      }
       throw err;
     }
   };
@@ -140,6 +152,7 @@ export const deleteRecipe = (id: string) => {
         });
       }
     } catch (error) {
+      captureException(error);
       console.log(error);
     }
   };
