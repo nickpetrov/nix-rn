@@ -63,7 +63,9 @@ export const addFoodToBasket = (query: string) => {
       dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: foods});
       return foods;
     } catch (err: any) {
-      captureException(err);
+      if (err?.status !== 404) {
+        captureException(err);
+      }
       throw err;
     }
   };
