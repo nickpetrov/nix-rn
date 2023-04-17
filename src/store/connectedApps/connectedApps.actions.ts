@@ -40,9 +40,11 @@ export const fitbitSign = () => {
         });
         return result.state;
       }
-    } catch (err) {
-      captureException(err);
+    } catch (err: any) {
       console.log(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -60,9 +62,11 @@ export const fitbitUnlink = () => {
           type: connectedAppsActionTypes.FITBIT_UNLINK,
         });
       }
-    } catch (err) {
-      captureException(err);
+    } catch (err: any) {
       console.log(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };

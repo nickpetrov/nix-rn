@@ -78,9 +78,11 @@ export const getDayTotals = (
           totals: totals.dates || [],
         });
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
       console.log('error getDayTotals', error);
+      if (error?.status !== 0) {
+        captureException(error);
+      }
     }
   };
 };
@@ -134,9 +136,11 @@ export const getUserFoodlog = (
       }
 
       // dispatch<any>(getDayTotals(beginDateSelected, endDate, timezone));
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
       console.log('error getUserFoodlog', error);
+      if (error?.status !== 0) {
+        captureException(error);
+      }
     }
   };
 };
@@ -182,9 +186,11 @@ export const getUserWeightlog = (
           dispatch<any>(pullWeightsFromHK());
         }
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
       console.log('error getUserWeightlog', error);
+      if (error?.status !== 0) {
+        captureException(error);
+      }
     }
   };
 };
@@ -212,8 +218,10 @@ export const addWeightlog = (weights: Array<Partial<WeightProps>>) => {
         });
         dispatch<any>(refreshUserLogTotals());
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       throw error;
     }
   };
@@ -249,8 +257,10 @@ export const updateWeightlog = (weights: Array<WeightProps>) => {
         });
         dispatch<any>(refreshUserLogTotals());
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       throw error;
     }
   };
@@ -278,8 +288,10 @@ export const deleteWeightFromLog = (weights: Array<{id: string}>) => {
         });
         dispatch(refreshUserLogTotals());
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       throw error;
     }
   };
@@ -309,8 +321,10 @@ export const deleteExerciseFromLog = (exercises: Array<{id: string}>) => {
         });
         dispatch<any>(refreshUserLogTotals());
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       throw error;
     }
   };
@@ -354,9 +368,11 @@ export const getUserExerciseslog = (
           dispatch<any>(pullExerciseFromHK());
         }
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
       console.log('error getUserExerciseslog', error);
+      if (error?.status !== 0) {
+        captureException(error);
+      }
     }
   };
 };
@@ -384,9 +400,11 @@ export const addExistExercisesToLog = (exercises: ExerciseProps[]) => {
           exercises: result.exercises,
         });
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
       console.log(error);
+      if (error?.status !== 0) {
+        captureException(error);
+      }
     }
   };
 };
@@ -420,9 +438,11 @@ export const updateExistExercisesToLog = (exercises: ExerciseProps[]) => {
         });
         dispatch<any>(refreshUserLogTotals());
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
       console.log(error);
+      if (error?.status !== 0) {
+        captureException(error);
+      }
     }
   };
 };
@@ -481,14 +501,16 @@ export const addExerciseToLog = (query: string) => {
           );
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       dispatch(
         setInfoMessage({
           title: 'Could not determine any exercises to log.',
           btnText: 'Ok',
         }),
       );
-      captureException(error);
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       throw error;
     }
   };
@@ -546,8 +568,10 @@ export const updateExerciseToLog = (query: string, exercise: ExerciseProps) => {
           dispatch(refreshUserLogTotals());
         }
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       throw error;
     }
   };
@@ -609,8 +633,10 @@ export const addFoodToLog = (
         });
         dispatch<any>(refreshUserLogTotals());
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       throw error;
     }
   };
@@ -646,8 +672,10 @@ export const updateFoodFromlog = (foodArray: Array<FoodProps>) => {
         });
         dispatch<any>(refreshUserLogTotals());
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       throw error;
     }
   };
@@ -665,8 +693,10 @@ export const deleteFoodFromLog = (foodIds: Array<{id: string}>) => {
         });
         dispatch<any>(refreshUserLogTotals());
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       console.log(error);
     }
   };
@@ -694,8 +724,10 @@ export const setDayNotes = (targetDate: string, newNotes: string) => {
           totals: totals.dates || [],
         });
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       console.log(error);
     }
   };
@@ -726,8 +758,10 @@ export const setDayCalorieLimit = (
           totals: totals.dates || [],
         });
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       console.log(error);
     }
   };
@@ -765,8 +799,10 @@ export const addWaterlog = (water: Array<WaterLogProps>) => {
         });
         dispatch<any>(refreshUserLogTotals());
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       throw error;
     }
   };
@@ -786,8 +822,10 @@ export const updateWaterlog = (water: Array<WaterLogProps>) => {
         });
         dispatch(refreshUserLogTotals());
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       throw error;
     }
   };
@@ -810,8 +848,10 @@ export const deleteWaterFromLog = () => {
         });
         dispatch<any>(refreshUserLogTotals());
       }
-    } catch (error) {
-      captureException(error);
+    } catch (error: any) {
+      if (error?.status !== 0) {
+        captureException(error);
+      }
       throw error;
     }
   };
@@ -859,8 +899,10 @@ export const uploadImage = async (entity: string, id: string, data: Asset) => {
     const response = await baseService.uploadImage(entity, id, formData);
     console.log('response upload image', response);
     return response.data;
-  } catch (error) {
-    captureException(error);
+  } catch (error: any) {
+    if (error?.status !== 0) {
+      captureException(error);
+    }
     throw new Error('Image upload failed: Uploaded file type is not supported');
   }
 };

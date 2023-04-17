@@ -67,7 +67,9 @@ export const showSuggestedFoods = (mealType: number) => {
         payload: suggestedFoods,
       });
     } catch (err: any) {
-      captureException(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
       throw new Error(err.message || 'Oops, something go wrong');
     }
   };

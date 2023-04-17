@@ -44,9 +44,11 @@ export const getRecipes = ({
         });
         return result.recipes;
       }
-    } catch (error) {
-      captureException(error);
-      throw error;
+    } catch (err: any) {
+      if (err?.status !== 0) {
+        captureException(err);
+      }
+      throw err;
     }
   };
 };
@@ -61,9 +63,11 @@ export const getRecipeById = (id: string) => {
       if (result) {
         return result;
       }
-    } catch (error) {
-      captureException(error);
-      throw error;
+    } catch (err: any) {
+      if (err?.status !== 0) {
+        captureException(err);
+      }
+      throw err;
     }
   };
 };
@@ -81,7 +85,10 @@ export const updateRecipe = (recipe: UpdateRecipeProps) => {
         return result;
       }
     } catch (err: any) {
-      if (err?.data?.message !== 'resource already exists') {
+      if (
+        err?.data?.message !== 'resource already exists' &&
+        err?.status !== 0
+      ) {
         captureException(err);
       }
       throw err;
@@ -104,7 +111,10 @@ export const createRecipe = (recipe: UpdateRecipeProps) => {
         return result;
       }
     } catch (err: any) {
-      if (err?.data?.message !== 'resource already exists') {
+      if (
+        err?.data?.message !== 'resource already exists' &&
+        err?.status !== 0
+      ) {
         captureException(err);
       }
       throw err;
@@ -132,7 +142,10 @@ export const copyRecipe = (
         return result;
       }
     } catch (err: any) {
-      if (err?.data?.message !== 'resource already exists') {
+      if (
+        err?.data?.message !== 'resource already exists' &&
+        err?.status !== 0
+      ) {
         captureException(err);
       }
       throw err;
@@ -151,9 +164,11 @@ export const deleteRecipe = (id: string) => {
           payload: id,
         });
       }
-    } catch (error) {
-      captureException(error);
-      console.log(error);
+    } catch (err: any) {
+      console.log(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };

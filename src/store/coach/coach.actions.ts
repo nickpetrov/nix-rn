@@ -64,8 +64,10 @@ export const getClientTotals = (options: Partial<OptionsProps>) => {
           payload: result.dates,
         });
       }
-    } catch (err) {
-      captureException(err);
+    } catch (err: any) {
+      if (err?.status !== 0) {
+        captureException(err);
+      }
       throw err;
     }
   };
@@ -102,8 +104,10 @@ export const getClientFoodLog = (options: Partial<OptionsProps>) => {
           payload: result.foods,
         });
       }
-    } catch (err) {
-      captureException(err);
+    } catch (err: any) {
+      if (err?.status !== 0) {
+        captureException(err);
+      }
       throw err;
     }
   };
@@ -139,8 +143,10 @@ export const getClientExercisesLog = (options: Partial<OptionsProps>) => {
           payload: result.exercises,
         });
       }
-    } catch (err) {
-      captureException(err);
+    } catch (err: any) {
+      if (err?.status !== 0) {
+        captureException(err);
+      }
       throw err;
     }
   };
@@ -169,9 +175,11 @@ export const becomeCoach = () => {
       if (!!res && !!res.data && !!res.data.code) {
         dispatch<any>(getUserDataFromAPI());
       }
-    } catch (error) {
-      captureException(error);
-      console.log('error become coach', error);
+    } catch (err: any) {
+      console.log('error become coach', err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -179,9 +187,11 @@ export const stopBeingCoach = () => {
   return async () => {
     try {
       await coachService.stopBeingCoach();
-    } catch (error) {
-      captureException(error);
-      console.log('error stop being a coach', error);
+    } catch (err: any) {
+      console.log('error stop being a coach', err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -202,9 +212,11 @@ export const getClients = () => {
           payload: clientList,
         });
       }
-    } catch (error) {
-      captureException(error);
-      console.log('error get clients', error);
+    } catch (err: any) {
+      console.log('error get clients', err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -217,9 +229,11 @@ export const getCoaches = () => {
         type: coachActionTypes.GET_COACHES,
         payload: res.data.coaches,
       });
-    } catch (error) {
-      captureException(error);
-      console.log('error get coaches', error);
+    } catch (err: any) {
+      console.log('error get coaches', err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -232,8 +246,10 @@ export const addCoach = (coachCode: string) => {
         type: coachActionTypes.ADD_COACH,
         payload: res.data,
       });
-    } catch (err) {
-      captureException(err);
+    } catch (err: any) {
+      if (err?.status !== 0) {
+        captureException(err);
+      }
       throw err;
     }
   };
@@ -246,9 +262,11 @@ export const removeCoach = (coachCode: string) => {
         type: coachActionTypes.REMOVE_COACH,
         payload: coachCode,
       });
-    } catch (err) {
-      captureException(err);
+    } catch (err: any) {
       console.log('error remove coach', err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -300,9 +318,11 @@ export const checkSubscriptions = () => {
           }
         }
       })
-      .catch(function (err) {
-        captureException(err);
+      .catch(function (err: any) {
         console.log(err);
+        if (err?.status !== 0) {
+          captureException(err);
+        }
       });
   };
 };

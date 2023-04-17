@@ -99,7 +99,9 @@ export const getFoodByQRcode = (
         });
         throw error;
       } else {
-        captureException(error);
+        if (error?.status !== 0) {
+          captureException(error);
+        }
         throw error;
       }
     }
@@ -125,9 +127,11 @@ export const getSuggestedFoods = () => {
           suggested_foods: result.products,
         });
       }
-    } catch (error) {
-      captureException(error);
-      console.log(error);
+    } catch (err: any) {
+      console.log(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -155,9 +159,11 @@ export const getGroceries = (query: string) => {
           groceries: result.branded,
         });
       }
-    } catch (error) {
-      captureException(error);
-      console.log(error);
+    } catch (err: any) {
+      console.log(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -177,9 +183,11 @@ export const getHistoryFoods = (data: InstantQueryDataProps) => {
           historyFoods: result.self.filter(item => item.serving_qty),
         });
       }
-    } catch (error) {
-      captureException(error);
-      console.log(error);
+    } catch (err: any) {
+      console.log(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -198,9 +206,11 @@ export const getRestorants = () => {
           restaurants: result.filter(item => item.name),
         });
       }
-    } catch (error) {
-      captureException(error);
-      console.log(error);
+    } catch (err: any) {
+      console.log(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -220,9 +230,11 @@ export const getRestorantsWithCalc = () => {
           restaurantsWithCalc: result.filter(item => item.proper_brand_name),
         });
       }
-    } catch (error) {
-      captureException(error);
-      console.log(error);
+    } catch (err: any) {
+      console.log(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -241,9 +253,11 @@ export const getRestorantsFoods = (data: InstantQueryDataProps) => {
           restaurantFoods: result.branded,
         });
       }
-    } catch (error) {
-      captureException(error);
-      throw error;
+    } catch (err: any) {
+      if (err?.status !== 0) {
+        captureException(err);
+      }
+      throw err;
     }
   };
 };

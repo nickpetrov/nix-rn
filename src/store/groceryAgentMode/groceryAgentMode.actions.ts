@@ -154,9 +154,11 @@ const requestExistingBarcodes = async function () {
   try {
     const response = await baseService.getGroceryPhotoUploadUPCList();
     return _.pull(response.data, null);
-  } catch (error) {
-    captureException(error);
-    console.log(error);
+  } catch (err: any) {
+    console.log(err);
+    if (err?.status !== 0) {
+      captureException(err);
+    }
   }
 };
 const countExistingBarcodes = function () {
@@ -258,10 +260,12 @@ export const needToUpdateExistingBarcodes = () => {
                     dispatch(setExistBarcodesCount(count as number));
                   });
                 })
-                .catch(function (error) {
+                .catch(function (err: any) {
                   dispatch(setInfoMessage(null));
-                  captureException(error);
-                  throw error;
+                  if (err?.status !== 0) {
+                    captureException(err);
+                  }
+                  throw err;
                 });
             }, Q.when(''));
           })
@@ -273,9 +277,11 @@ export const needToUpdateExistingBarcodes = () => {
           dispatch(setExistBarcodesCount(count));
         });
       }
-    } catch (error) {
-      captureException(error);
-      console.log(error);
+    } catch (err: any) {
+      console.log(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
       dispatch(
         setInfoMessage({
           text: 'Error during existing barcodes sync. Our developers has been informed.',
@@ -458,9 +464,11 @@ export const uploadToS3 = (record: RecordType) => {
         deferred.reject(err);
       }
     });
-  } catch (error) {
-    captureException(error);
-    deferred.reject(error);
+  } catch (err: any) {
+    if (err?.status !== 0) {
+      captureException(err);
+    }
+    deferred.reject(err);
   }
 
   return deferred.promise;

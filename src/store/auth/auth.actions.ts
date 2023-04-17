@@ -120,6 +120,9 @@ export const signup = (data: SignUpRequest) => {
       updateSentryContext(userData.user, userData['x-user-jwt']);
       return userData;
     } catch (err: any) {
+      if (err?.status !== 409 && err?.status !== 0) {
+        captureException(err);
+      }
       throw err;
     }
   };
@@ -140,7 +143,9 @@ export const updateUserData = (newUserObj: Partial<User>) => {
 
       return userData;
     } catch (err: any) {
-      captureException(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
       if (err.status === 400) {
         throw new Error(err.status.toString());
       }
@@ -162,9 +167,11 @@ export const getUserDataFromAPI = () => {
       dispatch({type: authActionTypes.UPDATE_USER_DATA, newUserObj: result});
       updateSentryContext(result, userJWT);
       return result;
-    } catch (error) {
-      captureException(error);
-      console.log(error);
+    } catch (err: any) {
+      if (err?.status !== 0) {
+        captureException(err);
+      }
+      console.log(err);
     }
   };
 };

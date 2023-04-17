@@ -66,7 +66,9 @@ const autoCompleteService = {
       })
       .catch(err => {
         console.log('logAutocompleteStats error', err);
-        captureException(err);
+        if (err?.status !== 0) {
+          captureException(err);
+        }
       });
   },
 };

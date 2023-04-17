@@ -63,7 +63,7 @@ export const addFoodToBasket = (query: string) => {
       dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: foods});
       return foods;
     } catch (err: any) {
-      if (err?.status !== 404) {
+      if (err?.status !== 404 && err?.status !== 0) {
         captureException(err);
       }
       throw err;
@@ -292,7 +292,9 @@ export const addRecipeToBasket = (id: string) => {
         return scaled_recipe;
       }
     } catch (err: any) {
-      captureException(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
       throw err;
     }
   };
@@ -331,7 +333,9 @@ export const addBrandedFoodToBasket = (id: string) => {
         return food;
       }
     } catch (err: any) {
-      captureException(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
       console.log(err);
     }
   };

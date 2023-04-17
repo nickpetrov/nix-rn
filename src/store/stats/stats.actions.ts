@@ -38,9 +38,11 @@ export const getDayTotals = (beginDate: string, endDate: string) => {
           day: beginDate,
         });
       }
-    } catch (error) {
-      captureException(error);
-      console.log('error getDayTotals stats reducer', error);
+    } catch (err: any) {
+      console.log('error getDayTotals stats reducer', err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
@@ -64,9 +66,11 @@ export const getStatsWeight = (params?: getWeightParams) => {
         });
         return result.weights;
       }
-    } catch (error) {
-      captureException(error);
-      console.log(error);
+    } catch (err: any) {
+      console.log(err);
+      if (err?.status !== 0) {
+        captureException(err);
+      }
     }
   };
 };
