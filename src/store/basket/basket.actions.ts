@@ -94,9 +94,13 @@ export const addFoodToBasketById = (id: string) => {
         food.basketId = uuidv4();
         dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]});
         return [food];
+      } else {
+        throw new Error("Can't find food by this id");
       }
     } catch (err: any) {
-      captureException(err);
+      if (err?.message !== "Can't find food by this id") {
+        captureException(err);
+      }
       throw err;
     }
   };
