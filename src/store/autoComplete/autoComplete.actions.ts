@@ -37,7 +37,6 @@ export const updateSearchResults = (query: string) => {
         payload: searchResult,
       });
     } catch (err: any) {
-      captureException(err);
       throw new Error(err?.message || 'Oops, something go wrong');
     }
   };
