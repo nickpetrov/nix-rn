@@ -80,18 +80,21 @@ export const addFoodToBasketById = (id: string) => {
       const response = await autoCompleteService.getFoodById(id);
 
       const food = response.data.foods[0];
-      if (food.id) {
-        delete food.id;
+
+      if (food) {
+        if (food?.id) {
+          delete food.id;
+        }
+        if (food?.note) {
+          delete food.note;
+        }
+        food.consumed_at =
+          moment().format('YYYY-MM-DDTHH:mm:ss') +
+          moment.tz(timezone).format('Z');
+        food.basketId = uuidv4();
+        dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]});
+        return [food];
       }
-      if (food.note) {
-        delete food.note;
-      }
-      food.consumed_at =
-        moment().format('YYYY-MM-DDTHH:mm:ss') +
-        moment.tz(timezone).format('Z');
-      food.basketId = uuidv4();
-      dispatch({type: basketActionTypes.ADD_FOOD_TO_BASKET, foods: [food]});
-      return [food];
     } catch (err: any) {
       captureException(err);
       throw err;
