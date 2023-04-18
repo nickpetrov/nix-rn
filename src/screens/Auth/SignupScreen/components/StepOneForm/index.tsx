@@ -1,5 +1,5 @@
 // utils
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import moment from 'moment-timezone';
 
 // components
@@ -34,6 +34,7 @@ type Props = {
 const StepOneForm: React.FC<Props> = ({scrollToInput}) => {
   const dispatch = useDispatch();
   const [validOnChange, setValidOnChange] = useState(false);
+  const [countriesList, setCountriesList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef<TextInput | null>(null);
   const confirmRef = useRef<TextInput | null>(null);
@@ -44,6 +45,7 @@ const StepOneForm: React.FC<Props> = ({scrollToInput}) => {
     email: string;
     first_name: string;
     country_code: string;
+    country: string;
   }) => {
     const sentData = {
       first_name: form.first_name,
@@ -51,12 +53,21 @@ const StepOneForm: React.FC<Props> = ({scrollToInput}) => {
       password: form.password,
       timezone: moment.tz.guess(true) || 'US/Eastern',
     };
+    const nutrion_country_code = countriesList.find(
+      obj => obj['ISO3166-1-Alpha-2'] === form.country,
+    );
     if (isLoading) return;
     setIsLoading(true);
     dispatch(signup(sentData))
       .then(data => {
         setIsLoading(false);
-        dispatch(updateUserData({country_code: form.country_code}));
+        dispatch(
+          updateUserData({
+            country_code: nutrion_country_code
+              ? nutrion_country_code['ISO3166-1-numeric'] || '820'
+              : '820',
+          }),
+        );
         console.log(data);
       })
       .catch(err => {
@@ -94,6 +105,23 @@ const StepOneForm: React.FC<Props> = ({scrollToInput}) => {
         }
       });
   };
+
+  useEffect(() => {
+    try {
+      const getCountries = async () => {
+        const response = await fetch(
+          'https://d1gvlspmcma3iu.cloudfront.net/country-codes.json',
+        );
+        const responseData = await response.json();
+        setCountriesList(responseData);
+      };
+
+      getCountries();
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }, []);
 
   return (
     <>
@@ -201,17 +229,18 @@ const StepOneForm: React.FC<Props> = ({scrollToInput}) => {
               />
               <View style={styles.countrySelect}>
                 <Text style={styles.countrySelectText}>Country</Text>
-                <CountryPicker
-                  countryCode={values.country as CountryCodes}
-                  withCallingCode={true}
-                  withCountryNameButton={true}
-                  withFilter={true}
-                  onSelect={country => {
-                    setFieldValue('country', country.cca2);
-                    setFieldValue('country_code', country.callingCode[0]);
-                    console.log('country', country);
-                  }}
-                />
+                <View style={{width: '65%'}}>
+                  <CountryPicker
+                    countryCode={values.country as CountryCodes}
+                    withCallingCode={true}
+                    withCountryNameButton={true}
+                    withFilter={true}
+                    onSelect={country => {
+                      setFieldValue('country', country.cca2);
+                      setFieldValue('country_code', country.callingCode[0]);
+                    }}
+                  />
+                </View>
               </View>
             </View>
             <View style={styles.checkBoxContainer}>
