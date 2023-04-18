@@ -290,6 +290,7 @@ export const checkSubscriptions = () => {
           sqlReceiptID = latestEntry.id;
           const receipt = latestEntry.receipt;
           const signature = latestEntry.signature;
+          console.log('checkSubscriptions receipt', receipt);
           return coachService.validatePurchase(receipt, signature);
         }
       })
