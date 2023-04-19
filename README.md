@@ -9,7 +9,8 @@
 
 1. `cd android`
 2. `gradlew assembleDebug` or `gradlew assembleRelease`
-3. `cd ..`, create source-maps(android) for sentry when upload new version to store `yarn run post-build` (see line 28 at this file - replace at script OS with your system)
+   <!-- no need use post-build if source-maps at sentry display errors correctly-->
+   <!-- 3. `cd ..`, create source-maps(android) for sentry when upload new version to store `yarn run post-build` (see line 28 at this file - replace at script OS with your system) -->
 
 ### create bundle for TF (ios)
 
@@ -23,30 +24,9 @@
 4. create archive (Product -> Archive)
 5. upload archive (Distribute App), make sure that the last version is active
 
-### produce source-map for android and upload it to sentry automaticaly (need done because of Hermes)
-
+<!-- ### produce source-map for android and upload it to sentry automaticaly (need done because of Hermes)
 1. change line 27 at script scripts/sentry-sourcemaps.sh - replace "win64-bin" with your current system(OS-BIN is osx-bin, win64-bin, or linux64-bin, depending on which operating system you are using.)
-2. run script `yarn run post-build`
-
-### produce source-map for sentry manualy (optionally)
-
-for ios:
-
-1. `npx react-native bundle --platform ios --dev false --entry-file index.js --reset-cache --bundle-output main.jsbundle --sourcemap-output main.jsbundle.map --minify false`
-
-for android
-
-1. `npx react-native bundle --platform android --dev false --entry-file index.js --reset-cache --bundle-output index.android.bundle --sourcemap-output index.android.bundle.packager.map --minify false`
-2. `npx node_modules/react-native/sdks/hermesc/{OS-BIN}/hermesc -O -emit-binary -output-source-map -out=index.android.bundle.hbc index.android.bundle` - OS-BIN is osx-bin, win64-bin, or linux64-bin, depending on which operating system you are using.
-   2.1 `rm -f index.android.bundle`
-   2.2 `mv index.android.bundle.hbc index.android.bundle`
-3. `npx node node_modules/react-native/scripts/compose-source-maps.js index.android.bundle.packager.map index.android.bundle.hbc.map -o index.android.bundle.map`
-
-### upload source-map for sentry manualy(not necessarily if run script `yarn run post-build`)
-
-1. `npx sentry-cli releases new <release_name>` - release_name - example: com.nutritionix.nixtrack-1.0 (can find at App.tsx where sentry init - release: getBundleId() + '-' + getVersion(),)
-2. `npx sentry-cli releases files <release_name> upload-sourcemaps /path/to/files` - example path ./index.android.bundle ./index.android.bundle.map
-3. `npx sentry-cli releases finalize <release_name>`
+2. run script `yarn run post-build` -->
 
 ### testing subscription
 
