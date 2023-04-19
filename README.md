@@ -7,6 +7,7 @@
 
 ### create debug/release apk
 
+0. change versionCode at android/app/build.gradle
 1. `cd android`
 2. `gradlew assembleDebug` or `gradlew assembleRelease`
    <!-- no need use post-build if source-maps at sentry display errors correctly-->
