@@ -1,6 +1,14 @@
-# create folder if it not exist for sentry source-maps
-mkdir -p source-maps
 #!/bin/bash 
+
+# Make sure we're in the root directory of the React Native project
+if [ ! -d "android" ] || [ ! -d "ios" ] || [ ! -f "index.js" ]; then
+  echo "Error: this script should be run from the root directory of a React Native project"
+  exit 1
+fi
+
+# Create the source-maps directory if it doesn't exist
+mkdir -p source-maps
+
 # uncomment if need log at file log.out
 # exec 3>&1 4>&2
 # trap 'exec 2>&4 1>&3' 0 1 2 3
@@ -29,9 +37,18 @@ node_modules/.bin/react-native bundle \
     --platform android \
     --entry-file index.js \
     --bundle-output ./source-maps/index.android.bundle \
-    --sourcemap-output ./source-maps/index.android.bundle-plain.map
+    --sourcemap-output ./source-maps/index.android.bundle-plain.map \
+    --minify false
 
 node_modules/react-native/sdks/hermesc/win64-bin/hermesc -O -emit-binary -out ./source-maps/android-release.bundle.hbc ./source-maps/index.android.bundle -output-source-map
+
+if [ ! -f "./source-maps/android-release.bundle.hbc" ]; then
+  echo "Error: hermesc command failed to produce android-release.bundle.hbc file"
+  exit 1
+fi
+
+rm -f ./source-maps/index.android.bundle
+mv ./source-maps/android-release.bundle.hbc ./source-maps/index.android.bundle
 
 node node_modules/react-native/scripts/compose-source-maps.js ./source-maps/index.android.bundle-plain.map ./source-maps/android-release.bundle.hbc.map -o ./source-maps/index.android.bundle.map
 
@@ -43,4 +60,6 @@ node_modules/@sentry/cli/bin/sentry-cli --auth-token ${SENTRY_TOKEN} \
     --bundle-sourcemap ./source-maps/index.android.bundle.map \
     --bundle ./source-maps/index.android.bundle \
     --rewrite
-    
+
+# disable for looking at logs at source-maps/log.out file
+rm -rf ./source-maps

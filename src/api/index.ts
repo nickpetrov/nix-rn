@@ -31,13 +31,11 @@ apiClient.interceptors.response.use(
     return response;
   },
   async function (error) {
-    if (__DEV__) {
-      console.log('API Response error:', error);
-    }
+    console.log('API Response error:', error);
     if (error?.response) {
       throw error?.response;
     } else {
-      throw new Error('Wrong response from api');
+      throw new Error(error?.message || 'Wrong response from api');
     }
   },
 );
