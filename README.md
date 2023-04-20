@@ -10,7 +10,7 @@
    1.1 Open Android Studio
    1.2 Open virtual device manager
    1.3 create or statr exist emulator
-2. from terminal if app already exist at emulator run `yarn run start` - it will start metro bundle and start project
+2. from terminal(if app already exist at emulator - you see icon of our app at emulator) run `yarn run start` - it will start metro bundle and start project
 3. if you doesn't have app at emulator, then run `yarn run android` - it will create debug apk and install it on emulator , then start metro bundle. You can use `npx react-native run-android --variant=release` - to create release apk and install it on emulator
 4. after you start project, you can open developer menu by press `d`.
 5. if you want open debuger at browser, then just tap on `Debug`, or if you want open it at react-native-debugger, then open react-native-debugger and only then tap on `Debug`.
