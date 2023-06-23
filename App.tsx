@@ -53,6 +53,8 @@ Sentry.init({
 });
 
 const App = () => {
+  console.log('Bundle Release name: ', getBundleId() + '-' + getVersion());
+
   const navigation =
     React.useRef<NavigationContainerRef<ReactNavigation.RootParamList>>(null);
   const routeNameRef = React.useRef<string>();
