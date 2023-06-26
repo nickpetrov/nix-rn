@@ -2,12 +2,15 @@
 import axios from 'axios';
 import * as Sentry from '@sentry/react-native';
 import {CLIENT_API_BASE_URL} from 'config';
+import {getVersion, getBundleId} from 'react-native-device-info';
 
 const apiClient = axios.create({
   baseURL: CLIENT_API_BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
+    'X-Client-Version': `${getVersion()}`,
+    'X-Client-Name': `${getBundleId()}`,
   },
 });
 
