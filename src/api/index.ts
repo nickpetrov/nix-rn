@@ -1,12 +1,16 @@
 // utils
 import axios from 'axios';
+import * as Sentry from '@sentry/react-native';
 import {CLIENT_API_BASE_URL} from 'config';
+import {getVersion, getBundleId} from 'react-native-device-info';
 
 const apiClient = axios.create({
   baseURL: CLIENT_API_BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
+    'X-Client-Version': `${getVersion()}`,
+    'X-Client-Name': `${getBundleId()}`,
   },
 });
 
@@ -19,6 +23,10 @@ apiClient.interceptors.request.use(
     return config;
   },
   error => {
+    Sentry.captureException(error.response, scope => {
+      scope.setTag('sentry_request', 'error');
+      return scope;
+    });
     return Promise.reject(error);
   },
 );
@@ -31,7 +39,10 @@ apiClient.interceptors.response.use(
     return response;
   },
   async function (error) {
-    console.log('API Response error:', error);
+    Sentry.captureException(error.response, scope => {
+      scope.setTag('sentry_response', 'error');
+      return scope;
+    });
     if (error?.response) {
       throw error?.response;
     } else {
