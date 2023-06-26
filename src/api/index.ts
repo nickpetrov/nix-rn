@@ -24,7 +24,7 @@ apiClient.interceptors.request.use(
   },
   error => {
     Sentry.captureException(error.response, scope => {
-      scope.setTag('sentry_request', 'error');
+      scope.setTag('nix_api_request', 'error');
       return scope;
     });
     return Promise.reject(error);
@@ -40,7 +40,7 @@ apiClient.interceptors.response.use(
   },
   async function (error) {
     Sentry.captureException(error.response, scope => {
-      scope.setTag('sentry_response', 'error');
+      scope.setTag('nix_api_response', 'error');
       return scope;
     });
     if (error?.response) {
