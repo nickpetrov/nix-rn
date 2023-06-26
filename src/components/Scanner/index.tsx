@@ -1,6 +1,8 @@
 // utils
 import React, {useRef, useCallback, useState, useEffect} from 'react';
 
+import 'react-native-reanimated';
+
 // components
 import {Camera, PhotoFile, useCameraDevices} from 'react-native-vision-camera';
 import {
