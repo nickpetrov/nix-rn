@@ -216,7 +216,7 @@ export const SideMenu: React.FC = () => {
                     style={{marginRight: 10}}
                   />
                 </View>
-                <Text>{item.title}</Text>
+                <Text style={{flex: 1}}>{item.title}</Text>
               </View>
             </TouchableWithoutFeedback>
           );

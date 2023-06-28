@@ -19,14 +19,14 @@ export const styles = StyleSheet.create({
     marginTop: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
   },
   btn: {
     height: 30,
-    width: 30,
     marginHorizontal: 5,
   },
   tooltip: {
+    minWidth: 220,
     padding: 0,
     display: 'flex',
     flexDirection: 'column',
