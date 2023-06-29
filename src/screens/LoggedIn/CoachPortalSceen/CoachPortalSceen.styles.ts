@@ -45,11 +45,11 @@ export const styles = StyleSheet.create({
     borderBottomColor: Colors.LightGray,
   },
   input: {
+    flex: 6,
     paddingHorizontal: 8,
     paddingVertical: 0,
     backgroundColor: '#eee',
     borderRadius: 6,
-    flex: 1,
     marginRight: 5,
     height: 30,
   },

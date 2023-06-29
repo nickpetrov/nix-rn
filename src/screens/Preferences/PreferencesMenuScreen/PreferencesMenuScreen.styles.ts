@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cal: {
+    flex: 0.18,
     backgroundColor: Colors.Primary,
     color: '#fff',
     borderRadius: 20,
