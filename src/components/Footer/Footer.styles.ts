@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
     padding: 0,
   },
   footerTrackItem: {
+    flex: 1,
     backgroundColor: Colors.Primary,
     marginTop: -5,
     borderTopLeftRadius: 5,

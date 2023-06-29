@@ -74,6 +74,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   forgotText: {
+    flex: 1,
     fontSize: 14,
     textAlign: 'right',
   },
@@ -89,12 +90,17 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   backBtn: {
+    flex: 1,
     backgroundColor: Colors.BgGray,
     paddingVertical: 5,
     paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 4,
+  },
+  backBtnText: {
+    flex: 1,
+    width: '100%',
   },
   backBtnIcon: {
     fontSize: 20,

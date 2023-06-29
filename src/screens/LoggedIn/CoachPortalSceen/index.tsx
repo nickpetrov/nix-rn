@@ -146,7 +146,9 @@ const CoachPortalScreen: React.FC<CoachPortalScreenProps> = ({navigation}) => {
           value={query}
           onChangeText={text => setQuery(text)}
         />
-        <Text onPress={() => setQuery('')}>Cancel</Text>
+        <Text onPress={() => setQuery('')} style={{flex: 1, marginLeft: 10}}>
+          Cancel
+        </Text>
       </View>
       {filteredClientList.map(user => {
         return (

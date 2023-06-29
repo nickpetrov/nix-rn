@@ -233,7 +233,7 @@ export const SideMenu: React.FC = () => {
                 style={{marginRight: 10}}
               />
             </View>
-            <Text>Signout</Text>
+            <Text style={{flex: 1, minWidth: 100}}>Signout</Text>
           </View>
         </TouchableWithoutFeedback>
         <View style={{padding: 20, flex: 10, justifyContent: 'flex-end'}}>

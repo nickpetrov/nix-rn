@@ -41,7 +41,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <View style={styles.backBtn}>
             <FontAwesome name="angle-left" style={styles.backBtnIcon} />
-            <Text>Back</Text>
+            <Text style={styles.backBtnText}>Back</Text>
           </View>
         </TouchableOpacity>
       ),

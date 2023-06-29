@@ -289,6 +289,8 @@ const StepOneForm: React.FC<Props> = ({scrollToInput}) => {
                 unfillColor="#FFFFFF"
                 iconStyle={{borderColor: '#666'}}
                 textStyle={{
+                  flex: 1,
+                  alignSelf: 'center',
                   textDecorationLine: 'none',
                   fontSize: 14,
                 }}
