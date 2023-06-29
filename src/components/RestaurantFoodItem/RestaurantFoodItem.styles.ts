@@ -36,8 +36,9 @@ export const styles = StyleSheet.create({
   imageContainer: {
     marginRight: 8,
   },
-  textContainer: {},
+  textContainer: {flex: 1},
   textCal: {
+    flex: 1,
     textAlign: 'right',
     fontSize: 12,
     color: Colors.Gray8,

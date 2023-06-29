@@ -29,7 +29,8 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   macroTotalsTile: {
-    width: '33.333333%',
+    flex: 1,
+    textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 5,
@@ -40,9 +41,10 @@ export const styles = StyleSheet.create({
   macroValue: {
     fontSize: 11,
     color: '#0073e6',
-    marginRight: 2,
+    marginRight: 4,
   },
   macroTitle: {
+    minWidth: 50,
     fontSize: 11,
     color: '#002e5c',
   },

@@ -65,12 +65,14 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   alertHeader: {
+    flex: 1,
     color: '#31708f',
     fontSize: 18,
     fontWeight: '500',
     marginBottom: 10,
   },
   alertText: {
+    flex: 1,
     color: '#31708f',
     marginBottom: 10,
   },

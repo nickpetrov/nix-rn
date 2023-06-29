@@ -121,7 +121,7 @@ export const HelpScreen: React.FC<HelpScreenProps> = ({navigation}) => {
                   url: 'https://www.nutritionix.com/privacy',
                 });
               }}>
-              <Text style={styles.text}>Privacy Policy</Text>
+              <Text style={{...styles.text}}>Privacy Policy</Text>
             </TouchableWithoutFeedback>
           </View>
         </View>

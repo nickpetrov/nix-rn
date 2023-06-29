@@ -80,6 +80,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   photoBtnText: {
+    textAlign: 'center',
     paddingHorizontal: 5,
   },
   photoChoose: {
@@ -168,6 +169,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   link: {
+    flex: 1,
     fontSize: 12,
     color: Colors.Secondary,
   },

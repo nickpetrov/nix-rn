@@ -22,12 +22,14 @@ export const styles = StyleSheet.create({
   },
   container: {background: '#fff', minHeight: '100%'},
   text: {
-    margin: 10,
+    minWidth: 100,
+    padding: 10,
     color: '#444',
     textDecorationStyle: 'solid',
     textDecorationLine: 'underline',
   },
   terms: {
+    flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 20,
     flexDirection: 'row',

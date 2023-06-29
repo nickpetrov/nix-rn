@@ -156,9 +156,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
             withMarginTop
           />
           <View style={styles.disclaimerWrapper}>
-            <Text style={styles.noteText}>Need help?</Text>
+            <Text
+              style={{...styles.noteText, minWidth: 100, textAlign: 'center'}}>
+              Need help?
+            </Text>
             <Text style={styles.noteText}>
-              Contact us at{' '}
+              Contact us at&nbsp;
               <Text
                 style={styles.highlightText}
                 onPress={() =>
