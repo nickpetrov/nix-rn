@@ -1,3 +1,5 @@
+import {filterNutrient} from './filterNutrients';
+
 const DEFAULT_LABELS = {
   itemName: 'Item',
   brandName: 'Nutritionix',
@@ -34,7 +36,6 @@ const LABEL_ATTRIBUTES = [
 
 export const filterFoodToLabel = (
   food: any,
-  attributes: any,
   nutritionLabelGlobalOptions: Record<string, any>,
   externalServingQty: number = 1,
 ) => {
@@ -42,9 +43,10 @@ export const filterFoodToLabel = (
     externalServingQty = 1;
   }
 
-  const full_nutrients: any[] = food.full_nutrients.map((nutrient: any) => {
-    nutrient.value /= externalServingQty;
-  });
+  const full_nutrients: any[] = food.full_nutrients.map(
+    (nutrient: any) => (nutrient.value /= externalServingQty),
+  );
+
   const itemName = (food.food_name || '').replace(
     /^([a-z])|\s+([a-z])/g,
     (s: string) => s.toUpperCase(),
@@ -52,7 +54,7 @@ export const filterFoodToLabel = (
 
   const labelData: Record<string, any> = {
     full_nutrients,
-    itemName,
+    name: itemName,
     brandName: food.brand_name,
     valueServingUnitQuantity: food.serving_qty,
     valueServingSizeUnit: food.serving_unit,
@@ -60,11 +62,7 @@ export const filterFoodToLabel = (
   };
 
   LABEL_ATTRIBUTES.forEach(definition => {
-    let value = $filter('nutrient')(
-      food.full_nutrients,
-      definition.attrId,
-      'value',
-    );
+    let value = filterNutrient(food.full_nutrients, definition.attrId, 'value');
 
     if (value) {
       labelData[definition.labelAttribute] = value / externalServingQty;
@@ -75,10 +73,10 @@ export const filterFoodToLabel = (
     }
   });
 
-  Object.assign(labelData, attributes);
   const resultLabelData = Object.entries(DEFAULT_LABELS).map(([key, value]) => {
     if (!labelData[key] && !nutritionLabelGlobalOptions[key]) {
       labelData[key] = value;
+      return labelData;
     }
   });
 
