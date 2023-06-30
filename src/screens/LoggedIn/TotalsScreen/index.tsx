@@ -402,6 +402,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           extraScrollHeight={showNotes && !caloriesInputFocused ? 200 : 0}
           enableAutomaticScroll={true}>
           <View style={styles.mb10}>
+            {/**this */}
             <NutritionLabel option={{...defaultOption, ...labelOptions}} />
           </View>
 

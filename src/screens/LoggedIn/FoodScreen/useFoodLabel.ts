@@ -1,8 +1,7 @@
-import {useState, useEffect} from 'react';
-import getAttrValueById from 'helpers/getAttrValueById';
+import {useState, useEffect, SetStateAction} from 'react';
 import {FoodProps} from 'store/userLog/userLog.types';
 import {useSelector} from 'hooks/useRedux';
-import cloneDeep from 'lodash/cloneDeep';
+import {createFoodLabelData} from 'helpers/filters';
 
 const useFoodLabel = (food: FoodProps) => {
   const userData = useSelector(state => state.auth.userData);
@@ -28,48 +27,11 @@ const useFoodLabel = (food: FoodProps) => {
   });
 
   useEffect(() => {
-    const map = [
-      {labelAttribute: 'valueCalories', attrId: 208},
-      {labelAttribute: 'valueTotalFat', attrId: 204},
-      {labelAttribute: 'valueSatFat', attrId: 606},
-      {labelAttribute: 'valueTransFat', attrId: 605},
-      {labelAttribute: 'valueMonoFat', attrId: 645},
-      {labelAttribute: 'valuePolyFat', attrId: 646},
-      {labelAttribute: 'valueCholesterol', attrId: 601},
-      {labelAttribute: 'valueSodium', attrId: 307},
-      {labelAttribute: 'valuePotassium', attrId: 306},
-      {labelAttribute: 'valuePotassium_2018', attrId: 306},
-      {labelAttribute: 'valueTotalCarb', attrId: 205},
-      {labelAttribute: 'valueFibers', attrId: 291},
-      {labelAttribute: 'valueSugars', attrId: 269},
-      {labelAttribute: 'valueAddedSugars', attrId: 539},
-      {labelAttribute: 'valueProteins', attrId: 203},
-      {labelAttribute: 'valueVitaminA', attrId: 318},
-      {labelAttribute: 'valueVitaminC', attrId: 401},
-      {labelAttribute: 'valueVitaminD', attrId: 328},
-      {labelAttribute: 'valueCalcium', attrId: 301},
-      {labelAttribute: 'valueIron', attrId: 303},
-      {labelAttribute: 'valueCaffeine', attrId: 262},
-    ];
-    setLabelData(prev => {
-      const newLabelData: Record<string, any> = {...prev};
-      const full_nutrients = cloneDeep(food?.full_nutrients) || [];
-
-      map.forEach(definition => {
-        const value = getAttrValueById(full_nutrients, definition.attrId) || 0;
-
-        if (value) {
-          newLabelData[definition.labelAttribute] = value;
-
-          newLabelData[definition.labelAttribute.replace('value', 'show')] =
-            true;
-        } else {
-          newLabelData[definition.labelAttribute.replace('value', 'show')] =
-            false;
-        }
-      });
-      return newLabelData;
-    });
+    if (food) {
+      setLabelData(
+        createFoodLabelData(food) as SetStateAction<Record<string, any>>,
+      );
+    }
   }, [food]);
 
   return labelData;
