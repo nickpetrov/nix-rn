@@ -89,6 +89,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     nf_total_carbohydrate: 0,
     nf_dietary_fiber: 0,
     nf_sugars: 0,
+    nf_added_sugars: 0,
     nf_protein: 0,
     nf_potassium: 0,
     nf_vitamin_a_dv: 0,
@@ -183,6 +184,8 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
         newTotal.folate += getAttrValueById(food.full_nutrients, 417) || 0;
         newTotal.zinc += getAttrValueById(food.full_nutrients, 309) || 0;
         newTotal.magnesium += getAttrValueById(food.full_nutrients, 304) || 0;
+        newTotal.nf_added_sugars +=
+          getAttrValueById(food.full_nutrients, 539) || 0;
 
         newTotal.nf_vitamin_a_dv +=
           getAttrValueById(food.full_nutrients, 318) || 0;
@@ -374,6 +377,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     valueTotalCarb: total.nf_total_carbohydrate || 0,
     valueFibers: total.nf_dietary_fiber || 0,
     valueSugars: total.nf_sugars || 0,
+    valueAddedSugars: total.nf_added_sugars || 0,
     valueProteins: total.nf_protein || 0,
     valueVitaminA: total.nf_vitamin_a_dv || 0,
     valueVitaminC: total.nf_vitamin_c_dv || 0,
