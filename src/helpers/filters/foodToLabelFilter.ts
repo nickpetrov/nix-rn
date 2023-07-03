@@ -43,8 +43,6 @@ export const filterFoodToLabel = (
     externalServingQty = 1;
   }
 
-  console.log(food.full_nutrients.find(({attr_id}: any) => attr_id === 539));
-
   const full_nutrients: any[] = food.full_nutrients.map(
     (nutrient: any) => (nutrient.value /= externalServingQty),
   );
