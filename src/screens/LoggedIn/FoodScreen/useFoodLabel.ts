@@ -1,35 +1,65 @@
 import {useState, useEffect, SetStateAction} from 'react';
-import {FoodProps} from 'store/userLog/userLog.types';
-import {useSelector} from 'hooks/useRedux';
-import {createFoodLabelData} from 'helpers/filters';
 
-const useFoodLabel = (food: FoodProps) => {
-  const userData = useSelector(state => state.auth.userData);
-  const [labelData, setLabelData] = useState<Record<string, any>>({
-    showItemName: false,
-    showServingUnitQuantity: false,
-    allowCustomWidth: true,
-    showServingUnitQuantityTextbox: false,
-    textNutritionFacts: '',
-    showDisclaimer: false,
-    showIngredients: false,
-    decimalPlacesForQuantityTextbox: 2,
-    scrollLongItemNamePixel: 38,
-    showAmountPerServing: false,
-    dailyValueTotalFat: 78,
-    dailyValueSodium: 2300,
-    dailyValueCarb: 275,
-    dailyValueFiber: 28,
-    valueServingUnitQuantity: 1,
-    valueServingSizeUnit: 'Serving',
-    calorieIntake: userData.daily_kcal || 2000,
-    valueServingWeightGrams: food.serving_weight_grams,
-  });
+import {FoodProps} from 'store/userLog/userLog.types';
+import {createFoodLabelData} from 'helpers/filters';
+import {filterNutrient, sumFoods} from 'helpers/filters';
+
+const setSingleGlobalOptions = (food: FoodProps) => ({
+  showAmountPerServing: false,
+  showItemName: false,
+  showServingUnitQuantity: false,
+  showServingUnitQuantityTextbox: false,
+  showTransFat: false,
+  valueAddedSugars: filterNutrient(food.full_nutrients, 539, 'value'),
+  valuePhosphorus: filterNutrient(food.full_nutrients, 305, 'value'),
+  vitamin_d: filterNutrient(food.full_nutrients, 324, 'value'),
+  net_carbs: (food?.nf_total_carbohydrate || 0) - (food?.nf_dietary_fiber || 0),
+});
+
+const setTotalGlobalOptions = (total: Record<string, any>) => ({
+  showAmountPerServing: false,
+  showItemName: false,
+  showServingUnitQuantity: false,
+  showServingUnitQuantityTextbox: false,
+  showTransFat: false,
+  phosphorus: total.nf_p,
+  valueAddedSugars: filterNutrient(total.full_nutrients, 539, 'value'),
+  caffeine: filterNutrient(total.full_nutrients, 262, 'value'),
+  vitamin_d: filterNutrient(total.full_nutrients, 324, 'value'),
+  vitamin_e: filterNutrient(total.full_nutrients, 323, 'value'),
+  vitamin_k: filterNutrient(total.full_nutrients, 430, 'value'),
+  thiamine: filterNutrient(total.full_nutrients, 404, 'value'),
+  riboflavin: filterNutrient(total.full_nutrients, 405, 'value'),
+  niacin: filterNutrient(total.full_nutrients, 406, 'value'),
+  pantothenic_acid: filterNutrient(total.full_nutrients, 410, 'value'),
+  vitamin_b6: filterNutrient(total.full_nutrients, 415, 'value'),
+  vitamin_b12: filterNutrient(total.full_nutrients, 418, 'value'),
+  folic_acid: filterNutrient(total.full_nutrients, 431, 'value'),
+  folate: filterNutrient(total.full_nutrients, 417, 'value'),
+  zinc: filterNutrient(total.full_nutrients, 309, 'value'),
+  magnesium: filterNutrient(total.full_nutrients, 304, 'value'),
+  net_carbs:
+    (total?.nf_total_carbohydrate || 0) - (total?.nf_dietary_fiber || 0),
+});
+
+const useFoodLabel = (food: FoodProps | FoodProps[]) => {
+  const [labelData, setLabelData] = useState<Record<string, any> | null>(null);
 
   useEffect(() => {
-    if (food) {
+    if (Array.isArray(food)) {
+      const total = sumFoods(food);
       setLabelData(
-        createFoodLabelData(food) as SetStateAction<Record<string, any>>,
+        createFoodLabelData(
+          total,
+          setTotalGlobalOptions(total),
+        ) as SetStateAction<Record<string, any>>,
+      );
+    } else {
+      setLabelData(
+        createFoodLabelData(
+          food,
+          setSingleGlobalOptions(food),
+        ) as SetStateAction<Record<string, any>>,
       );
     }
   }, [food]);

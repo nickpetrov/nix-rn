@@ -20,7 +20,6 @@ const LABEL_ATTRIBUTES = [
   {labelAttribute: 'valueCholesterol', attrId: 601},
   {labelAttribute: 'valueSodium', attrId: 307},
   {labelAttribute: 'valuePotassium', attrId: 306},
-  {labelAttribute: 'valuePotassium_2018', attrId: 306},
   {labelAttribute: 'valueTotalCarb', attrId: 205},
   {labelAttribute: 'valueFibers', attrId: 291},
   {labelAttribute: 'valueSugars', attrId: 269},
@@ -32,6 +31,19 @@ const LABEL_ATTRIBUTES = [
   {labelAttribute: 'valueCalcium', attrId: 301},
   {labelAttribute: 'valueIron', attrId: 303},
   {labelAttribute: 'valueCaffeine', attrId: 262},
+  {labelAttribute: 'valueVitaminD', attrId: 324},
+  {labelAttribute: 'valueVitaminE', attrId: 323},
+  {labelAttribute: 'valueVitaminK', attrId: 430},
+  {labelAttribute: 'valueThiamine', attrId: 404},
+  {labelAttribute: 'valueRiboflavin', attrId: 405},
+  {labelAttribute: 'valueNiacin', attrId: 406},
+  {labelAttribute: 'valuePantothenicAcid', attrId: 410},
+  {labelAttribute: 'valueVitaminB6', attrId: 415},
+  {labelAttribute: 'valueFolate', attrId: 417},
+  {labelAttribute: 'valueVitaminB12', attrId: 418},
+  {labelAttribute: 'valueFolicAcid', attrId: 431},
+  {labelAttribute: 'valueZinc', attrId: 309},
+  {labelAttribute: 'valueMagnesium', attrId: 304},
 ];
 
 export const filterFoodToLabel = (
@@ -52,7 +64,7 @@ export const filterFoodToLabel = (
     (s: string) => s.toUpperCase(),
   );
 
-  const labelData: Record<string, any> = {
+  let labelData: Record<string, any> = {
     full_nutrients,
     name: itemName,
     brandName: food.brand_name,
@@ -73,12 +85,14 @@ export const filterFoodToLabel = (
     }
   });
 
-  const resultLabelData = Object.entries(DEFAULT_LABELS).map(([key, value]) => {
-    if (!labelData[key] && !nutritionLabelGlobalOptions[key]) {
-      labelData[key] = value;
-      return labelData;
-    }
-  });
+  const resultLabelData = Object.entries(DEFAULT_LABELS)
+    .map(([key, value]) => {
+      if (!labelData[key] && !nutritionLabelGlobalOptions[key]) {
+        labelData[key] = value;
+        return labelData;
+      }
+    })
+    .filter(Boolean);
 
   return resultLabelData;
 };

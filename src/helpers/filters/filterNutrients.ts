@@ -34,7 +34,7 @@ export const sumFoods = (foods: any[]) => {
   };
 
   foods.forEach(function (food) {
-    food.forEach(([value, key]: any) => {
+    Object.entries(food).forEach(([value, key]: any) => {
       if (
         typeof value === 'number' &&
         (key === 'serving_weight_grams' ||
