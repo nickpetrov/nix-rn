@@ -8,10 +8,9 @@ import React, {useEffect, useRef, useState} from 'react';
 import {ActivityIndicator, View} from 'react-native';
 import WebView, {WebViewMessageEvent} from 'react-native-webview';
 import {styles} from './NutritionLabel.styles';
-import {round} from 'helpers/nutrionixLabel';
 
 type Props = {
-  option: Record<string, any>;
+  option: Record<string, any> | null;
 };
 
 //this
@@ -37,38 +36,6 @@ const HTML = `
 
 export default function NutritionLabel(props: Props) {
   const {option} = props;
-
-  if (option?.applyMathRounding) {
-    [
-      'valueServingWeightGrams',
-      'valueServingPerContainer',
-      'valueCalories',
-      'valueFatCalories',
-      'valueTotalFat',
-      'valueSatFat',
-      'valueTransFat',
-      'valuePolyFat',
-      'valueMonoFat',
-      'valueCholesterol',
-      'valueSodium',
-      'valuePotassium',
-      'valuePotassium_2018',
-      'valueTotalCarb',
-      'valueFibers',
-      'valueSugars',
-      'valueAddedSugars',
-      'valueProteins',
-      'valueVitaminA',
-      'valueVitaminC',
-      'valueVitaminD',
-      'valueCalcium',
-      'valueIron',
-    ].forEach(attribute => {
-      if (option[attribute]) {
-        option[attribute] = round(option[attribute]);
-      }
-    });
-  }
 
   const height = useSharedValue(100);
   const animatedStyles = useAnimatedStyle(() => ({height: height.value}));

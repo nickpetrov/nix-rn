@@ -569,7 +569,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
             )}
           </View>
           <View style={styles.p10}>
-            <NutritionLabel option={{...defaultOption, ...labelData}} />
+            <NutritionLabel option={labelData!} />
           </View>
           {(!!net_carbs ||
             !!phosphorus ||

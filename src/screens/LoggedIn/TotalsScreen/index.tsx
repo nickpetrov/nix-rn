@@ -23,6 +23,7 @@ import NutritionLabel from 'components/NutrionixLabel/NutritionLabel';
 
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
+import useFoodLabel from '../FoodScreen/useFoodLabel';
 
 // actions
 import * as userActions from 'store/auth/auth.actions';
@@ -32,7 +33,6 @@ import {addExistFoodToBasket, mergeBasket} from 'store/basket/basket.actions';
 
 // helpres
 import getAttrValueById from 'helpers/getAttrValueById';
-import {defaultOption} from 'helpers/nutrionixLabel';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
@@ -62,7 +62,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   const mealType = route.params.type;
   const readOnly = route.params.readOnly;
   const date = route.params.date;
-  const clientId = route.params.clientId;
+  // const clientId = route.params.clientId;
   const emptyBasket = useSelector(state => state.basket.foods.length === 0);
   const userData = useSelector(state => state.auth.userData);
   const {totals, selectedDate} = useSelector(state => state.userLog);
@@ -76,43 +76,10 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
   const [dayNote, setDayNote] = useState(
     totals.length && totals[0].notes ? totals[0].notes : '',
   );
-  const [total, setTotal] = useState<Record<string, any>>({
-    item_name: 'Total',
-    brand_name: 'Nutritionix',
-    full_nutrients: [],
-    metric_qty: 0,
-    calories: 0,
-    total_fat: 0,
-    nf_saturated_fat: 0,
-    nf_cholesterol: 0,
-    nf_sodium: 0,
-    nf_total_carbohydrate: 0,
-    nf_dietary_fiber: 0,
-    nf_sugars: 0,
-    nf_added_sugars: 0,
-    nf_protein: 0,
-    nf_potassium: 0,
-    nf_vitamin_a_dv: 0,
-    nf_vitamin_c_dv: 0,
-    nf_calcium_dv: 0,
-    nf_iron_dv: 0,
-    nf_p: 0,
-    caffeine: 0,
-    alcohol: 0,
-    vitamin_d: 0,
-    vitamin_e: 0,
-    vitamin_k: 0,
-    thiamine: 0,
-    riboflavin: 0,
-    niacin: 0,
-    pantothenic_acid: 0,
-    vitamin_b6: 0,
-    vitamin_b12: 0,
-    folic_acid: 0,
-    folate: 0,
-    zinc: 0,
-    magnesium: 0,
-    net_carbs: 0,
+
+  const labelOptions = useFoodLabel(foods);
+
+  const [total, setTotal] = useState<Record<string, any> | null>({
     totalCalForPieChart: 0,
   });
   const [caloriesInputFocused, setCaloriesInputFocuses] = useState(false);
@@ -153,52 +120,6 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
 
       foods.forEach(food => {
         let foodCalories;
-        newTotal.metric_qty += food.serving_weight_grams;
-        newTotal.total_fat += getAttrValueById(food.full_nutrients, 204) || 0;
-        newTotal.nf_saturated_fat +=
-          getAttrValueById(food.full_nutrients, 606) || 0;
-        newTotal.nf_cholesterol +=
-          getAttrValueById(food.full_nutrients, 601) || 0;
-        newTotal.nf_sodium += getAttrValueById(food.full_nutrients, 307) || 0;
-        newTotal.nf_total_carbohydrate +=
-          getAttrValueById(food.full_nutrients, 205) || 0;
-        newTotal.nf_dietary_fiber +=
-          getAttrValueById(food.full_nutrients, 291) || 0;
-        newTotal.nf_sugars += getAttrValueById(food.full_nutrients, 269) || 0;
-        newTotal.nf_protein += getAttrValueById(food.full_nutrients, 203) || 0;
-        newTotal.nf_potassium +=
-          getAttrValueById(food.full_nutrients, 306) || 0;
-        newTotal.nf_p += food.nf_p;
-        newTotal.caffeine += getAttrValueById(food.full_nutrients, 262) || 0;
-        newTotal.vitamin_d += getAttrValueById(food.full_nutrients, 324) || 0;
-        newTotal.vitamin_e += getAttrValueById(food.full_nutrients, 323) || 0;
-        newTotal.vitamin_k += getAttrValueById(food.full_nutrients, 430) || 0;
-        newTotal.thiamine += getAttrValueById(food.full_nutrients, 404) || 0;
-        newTotal.riboflavin += getAttrValueById(food.full_nutrients, 405) || 0;
-        newTotal.niacin += getAttrValueById(food.full_nutrients, 406) || 0;
-        newTotal.pantothenic_acid +=
-          getAttrValueById(food.full_nutrients, 410) || 0;
-        newTotal.vitamin_b6 += getAttrValueById(food.full_nutrients, 415) || 0;
-        newTotal.vitamin_b12 += getAttrValueById(food.full_nutrients, 418) || 0;
-        newTotal.folic_acid += getAttrValueById(food.full_nutrients, 431) || 0;
-        newTotal.folate += getAttrValueById(food.full_nutrients, 417) || 0;
-        newTotal.zinc += getAttrValueById(food.full_nutrients, 309) || 0;
-        newTotal.magnesium += getAttrValueById(food.full_nutrients, 304) || 0;
-        newTotal.nf_added_sugars +=
-          getAttrValueById(food.full_nutrients, 539) || 0;
-
-        newTotal.nf_vitamin_a_dv +=
-          getAttrValueById(food.full_nutrients, 318) || 0;
-        newTotal.nf_vitamin_c_dv +=
-          getAttrValueById(food.full_nutrients, 401) || 0;
-        newTotal.nf_vitamin_d_dv =
-          getAttrValueById(food.full_nutrients, 328) || 0;
-        newTotal.nf_calcium_dv +=
-          getAttrValueById(food.full_nutrients, 301) || 0;
-        newTotal.nf_iron_dv += getAttrValueById(food.full_nutrients, 303) || 0;
-
-        newTotal.alcohol += getAttrValueById(food.full_nutrients, 221) || 0;
-
         var totalMacroCalories =
           (food.nf_protein || 0) * 4 +
           (food.nf_total_carbohydrate || 0) * 4 +
@@ -216,21 +137,9 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           foodCalories = totalMacroCalories + newTotal.alcohol * 7;
         }
 
-        newTotal.calories += getAttrValueById(food.full_nutrients, 208) || 0;
         newTotal.totalCalForPieChart += foodCalories;
       });
-      newTotal.serving_qty = 1;
-      newTotal.serving_unit = 'Serving';
-      newTotal.showServingUnitQuantityTextbox = false;
-      if (
-        newTotal.nf_total_carbohydrate === 0 ||
-        newTotal.nf_total_carbohydrate - newTotal.nf_dietary_fiber <= 0
-      ) {
-        newTotal.net_carbs = 0;
-      } else {
-        newTotal.net_carbs =
-          newTotal.nf_total_carbohydrate - newTotal.nf_dietary_fiber;
-      }
+
       return newTotal;
     });
 
@@ -327,72 +236,6 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
       navigation.goBack();
     });
 
-  const labelOptions = {
-    textNutritionFacts: '',
-    allowCustomWidth: true,
-    adjustUserDailyValues: true,
-    brandName: 'Nutritionix',
-    decimalPlacesForQuantityTextbox: 2,
-    itemName: 'cheeseburger',
-    scrollLongItemNamePixel: 38,
-    showAmountPerServing: false,
-    showCalcium: true,
-    showCalories: true,
-    showCholesterol: true,
-    showFatCalories: true,
-    showFibers: true,
-    showItemName: false,
-    showIngredients: false,
-    showIron: true,
-    showMonoFat: false,
-    showPolyFat: false,
-    showProteins: true,
-    showSatFat: true,
-    showServingSize: true,
-    showServingUnitQuantity: false,
-    showServingsPerContainer: false,
-    showSodium: true,
-    showSugars: true,
-    showTotalCarb: true,
-    showTotalFat: true,
-    showTransFat: false,
-    showVitaminA: true,
-    showVitaminC: true,
-    showVitaminD: true,
-
-    dailyValueTotalFat: 78,
-    dailyValueSodium: 2300,
-    dailyValueCarb: 275,
-    dailyValueFiber: 28,
-
-    valueServingUnitQuantity: 1,
-    valueServingSizeUnit: 'Serving',
-    valueServingWeightGrams: total.metric_qty,
-
-    valueCalories: total.calories || 0,
-    valueTotalFat: total.total_fat || 0,
-    valueSatFat: total.nf_saturated_fat || 0,
-    valueCholesterol: total.nf_cholesterol || 0,
-    valueSodium: total.nf_sodium || 0,
-    valueTotalCarb: total.nf_total_carbohydrate || 0,
-    valueFibers: total.nf_dietary_fiber || 0,
-    valueSugars: total.nf_sugars || 0,
-    valueAddedSugars: total.nf_added_sugars || 0,
-    valueProteins: total.nf_protein || 0,
-    valueVitaminA: total.nf_vitamin_a_dv || 0,
-    valueVitaminC: total.nf_vitamin_c_dv || 0,
-    valueVitaminD: total.nf_vitamin_d_dv || 0,
-    vitamin_d: total.vitamin_d || 0,
-    valueCalcium: total.nf_calcium_dv || 0,
-    valueIron: total.nf_iron_dv || 0,
-    valuePotassium_2018: total.nf_potassium,
-    valuePotassium: total.nf_potassium,
-    calorieIntake: clientId
-      ? clientTotals[0].daily_kcal_limit
-      : totals.filter((item: TotalProps) => item.date === followDate)[0]
-          ?.daily_kcal_limit || userData.daily_kcal,
-  };
-
   return (
     <SafeAreaView style={styles.root}>
       <TouchableWithoutFeedback
@@ -406,8 +249,7 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           extraScrollHeight={showNotes && !caloriesInputFocused ? 200 : 0}
           enableAutomaticScroll={true}>
           <View style={styles.mb10}>
-            {/**this */}
-            <NutritionLabel option={{...defaultOption, ...labelOptions}} />
+            <NutritionLabel option={labelOptions} />
           </View>
 
           <View style={styles.container}>
@@ -438,19 +280,28 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
               <View style={styles.mb10}>
                 <NutritionPieChart
                   data={pieChartData}
-                  totalCalForPieChart={total.totalCalForPieChart}
+                  totalCalForPieChart={total?.totalCalForPieChart}
                   clientTotals={clientTotals}
                 />
               </View>
             ) : null}
 
             <View>
-              <Text>Net Carbs ** : {(total.net_carbs || 0).toFixed(1)} g</Text>
-              <Text>Phosphorus ** : {(total.nf_p || 0).toFixed(1)} mg</Text>
               <Text>
-                Potassium ** : {(total.nf_potassium || 0).toFixed(1)} mg
+                Net Carbs ** : {(labelOptions?.valueTotalCarb || 0).toFixed(1)}{' '}
+                g
               </Text>
-              <Text>Caffeine ** : {(total.caffeine || 0).toFixed(1)} mg</Text>
+              <Text>
+                Phosphorus ** :&nbsp;
+                {(labelOptions?.valuePhosphorus || 0).toFixed(1)} mg
+              </Text>
+              <Text>
+                Potassium ** : {(labelOptions?.valuePotassium || 0).toFixed(1)}{' '}
+                mg
+              </Text>
+              <Text>
+                Caffeine ** : {(labelOptions?.valueCaffeine || 0).toFixed(1)} mg
+              </Text>
 
               <View style={styles.hideContainer}>
                 <TouchableWithoutFeedback
@@ -472,38 +323,53 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
                 {showMoreNutrients ? (
                   <View style={styles.vitaminContainer}>
                     <Text>
-                      Vitamin D**: {(total.vitamin_d || 0).toFixed(1)} IU
+                      Vitamin D**:&nbsp;
+                      {(labelOptions?.valueVitaminD || 0).toFixed(1)} IU
                     </Text>
                     <Text>
-                      Vitamin E**: {(total.vitamin_e || 0).toFixed(1)} IU
+                      Vitamin E**:&nbsp;
+                      {(labelOptions?.valueVitaminE || 0).toFixed(1)} IU
                     </Text>
                     <Text>
-                      Vitamin K**: {(total.vitamin_k || 0).toFixed(1)} µg
+                      Vitamin K**:&nbsp;
+                      {(labelOptions?.valueVitaminK || 0).toFixed(1)} µg
                     </Text>
                     <Text>
-                      Thiamine**: {(total.thiamine || 0).toFixed(1)} mg
+                      Thiamine**:&nbsp;
+                      {(labelOptions?.valueThiamine || 0).toFixed(1)} mg
                     </Text>
                     <Text>
-                      Riboflavin**: {(total.riboflavin || 0).toFixed(1)} mg
-                    </Text>
-                    <Text>Niacin**: {(total.niacin || 0).toFixed(1)} mg</Text>
-                    <Text>
-                      Pantothenic Acid**:{' '}
-                      {(total.pantothenic_acid || 0).toFixed(1)} mg
+                      Riboflavin**:&nbsp;
+                      {(labelOptions?.valueRiboflavin || 0).toFixed(1)} mg
                     </Text>
                     <Text>
-                      Vitamin B-6**: {(total.vitamin_b6 || 0).toFixed(1)} mg
-                    </Text>
-                    <Text>Folate**: {(total.folate || 0).toFixed(1)} µg</Text>
-                    <Text>
-                      Vitamin B-12**: {(total.vitamin_b12 || 0).toFixed(1)} µg
+                      Niacin**: {(labelOptions?.valueNiacin || 0).toFixed(1)} mg
                     </Text>
                     <Text>
-                      Folic Acid**: {(total.folic_acid || 0).toFixed(1)} µg
+                      Pantothenic Acid**:&nbsp;
+                      {(labelOptions?.valuePantothenicAcid || 0).toFixed(1)} mg
                     </Text>
-                    <Text>Zinc**: {(total.zinc || 0).toFixed(1)} mg</Text>
                     <Text>
-                      Magnesium**: {(total.magnesium || 0).toFixed(1)} mg
+                      Vitamin B-6**:&nbsp;
+                      {(labelOptions?.valueVitaminB6 || 0).toFixed(1)} mg
+                    </Text>
+                    <Text>
+                      Folate**: {(labelOptions?.valueFolate || 0).toFixed(1)} µg
+                    </Text>
+                    <Text>
+                      Vitamin B-12**:&nbsp;
+                      {(labelOptions?.valueVitaminB12 || 0).toFixed(1)} µg
+                    </Text>
+                    <Text>
+                      Folic Acid**:&nbsp;
+                      {(labelOptions?.valueFolicAcid || 0).toFixed(1)} µg
+                    </Text>
+                    <Text>
+                      Zinc**: {(labelOptions?.valueZinc || 0).toFixed(1)} mg
+                    </Text>
+                    <Text>
+                      Magnesium**:&nbsp;
+                      {(labelOptions?.valueMagnesium || 0).toFixed(1)} mg
                     </Text>
                   </View>
                 ) : null}
