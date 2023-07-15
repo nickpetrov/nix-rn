@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
   },
   hideContainer: {
     flex: 1,
-    marginTop: 10,
+    // marginTop: 10,
   },
   hideContent: {
     flex: 1,
@@ -102,4 +102,7 @@ export const styles = StyleSheet.create({
   btn: {
     marginHorizontal: 5,
   },
+  boldText: {
+    fontWeight: 'bold'
+  }
 });

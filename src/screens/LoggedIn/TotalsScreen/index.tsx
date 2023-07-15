@@ -24,6 +24,7 @@ import NutritionLabel from 'components/NutrionixLabel/NutritionLabel';
 // hooks
 import {useSelector, useDispatch} from 'hooks/useRedux';
 import useFoodLabel from '../FoodScreen/useFoodLabel';
+import {filterNutrient, sumFoods} from 'helpers/filters';
 
 // actions
 import * as userActions from 'store/auth/auth.actions';
@@ -77,7 +78,11 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
     totals.length && totals[0].notes ? totals[0].notes : '',
   );
 
-  const labelOptions = useFoodLabel(foods);
+  const labelData = useFoodLabel(foods);
+  const summedFoodsData = sumFoods(foods);
+  const netCarbs = summedFoodsData.nf_total_carbohydrate > 0 ?
+    (Math.round((summedFoodsData.nf_total_carbohydrate - (summedFoodsData.nf_dietary_fiber || filterNutrient(summedFoodsData.full_nutrients, 291, 'value')) || 0) * 100)/100) :
+    0;
 
   const [total, setTotal] = useState<Record<string, any> | null>({
     totalCalForPieChart: 0,
@@ -249,7 +254,80 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
           extraScrollHeight={showNotes && !caloriesInputFocused ? 200 : 0}
           enableAutomaticScroll={true}>
           <View style={styles.mb10}>
-            <NutritionLabel option={labelOptions} />
+            <NutritionLabel option={labelData} />
+          </View>
+
+          <View style={styles.container}>
+            <Text>
+              <Text style={styles.boldText}>Net Carbs: </Text>{(netCarbs || 0).toFixed(1)} g
+            </Text>
+            <Text>
+              Phosphorus ** : {(labelData?.phosphorus || 0).toFixed(1)} mg
+            </Text>
+            <Text>
+              Caffeine ** : {(labelData?.caffeine || 0).toFixed(1)} mg
+            </Text>
+
+            <View style={styles.hideContainer}>
+              <TouchableWithoutFeedback
+                onPress={() => setShowMoreNutrients(!showMoreNutrients)}
+                style={styles.flex1}>
+                <View style={styles.hideContent}>
+                  <FontAwesome
+                    name={showMoreNutrients ? 'chevron-down' : 'chevron-right'}
+                    size={12}
+                    style={styles.hideContentIcon}
+                  />
+                  <Text style={styles.boldText}>
+                    {showMoreNutrients ? 'Hide' : 'View'} more micronutrients{' '}
+                  </Text>
+                </View>
+              </TouchableWithoutFeedback>
+
+              {showMoreNutrients ? (
+                <View style={styles.vitaminContainer}>
+                  <Text>
+                    Vitamin D**: {(labelData?.vitamin_d || 0).toFixed(1)} IU
+                  </Text>
+                  <Text>
+                    Vitamin E**: {(labelData?.vitamin_e || 0).toFixed(1)} IU
+                  </Text>
+                  <Text>
+                    Vitamin K**: {(labelData?.vitamin_k || 0).toFixed(1)} µg
+                  </Text>
+                  <Text>
+                    Thiamine**: {(labelData?.thiamine || 0).toFixed(1)} mg
+                  </Text>
+                  <Text>
+                    Riboflavin**: {(labelData?.riboflavin || 0).toFixed(1)} mg
+                  </Text>
+                  <Text>
+                    Niacin**: {(labelData?.niacin || 0).toFixed(1)} mg
+                  </Text>
+                  <Text>
+                    Pantothenic Acid**: {(labelData?.pantothenic_acid || 0).toFixed(1)} mg
+                  </Text>
+                  <Text>
+                    Vitamin B-6**: {(labelData?.vitamin_b6 || 0).toFixed(1)} mg
+                  </Text>
+                  <Text>
+                    Folate**: {(labelData?.folate || 0).toFixed(1)} µg
+                  </Text>
+                  <Text>
+                    Vitamin B-12**: {(labelData?.vitamin_b12 || 0).toFixed(1)} µg
+                  </Text>
+                  <Text>
+                    Folic Acid**: {(labelData?.folic_acid || 0).toFixed(1)} µg
+                  </Text>
+                  <Text>
+                    Zinc**: {(labelData?.zinc || 0).toFixed(1)} mg
+                  </Text>
+                  <Text>
+                    Magnesium**: {(labelData?.magnesium || 0).toFixed(1)} mg
+                  </Text>
+                </View>
+              ) : null}
+            </View>
           </View>
 
           <View style={styles.container}>
@@ -285,96 +363,6 @@ export const TotalsScreen: React.FC<TotalsScreenProps> = ({
                 />
               </View>
             ) : null}
-
-            <View>
-              <Text>
-                Net Carbs ** : {(labelOptions?.valueTotalCarb || 0).toFixed(1)}{' '}
-                g
-              </Text>
-              <Text>
-                Phosphorus ** :&nbsp;
-                {(labelOptions?.valuePhosphorus || 0).toFixed(1)} mg
-              </Text>
-              <Text>
-                Potassium ** : {(labelOptions?.valuePotassium || 0).toFixed(1)}{' '}
-                mg
-              </Text>
-              <Text>
-                Caffeine ** : {(labelOptions?.valueCaffeine || 0).toFixed(1)} mg
-              </Text>
-
-              <View style={styles.hideContainer}>
-                <TouchableWithoutFeedback
-                  onPress={() => setShowMoreNutrients(!showMoreNutrients)}
-                  style={styles.flex1}>
-                  <View style={styles.hideContent}>
-                    <FontAwesome
-                      name={
-                        showMoreNutrients ? 'chevron-down' : 'chevron-right'
-                      }
-                      size={12}
-                      style={styles.hideContentIcon}
-                    />
-                    <Text>
-                      {showMoreNutrients ? 'Hide' : 'View'} more micronutrients{' '}
-                    </Text>
-                  </View>
-                </TouchableWithoutFeedback>
-                {showMoreNutrients ? (
-                  <View style={styles.vitaminContainer}>
-                    <Text>
-                      Vitamin D**:&nbsp;
-                      {(labelOptions?.valueVitaminD || 0).toFixed(1)} IU
-                    </Text>
-                    <Text>
-                      Vitamin E**:&nbsp;
-                      {(labelOptions?.valueVitaminE || 0).toFixed(1)} IU
-                    </Text>
-                    <Text>
-                      Vitamin K**:&nbsp;
-                      {(labelOptions?.valueVitaminK || 0).toFixed(1)} µg
-                    </Text>
-                    <Text>
-                      Thiamine**:&nbsp;
-                      {(labelOptions?.valueThiamine || 0).toFixed(1)} mg
-                    </Text>
-                    <Text>
-                      Riboflavin**:&nbsp;
-                      {(labelOptions?.valueRiboflavin || 0).toFixed(1)} mg
-                    </Text>
-                    <Text>
-                      Niacin**: {(labelOptions?.valueNiacin || 0).toFixed(1)} mg
-                    </Text>
-                    <Text>
-                      Pantothenic Acid**:&nbsp;
-                      {(labelOptions?.valuePantothenicAcid || 0).toFixed(1)} mg
-                    </Text>
-                    <Text>
-                      Vitamin B-6**:&nbsp;
-                      {(labelOptions?.valueVitaminB6 || 0).toFixed(1)} mg
-                    </Text>
-                    <Text>
-                      Folate**: {(labelOptions?.valueFolate || 0).toFixed(1)} µg
-                    </Text>
-                    <Text>
-                      Vitamin B-12**:&nbsp;
-                      {(labelOptions?.valueVitaminB12 || 0).toFixed(1)} µg
-                    </Text>
-                    <Text>
-                      Folic Acid**:&nbsp;
-                      {(labelOptions?.valueFolicAcid || 0).toFixed(1)} µg
-                    </Text>
-                    <Text>
-                      Zinc**: {(labelOptions?.valueZinc || 0).toFixed(1)} mg
-                    </Text>
-                    <Text>
-                      Magnesium**:&nbsp;
-                      {(labelOptions?.valueMagnesium || 0).toFixed(1)} mg
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
-            </View>
 
             {mealType === 'daily' && !readOnly && (
               <>
