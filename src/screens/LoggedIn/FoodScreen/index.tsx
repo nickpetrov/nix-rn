@@ -107,12 +107,7 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
   const [showSave, setShowSave] = useState<boolean>(false);
   const [photoError, setPhotoError] = useState('');
   const dispatch = useDispatch();
-  const net_carbs =
-    foodObj.nf_total_carbohydrate === 0 ||
-    (foodObj.nf_total_carbohydrate || 0) - (foodObj.nf_dietary_fiber || 0) <= 0
-      ? 0
-      : (foodObj.nf_total_carbohydrate || 0) - (foodObj.nf_dietary_fiber || 0);
-  const phosphorus = foodObj.nf_p;
+
   const labelData = useFoodLabel(foodObj);
   const spinValue = new Animated.Value(0);
 
@@ -571,39 +566,27 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
           <View style={styles.p10}>
             <NutritionLabel option={labelData!} />
           </View>
-          {(!!net_carbs ||
-            !!phosphorus ||
-            !!labelData?.valueCaffeine ||
-            !!labelData?.valuePotassium_2018) && (
-            <View style={styles.listContainer}>
-              {!!net_carbs && (
-                <Text style={styles.text}>
-                  Net Carbs**: {_.round(net_carbs || 0)} g
-                </Text>
-              )}
-              {!!labelData?.valueVitaminD && (
-                <Text style={styles.text}>
-                  Vitamin D** : {_.round(labelData?.valueVitaminD || 0)} IU
-                </Text>
-              )}
-              {!!phosphorus && (
-                <Text style={styles.text}>
-                  Phosphorus** : {_.round(phosphorus || 0)} mg
-                </Text>
-              )}
-              {!!labelData?.valuePotassium_2018 && (
-                <Text style={styles.text}>
-                  Potassium** : {_.round(labelData?.valuePotassium_2018 || 0)}{' '}
-                  mg
-                </Text>
-              )}
-              {!!labelData?.valueCaffeine && (
-                <Text style={styles.text}>
-                  Caffeine** : {_.round(labelData?.valueCaffeine || 0)} mg
-                </Text>
-              )}
-            </View>
-          )}
+
+          <View style={styles.listContainer}>
+            <Text style={styles.text}>
+              Vitamin D** : {_.round(labelData?.vitamin_d || 0)} IU
+            </Text>
+            <Text style={styles.text}>
+              Phosphorus** : {_.round(labelData?.valuePhosphorus || 0)} mg
+            </Text>
+            <Text style={styles.text}>
+              Potassium** : {_.round(labelData?.valuePotassium || 0)} mg
+            </Text>
+
+            <Text style={[styles.text, styles.mt10]}>
+              ** Please note that our restaurant and branded grocery food
+              database does not have these attributes available, and if your
+              food log contains restaurant or branded grocery foods, these
+              totals may be incorrect. The data from these attributes is for
+              reference purposes only, and should not be used for any chronic
+              disease management.
+            </Text>
+          </View>
 
           {!readOnly && (
             <View style={styles.p10}>
@@ -638,16 +621,6 @@ export const FoodScreen: React.FC<FoodScreenProps> = ({navigation, route}) => {
                 onPress={() => navigation.goBack()}
               />
             </View>
-          )}
-          {(!!foodObj.nf_p || !!foodObj.caffeine || !!foodObj.nf_potassium) && (
-            <Text style={styles.p10}>
-              ** Please note that our restaurant and branded grocery food
-              database does not have these attributes available, and if your
-              food log contains restaurant or branded grocery foods, these
-              totals may be incorrect. The data from these attributes is for
-              reference purposes only, and should not be used for any chronic
-              disease management.
-            </Text>
           )}
         </ScrollView>
       ) : null}

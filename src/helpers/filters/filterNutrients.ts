@@ -1,23 +1,31 @@
+import _ from 'lodash';
+
 export const filterNutrient = (
   nutrients: any,
-  id: number,
+  id: any,
   attribute?: string,
 ): any | null => {
   let i;
-  if (id && Array.isArray(nutrients)) {
-    for (i in nutrients) {
+  id = parseInt(id);
+  if (id && _.isArray(nutrients)) {
+    for (i in nutrients)
       if (nutrients.hasOwnProperty(i)) {
-        if (Number.parseInt(nutrients[i].attr_id, 10) === id) {
+        if (parseInt(nutrients[i].attr_id) === id) {
           return attribute ? nutrients[i][attribute] : nutrients[i];
         }
       }
-    }
   }
+
   return null;
 };
 
 export const sumFoods = (foods: any[]) => {
-  let sum: Record<string, any> = {
+
+  function isNumeric(n: any) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+  let sum: any = {
     serving_qty: 1,
     serving_unit: 'Serving',
     full_nutrients: [],
@@ -33,19 +41,22 @@ export const sumFoods = (foods: any[]) => {
         .trim() || null,
   };
 
-  foods.forEach(function (food) {
-    Object.entries(food).forEach(([value, key]: any) => {
+  _.forEach(foods, function (food) {
+    _.forEach(food, function (value, key) {
       if (
-        typeof value === 'number' &&
+        isNumeric(value) &&
         (key === 'serving_weight_grams' ||
           (key !== 'nf_ingredient_statement' && key.substr(0, 3) === 'nf_'))
       ) {
-        sum[key] = (sum[key] || 0) + value;
+        sum[key] = (sum[key] || 0) + parseFloat(value);
       }
     });
 
-    food.full_nutrients.forEach(function (nutrient: any) {
-      var sumNutrient = filterNutrient(sum.full_nutrients, nutrient.attr_id);
+    _.forEach(food.full_nutrients, function (nutrient) {
+      var sumNutrient = filterNutrient(
+        sum.full_nutrients,
+        nutrient.attr_id,
+      );
 
       if (sumNutrient) {
         if (sumNutrient.value !== null || nutrient.value !== null) {
@@ -54,7 +65,7 @@ export const sumFoods = (foods: any[]) => {
             parseFloat(nutrient.value || 0);
         }
       } else {
-        sum.full_nutrients.push({...nutrient});
+        sum.full_nutrients.push(_.cloneDeep(nutrient));
       }
     });
   });
