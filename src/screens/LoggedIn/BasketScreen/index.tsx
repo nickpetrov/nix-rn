@@ -632,43 +632,45 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                       />
                     )}
                   </View>
-                  {!uploadPhoto && !customPhoto && Platform.OS === 'android' && (
-                    <View style={styles.photoBtnAndroid}>
-                      <Text style={styles.photoBtnText}>
-                        {uploadPhoto ? 'Change Photo:' : 'Add Photo:'}
-                      </Text>
-                      <TouchableWithoutFeedback
-                        onPress={() => {
-                          if (agreedToUsePhoto) {
-                            lauchImageFromCamera();
-                          } else {
-                            dispatch(showAgreementPopup());
-                          }
-                        }}>
-                        <FontAwesome
-                          name="camera"
-                          color="#000"
-                          size={20}
-                          style={{paddingHorizontal: 5}}
-                        />
-                      </TouchableWithoutFeedback>
-                      <TouchableWithoutFeedback
-                        onPress={() => {
-                          if (agreedToUsePhoto) {
-                            lauchImageFromGallery();
-                          } else {
-                            dispatch(showAgreementPopup());
-                          }
-                        }}>
-                        <FontAwesome
-                          name="image"
-                          color="#000"
-                          size={20}
-                          style={{paddingHorizontal: 5}}
-                        />
-                      </TouchableWithoutFeedback>
-                    </View>
-                  )}
+                  {!uploadPhoto &&
+                    !customPhoto &&
+                    Platform.OS === 'android' && (
+                      <View style={styles.photoBtnAndroid}>
+                        <Text style={{...styles.photoBtnText, minWidth: 85}}>
+                          {uploadPhoto ? 'Change Photo:' : 'Add Photo:'}
+                        </Text>
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            if (agreedToUsePhoto) {
+                              lauchImageFromCamera();
+                            } else {
+                              dispatch(showAgreementPopup());
+                            }
+                          }}>
+                          <FontAwesome
+                            name="camera"
+                            color="#000"
+                            size={20}
+                            style={{paddingHorizontal: 5}}
+                          />
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            if (agreedToUsePhoto) {
+                              lauchImageFromGallery();
+                            } else {
+                              dispatch(showAgreementPopup());
+                            }
+                          }}>
+                          <FontAwesome
+                            name="image"
+                            color="#000"
+                            size={20}
+                            style={{paddingHorizontal: 5}}
+                          />
+                        </TouchableWithoutFeedback>
+                      </View>
+                    )}
                   {!uploadPhoto && !customPhoto && Platform.OS === 'ios' && (
                     <TouchableWithoutFeedback
                       onPress={() => {

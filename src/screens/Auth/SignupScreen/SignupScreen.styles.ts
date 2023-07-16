@@ -25,12 +25,17 @@ export const styles = StyleSheet.create({
     height: '100%',
   },
   backBtn: {
+    width: 65,
     backgroundColor: Colors.BgGray,
     paddingVertical: 5,
     paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 4,
+  },
+  backBtnText: {
+    flex: 1,
+    width: '100%',
   },
   backBtnIcon: {
     fontSize: 20,

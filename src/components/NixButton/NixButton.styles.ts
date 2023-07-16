@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     color: '#fff',
   },
   titleContainer: {
-    // flex: 1,
+    flex: 1,
     justifyContent: 'center',
   },
   title: {

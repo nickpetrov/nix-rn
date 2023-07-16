@@ -33,6 +33,7 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
   },
   subtitle: {
+    flex: 1,
     fontSize: 18,
     color: '#999',
     marginBottom: 30,
@@ -44,10 +45,12 @@ export const styles = StyleSheet.create({
     marginTop: 5,
   },
   disclaimerWrapper: {
+    flex: 1,
     marginTop: 20,
     alignItems: 'center',
   },
   noteText: {
+    flex: 1,
     fontSize: 10,
     color: '#888',
     marginTop: 5,
