@@ -367,6 +367,7 @@ const CompleteRegistration: React.FC<Props> = ({navigation}) => {
                     padding: 12,
                     marginTop: 20,
                     height: 45,
+                    width: '95%'
                   }}
                   title="Start Logging Foods!"
                   onPress={handleSubmit}
