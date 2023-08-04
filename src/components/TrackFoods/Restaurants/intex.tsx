@@ -248,6 +248,27 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
     dispatch(setSelectedRestaurant(restaurant));
   };
 
+  const showRestaurantV2 = (restaurant: RestaurantsWithCalcV2Props) => {
+    if (!netInfo.isConnected) {
+      dispatch(
+        setInfoMessage({
+          title: 'This feature is not available in offline mode',
+          btnText: 'Ok',
+        }),
+      );
+      return;
+    }
+    if (restaurant.desktop_calculator_url) {
+      navigation.navigate(Routes.WebView, {
+        title: restaurant.proper_brand_name,
+        close: true,
+        withFooter: true,
+        url: restaurant.desktop_calculator_url,
+      })
+    }
+    return;
+  }
+
   const requestRestaurant = () => {
     const bugReportData = {
       feedback: `Request missing restaurant. Restaurant name: ${searchValue}.`,
@@ -377,7 +398,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
                           }
                           logo={(item as RestaurantsWithCalcProps).brand_logo}
                           onPress={() => {
-                            showRestaurant(item);
+                            showRestaurantV2(item);
                           }}
                         />
                       );
