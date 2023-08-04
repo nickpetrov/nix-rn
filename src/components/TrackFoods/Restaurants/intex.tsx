@@ -38,6 +38,7 @@ import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {
   RestaurantsProps,
   RestaurantsWithCalcProps,
+  RestaurantsWithCalcV2Props,
 } from 'store/foods/foods.types';
 
 // constants
@@ -57,35 +58,28 @@ interface RestaurantsComponentProps {
 enum RestorantTypes {
   RESTORANTS = 'restaurants',
   RESTORANTS_WITH_CALC = 'restaurantsWithCalc',
+  RESTORANTS_WITH_CALC_V2 = 'restaurantsWithCalcV2',
 }
 
 const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
-  const {restaurants, restaurantsWithCalc, selectedRestaurant} = useSelector(
-    state => state.foods,
-  );
+  const {restaurants, restaurantsWithCalc, selectedRestaurant} = useSelector(state => state.foods);
   const [limit, setLimit] = useState(50);
   const [restaurantQuery, setRestaurantQuery] = useState('');
   const [searchValue] = useDebounce(restaurantQuery, 500);
-  const [restaurantsList, setRestaurantsList] = useState<
-    Array<RestaurantsProps>
-  >([]);
-  const [restaurantsListWithCalc, setRestaurantsListWithCalc] = useState<
-    Array<RestaurantsWithCalcProps>
-  >([]);
-  const [filteredRestaurantsList, setFilteredRestaurantsList] = useState<
-    Array<RestaurantsProps>
-  >([]);
-  const [filteredRestaurantsListWithCalc, setFilteredRestaurantsListWithCalc] =
-    useState<Array<RestaurantsWithCalcProps>>([]);
 
-  const [restaurantSearcher, setRestaurantSearcher] =
-    useState<Searcher<RestaurantsProps, FullOptions<RestaurantsProps>>>();
-  const [restaurantWithCalcSearcher, setRestaurantWithCalcSearcher] =
-    useState<
-      Searcher<RestaurantsWithCalcProps, FullOptions<RestaurantsWithCalcProps>>
-    >();
+  const [restaurantsList, setRestaurantsList] = useState<Array<RestaurantsProps>>([]);
+  const [restaurantsListWithCalc, setRestaurantsListWithCalc] = useState<Array<RestaurantsWithCalcProps>>([]);
+  const [restaurantsListWithCalcV2, setRestaurantsListWithCalcV2] = useState<Array<RestaurantsWithCalcV2Props>>([]);
+
+  const [filteredRestaurantsList, setFilteredRestaurantsList] = useState<Array<RestaurantsProps>>([]);
+  const [filteredRestaurantsListWithCalc, setFilteredRestaurantsListWithCalc] = useState<Array<RestaurantsWithCalcProps>>([]);
+  const [filteredRestaurantsListWithCalcV2, setFilteredRestaurantsListWithCalcV2] = useState<Array<RestaurantsWithCalcV2Props>>([]);
+
+  const [restaurantSearcher, setRestaurantSearcher] = useState<Searcher<RestaurantsProps, FullOptions<RestaurantsProps>>>();
+  const [restaurantWithCalcSearcher, setRestaurantWithCalcSearcher] = useState<Searcher<RestaurantsWithCalcProps, FullOptions<RestaurantsWithCalcProps>>>();
+  const [restaurantWithCalcV2Searcher, setRestaurantWithCalcV2Searcher] = useState<Searcher<RestaurantsWithCalcV2Props, FullOptions<RestaurantsWithCalcV2Props>>>();
 
   const sections = useMemo(() => {
     return [
@@ -96,6 +90,10 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
         ),
       },
       {
+        key: RestorantTypes.RESTORANTS_WITH_CALC_V2,
+        data: filteredRestaurantsListWithCalcV2.slice(0, limit),
+      },
+      {
         key: RestorantTypes.RESTORANTS,
         data: filteredRestaurantsList.slice(0, limit),
       },
@@ -103,7 +101,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
       RestaurantsProps | RestaurantsWithCalcProps,
       {
         key: RestorantTypes;
-        data: RestaurantsProps[] | RestaurantsWithCalcProps[];
+        data: RestaurantsProps[] | RestaurantsWithCalcProps[] | RestaurantsWithCalcV2Props[];
       }
     >[];
   }, [filteredRestaurantsList, filteredRestaurantsListWithCalc, limit]);
@@ -112,6 +110,20 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
     batch(() => {
       dispatch(getRestorants());
       dispatch(getRestorantsWithCalc());
+      setRestaurantsListWithCalcV2([
+        {
+          brand_id: '1',
+          brand_logo: 'https://d1r9wva3zcpswd.cloudfront.net/5c3e4dce1c9d444e84a567cd.jpg',
+          desktop_calculator_url: 'https://restaurant.nutritionix.com/potbelly/landing',
+          proper_brand_name: 'Potbelly'
+        },
+        {
+          brand_id: '2',
+          brand_logo: 'https://d1r9wva3zcpswd.cloudfront.net/5de6ab061c9d44342bda9c01.jpg',
+          desktop_calculator_url: 'https://restaurant.nutritionix.com/pokeworks/landing',
+          proper_brand_name: 'Pokeworks',
+        }
+      ]);
     });
   }, [dispatch]);
 
@@ -159,9 +171,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
   // searcher for restaurantsListWithCalc
   useEffect(() => {
     const filteredList =
-      restaurantWithCalcSearcher &&
-      restaurantsListWithCalc.length &&
-      searchValue.length
+      restaurantWithCalcSearcher && restaurantsListWithCalc.length && searchValue.length
         ? restaurantWithCalcSearcher.search(searchValue)
         : restaurantsListWithCalc;
     setFilteredRestaurantsListWithCalc(filteredList);
@@ -176,6 +186,23 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
       }),
     );
   }, [restaurantsListWithCalc]);
+
+  useEffect(() => {
+    const filteredList =
+      restaurantWithCalcV2Searcher && restaurantsListWithCalcV2.length && searchValue.length
+        ? restaurantWithCalcV2Searcher.search(searchValue)
+        : restaurantsListWithCalcV2;
+    setFilteredRestaurantsListWithCalcV2(filteredList);
+  }, [searchValue, restaurantWithCalcV2Searcher, restaurantsListWithCalcV2]);
+
+  useEffect(() => {
+    setRestaurantWithCalcV2Searcher(
+      new Searcher(restaurantsListWithCalcV2, {
+        keySelector: obj => obj.proper_brand_name,
+        threshold: 1,
+      }),
+    );
+  }, [restaurantsListWithCalcV2]);
 
   useEffect(() => {
     NetInfo.fetch().then(state => {
@@ -258,6 +285,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
         );
       });
   };
+
   return (
     <View style={styles.root}>
       {!selectedRestaurant ? (
@@ -282,57 +310,80 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
               data={filteredRestaurantsList}
               extraData={searchValue}
               renderSectionHeader={({section}) => {
-                if (
-                  section.key === RestorantTypes.RESTORANTS &&
-                  section.data.length
-                ) {
-                  return (
-                    <View style={styles.sectionHeader}>
-                      <Text style={styles.sectionHeaderTitle}>
-                        Additional restaurants:
-                      </Text>
-                    </View>
-                  );
-                } else if (section.data.length) {
-                  return (
-                    <View style={styles.sectionHeader}>
-                      <Text style={styles.sectionHeaderTitle}>
-                        Restaurants with Nutrition Calculator available:
-                      </Text>
-                    </View>
-                  );
+                if (section.data.length) {
+                  if (section.key === RestorantTypes.RESTORANTS_WITH_CALC) {
+                    return (
+                      <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionHeaderTitle}>
+                          Restaurants with Nutrition Calculator available:
+                        </Text>
+                      </View>
+                    );
+                  } else if (section.key === RestorantTypes.RESTORANTS) {
+                    return (
+                      <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionHeaderTitle}>
+                          Additional restaurants:
+                        </Text>
+                      </View>
+                    );
+                  } else {
+                    return (
+                      <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionHeaderTitle}>
+                          Restaurants with Nutrition Calculator 2.0 available:
+                        </Text>
+                      </View>
+                    );
+                  }
                 } else {
                   return null;
                 }
               }}
               renderItem={({item, section}) => {
-                if (section.key === RestorantTypes.RESTORANTS) {
-                  return (
-                    <RestaurantItem
-                      isWithCalc={false}
-                      name={(item as RestaurantsProps).name}
-                      logo={(item as RestaurantsProps).logo}
-                      onPress={() => {
-                        Keyboard.dismiss();
-                        showRestaurant(item);
-                      }}
-                    />
-                  );
-                } else if (
-                  section.key === RestorantTypes.RESTORANTS_WITH_CALC
-                ) {
-                  return (
-                    <RestaurantItem
-                      isWithCalc={true}
-                      name={
-                        (item as RestaurantsWithCalcProps).proper_brand_name
-                      }
-                      logo={(item as RestaurantsWithCalcProps).brand_logo}
-                      onPress={() => {
-                        showRestaurant(item);
-                      }}
-                    />
-                  );
+                if (!!section.key) {
+                  switch(section.key) {
+                    case RestorantTypes.RESTORANTS:
+                      return (
+                        <RestaurantItem
+                          isWithCalc={false}
+                          name={(item as RestaurantsProps).name}
+                          logo={(item as RestaurantsProps).logo}
+                          onPress={() => {
+                            Keyboard.dismiss();
+                            showRestaurant(item);
+                          }}
+                        />
+                      );
+                    case RestorantTypes.RESTORANTS_WITH_CALC:
+                      return (
+                        <RestaurantItem
+                          isWithCalc={true}
+                          name={
+                            (item as RestaurantsWithCalcProps).proper_brand_name
+                          }
+                          logo={(item as RestaurantsWithCalcProps).brand_logo}
+                          onPress={() => {
+                            showRestaurant(item);
+                          }}
+                        />
+                      );
+                    case RestorantTypes.RESTORANTS_WITH_CALC_V2:
+                      return (
+                        <RestaurantItem
+                          isWithCalc={true}
+                          name={
+                            (item as RestaurantsWithCalcProps).proper_brand_name
+                          }
+                          logo={(item as RestaurantsWithCalcProps).brand_logo}
+                          onPress={() => {
+                            showRestaurant(item);
+                          }}
+                        />
+                      );
+                    default:
+                      return null;
+                  }
                 } else {
                   return null;
                 }
