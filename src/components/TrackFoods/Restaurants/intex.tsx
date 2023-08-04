@@ -98,7 +98,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
         data: filteredRestaurantsList.slice(0, limit),
       },
     ] as readonly SectionListData<
-      RestaurantsProps | RestaurantsWithCalcProps,
+      RestaurantsProps | RestaurantsWithCalcProps | RestaurantsWithCalcV2Props,
       {
         key: RestorantTypes;
         data: RestaurantsProps[] | RestaurantsWithCalcProps[] | RestaurantsWithCalcV2Props[];
@@ -326,7 +326,8 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
               sections={sections}
               keyExtractor={item =>
                 (item as RestaurantsProps)?.id ||
-                (item as RestaurantsWithCalcProps)?.brand_id
+                (item as RestaurantsWithCalcProps)?.brand_id ||
+                (item as RestaurantsWithCalcV2Props)?.brand_id
               }
               data={filteredRestaurantsList}
               extraData={searchValue}
@@ -372,7 +373,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
                           logo={(item as RestaurantsProps).logo}
                           onPress={() => {
                             Keyboard.dismiss();
-                            showRestaurant(item);
+                            showRestaurant(item as RestaurantsProps);
                           }}
                         />
                       );
@@ -385,7 +386,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
                           }
                           logo={(item as RestaurantsWithCalcProps).brand_logo}
                           onPress={() => {
-                            showRestaurant(item);
+                            showRestaurant(item as RestaurantsWithCalcProps);
                           }}
                         />
                       );
@@ -394,11 +395,11 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
                         <RestaurantItem
                           isWithCalc={true}
                           name={
-                            (item as RestaurantsWithCalcProps).proper_brand_name
+                            (item as RestaurantsWithCalcV2Props).proper_brand_name
                           }
-                          logo={(item as RestaurantsWithCalcProps).brand_logo}
+                          logo={(item as RestaurantsWithCalcV2Props).brand_logo}
                           onPress={() => {
-                            showRestaurantV2(item);
+                            showRestaurantV2(item as RestaurantsWithCalcV2Props);
                           }}
                         />
                       );

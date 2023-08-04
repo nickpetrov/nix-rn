@@ -39,9 +39,9 @@ export interface RestaurantsProps {
 }
 
 export interface RestaurantsWithCalcV2Props {
-  brand_id?: string | null;
+  brand_id: string;
   brand_keywords?: string | null;
-  brand_logo?: string | null;
+  brand_logo: string;
   desktop_calculator_url?: string | null;
   mobile_calculator_url?: string | null;
   proper_brand_name: string;
