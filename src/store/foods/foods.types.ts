@@ -38,6 +38,15 @@ export interface RestaurantsProps {
   name: string;
 }
 
+export interface RestaurantsWithCalcV2Props {
+  brand_id?: string | null;
+  brand_keywords?: string | null;
+  brand_logo?: string | null;
+  desktop_calculator_url?: string | null;
+  mobile_calculator_url?: string | null;
+  proper_brand_name: string;
+}
+
 export interface RestaurantsWithCalcProps {
   brand_id: string;
   brand_keywords: string;
