@@ -115,13 +115,15 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
           brand_id: '1',
           brand_logo: 'https://d1r9wva3zcpswd.cloudfront.net/5c3e4dce1c9d444e84a567cd.jpg',
           desktop_calculator_url: 'https://restaurant.nutritionix.com/potbelly/landing',
-          proper_brand_name: 'Potbelly'
+          proper_brand_name: 'Potbelly',
+          calculator_version: 2
         },
         {
           brand_id: '2',
           brand_logo: 'https://d1r9wva3zcpswd.cloudfront.net/5de6ab061c9d44342bda9c01.jpg',
           desktop_calculator_url: 'https://restaurant.nutritionix.com/pokeworks/landing',
           proper_brand_name: 'Pokeworks',
+          calculator_version: 2
         }
       ]);
     });
@@ -399,6 +401,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
                             (item as RestaurantsWithCalcV2Props).proper_brand_name
                           }
                           logo={(item as RestaurantsWithCalcV2Props).brand_logo}
+                          calculatorVersion = {(item as RestaurantsWithCalcV2Props).calculator_version}
                           onPress={() => {
                             showRestaurantV2(item as RestaurantsWithCalcV2Props);
                           }}

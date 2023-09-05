@@ -14,9 +14,25 @@ interface RestaurantItemProps {
   name: string;
   logo: string;
   isWithCalc?: boolean;
+  calculatorVersion: number | null;
 }
 
 const RestaurantItem: React.FC<RestaurantItemProps> = props => {
+
+  const CalculatorIcon = (props: { isWithCalc: any; calculatorVersion: number | null; }) => {
+    if (props.isWithCalc) {
+      return (
+        <FontAwesome
+          name="calculator"
+          size={20}
+          color={2 === props.calculatorVersion ? '#57A61B' : '#6ca6e8'}
+          style={styles.icon}
+        />
+      );
+    }
+    return null;
+  };
+
   return (
     <TouchableWithoutFeedback onPress={() => props.onPress()}>
       <View style={styles.root}>
@@ -26,14 +42,10 @@ const RestaurantItem: React.FC<RestaurantItemProps> = props => {
           resizeMode="contain"
         />
         <Text style={styles.text}>{props.name}</Text>
-        {props.isWithCalc ? (
-          <FontAwesome
-            name="calculator"
-            size={20}
-            color="#6ca6e8"
-            style={styles.icon}
+          <CalculatorIcon
+            isWithCalc={props.isWithCalc}
+            calculatorVersion={props.calculatorVersion}
           />
-        ) : null}
         <Ionicons
           style={styles.icon}
           name="ios-chevron-forward"

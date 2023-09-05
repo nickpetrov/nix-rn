@@ -45,6 +45,7 @@ export interface RestaurantsWithCalcV2Props {
   desktop_calculator_url?: string | null;
   mobile_calculator_url?: string | null;
   proper_brand_name: string;
+  calculator_version?: number | null;
 }
 
 export interface RestaurantsWithCalcProps {
