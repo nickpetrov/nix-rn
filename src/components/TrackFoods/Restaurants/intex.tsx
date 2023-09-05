@@ -350,13 +350,14 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
                       </View>
                     );
                   } else {
-                    return (
-                      <View style={styles.sectionHeader}>
-                        <Text style={styles.sectionHeaderTitle}>
-                          Restaurants with Nutrition Calculator 2.0 available:
-                        </Text>
-                      </View>
-                    );
+                    return null;
+                    // return (
+                    //   <View style={styles.sectionHeader}>
+                    //     <Text style={styles.sectionHeaderTitle}>
+                    //       Restaurants with Nutrition Calculator 2.0 available:
+                    //     </Text>
+                    //   </View>
+                    // );
                   }
                 } else {
                   return null;
