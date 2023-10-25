@@ -2,10 +2,10 @@ import moment from 'moment-timezone';
 import PushNotification from 'react-native-push-notification';
 
 export default (dayindex: number) => {
-  let scheduleDate = moment(
-    '21:00 ' + moment().isoWeekday(dayindex).format('DD/MM/YYYY'),
-    'HH:mm DD/MM/YYYY',
-  );
+  let scheduleDate = moment()
+    .isoWeekday(dayindex)
+    .hour(21)
+    .minute(0);
   let triggerDate;
 
   if (moment().isoWeekday() < dayindex) {
@@ -17,8 +17,7 @@ export default (dayindex: number) => {
   PushNotification.localNotificationSchedule({
     channelId: 'reminders',
     title: 'Nutritionix Track',
-    message:
-      'Your food log looks a bit empty. Tap here to log what you ate today.',
-    date: triggerDate,
+    message: 'Your food log looks a bit empty. Tap here to log what you ate today.',
+    date: triggerDate
   });
 };
