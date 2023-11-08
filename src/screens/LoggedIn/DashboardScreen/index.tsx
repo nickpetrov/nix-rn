@@ -503,8 +503,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     navigation.navigate(Routes.Totals, {
                       foods: foods.filter(
                         (item: FoodProps) =>
-                          moment(item.consumed_at).format('YYYY-MM-DD') ===
-                          selectedDate,
+                          moment.utc(item.consumed_at).tz(userData.timezone).format('YYYY-MM-DD') === selectedDate,
                       ),
                       type: 'daily',
                     })
