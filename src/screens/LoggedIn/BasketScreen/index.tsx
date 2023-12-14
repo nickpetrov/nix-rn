@@ -768,11 +768,9 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                   ? 'Log 1 Food'
                   : `Log ${foods.length} Foods`
               }
-              onPressIn={() => {
-                Keyboard.dismiss();
-                setLoadingSubmit(true);
-              }}
+              onPressIn={() => Keyboard.dismiss()}
               onPress={() => {
+                setLoadingSubmit(true);
                 setTimeout(() => {
                   handleSubmit();
                 }, 300);
