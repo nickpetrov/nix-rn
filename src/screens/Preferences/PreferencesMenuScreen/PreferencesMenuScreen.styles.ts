@@ -17,12 +17,14 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cal: {
-    flex: 0.18,
+    maxWidth: '60%',
     backgroundColor: Colors.Primary,
-    color: '#fff',
-    borderRadius: 20,
+    borderRadius: 8,
     paddingVertical: 1,
     paddingHorizontal: 8,
+  },
+  calText: {
+    color: '#fff',
   },
   version: {
     paddingVertical: 20,
