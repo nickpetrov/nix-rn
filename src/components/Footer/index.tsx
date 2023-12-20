@@ -47,6 +47,7 @@ const Footer: React.FC<FooterProps> = props => {
       {props.withMealBuilder && <MealBuilder />}
       <View style={{...styles.footer, ...hideFooterStyle}}>
         <FooterItem
+          activeTab={route.name === Routes.Dashboard}
           title="Dashboard"
           onPress={() => {
             props.navigation.replace(Routes.Dashboard);
@@ -54,6 +55,7 @@ const Footer: React.FC<FooterProps> = props => {
           <FontAwesome name="home" color="#fff" size={30} />
         </FooterItem>
         <FooterItem
+          activeTab={route.name === Routes.Stats}
           title="Stats"
           onPress={() => {
             props.navigation.navigate(Routes.Stats, {
@@ -73,10 +75,11 @@ const Footer: React.FC<FooterProps> = props => {
           ]}>
           <FooterItem
             title="Track"
-            style={{
-              ...styles.footerTrackItem,
-              ...styles.footerTrackItemWithTooltip,
-            }}
+            style={[
+              styles.footerTrackItem,
+              styles.footerTrackItemWithTooltip,
+              route.name === Routes.TrackFoods ? styles.activeFooterTrackItem : {},
+            ]}
             titleStyle={styles.foodTrackItemText}
             onPress={() => {
               props.navigation.navigate(Routes.TrackFoods);
@@ -90,6 +93,7 @@ const Footer: React.FC<FooterProps> = props => {
           </FooterItem>
         </TooltipView>
         <FooterItem
+          activeTab={route.name === Routes.Suggested}
           title="Suggested"
           onPress={() => props.navigation.navigate(Routes.Suggested)}>
           <WithLocalSvg
@@ -101,6 +105,7 @@ const Footer: React.FC<FooterProps> = props => {
           />
         </FooterItem>
         <FooterItem
+          activeTab={route.name === Routes.Preferences}
           title="Preferences"
           onPress={() => {
             props.navigation.navigate(Routes.Preferences);

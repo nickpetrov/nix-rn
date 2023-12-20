@@ -1,3 +1,4 @@
+import { Colors } from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -14,4 +15,7 @@ export const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 9,
   },
+  activeTab: {
+    backgroundColor: Colors.Gray8
+  }
 });

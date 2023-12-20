@@ -30,4 +30,7 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: -2,
   },
+  activeFooterTrackItem: {
+    backgroundColor: Colors.LightGreen
+  }
 });

@@ -2,7 +2,7 @@
 import React from 'react';
 
 // componets
-import {Text, TouchableOpacity} from 'react-native';
+import {Text, TextStyle, TouchableOpacity, ViewStyle} from 'react-native';
 
 // styles
 import {styles} from './FooterItem.styles';
@@ -10,19 +10,16 @@ import {styles} from './FooterItem.styles';
 interface FooterItemProps {
   onPress: () => void;
   children: React.ReactNode;
-  titleStyle?: {
-    [key: string]: string | number;
-  };
-  style?: {
-    [key: string]: string | number;
-  };
+  titleStyle?: TextStyle;
+  style?: ViewStyle | ViewStyle[];
   title: string;
+  activeTab?: boolean;
 }
 
 const FooterItem: React.FC<FooterItemProps> = props => {
   return (
     <TouchableOpacity
-      style={{...styles.footerItem, ...props.style}}
+      style={[styles.footerItem, props.style, props.activeTab && styles.activeTab]}
       onPress={props.onPress}>
       {props.children}
       <Text style={{...styles.footerItemText, ...props.titleStyle}}>
