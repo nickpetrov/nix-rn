@@ -19,6 +19,7 @@ interface FooterItemProps {
 const FooterItem: React.FC<FooterItemProps> = props => {
   return (
     <TouchableOpacity
+      activeOpacity={0.6}
       style={[styles.footerItem, props.style, props.activeTab && styles.activeTab]}
       onPress={props.onPress}>
       {props.children}

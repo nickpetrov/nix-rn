@@ -24,19 +24,12 @@ export const styles = StyleSheet.create({
     marginRight: 3,
   },
   track: {
-    position: 'absolute',
     flexDirection: 'row',
-    top: 0,
-    left: 0,
-    right: 0,
     backgroundColor: Colors.Primary,
-    height: 50,
+    // height: 50,
+    paddingBottom: 30,
     width: '100%',
-    paddingTop: 0,
     justifyContent: 'center',
-  },
-  scrollView: {
-    marginTop: 50,
   },
   trackText: {
     alignSelf: 'center',

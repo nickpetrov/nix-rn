@@ -2,6 +2,9 @@ import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  statusBar: {
+    backgroundColor: Colors.Primary,
+  },
   header: {
     width: '100%',
     height: 50,

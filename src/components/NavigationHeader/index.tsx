@@ -9,7 +9,7 @@ import BackButton from 'components/BackButton';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import TooltipView from 'components/TooltipView';
-
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // hooks
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
@@ -60,6 +60,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   withoutTitle,
   emptyRight,
 }) => {
+  const {top} = useSafeAreaInsets();
   const searchValue = useSelector(state => state.autoComplete.searchValue);
   const dispatch = useDispatch();
   const title = getHeaderTitle(options, route.name);
@@ -84,6 +85,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
       : {};
 
   return (
+    <View style={[styles.statusBar, {paddingTop: top}]}>
     <View style={styles.header}>
       {headerLeft ? headerLeft : back && <BackButton navigation={navigation} />}
       {withAutoComplete && (
@@ -141,6 +143,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
       ) : !emptyRight ? (
         <View style={styles.emptyRight}></View>
       ) : null}
+    </View>
     </View>
   );
 };

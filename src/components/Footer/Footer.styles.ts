@@ -20,8 +20,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.Primary,
     marginTop: -5,
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
+    marginBottom: -5,
+    borderRadius: 5,
   },
   footerTrackItemWithTooltip: {
     width: '100%',
