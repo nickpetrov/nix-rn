@@ -9,6 +9,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Linking,
+  SafeAreaView,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FoodLogStats from 'components/FoodLog/FoodLogHeader/FoodLogStats/index';
@@ -123,6 +124,7 @@ const ViewClientScreen: React.FC<ViewClientScreenProps> = ({
   };
 
   return (
+    <SafeAreaView style={styles.root}>
     <ScrollView style={styles.root}>
       {client && (
         <View style={styles.header}>
@@ -210,6 +212,7 @@ const ViewClientScreen: React.FC<ViewClientScreenProps> = ({
           );
         })}
     </ScrollView>
+    </SafeAreaView>
   );
 };
 

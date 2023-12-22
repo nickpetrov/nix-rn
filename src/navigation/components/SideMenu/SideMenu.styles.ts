@@ -23,11 +23,13 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     marginRight: 3,
   },
+  header: {
+    backgroundColor: Colors.Primary,
+  },
   track: {
     flexDirection: 'row',
     backgroundColor: Colors.Primary,
-    // height: 50,
-    paddingBottom: 30,
+    height: 50,
     width: '100%',
     justifyContent: 'center',
   },

@@ -12,6 +12,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Formik, FormikProps} from 'formik';
@@ -320,7 +321,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   };
 
   return (
-    <>
+    <SafeAreaView style={styles.root}>
       <Formik
         initialValues={FormikInitValues}
         innerRef={formRef}
@@ -803,6 +804,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       </ChooseModal>
 
       {loadingSubmit && <LoadIndicator withShadow />}
-    </>
+    </SafeAreaView>
   );
 };

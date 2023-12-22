@@ -23,6 +23,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import {
   Swipeable,
@@ -732,7 +733,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
   };
 
   return (
-    <>
+    <SafeAreaView style={styles.root}>
       {showPreloader && (
         <View style={styles.preloader}>
           <Text style={styles.preloaderText}>Loading. Please wait.</Text>
@@ -1122,6 +1123,6 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         ]}
       />
       {showSpinner && <LoadIndicator withShadow />}
-    </>
+    </SafeAreaView>
   );
 };

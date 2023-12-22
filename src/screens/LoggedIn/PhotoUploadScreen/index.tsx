@@ -8,6 +8,7 @@ import {
   Image,
   TouchableWithoutFeedback,
   Linking,
+  SafeAreaView,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {NixButton} from 'components/NixButton';
@@ -194,7 +195,7 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
   };
 
   return (
-    <>
+    <SafeAreaView style={styles.root}>
       <ScrollView style={styles.root}>
         <View style={styles.container}>
           <View style={styles.mb20}>
@@ -312,6 +313,6 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
           </View>
         </View>
       )}
-    </>
+    </SafeAreaView>
   );
 };

@@ -13,6 +13,7 @@ import {
   Share,
   Linking,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import {WithLocalSvg} from 'react-native-svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -195,8 +196,10 @@ export const SideMenu: React.FC = () => {
 
   return (
     <View style={{flex: 1, paddingBottom: bottom}}>
-      <View style={[styles.track, {paddingTop: top }]}>
-        <Text style={styles.trackText}>Track {appVersion}</Text>
+      <View style={{paddingTop: top, ...styles.header}}>
+        <View style={styles.track}>
+          <Text style={styles.trackText}>Track {appVersion}</Text>
+        </View>
       </View>
       <ScrollView>
         {/* Need to manually add items to the sidedrawer */}

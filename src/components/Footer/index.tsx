@@ -29,7 +29,7 @@ interface FooterProps {
   };
   navigation: NativeStackNavigationProp<
     StackNavigatorParamList,
-    Routes.Dashboard | Routes.Stats | Routes.Suggested | Routes.TrackFoods
+    Routes.Dashboard | Routes.Stats | Routes.Suggested | Routes.TrackFoods | Routes.Preferences
   >;
   withMealBuilder?: boolean;
 }
@@ -105,7 +105,7 @@ const Footer: React.FC<FooterProps> = props => {
           />
         </FooterItem>
         <FooterItem
-          activeTab={route.name === Routes.Preferences}
+          activeTab={route.name === Routes.Menu}
           title="Preferences"
           onPress={() => {
             props.navigation.navigate(Routes.Preferences);

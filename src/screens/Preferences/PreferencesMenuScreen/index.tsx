@@ -17,6 +17,7 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './PreferencesMenuScreen.styles';
+import Footer from 'components/Footer';
 
 interface PreferencesMenuScreenProps {
   navigation: NativeStackNavigationProp<
@@ -35,7 +36,8 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
   const appVersion = getVersion();
   const buildNumber = getBuildNumber();
   return (
-    <SafeAreaView style={styles.root}>
+    <>
+    <View style={styles.root}>
       <TouchableWithoutFeedback
         onPress={() => {
           navigation.navigate(Routes.Profile);
@@ -94,6 +96,8 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
       <Text style={styles.version}>
         Version: {appVersion}({buildNumber})
       </Text>
-    </SafeAreaView>
+    </View>
+    <Footer hide={false} navigation={navigation} />
+    </>
   );
 };

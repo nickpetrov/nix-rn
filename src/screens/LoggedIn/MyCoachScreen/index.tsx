@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import _ from 'lodash';
 
 // components
-import {ScrollView, View, Text, TextInput} from 'react-native';
+import {ScrollView, View, Text, TextInput, SafeAreaView} from 'react-native';
 import {NixButton} from 'components/NixButton/index';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -156,6 +156,7 @@ const MyCoachScreen: React.FC<MyCoachScreenProps> = ({navigation}) => {
   };
 
   return (
+    <SafeAreaView style={styles.root}>
     <ScrollView style={styles.root}>
       <Text style={styles.header}>
         Please enter the Coach ID you received from your coach:
@@ -316,6 +317,7 @@ const MyCoachScreen: React.FC<MyCoachScreenProps> = ({navigation}) => {
         </View>
       )}
     </ScrollView>
+    </SafeAreaView>
   );
 };
 

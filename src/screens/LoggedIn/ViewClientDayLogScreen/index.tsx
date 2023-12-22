@@ -8,6 +8,7 @@ import {
   SectionList,
   RefreshControl,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import FoodLogSectionHeader from 'components/FoodLog/FoodLogSectionHeader';
 import EmptyListItem from 'components/FoodLog/EmptyListItem';
@@ -193,7 +194,7 @@ const ViewClientDayLogScreen: React.FC<ViewClientDayLogScreenProps> = ({
   };
 
   return (
-    <View style={styles.layout}>
+    <SafeAreaView style={styles.layout}>
       <SectionList
         listKey="rootFoodList"
         sections={sections}
@@ -309,7 +310,7 @@ const ViewClientDayLogScreen: React.FC<ViewClientDayLogScreenProps> = ({
         }
         ListFooterComponentStyle={styles.listFooterComponent}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

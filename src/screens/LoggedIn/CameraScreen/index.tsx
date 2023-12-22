@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Image,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import {
   useCameraDevices,
@@ -97,7 +98,7 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
   }
 
   return (
-    <View style={styles.cameraPopupWrapper}>
+    <SafeAreaView style={styles.cameraPopupWrapper}>
       <ScrollView>
         {/* <Pressable
             style={styles.buttonClose}
@@ -137,6 +138,6 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
           )}
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };

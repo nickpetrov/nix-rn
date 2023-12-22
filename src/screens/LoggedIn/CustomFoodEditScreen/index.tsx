@@ -22,6 +22,7 @@ import {
   TextInput,
   Keyboard,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NixButton} from 'components/NixButton';
@@ -295,7 +296,7 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
   }, []);
 
   return (
-    <>
+    <SafeAreaView style={styles.root}>
       {showPreloader && (
         <View style={styles.preloader}>
           <Text style={styles.preloaderText}>Loading. Please wait.</Text>
@@ -758,6 +759,6 @@ export const CustomFoodEditScreen: React.FC<CustomFoodEditScreenProps> = ({
         </View>
       </KeyboardAwareScrollView>
       {isProcessingFood && <LoadIndicator withShadow />}
-    </>
+    </SafeAreaView>
   );
 };

@@ -2,7 +2,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 
 // components
-import {View, Text, Switch, Platform} from 'react-native';
+import {View, Text, Switch, Platform, SafeAreaView} from 'react-native';
 
 // helpres
 import scheduleNotification from 'helpers/scheduleNotification';
@@ -65,7 +65,7 @@ export const NotificationsScreen: React.FC = () => {
   }, [weekend, weekday, changeHandler, dispatch]);
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
       <View style={styles.item}>
         <View style={styles.left}>
           <Text style={styles.title}>Weekday Push Notifications</Text>
@@ -104,6 +104,6 @@ export const NotificationsScreen: React.FC = () => {
           />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };

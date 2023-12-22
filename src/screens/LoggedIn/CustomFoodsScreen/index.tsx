@@ -7,7 +7,7 @@ import moment from 'moment-timezone';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 // components
-import {View, Text, TouchableOpacity, Keyboard} from 'react-native';
+import {View, Text, TouchableOpacity, Keyboard, SafeAreaView} from 'react-native';
 import {FlatList, TextInput, Swipeable} from 'react-native-gesture-handler';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {NavigationHeader} from 'components/NavigationHeader';
@@ -146,7 +146,7 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
   };
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
       <TextInput
         placeholder="Search custom foods"
         style={styles.inputQuery}
@@ -216,6 +216,6 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
           </Swipeable>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 };

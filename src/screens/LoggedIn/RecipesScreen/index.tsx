@@ -12,7 +12,7 @@ import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // components
-import {View, Text, Keyboard} from 'react-native';
+import {View, Text, Keyboard, SafeAreaView} from 'react-native';
 import {
   FlatList,
   Swipeable,
@@ -246,7 +246,7 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
   };
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
       <TextInput
         placeholder="Search my recipes"
         style={styles.inputQuery}
@@ -372,6 +372,6 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
           />
         </>
       </ChooseModal>
-    </View>
+    </SafeAreaView>
   );
 };
