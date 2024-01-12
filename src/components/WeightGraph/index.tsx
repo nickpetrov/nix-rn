@@ -1,5 +1,5 @@
 // utils
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import moment from 'moment-timezone';
 import _ from 'lodash';
 
@@ -90,7 +90,14 @@ export const WeightGraph: React.FC = () => {
   const handleShowDatePickers = (pickerType: 'from' | 'to') => () => {
     setShowDatePickers({
       ...showDatePickers,
-      [pickerType]: !showDatePickers[pickerType],
+      [pickerType]: true,
+    });
+  };
+
+  const handleCloseDatePickers = (pickerType: 'from' | 'to') => () => {
+    setShowDatePickers({
+      ...showDatePickers,
+      [pickerType]: false,
     });
   };
 
@@ -170,7 +177,7 @@ export const WeightGraph: React.FC = () => {
               mode="date"
               date={dates[pickerType] || new Date()}
               onConfirm={handleChangeDates(pickerType)}
-              onCancel={handleShowDatePickers(pickerType)}
+              onCancel={handleCloseDatePickers(pickerType)}
               maximumDate={new Date()}
             />
             <FontAwesome name="calendar" size={20} />

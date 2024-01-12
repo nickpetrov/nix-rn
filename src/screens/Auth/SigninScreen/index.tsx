@@ -56,7 +56,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <View style={styles.backBtn}>
             <FontAwesome name="angle-left" style={styles.backBtnIcon} />
-            <Text style={styles.backBtnText}>Back</Text>
+            <Text>Back</Text>
           </View>
         </TouchableOpacity>
       ),
@@ -80,7 +80,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
 
   if (showWebView) {
     return (
-      <View style={styles.webViewContainer}>
+      <SafeAreaView style={styles.webViewContainer}>
         <WebView
           style={styles.webView}
           androidHardwareAccelerationDisabled
@@ -88,7 +88,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
             uri: 'https://www.nutritionix.com/account/forgot-password',
           }}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 
@@ -126,6 +126,7 @@ export const SigninScreen: React.FC<SigninScreenProps> = ({navigation}) => {
                 handleBlur,
                 values,
                 errors,
+                touched,
               }) => (
                 <View style={styles.formikRoot}>
                   <View style={styles.inputs}>
