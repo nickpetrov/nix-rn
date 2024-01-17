@@ -35,6 +35,6 @@ export const styles = StyleSheet.create({
   },
   backBtnIcon: {
     fontSize: 20,
-    marginRight: 5,
+    marginRight: 5
   },
 });
