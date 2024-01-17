@@ -90,6 +90,8 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   backBtn: {
+    minWidth: 65,
+    flex: 1,
     backgroundColor: Colors.BgGray,
     paddingVertical: 5,
     paddingHorizontal: 8,
