@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, LogBox} from 'react-native';
+import {LogBox} from 'react-native';
 import {Provider} from 'react-redux';
 import {
   NavigationContainer,
@@ -17,6 +17,7 @@ import {
   getBuildNumber,
   getBundleId,
 } from 'react-native-device-info';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 //for work uuid
 import 'react-native-get-random-values';
@@ -62,7 +63,7 @@ const App = () => {
     <GestureHandlerRootView style={styles.container}>
       <Provider store={store}>
         <PersistGate loading={<LoadIndicator />} persistor={persistor}>
-          <SafeAreaView style={styles.container}>
+          <SafeAreaProvider>
             <NavigationContainer
               ref={navigation}
               onReady={() => {
@@ -90,7 +91,7 @@ const App = () => {
               }}>
               <MainContent />
             </NavigationContainer>
-          </SafeAreaView>
+          </SafeAreaProvider>
         </PersistGate>
       </Provider>
     </GestureHandlerRootView>
