@@ -26,12 +26,12 @@ export const styles = StyleSheet.create({
     padding: 5,
     flex: 1,
     borderRadius: 4,
-    height: 30,
+    minHeight: 30,
+    maxHeight: 40
   },
   barcodeInAutocomplete: {
-    // position: 'absolute',
     right: 0,
-    // top: -5,
+    alignSelf: 'center'
   },
   closeBtn: {
     position: 'absolute',
