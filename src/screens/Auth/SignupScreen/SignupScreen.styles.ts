@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
     height: '100%',
   },
   backBtn: {
-    width: 65,
     backgroundColor: Colors.BgGray,
     paddingVertical: 5,
     paddingHorizontal: 8,

@@ -4,7 +4,6 @@ import {StyleSheet} from 'react-native';
 export const styles = StyleSheet.create({
   footerItem: {
     width: '20%',
-    height: '100%',
     padding: 2,
     flex: 1,
     justifyContent: 'center',
@@ -16,6 +15,6 @@ export const styles = StyleSheet.create({
     fontSize: 9,
   },
   activeTab: {
-    backgroundColor: Colors.Gray8
+    backgroundColor: Colors.Gray8,
   }
 });

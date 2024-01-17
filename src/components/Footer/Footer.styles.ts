@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.Gray4,
   },
   footer: {
-    height: 45,
+    minHeight: 45,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -31,6 +31,6 @@ export const styles = StyleSheet.create({
     marginBottom: -2,
   },
   activeFooterTrackItem: {
-    backgroundColor: Colors.LightGreen
+    backgroundColor: Colors.LightGreen,
   }
 });

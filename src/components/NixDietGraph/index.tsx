@@ -198,22 +198,21 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
           dayComponent={({date, marking}) => {
             return (
               <TouchableOpacity
+              style={{
+                width: 32,
+                height: 32,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: marking
+                ? marking.customStyles?.container?.backgroundColor
+                : colorsArray[0]}}
                 onPress={() => {
                   if (date?.dateString) {
                     dispatch(changeSelectedDay(date?.dateString));
                     props.navigation.navigate(Routes.Dashboard);
                   }
                 }}>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    backgroundColor: marking
-                      ? marking.customStyles?.container?.backgroundColor
-                      : colorsArray[0],
-                    width: 32,
-                    height: 32,
-                    lineHeight: 32,
-                  }}>
+                <Text>
                   {date?.day}
                 </Text>
               </TouchableOpacity>
