@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   btn: {
-    height: 30,
+    height: 'auto',
     marginHorizontal: 5,
   },
   tooltip: {

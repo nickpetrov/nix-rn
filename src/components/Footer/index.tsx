@@ -99,7 +99,7 @@ const Footer: React.FC<FooterProps> = props => {
           <WithLocalSvg
             asset={require('assets/recommended.svg')}
             width="20"
-            height="28"
+            height="30"
             viewBox="0 0 10 16"
             preserveAspectRatio="none"
           />
