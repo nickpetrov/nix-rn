@@ -31,5 +31,6 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     height: 'auto',
+    overflow: 'hidden'
   },
 });
