@@ -19,6 +19,7 @@ export const styles = StyleSheet.create({
     color: Colors.Primary,
     fontSize: 18,
     textAlign: 'right',
+    marginLeft: 10
   },
   caloriesLabel: {
     color: '#aaa',

@@ -13,7 +13,6 @@ import {
   Share,
   Linking,
   ScrollView,
-  StatusBar,
 } from 'react-native';
 import {WithLocalSvg} from 'react-native-svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -39,7 +38,6 @@ export const SideMenu: React.FC = () => {
   const userGroceyAgentInfo = useSelector(
     state => state.base.userGroceyAgentInfo,
   );
-  const isIos = Platform.OS === 'ios';
   const appVersion = getVersion();
 
   let menuItems: Array<{

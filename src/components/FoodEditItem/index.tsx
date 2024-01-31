@@ -111,6 +111,14 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
     };
   });
 
+  const calories = nfCalories
+  ? Math.round(nfCalories)
+  : Math.round(
+      full_nutrients?.filter(
+        (item: NutrientProps) => item.attr_id === 208,
+      )[0].value
+    )
+
   const measureChange = (newMeasureName: string) => {
     const prevMeasure = alt_measures.filter(
       (item: MeasureProps) => item.measure === servingUnit,
@@ -177,6 +185,8 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
           onBlur={() => {
             onQtyChange();
           }}
+          onEndEditing={onQtyChange}
+          onSubmitEditing={onQtyChange}
         />
         <View style={styles.pickerContainer}>
           {foodObj.alt_measures ? (
@@ -253,13 +263,7 @@ const FoodEditItem: React.FC<FoodEditItemProps> = ({
           numberOfLines={1}
           ellipsizeMode="tail">
           {' '}
-          {nfCalories
-            ? Math.round(nfCalories)
-            : Math.round(
-                full_nutrients?.filter(
-                  (item: NutrientProps) => item.attr_id === 208,
-                )[0].value,
-              )}
+          {calories}
         </Text>
         <Text style={styles.cal}>cal</Text>
       </View>

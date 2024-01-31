@@ -557,7 +557,10 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                   <View style={styles.content}>
                     <RadioButton
                       selected={!isSingleFood}
-                      onPress={() => setIsSingleFood(false)}
+                      onPress={() => {
+                        setErrorMessage('');
+                        setIsSingleFood(false)
+                      }}
                       text="Multiple Foods"
                     />
                     <TooltipView

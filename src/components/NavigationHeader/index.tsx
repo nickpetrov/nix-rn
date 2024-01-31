@@ -114,7 +114,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
           />
           {searchValue.length > 0 && (
             <View style={styles.closeBtn}>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
+              <TouchableOpacity onPress={() => searchAutocomplete('')}>
                 <FontAwesome name="close" color="#000" size={13} />
               </TouchableOpacity>
             </View>
