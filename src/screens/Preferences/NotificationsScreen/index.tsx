@@ -2,7 +2,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 
 // components
-import {View, Text, Switch, Platform, SafeAreaView} from 'react-native';
+import {View, Text, Switch, Platform, SafeAreaView, PermissionsAndroid} from 'react-native';
 
 // helpres
 import scheduleNotification from 'helpers/scheduleNotification';
@@ -44,8 +44,14 @@ export const NotificationsScreen: React.FC = () => {
           }
         },
       );
-    } else {
-      scheduleNotification(weekDay, weekEnd);
+    } else if (Platform.OS === 'android') {
+      PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION).then(permission => {
+        if(permission) {
+          scheduleNotification(weekDay, weekEnd);
+        } else {
+          PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION)
+        }
+      })
     }
   }, []);
 
