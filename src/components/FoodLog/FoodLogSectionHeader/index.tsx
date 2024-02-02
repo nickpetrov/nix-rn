@@ -97,7 +97,7 @@ const FoodLogSectionHeader: React.FC<FoodLogSectionHeaderProps> = ({
                   alignItems: 'center',
                 },
               }}
-              disabled={!!clientId}
+              disabled={!!clientId || !foods?.length}
               onPress={() => {
                 if (foods?.length) {
                   navigation.navigate(Routes.Totals, {

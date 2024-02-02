@@ -501,6 +501,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
                   listKey="rootFoodList"
                   keyboardShouldPersistTaps="always"
                   showsVerticalScrollIndicator={false}
+                  stickySectionHeadersEnabled={false}
                   sections={
                     searchQuery.length > 0 ? sections : suggestedSection
                   }
@@ -610,7 +611,6 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
                             No matching food found
                           </Text>
                         )}
-
                         {searchQuery &&
                         ((!autocompleteView.additionToLimit &&
                           currentTab !== searchSections.ALL &&
@@ -623,7 +623,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
                                 autocompleteView.commonLimit) ||
                             (currentTab === searchSections.BRANDED &&
                               autocompleteFoods.branded.length >
-                                autocompleteView.commonLimit))) ||
+                                10))) ||
                           (autocompleteFoods.branded.length &&
                             autocompleteView.brandedLimit +
                               autocompleteView.additionToLimit <

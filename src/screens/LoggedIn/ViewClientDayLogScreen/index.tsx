@@ -198,6 +198,7 @@ const ViewClientDayLogScreen: React.FC<ViewClientDayLogScreenProps> = ({
       <SectionList
         listKey="rootFoodList"
         sections={sections}
+        stickySectionHeadersEnabled={false}
         keyExtractor={(item: any, index: number) => `${item.id}-${index}`}
         ListHeaderComponent={() => (
           <>
