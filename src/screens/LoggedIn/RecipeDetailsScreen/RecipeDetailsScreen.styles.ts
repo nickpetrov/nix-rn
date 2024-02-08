@@ -212,7 +212,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     left: 20,
-    minWidth: 50
+    minWidth: 50,
   },
   saveBtn: {
     backgroundColor: Colors.Primary,

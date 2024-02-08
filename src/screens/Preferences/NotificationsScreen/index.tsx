@@ -8,7 +8,7 @@ import {
   Switch,
   Platform,
   SafeAreaView,
-  PermissionsAndroid
+  PermissionsAndroid,
 } from 'react-native';
 
 // helpres

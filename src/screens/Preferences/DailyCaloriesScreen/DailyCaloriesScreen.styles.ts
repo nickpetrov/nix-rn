@@ -151,4 +151,35 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 5,
   },
+  flex1: {
+    flex: 1,
+  },
+  textBold: {
+    fontWeight: 'bold',
+  },
+  initValueTextStyle: {
+    fontSize: 14,
+    color: '#000',
+    textAlign: 'left',
+  },
+  optionTextStyle: {
+    fontSize: 16,
+    color: '#000',
+  },
+  selectedItemTextStyle: {
+    fontSize: 16,
+    color: Colors.Info,
+    fontWeight: '500',
+  },
+  textRight: {
+    textAlign: 'right'
+  },
+  ageInputStyle: {
+    borderBottomWidth: 0
+  },
+  recommendedKcalBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  }
 });

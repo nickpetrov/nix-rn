@@ -4,7 +4,6 @@ import moment from 'moment-timezone';
 
 // components
 import {
-  View,
   SectionList,
   RefreshControl,
   TouchableOpacity,

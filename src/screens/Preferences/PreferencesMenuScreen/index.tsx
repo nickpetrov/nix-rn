@@ -52,7 +52,7 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
         }}>
         <View style={[styles.menuItem, styles.menuItemRow]}>
           <Text>Daily Calorie Preferences</Text>
-          {!!daily_kcal &&  
+          {!!daily_kcal &&   
             <View style={styles.cal}>
               <Text style={styles.calText}>{daily_kcal}</Text>
             </View>

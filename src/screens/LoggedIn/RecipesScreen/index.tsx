@@ -106,7 +106,7 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
     useCallback(() => {
       setShowSavedRecipeMessage(!!route?.params?.showSavedRecipeMessage);
     }, [route?.params?.showSavedRecipeMessage])
-  )
+  );
 
   useEffect(() => {
     if (showSavedRecipeMessage) {

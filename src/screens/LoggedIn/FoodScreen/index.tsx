@@ -13,7 +13,6 @@ import {Easing} from 'react-native-reanimated';
 import {Platform} from 'react-native';
 
 // helpers
-import {defaultOption} from 'helpers/nutrionixLabel';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
 import {calculateConsumedTimestamp} from 'helpers/foodLogHelpers';
 
