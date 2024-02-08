@@ -3,7 +3,7 @@ import React from 'react';
 import {getVersion, getBuildNumber} from 'react-native-device-info';
 
 // components
-import {View, Text, TouchableWithoutFeedback, SafeAreaView} from 'react-native';
+import {View, Text, TouchableWithoutFeedback} from 'react-native';
 
 // hooks
 import {useSelector} from 'hooks/useRedux';
@@ -52,7 +52,7 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
         }}>
         <View style={[styles.menuItem, styles.menuItemRow]}>
           <Text>Daily Calorie Preferences</Text>
-          {!!daily_kcal && 
+          {!!daily_kcal &&  
             <View style={styles.cal}>
               <Text style={styles.calText}>{daily_kcal}</Text>
             </View>
