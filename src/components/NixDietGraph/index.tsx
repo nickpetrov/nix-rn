@@ -23,6 +23,7 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './NixDietGraph.styles';
+import LoadIndicator from 'components/LoadIndicator';
 
 interface NixDietGraphProps {
   initialDisplayDate: string;
@@ -37,6 +38,7 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
   const [currentDate, setCurrentDate] = useState(
     moment(props.initialDisplayDate).format('YYYY-MM-DD'),
   );
+  const [isLoading, setIsLoading] = useState(false);
   const allDates = useSelector(state => state.stats.dates);
 
   const [trackedDays, setTrackedDays] = useState(0);
@@ -94,12 +96,15 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
   );
 
   useEffect(() => {
+    setIsLoading(true);
     dispatch(
       getDayTotals(
         moment(currentDate).startOf('month').format('YYYY-MM-DD'),
         moment(currentDate).endOf('month').format('YYYY-MM-DD'),
       ),
     )
+    .then(() => setIsLoading(false))
+    .catch(() => setIsLoading(false));
   }, [dispatch, currentDate]);
 
   useEffect(() => {
@@ -185,54 +190,59 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{title}</Text>
         </View>
-        <Calendar
-          initialDate={props.initialDisplayDate}
-          onMonthChange={month => {
-            setCurrentDate(month.dateString);
-          }}
-          monthFormat={'yyyy MM'}
-          hideExtraDays={true}
-          enableSwipeMonths={true}
-          markingType={'custom'}
-          markedDates={markedDates}
-          dayComponent={({date, marking}) => {
-            return (
-              <TouchableOpacity
-              style={{
-                width: 32,
-                height: 32,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: marking
-                ? marking.customStyles?.container?.backgroundColor
-                : colorsArray[0]}}
-                onPress={() => {
-                  if (date?.dateString) {
-                    dispatch(changeSelectedDay(date?.dateString));
-                    props.navigation.navigate(Routes.Dashboard);
-                  }
-                }}>
-                <Text>
-                  {date?.day}
+        {isLoading ? 
+          <View style={styles.loadingCalendar}>
+            <LoadIndicator color='green' /> 
+          </View>
+        : 
+          <Calendar
+            initialDate={props.initialDisplayDate}
+            onMonthChange={month => {
+              setCurrentDate(month.dateString);
+            }}
+            monthFormat={'yyyy MM'}
+            hideExtraDays={true}
+            enableSwipeMonths={true}
+            markingType={'custom'}
+            markedDates={markedDates}
+            dayComponent={({date, marking}) => {
+              return (
+                <TouchableOpacity
+                style={{
+                  width: 32,
+                  height: 32,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: marking
+                  ? marking.customStyles?.container?.backgroundColor
+                  : colorsArray[0]}}
+                  onPress={() => {
+                    if (date?.dateString) {
+                      dispatch(changeSelectedDay(date?.dateString));
+                      props.navigation.navigate(Routes.Dashboard);
+                    }
+                  }}>
+                  <Text>
+                    {date?.day}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }}
+            renderArrow={direction => {
+              return direction === 'left' ? (
+                <FontAwesome name="chevron-left" style={styles.iconStyle} />
+              ) : (
+                <FontAwesome name="chevron-right" style={styles.iconStyle} />
+              );
+            }}
+            renderHeader={() => {
+              return (
+                <Text style={styles.text}>
+                  {moment(currentDate).format('MMMM, YYYY')}
                 </Text>
-              </TouchableOpacity>
-            );
-          }}
-          renderArrow={direction => {
-            return direction === 'left' ? (
-              <FontAwesome name="chevron-left" style={styles.iconStyle} />
-            ) : (
-              <FontAwesome name="chevron-right" style={styles.iconStyle} />
-            );
-          }}
-          renderHeader={() => {
-            return (
-              <Text style={styles.text}>
-                {moment(currentDate).format('MMMM, YYYY')}
-              </Text>
-            );
-          }}
-        />
+              );
+            }}
+          />}
         <View style={styles.colorMarkers}>
           {colorsArray.slice(1, 7).map(item => (
             <View

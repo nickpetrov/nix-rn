@@ -101,4 +101,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 10,
   },
+  loadingCalendar: {
+    height: 300,
+  }
 });
