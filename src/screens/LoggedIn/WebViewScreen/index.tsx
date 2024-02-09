@@ -3,7 +3,7 @@ import React, {useLayoutEffect} from 'react';
 
 // components
 import WebView from 'react-native-webview';
-import {SafeAreaView, StatusBar, TouchableOpacity, View} from 'react-native';
+import {SafeAreaView, TouchableOpacity, View} from 'react-native';
 import BasketButton from 'components/BasketButton';
 import {NavigationHeader} from 'components/NavigationHeader';
 import Ionicon from 'react-native-vector-icons/Ionicons';
