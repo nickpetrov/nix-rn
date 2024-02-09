@@ -99,7 +99,7 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         moment(currentDate).startOf('month').format('YYYY-MM-DD'),
         moment(currentDate).endOf('month').format('YYYY-MM-DD'),
       ),
-    );
+    )
   }, [dispatch, currentDate]);
 
   useEffect(() => {

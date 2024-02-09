@@ -28,8 +28,8 @@ export const styles = StyleSheet.create({
     borderRadius: 9,
   },
   mealTitleIcon: {
-    marginTop: -1,
-    marginLeft: 1,
+    paddingTop: -1,
+    paddingLeft: 1
   },
   mealDetailsWrapper: {
     justifyContent: 'flex-end',

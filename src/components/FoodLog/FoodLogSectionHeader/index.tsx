@@ -70,7 +70,7 @@ const FoodLogSectionHeader: React.FC<FoodLogSectionHeaderProps> = ({
         <TouchableOpacity
           style={{
             ...styles.increasedTouchableArea,
-            ...{flex: 1, flexDirection: 'row', alignItems: 'center'},
+            ...{flex: 1, flexDirection: 'row', alignItems: 'center',},
           }}
           disabled={!!clientId}
           onPress={onPress}>

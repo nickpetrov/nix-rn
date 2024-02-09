@@ -1,5 +1,5 @@
 // utils
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 // componetns
 import {View, ScrollView} from 'react-native';
@@ -8,7 +8,7 @@ import NixDietGraph from 'components/NixDietGraph';
 import {WeightGraph} from 'components/WeightGraph';
 
 // hooks
-import {useDispatch} from 'hooks/useRedux';
+import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // actions
 import {clearStats} from 'store/stats/stats.actions';
@@ -44,13 +44,13 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({
     <>
       <ScrollView style={styles.layout} contentContainerStyle={styles.content} overScrollMode="never">
         <View style={styles.flex1}>
-          <NixDietGraph
-            title="Food Logging Calendar"
-            initialDisplayDate={selectedDate}
-            navigation={navigation}
-          />
+            <NixDietGraph
+              title="Food Logging Calendar"
+              initialDisplayDate={selectedDate}
+              navigation={navigation}
+            />
 
-          <WeightGraph />
+            <WeightGraph />
         </View>
       </ScrollView>
       <Footer hide={false} navigation={navigation} />

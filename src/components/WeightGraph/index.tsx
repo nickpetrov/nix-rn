@@ -1,5 +1,5 @@
 // utils
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import moment from 'moment-timezone';
 import _ from 'lodash';
 
