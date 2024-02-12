@@ -648,15 +648,13 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                   <Text>Recommended Calorie Values</Text>
                 </View>
                 <View style={styles.panelBody}>
-                  <View
-                    style={styles.recommendedKcalBlock}>
+                  <View style={styles.recommendedKcalBlock}>
                     <Text style={styles.recommendedKcal}>
                       {getRecommendedCalories(values)}
                     </Text>
                     <Text>Maintain Current Weight</Text>
                   </View>
-                  <View
-                    style={styles.recommendedKcalBlock}>
+                  <View style={styles.recommendedKcalBlock}>
                     <Text style={styles.recommendedKcal}>
                       {getRecommendedCalories(values) - 500}
                     </Text>

@@ -114,7 +114,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     left: 20,
-    minWidth: 50
+    minWidth: 50,
   },
   saveBtn: {
     backgroundColor: Colors.Primary,
@@ -172,14 +172,14 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
   },
   textRight: {
-    textAlign: 'right'
+    textAlign: 'right',
   },
   ageInputStyle: {
-    borderBottomWidth: 0
+    borderBottomWidth: 0,
   },
   recommendedKcalBlock: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-  }
+  },
 });
