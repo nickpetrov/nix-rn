@@ -1,5 +1,5 @@
 // utils
-import React, {useState, useEffect, useLayoutEffect} from 'react';
+import React, {useState, useEffect, useLayoutEffect, useCallback} from 'react';
 import {FullOptions, Searcher} from 'fast-fuzzy';
 import moment from 'moment-timezone';
 
@@ -7,7 +7,7 @@ import moment from 'moment-timezone';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 
 // components
-import {View, Text, TouchableOpacity, Keyboard} from 'react-native';
+import {View, Text, TouchableOpacity, Keyboard, SafeAreaView} from 'react-native';
 import {FlatList, TextInput, Swipeable} from 'react-native-gesture-handler';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {NavigationHeader} from 'components/NavigationHeader';
@@ -34,7 +34,7 @@ import {
 } from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {FoodProps} from 'store/userLog/userLog.types';
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useFocusEffect} from '@react-navigation/native';
 
 // styles
 import {styles} from './CustomFoodsScreen.styles';
@@ -62,9 +62,11 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
     useState<Searcher<FoodProps, FullOptions<FoodProps>>>();
   let rowRefs = new Map<string, Swipeable>();
 
-  useEffect(() => {
-    setShowSavedFoodMessage(!!route?.params?.showSavedFoodMessage);
-  }, [route?.params?.showSavedFoodMessage]);
+  useFocusEffect(
+    useCallback(() => {
+      setShowSavedFoodMessage(!!route?.params?.showSavedFoodMessage);
+    }, [route?.params?.showSavedFoodMessage])
+  )
 
   useEffect(() => {
     if (showSavedFoodMessage) {
@@ -146,7 +148,7 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
   };
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
       <TextInput
         placeholder="Search custom foods"
         style={styles.inputQuery}
@@ -216,6 +218,6 @@ export const CustomFoodsScreen: React.FC<CustomFoodsScreenProps> = ({
           </Swipeable>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 };

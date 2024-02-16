@@ -2,7 +2,14 @@
 import React, {useEffect, useState, useCallback} from 'react';
 
 // components
-import {View, Text, Switch, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  Switch,
+  Platform,
+  SafeAreaView,
+  PermissionsAndroid,
+} from 'react-native';
 
 // helpres
 import scheduleNotification from 'helpers/scheduleNotification';
@@ -44,8 +51,14 @@ export const NotificationsScreen: React.FC = () => {
           }
         },
       );
-    } else {
-      scheduleNotification(weekDay, weekEnd);
+    } else if (Platform.OS === 'android') {
+      PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION).then(permission => {
+        if (permission) {
+          scheduleNotification(weekDay, weekEnd);
+        } else {
+          PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION);
+        }
+      });
     }
   }, []);
 
@@ -65,7 +78,7 @@ export const NotificationsScreen: React.FC = () => {
   }, [weekend, weekday, changeHandler, dispatch]);
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
       <View style={styles.item}>
         <View style={styles.left}>
           <Text style={styles.title}>Weekday Push Notifications</Text>
@@ -104,6 +117,6 @@ export const NotificationsScreen: React.FC = () => {
           />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };

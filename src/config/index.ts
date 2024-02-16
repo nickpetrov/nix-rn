@@ -1,7 +1,7 @@
 import moment from 'moment-timezone';
 import RNFS from 'react-native-fs';
 
-export const CLIENT_API_BASE_URL = 'https://trackapi.nutritionix.com/v2/';
+export const CLIENT_API_BASE_URL = 'https://trackapi-qa.nutritionix.com/v2/';
 
 export const grocery_photo_upload = {
   max_photo_width: 1600,

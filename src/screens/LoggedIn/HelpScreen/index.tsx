@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
   Image,
+  Platform,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -30,6 +31,8 @@ interface HelpScreenProps {
 
 export const HelpScreen: React.FC<HelpScreenProps> = ({navigation}) => {
   const [walkPopup, setWalkPopup] = useStateWithCallback(false);
+
+  const isIos = Platform.OS === 'ios';
 
   React.useEffect(
     () =>
@@ -97,6 +100,7 @@ export const HelpScreen: React.FC<HelpScreenProps> = ({navigation}) => {
             onPress={() => {
               navigation.navigate(Routes.WebView, {
                 url: 'https://nutritionix.helpsite.com/',
+                title: isIos ? 'FAQ' : undefined
               });
             }}>
             <View style={styles.menuItem}>
@@ -111,6 +115,7 @@ export const HelpScreen: React.FC<HelpScreenProps> = ({navigation}) => {
               onPress={() => {
                 navigation.navigate(Routes.WebView, {
                   url: 'https://www.nutritionix.com/terms',
+                  title: isIos ? 'Terms and Conditions' : undefined
                 });
               }}>
               <Text style={styles.text}>Terms and Conditions</Text>
@@ -119,6 +124,7 @@ export const HelpScreen: React.FC<HelpScreenProps> = ({navigation}) => {
               onPress={() => {
                 navigation.navigate(Routes.WebView, {
                   url: 'https://www.nutritionix.com/privacy',
+                  title: isIos ? 'Privacy Policy' : undefined
                 });
               }}>
               <Text style={{...styles.text}}>Privacy Policy</Text>

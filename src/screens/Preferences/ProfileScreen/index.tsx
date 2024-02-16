@@ -12,6 +12,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Formik, FormikProps} from 'formik';
@@ -52,7 +53,6 @@ import {User} from 'store/auth/auth.types';
 // validation
 import {validationSchema} from './validation';
 import {replaceRegexForNumber} from 'helpers/index';
-import {Colors} from 'constants/Colors';
 
 interface ProfileScreenProps {
   navigation: NativeStackNavigationProp<
@@ -320,7 +320,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   };
 
   return (
-    <>
+    <SafeAreaView style={styles.root}>
       <Formik
         initialValues={FormikInitValues}
         innerRef={formRef}
@@ -339,7 +339,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           errors,
         }) => {
           return (
-            <View style={{flex: 1}}>
+            <View style={styles.flex1}>
               <KeyboardAwareScrollView
                 contentContainerStyle={styles.root}
                 keyboardShouldPersistTaps="handled"
@@ -386,20 +386,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                     setFieldValue('timezone', option.value);
                     // setTimezone(option.value);
                   }}
-                  initValueTextStyle={{
-                    fontSize: 14,
-                    color: '#000',
-                    textAlign: 'left',
-                  }}
-                  optionTextStyle={{
-                    fontSize: 16,
-                    color: '#000',
-                  }}
-                  selectedItemTextStyle={{
-                    fontSize: 16,
-                    color: Colors.Info,
-                    fontWeight: '500',
-                  }}
+                  initValueTextStyle={styles.initValueTextStyle}
+                  optionTextStyle={styles.optionTextStyle}
+                  selectedItemTextStyle={styles.selectedItemTextStyle}
                   listType="SCROLLVIEW"
                   keyExtractor={(item: {label: string; value: string}) =>
                     item.value
@@ -407,7 +396,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   <NixInput
                     selectTextOnFocus
                     label="Time Zone"
-                    style={{textAlign: 'right'}}
+                    style={styles.textRight}
                     labelContainerStyle={styles.labelContainerStyle}
                     value={values.timezone}
                     onChangeText={handleChange('timezone')}
@@ -431,20 +420,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                       value: 0,
                     },
                   ]}
-                  initValueTextStyle={{
-                    fontSize: 14,
-                    color: '#000',
-                    textAlign: 'left',
-                  }}
-                  optionTextStyle={{
-                    fontSize: 16,
-                    color: '#000',
-                  }}
-                  selectedItemTextStyle={{
-                    fontSize: 16,
-                    color: Colors.Info,
-                    fontWeight: '500',
-                  }}
+                  initValueTextStyle={styles.initValueTextStyle}
+                  optionTextStyle={styles.optionTextStyle}
+                  selectedItemTextStyle={styles.selectedItemTextStyle}
                   initValue={
                     values.measure_system === 1 ? 'Metric' : 'Imperial (US)'
                   }
@@ -460,7 +438,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   }>
                   <NixInput
                     label="Measure system"
-                    style={{textAlign: 'right'}}
+                    style={styles.textRight}
                     labelContainerStyle={styles.labelContainerStyle}
                     value={
                       values.measure_system === 1 ? 'Metric' : 'Imperial (US)'
@@ -709,7 +687,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 <KeyboardAvoidingView
                   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                   keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
-                  contentContainerStyle={{flex: 1}}
+                  contentContainerStyle={styles.flex1}
                   style={styles.saveBtnContainer}>
                   <TouchableOpacity
                     style={styles.saveBtn}
@@ -753,7 +731,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             },
           },
         ]}>
-        <View style={{marginBottom: 10}}>
+        <View style={styles.mb10}>
           <Text style={styles.modalLabel}>Old Email</Text>
           <TextInput
             placeholder="Old Email"
@@ -803,6 +781,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       </ChooseModal>
 
       {loadingSubmit && <LoadIndicator withShadow />}
-    </>
+    </SafeAreaView>
   );
 };

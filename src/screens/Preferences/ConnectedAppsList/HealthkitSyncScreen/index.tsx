@@ -211,19 +211,9 @@ export const HealthkitSyncScreen: React.FC = () => {
             key: 'off',
           },
         ]}
-        initValueTextStyle={{
-          fontSize: 16,
-          color: '#000',
-        }}
-        optionTextStyle={{
-          fontSize: 16,
-          color: '#000',
-        }}
-        selectedItemTextStyle={{
-          fontSize: 16,
-          color: Colors.Info,
-          fontWeight: '500',
-        }}
+        initValueTextStyle={styles.initValueTextStyle}
+        optionTextStyle={styles.initValueTextStyle}
+        selectedItemTextStyle={styles.selectedItemTextStyle}
         style={{marginBottom: 10}}
         initValue={
           syncOptions.nutrition.charAt(0).toUpperCase() +

@@ -60,4 +60,13 @@ export const styles = StyleSheet.create({
   mt20: {
     marginTop: 20,
   },
+  initValueTextStyle: {
+    fontSize: 16,
+    color: '#000',
+  },
+  selectedItemTextStyle: {
+    fontSize: 16,
+    color: Colors.Info,
+    fontWeight: '500',
+  }
 });

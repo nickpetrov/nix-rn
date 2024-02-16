@@ -14,6 +14,7 @@ import {
   Linking,
   TouchableOpacity,
   TouchableHighlight,
+  SafeAreaView,
 } from 'react-native';
 import {NixButton} from 'components/NixButton';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -337,6 +338,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
   }
 
   return (
+    <SafeAreaView style={styles.root}>
     <ScrollView style={styles.root}>
       {!premium_user && (
         <View>
@@ -475,6 +477,7 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
         </View>
       )}
     </ScrollView>
+    </SafeAreaView>
   );
 };
 

@@ -1,5 +1,5 @@
 // utils
-import React, {useState, useEffect, useLayoutEffect} from 'react';
+import React, {useState, useEffect, useLayoutEffect, useCallback} from 'react';
 import {FullOptions, Searcher} from 'fast-fuzzy';
 import _ from 'lodash';
 import moment from 'moment-timezone';
@@ -12,7 +12,7 @@ import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import {useDispatch, useSelector} from 'hooks/useRedux';
 
 // components
-import {View, Text, Keyboard} from 'react-native';
+import {View, Text, Keyboard, SafeAreaView} from 'react-native';
 import {
   FlatList,
   Swipeable,
@@ -48,7 +48,7 @@ import {
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useFocusEffect} from '@react-navigation/native';
 
 interface RecipesScreenProps {
   navigation: NativeStackNavigationProp<
@@ -102,9 +102,11 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
     });
   }, [navigation]);
 
-  useEffect(() => {
-    setShowSavedRecipeMessage(!!route?.params?.showSavedRecipeMessage);
-  }, [route?.params?.showSavedRecipeMessage]);
+  useFocusEffect(
+    useCallback(() => {
+      setShowSavedRecipeMessage(!!route?.params?.showSavedRecipeMessage);
+    }, [route?.params?.showSavedRecipeMessage])
+  );
 
   useEffect(() => {
     if (showSavedRecipeMessage) {
@@ -246,7 +248,7 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
   };
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
       <TextInput
         placeholder="Search my recipes"
         style={styles.inputQuery}
@@ -372,6 +374,6 @@ export const RecipesScreen: React.FC<RecipesScreenProps> = ({
           />
         </>
       </ChooseModal>
-    </View>
+    </SafeAreaView>
   );
 };

@@ -39,10 +39,12 @@ apiClient.interceptors.response.use(
     return response;
   },
   async function (error) {
-    Sentry.captureException(error.response, scope => {
-      scope.setTag('nix_api_response', 'error');
-      return scope;
-    });
+    if(!(error.config.url === 'search/item' || error.config.url === 'natural/nutrients')) {
+      Sentry.captureException(error.response, scope => {
+        scope.setTag('nix_api_response', 'error');
+        return scope;
+      });
+    }
     if (error?.response) {
       throw error?.response;
     } else {

@@ -55,7 +55,6 @@ import {User} from 'store/auth/auth.types';
 // validation
 import {validationSchema} from './validation';
 import {replaceRegexForNumber} from 'helpers/index';
-import {Colors} from 'constants/Colors';
 
 interface DailyCaloriesScreenProps {
   navigation: NativeStackNavigationProp<
@@ -342,20 +341,9 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                     value: 0,
                   },
                 ]}
-                initValueTextStyle={{
-                  fontSize: 14,
-                  color: '#000',
-                  textAlign: 'left',
-                }}
-                optionTextStyle={{
-                  fontSize: 16,
-                  color: '#000',
-                }}
-                selectedItemTextStyle={{
-                  fontSize: 16,
-                  color: Colors.Info,
-                  fontWeight: '500',
-                }}
+                initValueTextStyle={styles.initValueTextStyle}
+                optionTextStyle={styles.optionTextStyle}
+                selectedItemTextStyle={styles.selectedItemTextStyle}
                 initValue={
                   values.measure_system === 1 ? 'Metric' : 'Imperial(US)'
                 }
@@ -371,7 +359,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                 }>
                 <NixInput
                   label="Units"
-                  style={{textAlign: 'right'}}
+                  style={styles.textRight}
                   labelContainerStyle={styles.labelContainerStyle}
                   value={
                     values.measure_system === 1 ? 'Metric' : 'Imperial(US)'
@@ -399,20 +387,9 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                       value: 'female',
                     },
                   ]}
-                  initValueTextStyle={{
-                    fontSize: 14,
-                    color: '#000',
-                    textAlign: 'left',
-                  }}
-                  optionTextStyle={{
-                    fontSize: 16,
-                    color: '#000',
-                  }}
-                  selectedItemTextStyle={{
-                    fontSize: 16,
-                    color: Colors.Info,
-                    fontWeight: '500',
-                  }}
+                  initValueTextStyle={styles.initValueTextStyle}
+                  optionTextStyle={styles.optionTextStyle}
+                  selectedItemTextStyle={styles.selectedItemTextStyle}
                   initValue={values.gender === 'male' ? 'Male' : 'Female'}
                   onChange={option => {
                     setFieldValue('gender', option.value);
@@ -424,7 +401,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                   <View>
                     <NixInput
                       label="Sex"
-                      style={{textAlign: 'right'}}
+                      style={styles.textRight}
                       labelContainerStyle={styles.labelContainerStyle}
                       value={values.gender === 'male' ? 'Male' : 'Female'}
                       onChangeText={handleChange('gender')}
@@ -638,7 +615,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
               <NixInput
                 selectTextOnFocus
                 label="Age"
-                rootStyles={{borderBottomWidth: 0}}
+                rootStyles={styles.ageInputStyle}
                 labelContainerStyle={styles.labelContainerStyleFull}
                 style={styles.input}
                 value={values.age || ''}
@@ -671,23 +648,13 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
                   <Text>Recommended Calorie Values</Text>
                 </View>
                 <View style={styles.panelBody}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginBottom: 10,
-                    }}>
+                  <View style={styles.recommendedKcalBlock}>
                     <Text style={styles.recommendedKcal}>
                       {getRecommendedCalories(values)}
                     </Text>
                     <Text>Maintain Current Weight</Text>
                   </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginBottom: 10,
-                    }}>
+                  <View style={styles.recommendedKcalBlock}>
                     <Text style={styles.recommendedKcal}>
                       {getRecommendedCalories(values) - 500}
                     </Text>
@@ -737,7 +704,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
             )}
             <View style={styles.disclaimer}>
               <Text style={styles.disclaimerText}>
-                <Text style={{fontWeight: 'bold'}}>Disclaimer: </Text>
+                <Text style={styles.textBold}>Disclaimer: </Text>
                 This information is for use in adults defined as individuals 18
                 years of age or older and not by younger people, or pregnant or
                 breastfeeding women.This information is not intended to provide
@@ -775,7 +742,7 @@ export const DailyCaloriesScreen: React.FC<DailyCaloriesScreenProps> = ({
             <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
               keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
-              contentContainerStyle={{flex: 1}}
+              contentContainerStyle={styles.flex1}
               style={styles.saveBtnContainer}>
               <TouchableOpacity
                 style={styles.saveBtn}

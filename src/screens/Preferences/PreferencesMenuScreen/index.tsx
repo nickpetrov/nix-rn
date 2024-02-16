@@ -3,7 +3,7 @@ import React from 'react';
 import {getVersion, getBuildNumber} from 'react-native-device-info';
 
 // components
-import {View, Text, TouchableWithoutFeedback, SafeAreaView} from 'react-native';
+import {View, Text, TouchableWithoutFeedback} from 'react-native';
 
 // hooks
 import {useSelector} from 'hooks/useRedux';
@@ -17,6 +17,7 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './PreferencesMenuScreen.styles';
+import Footer from 'components/Footer';
 
 interface PreferencesMenuScreenProps {
   navigation: NativeStackNavigationProp<
@@ -35,7 +36,8 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
   const appVersion = getVersion();
   const buildNumber = getBuildNumber();
   return (
-    <SafeAreaView style={styles.root}>
+    <>
+    <View style={styles.root}>
       <TouchableWithoutFeedback
         onPress={() => {
           navigation.navigate(Routes.Profile);
@@ -50,7 +52,11 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
         }}>
         <View style={[styles.menuItem, styles.menuItemRow]}>
           <Text>Daily Calorie Preferences</Text>
-          {!!daily_kcal && <Text style={styles.cal}>{daily_kcal}</Text>}
+          {!!daily_kcal &&   
+            <View style={styles.cal}>
+              <Text style={styles.calText}>{daily_kcal}</Text>
+            </View>
+          }
         </View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
@@ -90,6 +96,8 @@ export const PreferencesMenuScreen: React.FC<PreferencesMenuScreenProps> = ({
       <Text style={styles.version}>
         Version: {appVersion}({buildNumber})
       </Text>
-    </SafeAreaView>
+    </View>
+    <Footer hide={false} navigation={navigation} />
+    </>
   );
 };

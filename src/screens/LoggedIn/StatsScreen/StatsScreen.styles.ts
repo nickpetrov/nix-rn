@@ -4,10 +4,9 @@ export const styles = StyleSheet.create({
   layout: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 10,
   },
   content: {
-    flex: 1,
+    padding: 10
   },
   flex1: {
     flex: 1,

@@ -80,8 +80,7 @@ export const styles = StyleSheet.create({
     color: Colors.Primary,
   },
   alertBtn: {
-    alignSelf: 'center',
-    paddingHorizontal: 15,
+    marginHorizontal: 25,
   },
   subscribeNow: {
     paddingTop: 85,

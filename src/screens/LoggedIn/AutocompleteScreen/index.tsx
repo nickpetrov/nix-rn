@@ -7,7 +7,7 @@ import {useDebounce} from 'use-debounce';
 import {addGramsToAltMeasures} from 'helpers/nixApiDataUtilites/nixApiDataUtilites';
 
 // components
-import {View, Text, TouchableWithoutFeedback, SectionList} from 'react-native';
+import {View, Text, TouchableWithoutFeedback, SectionList, SafeAreaView} from 'react-native';
 import BasketButton from 'components/BasketButton';
 import MealListItem from 'components/FoodLog//MealListItem';
 import {NavigationHeader} from 'components/NavigationHeader';
@@ -448,7 +448,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
   };
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
       {netInfo.isConnected ? (
         <>
           {loading ? (
@@ -501,6 +501,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
                   listKey="rootFoodList"
                   keyboardShouldPersistTaps="always"
                   showsVerticalScrollIndicator={false}
+                  stickySectionHeadersEnabled={false}
                   sections={
                     searchQuery.length > 0 ? sections : suggestedSection
                   }
@@ -610,7 +611,6 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
                             No matching food found
                           </Text>
                         )}
-
                         {searchQuery &&
                         ((!autocompleteView.additionToLimit &&
                           currentTab !== searchSections.ALL &&
@@ -623,7 +623,7 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
                                 autocompleteView.commonLimit) ||
                             (currentTab === searchSections.BRANDED &&
                               autocompleteFoods.branded.length >
-                                autocompleteView.commonLimit))) ||
+                                10))) ||
                           (autocompleteFoods.branded.length &&
                             autocompleteView.brandedLimit +
                               autocompleteView.additionToLimit <
@@ -721,6 +721,6 @@ export const AutocompleteScreen: React.FC<AutocompleteScreenProps> = ({
           },
         ]}
       />
-    </View>
+    </SafeAreaView>
   );
 };

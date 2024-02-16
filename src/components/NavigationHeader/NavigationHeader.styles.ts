@@ -2,6 +2,9 @@ import {Colors} from 'constants/Colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  statusBar: {
+    backgroundColor: Colors.Primary,
+  },
   header: {
     width: '100%',
     height: 50,
@@ -23,12 +26,12 @@ export const styles = StyleSheet.create({
     padding: 5,
     flex: 1,
     borderRadius: 4,
-    height: 30,
+    minHeight: 30,
+    maxHeight: 40
   },
   barcodeInAutocomplete: {
-    position: 'absolute',
     right: 0,
-    top: -5,
+    alignSelf: 'center'
   },
   closeBtn: {
     position: 'absolute',

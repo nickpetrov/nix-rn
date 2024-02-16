@@ -90,6 +90,7 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   backBtn: {
+    minWidth: 65,
     flex: 1,
     backgroundColor: Colors.BgGray,
     paddingVertical: 5,
@@ -97,10 +98,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 4,
-  },
-  backBtnText: {
-    flex: 1,
-    width: '100%',
   },
   backBtnIcon: {
     fontSize: 20,

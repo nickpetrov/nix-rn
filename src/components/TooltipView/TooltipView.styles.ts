@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   btn: {
-    height: 30,
+    height: 'auto',
     marginHorizontal: 5,
   },
   tooltip: {
@@ -31,5 +31,6 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     height: 'auto',
+    overflow: 'hidden'
   },
 });

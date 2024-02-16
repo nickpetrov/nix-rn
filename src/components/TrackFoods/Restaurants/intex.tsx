@@ -333,6 +333,7 @@ const Restaurants: React.FC<RestaurantsComponentProps> = ({navigation}) => {
               }
               data={filteredRestaurantsList}
               extraData={searchValue}
+              stickySectionHeadersEnabled={false}
               renderSectionHeader={({section}) => {
                 if (section.data.length) {
                   if (section.key === RestorantTypes.RESTORANTS_WITH_CALC) {

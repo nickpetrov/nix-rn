@@ -1,7 +1,6 @@
 import {useState, useEffect, SetStateAction} from 'react';
 
 import {FoodProps} from 'store/userLog/userLog.types';
-import {createFoodLabelData} from 'helpers/filters';
 import {filterFoodToLabel} from 'helpers/filters/foodToLabelFilter';
 import {filterNutrient, sumFoods} from 'helpers/filters';
 

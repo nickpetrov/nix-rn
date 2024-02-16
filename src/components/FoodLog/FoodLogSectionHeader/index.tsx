@@ -70,7 +70,7 @@ const FoodLogSectionHeader: React.FC<FoodLogSectionHeaderProps> = ({
         <TouchableOpacity
           style={{
             ...styles.increasedTouchableArea,
-            ...{flex: 1, flexDirection: 'row', alignItems: 'center'},
+            ...{flex: 1, flexDirection: 'row', alignItems: 'center',},
           }}
           disabled={!!clientId}
           onPress={onPress}>
@@ -97,7 +97,7 @@ const FoodLogSectionHeader: React.FC<FoodLogSectionHeaderProps> = ({
                   alignItems: 'center',
                 },
               }}
-              disabled={!!clientId}
+              disabled={!!clientId || !foods?.length}
               onPress={() => {
                 if (foods?.length) {
                   navigation.navigate(Routes.Totals, {

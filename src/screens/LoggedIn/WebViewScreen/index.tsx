@@ -3,7 +3,7 @@ import React, {useLayoutEffect} from 'react';
 
 // components
 import WebView from 'react-native-webview';
-import {SafeAreaView, TouchableOpacity} from 'react-native';
+import {SafeAreaView, TouchableOpacity, View} from 'react-native';
 import BasketButton from 'components/BasketButton';
 import {NavigationHeader} from 'components/NavigationHeader';
 import Ionicon from 'react-native-vector-icons/Ionicons';
@@ -32,6 +32,7 @@ interface WebViewScreenProps {
 }
 
 const WebViewScreen: React.FC<WebViewScreenProps> = ({route, navigation}) => {
+  const SafeView = route.params?.title ? View : SafeAreaView;
   useLayoutEffect(() => {
     if (route.params.title) {
       navigation.setOptions({
@@ -59,7 +60,7 @@ const WebViewScreen: React.FC<WebViewScreenProps> = ({route, navigation}) => {
     }
   }, [navigation, route.params.title]);
   return (
-    <SafeAreaView style={styles.root}>
+    <SafeView style={styles.root}>
       <WebView
         style={styles.webView}
         source={{uri: route.params.url}}
@@ -70,7 +71,7 @@ const WebViewScreen: React.FC<WebViewScreenProps> = ({route, navigation}) => {
       {route.params.withFooter && (
         <Footer hide={false} navigation={navigation} withMealBuilder />
       )}
-    </SafeAreaView>
+    </SafeView>
   );
 };
 

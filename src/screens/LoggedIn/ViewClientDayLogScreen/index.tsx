@@ -4,10 +4,10 @@ import moment from 'moment-timezone';
 
 // components
 import {
-  View,
   SectionList,
   RefreshControl,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import FoodLogSectionHeader from 'components/FoodLog/FoodLogSectionHeader';
 import EmptyListItem from 'components/FoodLog/EmptyListItem';
@@ -193,10 +193,11 @@ const ViewClientDayLogScreen: React.FC<ViewClientDayLogScreenProps> = ({
   };
 
   return (
-    <View style={styles.layout}>
+    <SafeAreaView style={styles.layout}>
       <SectionList
         listKey="rootFoodList"
         sections={sections}
+        stickySectionHeadersEnabled={false}
         keyExtractor={(item: any, index: number) => `${item.id}-${index}`}
         ListHeaderComponent={() => (
           <>
@@ -309,7 +310,7 @@ const ViewClientDayLogScreen: React.FC<ViewClientDayLogScreenProps> = ({
         }
         ListFooterComponentStyle={styles.listFooterComponent}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

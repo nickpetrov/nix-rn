@@ -557,7 +557,10 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                   <View style={styles.content}>
                     <RadioButton
                       selected={!isSingleFood}
-                      onPress={() => setIsSingleFood(false)}
+                      onPress={() => {
+                        setErrorMessage('');
+                        setIsSingleFood(false)
+                      }}
                       text="Multiple Foods"
                     />
                     <TooltipView
@@ -768,11 +771,9 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
                   ? 'Log 1 Food'
                   : `Log ${foods.length} Foods`
               }
-              onPressIn={() => {
-                Keyboard.dismiss();
-                setLoadingSubmit(true);
-              }}
+              onPressIn={() => Keyboard.dismiss()}
               onPress={() => {
+                setLoadingSubmit(true);
                 setTimeout(() => {
                   handleSubmit();
                 }, 300);

@@ -2,7 +2,7 @@
 import React from 'react';
 
 // components
-import {View, Text, Switch} from 'react-native';
+import {View, Text, Switch, SafeAreaView} from 'react-native';
 
 // config
 import {grocery_photo_upload} from 'config/index';
@@ -29,7 +29,7 @@ export const GroceryAgentSettingsScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
       <View style={styles.item}>
         <View style={styles.left}>
           <Text style={styles.title}>Volunteer to submit new photos</Text>
@@ -48,6 +48,6 @@ export const GroceryAgentSettingsScreen: React.FC = () => {
           />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };

@@ -23,20 +23,15 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     marginRight: 3,
   },
+  header: {
+    backgroundColor: Colors.Primary,
+  },
   track: {
-    position: 'absolute',
     flexDirection: 'row',
-    top: 0,
-    left: 0,
-    right: 0,
     backgroundColor: Colors.Primary,
     height: 50,
     width: '100%',
-    paddingTop: 0,
     justifyContent: 'center',
-  },
-  scrollView: {
-    marginTop: 50,
   },
   trackText: {
     alignSelf: 'center',

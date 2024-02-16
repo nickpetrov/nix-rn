@@ -13,6 +13,7 @@ import {
   Image,
   TouchableOpacity,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import Scanner from 'components/Scanner';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -177,7 +178,7 @@ const GroceryAgentModeScreen: React.FC<GroceryAgentModeScreenProps> = ({
   };
 
   return (
-    <>
+    <SafeAreaView style={styles.root}>
       {activeScan ? (
         <View style={styles.scanContainer}>
           {isFocused && (
@@ -307,7 +308,7 @@ const GroceryAgentModeScreen: React.FC<GroceryAgentModeScreenProps> = ({
           )}
         </ScrollView>
       )}
-    </>
+    </SafeAreaView>
   );
 };
 

@@ -12,6 +12,7 @@ import {
   Share,
   TextInput,
   TouchableHighlight,
+  SafeAreaView,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixButton} from 'components/NixButton';
@@ -114,6 +115,7 @@ const CoachPortalScreen: React.FC<CoachPortalScreenProps> = ({navigation}) => {
   };
 
   return (
+    <SafeAreaView style={styles.root}>
     <ScrollView style={styles.root}>
       <View style={styles.bar}>
         <TouchableWithoutFeedback onPress={copyToClipboard}>
@@ -184,6 +186,7 @@ const CoachPortalScreen: React.FC<CoachPortalScreenProps> = ({navigation}) => {
         </View>
       )}
     </ScrollView>
+    </SafeAreaView>
   );
 };
 

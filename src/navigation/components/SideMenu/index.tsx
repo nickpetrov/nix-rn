@@ -7,7 +7,6 @@ import {getVersion} from 'react-native-device-info';
 // components
 import {
   View,
-  SafeAreaView,
   Text,
   Platform,
   TouchableWithoutFeedback,
@@ -18,6 +17,7 @@ import {
 import {WithLocalSvg} from 'react-native-svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {NixButton} from 'components/NixButton';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // hooks
 import {useSelector} from 'hooks/useRedux';
@@ -32,6 +32,7 @@ import {styles} from './SideMenu.styles';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 
 export const SideMenu: React.FC = () => {
+  const {top, bottom} = useSafeAreaInsets();
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
   const coach = useSelector(state => state.auth.userData.coach);
   const userGroceyAgentInfo = useSelector(
@@ -192,11 +193,13 @@ export const SideMenu: React.FC = () => {
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={styles.track}>
-        <Text style={styles.trackText}>Track {appVersion}</Text>
+    <View style={{flex: 1, paddingBottom: bottom}}>
+      <View style={{paddingTop: top, ...styles.header}}>
+        <View style={styles.track}>
+          <Text style={styles.trackText}>Track {appVersion}</Text>
+        </View>
       </View>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView>
         {/* Need to manually add items to the sidedrawer */}
         {menuItems.map((item, index) => {
           if (item.hide) {
@@ -284,6 +287,6 @@ export const SideMenu: React.FC = () => {
           </TouchableWithoutFeedback>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
