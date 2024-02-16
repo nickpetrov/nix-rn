@@ -31,4 +31,31 @@ export const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 1,
   },
+  zoom: {
+    // position: 'absolute',
+    bottom: '30%',
+    flexDirection: 'row',
+    backgroundColor: '#999',
+    borderRadius: 20,
+    opacity: 0.9,
+    zIndex: 3,
+    alignSelf: 'center',
+    maxWidth: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  zoomButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    marginHorizontal: 8,
+    marginVertical: 5
+  },
+  activeZoomButton: {
+    width: 40,
+    height: 40,
+  }
 });

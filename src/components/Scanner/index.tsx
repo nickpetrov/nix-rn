@@ -2,9 +2,10 @@
 import React, {useRef, useCallback, useState, useEffect} from 'react';
 
 import 'react-native-reanimated';
+import {first} from 'lodash';
 
 // components
-import {Camera, PhotoFile, useCameraDevices} from 'react-native-vision-camera';
+import {Camera, PhotoFile, PhysicalCameraDeviceType, useCameraDevices} from 'react-native-vision-camera';
 import {
   View,
   Linking,
@@ -12,6 +13,7 @@ import {
   Image,
   Platform,
   Text,
+  Pressable,
 } from 'react-native';
 import {Svg, Defs, Rect, Mask} from 'react-native-svg';
 import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
@@ -41,12 +43,22 @@ const Scanner: React.FC<ScannerProps> = ({
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation<any>();
-  const devices = useCameraDevices();
-  const device = devices.back;
+  
   const camera = useRef<Camera>(null);
   const [hasPermission, setHasPermission] = useState(false);
   const [barcode, setBarcode] = useState<string | null>(null);
   const [picture, setPicture] = useState<PhotoFile | null>(null);
+  const [deviceType, setDeviceType] = useState<PhysicalCameraDeviceType>(); 
+  
+  const devices = useCameraDevices(deviceType as PhysicalCameraDeviceType);
+  const device = devices.back;
+
+  const handleChangeLens = (type: PhysicalCameraDeviceType) => {
+    if(!device?.devices.includes(type)) {
+      return
+    }
+    setDeviceType(type)
+  }
 
   const [frameProcessor, barcodes] = useScanBarcodes(
     [BarcodeFormat.ALL_FORMATS],
@@ -118,6 +130,16 @@ const Scanner: React.FC<ScannerProps> = ({
     return <ActivityIndicator />;
   }
 
+  const lensSize = (type: PhysicalCameraDeviceType) => {
+    if (type === 'telephoto-camera') {
+      return 2
+    }
+    if (type === 'ultra-wide-angle-camera') {
+      return 0.5
+    }
+      return 1
+  }
+
   return (
     <>
       <Camera
@@ -144,6 +166,17 @@ const Scanner: React.FC<ScannerProps> = ({
             mask="url(#mask)"
           />
         </Svg>
+        {device.devices?.length > 1 && <View style={styles.zoom}>
+          {device.devices.map(cameraType => (
+              <Pressable
+              key={cameraType}
+              style={[styles.zoomButton, deviceType === cameraType && styles.activeZoomButton]}
+              onPress={() => handleChangeLens(cameraType)}
+            >
+              <Text>{lensSize(cameraType)}</Text>
+            </Pressable>
+          ))}
+        </View>}
       </View>
       {picture && withPreView && (
         <Image
