@@ -6,17 +6,11 @@ import {
   View,
   ScrollView,
   Button,
-  ActivityIndicator,
   Image,
   Platform,
   SafeAreaView,
 } from 'react-native';
-import {
-  useCameraDevices,
-  Camera,
-  CameraRuntimeError,
-  CameraCaptureError,
-} from 'react-native-vision-camera';
+import { Camera, CameraType } from 'react-native-camera-kit';
 
 // styles
 import {styles} from './CameraScreen.styles';
@@ -25,10 +19,11 @@ import {styles} from './CameraScreen.styles';
 import {Routes} from 'navigation/Routes';
 
 // types
-import {PictureProps} from 'screens/LoggedIn/PhotoUploadScreen/index';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackNavigatorParamList} from 'navigation/navigation.types';
 import {RouteProp} from '@react-navigation/native';
+import { IPhoto } from 'components/Scanner';
+
 
 interface CameraScreenProps {
   navigation: NativeStackNavigationProp<StackNavigatorParamList, Routes.Camera>;
@@ -40,47 +35,35 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
   route,
 }) => {
   const [isActive, setActive] = useState(true);
-  const [takenPicture, setTakenPicture] = useState<PictureProps | null>(null);
-  const devices = useCameraDevices();
-  const device = devices.back;
+  const [takenPicture, setTakenPicture] = useState<IPhoto | null>(null);
   const camera = useRef<Camera>(null);
 
   const tryAgainHandler = () => {
     setTakenPicture(null);
   };
 
-  const takePictureHandler = async () => {
-    try {
-      const photo = await camera.current?.takePhoto({
-        qualityPrioritization: 'quality',
-        flash: 'on',
-        enableAutoRedEyeReduction: true,
-      });
-      if (photo?.path) {
-        setTakenPicture(photo);
-      }
-    } catch (e) {
-      if (e instanceof CameraCaptureError) {
-        switch (e.code) {
-          case 'capture/file-io-error':
-            console.error('Failed to write photo to disk!');
-            break;
-          default:
-            console.error(e);
-            break;
+  const takePhoto = async () => {    
+    const photo = await camera.current?.capture();
+
+    if (photo?.uri) {
+      setTakenPicture((prev: IPhoto | null) => {
+        if (!prev) {
+          return photo;
+        } else {
+          return prev;
         }
-      }
+      });
     }
   };
 
-  const onError = useCallback((error: CameraRuntimeError) => {
+  const onError = useCallback((error: any) => {
     console.error(error);
   }, []);
 
   const usePictureHandler = () => {
     setTakenPicture(null);
     navigation.navigate(Routes.PhotoUpload, {
-      picture: takenPicture,
+      picture: takenPicture as any,
       barcode: route.params?.barcode,
       picType: route.params?.picType,
     });
@@ -92,10 +75,6 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
     });
     return unsubscribe;
   }, [navigation]);
-
-  if (device == null) {
-    return <ActivityIndicator />;
-  }
 
   return (
     <SafeAreaView style={styles.cameraPopupWrapper}>
@@ -112,29 +91,30 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({
             source={{
               uri:
                 Platform.OS === 'ios'
-                  ? takenPicture?.path
-                  : `file://${takenPicture?.path}`,
+                  ? takenPicture?.uri
+                  : `file://${takenPicture?.uri}`,
             }}
             resizeMode="contain"
           />
         ) : (
           <Camera
-            style={styles.camera}
-            ref={camera}
-            onError={onError}
-            photo={true}
-            device={device}
-            isActive={isActive}
-          />
+          style={{flex :1}}
+          ref={camera}
+          cameraType={CameraType.Back} // front/back(default)
+          flashMode='auto'
+          isActive={isActive}
+          onError={onError}
+          photo={true}
+        />
         )}
         <View>
-          {takenPicture?.path ? (
+          {takenPicture?.uri ? (
             <View>
               <Button title="Re-Take" onPress={tryAgainHandler} />
               <Button title="Use Picture" onPress={usePictureHandler} />
             </View>
           ) : (
-            <Button title="Take picture" onPress={takePictureHandler} />
+            <Button title="Take picture" onPress={takePhoto} />
           )}
         </View>
       </ScrollView>

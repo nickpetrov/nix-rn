@@ -2,10 +2,9 @@
 import React, {useRef, useCallback, useState, useEffect} from 'react';
 
 import 'react-native-reanimated';
-import {first} from 'lodash';
 
 // components
-import {Camera, PhotoFile, PhysicalCameraDeviceType, useCameraDevices} from 'react-native-vision-camera';
+import { Camera, CameraType } from 'react-native-camera-kit';
 import {
   View,
   Linking,
@@ -13,10 +12,12 @@ import {
   Image,
   Platform,
   Text,
-  Pressable,
+  Vibration,
 } from 'react-native';
 import {Svg, Defs, Rect, Mask} from 'react-native-svg';
-import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
+
+// helpers
+import requestCameraPermission from 'helpers/cameraPermision';
 
 // hooks
 import {useNavigation} from '@react-navigation/native';
@@ -27,12 +28,19 @@ import {setInfoMessage} from 'store/base/base.actions';
 
 // styles
 import {styles} from './Scanner.styles';
+import { PictureProps } from 'screens/LoggedIn/PhotoUploadScreen';
 
 interface ScannerProps {
   callBack: (newBarcode: string) => void;
   from?: string;
   withPreView?: boolean;
   isFocused: boolean;
+}
+
+export interface IPhoto {
+  name: string;
+  size: number;
+  uri: string;
 }
 
 const Scanner: React.FC<ScannerProps> = ({
@@ -45,32 +53,15 @@ const Scanner: React.FC<ScannerProps> = ({
   const navigation = useNavigation<any>();
   
   const camera = useRef<Camera>(null);
-  const [hasPermission, setHasPermission] = useState(false);
+  const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [barcode, setBarcode] = useState<string | null>(null);
-  const [picture, setPicture] = useState<PhotoFile | null>(null);
-  const [deviceType, setDeviceType] = useState<PhysicalCameraDeviceType>(); 
-  
-  const devices = useCameraDevices(deviceType as PhysicalCameraDeviceType);
-  const device = devices.back;
+  const [picture, setPicture] = useState<IPhoto | null>(null);
 
-  const handleChangeLens = (type: PhysicalCameraDeviceType) => {
-    if(!device?.devices.includes(type)) {
-      return
-    }
-    setDeviceType(type)
-  }
+  const takePhoto = async () => {    
+    const photo = await camera.current?.capture();
 
-  const [frameProcessor, barcodes] = useScanBarcodes(
-    [BarcodeFormat.ALL_FORMATS],
-    {
-      checkInverted: true,
-    },
-  );
-
-  const takePhoto = async () => {
-    const photo = await camera.current?.takePhoto();
-    if (photo?.path) {
-      setPicture((prev: PhotoFile | null) => {
+    if (photo?.uri) {
+      setPicture((prev: IPhoto | null) => {
         if (!prev) {
           return photo;
         } else {
@@ -81,76 +72,65 @@ const Scanner: React.FC<ScannerProps> = ({
   };
 
   const requestPermission = useCallback(async () => {
-    const status = await Camera.requestCameraPermission();
-    if (status === 'denied') {
+    const status = await requestCameraPermission();
+    if(!status) {
       await Linking.openSettings();
     }
-    setHasPermission(status === 'authorized');
+    setHasPermission(!!status);
   }, []);
 
   useEffect(() => {
     requestPermission();
   }, [requestPermission]);
 
-  useEffect(() => {
-    setBarcode(prev => {
-      if (!prev && barcodes.length) {
-        if (
-          barcodes[0].format !== BarcodeFormat.QR_CODE ||
-          barcodes[0].rawValue?.includes('nutritionix.com')
-        ) {
-          if (withPreView) {
-            takePhoto();
-          }
-        } else {
-          if (from) {
-            navigation.navigate(from);
-          }
-          dispatch(
-            setInfoMessage({
-              title: 'Error',
-              text: 'We scanned an unrecognized QR code, if you are trying to scan a food product barcode, please try to avoid scanning the QR code near the barcode and try scanning this product again',
-              btnText: 'Ok',
-            }),
-          );
-        }
-        if (barcodes[0].rawValue) {
-          callBack(barcodes[0].rawValue);
-          return barcodes[0].rawValue;
-        } else {
-          return prev;
+  const handleBarcodeScanner = useCallback((event: any) => {
+    const code = event.nativeEvent.codeStringValue;
+   
+    if(!code) {
+      return
+    }
+
+    Vibration.vibrate(100);
+    setBarcode(code);
+
+    if (code?.includes('nutritionix.com') || !isNaN(parseFloat(code))) {
+      if (withPreView) {
+          takePhoto();
         }
       } else {
-        return prev;
+        if (from) {
+          navigation.navigate(from);
+        }
+        dispatch(
+          setInfoMessage({
+            title: 'Error',
+            text: 'We scanned an unrecognized QR code, if you are trying to scan a food product barcode, please try to avoid scanning the QR code near the barcode and try scanning this product again',
+            btnText: 'Ok',
+          }),
+        );
       }
-    });
-  }, [barcodes, dispatch, navigation, callBack, from, withPreView]);
+    
+      if (code) {
+        callBack(code);
+        return;
+      }
+  }, [dispatch, navigation, callBack, from, withPreView])
 
-  if (device == null || !hasPermission || !isFocused) {
+  if (!hasPermission || !isFocused || barcode) {
     return <ActivityIndicator />;
-  }
-
-  const lensSize = (type: PhysicalCameraDeviceType) => {
-    if (type === 'telephoto-camera') {
-      return 2
-    }
-    if (type === 'ultra-wide-angle-camera') {
-      return 0.5
-    }
-      return 1
   }
 
   return (
     <>
-      <Camera
-        ref={camera}
-        style={styles.camera}
-        device={device}
-        isActive={isFocused && !barcode}
-        frameProcessor={frameProcessor}
-        frameProcessorFps={5}
-        photo={true}
-      />
+    <Camera
+      style={{flex :1}}
+      ref={camera}
+      cameraType={CameraType.Back}
+      flashMode='auto'
+      scanBarcode={isFocused && !barcode}
+      onReadCode={handleBarcodeScanner} 
+      showFrame={false}
+    />
       <View style={styles.qrCodeContainer}>
         <Svg height="100%" width="100%">
           <Defs>
@@ -166,24 +146,13 @@ const Scanner: React.FC<ScannerProps> = ({
             mask="url(#mask)"
           />
         </Svg>
-        {device.devices?.length > 1 && <View style={styles.zoom}>
-          {device.devices.map(cameraType => (
-              <Pressable
-              key={cameraType}
-              style={[styles.zoomButton, deviceType === cameraType && styles.activeZoomButton]}
-              onPress={() => handleChangeLens(cameraType)}
-            >
-              <Text>{lensSize(cameraType)}</Text>
-            </Pressable>
-          ))}
-        </View>}
       </View>
       {picture && withPreView && (
         <Image
           style={styles.snapshot}
           source={{
             uri:
-              Platform.OS === 'ios' ? picture?.path : `file://${picture?.path}`,
+              Platform.OS === 'ios' ? picture?.uri : `file://${picture?.uri}`,
           }}
           resizeMode="contain"
         />
