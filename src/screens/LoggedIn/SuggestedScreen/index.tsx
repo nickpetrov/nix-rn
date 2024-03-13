@@ -43,8 +43,13 @@ export const SuggestedScreen: React.FC<SuggestedScreenProps> = ({
   }, [dispatch]);
 
   const handlePress = useCallback(async (url: string) => {
-    console.log(url);
-    await Linking.openURL(url);
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.log(`Don't know how to open this URL: ${url}`);
+    }
   }, []);
 
   return (

@@ -1,5 +1,5 @@
 // utils
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 
 // components
 import {Formik, Field} from 'formik';
@@ -184,6 +184,16 @@ const CompleteRegistration: React.FC<Props> = ({navigation}) => {
     }
   };
 
+  const handleLink = useCallback(async (url: string) => {
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.log(`Don't know how to open this URL: ${url}`);
+    }
+  }, [])
+
   return (
     <KeyboardAwareScrollView
       enableOnAndroid={true}
@@ -317,21 +327,15 @@ const CompleteRegistration: React.FC<Props> = ({navigation}) => {
                           I agree to Nutritionix Track{' '}
                           <Text
                             style={styles.link}
-                            onPress={() =>
-                              Linking.openURL(
-                                'https://www.nutritionix.com/terms',
-                              )
-                            }>
+                            onPress={() => handleLink('https://www.nutritionix.com/terms')}
+                          >
                             Terms of Service
                           </Text>{' '}
                           and{' '}
                           <Text
                             style={styles.link}
-                            onPress={() =>
-                              Linking.openURL(
-                                'https://www.nutritionix.com/privacy',
-                              )
-                            }>
+                            onPress={() => handleLink('https://www.nutritionix.com/privacy')}
+                          >
                             Privacy Policy
                           </Text>
                         </Text>

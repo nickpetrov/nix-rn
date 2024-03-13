@@ -314,13 +314,15 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
     }
   };
 
-  const openTOS = () => {
-    Linking.openURL('https://www.nutritionix.com/terms');
-  };
+  const handleLink = useCallback(async (url: string) => {
+    const supported = await Linking.canOpenURL(url);
 
-  const openPrivacy = () => {
-    Linking.openURL('https://www.nutritionix.com/privacy');
-  };
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.log(`Don't know how to open this URL: ${url}`);
+    }
+  }, [])
 
   const unsubscribeFromPro = () => {
     dispatch(updateUserData({premium_user: 0}))
@@ -417,13 +419,17 @@ const SubscribeScreen: React.FC<SubscribeScreenProps> = ({navigation}) => {
                 ? 'If you choose to purchase a subscription, payment will be charged to your iTunes account, and your account will be charged within 24-hours prior to the end of the 2-month trial period. Auto-renewal may be turned off at any time by going to your settings in the iTunes store after purchase.'
                 : 'If you choose to purchase a subscription, payment will be charged to your Google Play account, and your account will be charged within 24-hours prior to the end of the 2-month trial period. Auto-renewal may be turned off at any time by going to your subscription settings in the Google Play Store app. '}{' '}
               For more information, please visit our{' '}
-              <Text style={styles.subscribeDescriptionLink} onPress={openTOS}>
+              <Text
+                style={styles.subscribeDescriptionLink}
+                onPress={() => handleLink('https://www.nutritionix.com/terms')}
+              >
                 terms of service
               </Text>{' '}
               and{' '}
               <Text
                 style={styles.subscribeDescriptionLink}
-                onPress={openPrivacy}>
+                onPress={() => handleLink('https://www.nutritionix.com/privacy')}
+              >
                 {' '}
                 Privacy Policy{' '}
               </Text>

@@ -23,7 +23,6 @@ import {Routes} from 'navigation/Routes';
 
 // styles
 import {styles} from './NixDietGraph.styles';
-import LoadIndicator from 'components/LoadIndicator';
 
 interface NixDietGraphProps {
   initialDisplayDate: string;
@@ -190,13 +189,9 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{title}</Text>
         </View>
-        {isLoading ? 
-          <View style={styles.loadingCalendar}>
-            <LoadIndicator color='green' /> 
-          </View>
-        : 
           <Calendar
             initialDate={props.initialDisplayDate}
+            displayLoadingIndicator={isLoading}
             onMonthChange={month => {
               setCurrentDate(month.dateString);
             }}
@@ -242,7 +237,7 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
                 </Text>
               );
             }}
-          />}
+          />
         <View style={styles.colorMarkers}>
           {colorsArray.slice(1, 7).map(item => (
             <View

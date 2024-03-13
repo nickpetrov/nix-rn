@@ -1,5 +1,5 @@
 // utils
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import moment from 'moment-timezone';
 
 // components
@@ -122,6 +122,16 @@ const StepOneForm: React.FC<Props> = ({scrollToInput}) => {
       throw err;
     }
   }, []);
+
+  const handleLink = useCallback(async (url: string) => {
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.log(`Don't know how to open this URL: ${url}`);
+    }
+  }, [])
 
   return (
     <>
@@ -253,17 +263,13 @@ const StepOneForm: React.FC<Props> = ({scrollToInput}) => {
                       I agree to Nutritionix Track{' '}
                       <Text
                         style={styles.link}
-                        onPress={() =>
-                          Linking.openURL('https://www.nutritionix.com/terms')
-                        }>
+                        onPress={() => handleLink('https://www.nutritionix.com/terms')}>
                         Terms of Service
                       </Text>{' '}
                       and{' '}
                       <Text
                         style={styles.link}
-                        onPress={() =>
-                          Linking.openURL('https://www.nutritionix.com/privacy')
-                        }>
+                        onPress={() => handleLink('https://www.nutritionix.com/privacy')}>
                         Privacy Policy
                       </Text>
                     </Text>
