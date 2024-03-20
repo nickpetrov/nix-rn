@@ -71,7 +71,7 @@ const NixDietGraph: React.FC<NixDietGraphProps> = props => {
         case percent >= 107.5:
           color = colorsArray[5];
           break;
-        case percent >= 100:
+        case percent > 100:
           color = colorsArray[4];
           break;
         case percent >= 92.5:
