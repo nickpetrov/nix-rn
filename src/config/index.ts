@@ -11,7 +11,7 @@ export const grocery_photo_upload = {
     quantity: 3 as moment.DurationInputArg1,
     unit: 'months' as moment.unitOfTime.DurationConstructor,
   },
-  user_volunteering_multiplicator: 6,
+  user_volunteering_multiplicator: 3,
 };
 
 export const aws_config = {
