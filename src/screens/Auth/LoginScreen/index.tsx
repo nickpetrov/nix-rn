@@ -58,35 +58,36 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
 
   const fbLoginHandler = () => {
     const fbAuthFailureMessage = 'Authentication Failed';
-    LoginManager.logInWithPermissions(['public_profile', 'email']).then(
-      result => {
-        if (result.isCancelled) {
-          console.log('Login cancelled');
-        } else {
-          console.log(
-            'Login success with permissions: ' +
-              result.grantedPermissions?.toString(),
-          );
-          AccessToken.getCurrentAccessToken().then(data => {
-            setFbLoading(true);
-            console.log(data?.accessToken.toString());
-            dispatch(fbLogin(data?.accessToken.toString() || ''))
-              .then(() => setFbLoading(false))
-              .catch((err: Error) => {
-                setFbLoading(false);
-                // eslint-disable-next-line no-alert
-                alert(fbAuthFailureMessage);
-                console.log(err);
-              });
-          });
+
+    Promise.resolve()
+      .then(_ => {
+        // Log out just in case
+        return LoginManager.logOut();
+      })
+      // Login
+      .then(_ => LoginManager.logInWithPermissions(['public_profile', 'email']))
+      .then(result => {
+        if (result && !result.isCancelled) {
+          setFbLoading(true);
+          return AccessToken.getCurrentAccessToken();
         }
-      },
-      error => {
+        return;
+      })
+      .then(accessToken => {
+        if (!!accessToken && !!accessToken?.accessToken) {
+          return dispatch(fbLogin(accessToken?.accessToken.toString() || ''));
+        }
+        return;
+      })
+      .then(_ => {
+        setFbLoading(false);
+      })
+      .catch((error: Error) => {
+        setFbLoading(false);
         // eslint-disable-next-line no-alert
         alert(fbAuthFailureMessage);
         console.log('Login fail with error: ' + error);
-      },
-    );
+      });
   };
 
   const appleLoginHandler = async () => {
