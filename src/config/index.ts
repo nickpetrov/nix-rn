@@ -8,7 +8,7 @@ export const grocery_photo_upload = {
   max_photo_height: 1600,
   upc_list: 'http://d1gvlspmcma3iu.cloudfront.net/upc_list.json.gz',
   food_update_time: {
-    quantity: 24 as moment.DurationInputArg1,
+    quantity: 3 as moment.DurationInputArg1,
     unit: 'months' as moment.unitOfTime.DurationConstructor,
   },
   user_volunteering_multiplicator: 6,
