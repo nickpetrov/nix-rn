@@ -57,6 +57,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
 
   const fbLoginHandler = () => {
+    const fbAuthFailureMessage = 'Authentication Failed';
     LoginManager.logInWithPermissions(['public_profile', 'email']).then(
       result => {
         if (result.isCancelled) {
@@ -73,12 +74,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
               .then(() => setFbLoading(false))
               .catch((err: Error) => {
                 setFbLoading(false);
+                // eslint-disable-next-line no-alert
+                alert(fbAuthFailureMessage);
                 console.log(err);
               });
           });
         }
       },
       error => {
+        // eslint-disable-next-line no-alert
+        alert(fbAuthFailureMessage);
         console.log('Login fail with error: ' + error);
       },
     );
