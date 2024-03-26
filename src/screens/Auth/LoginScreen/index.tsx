@@ -1,5 +1,5 @@
 // utils
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {LoginManager, AccessToken} from 'react-native-fbsdk-next';
 import {
   appleAuth,
@@ -18,6 +18,7 @@ import {
   Linking,
 } from 'react-native';
 import {NixButton} from 'components/NixButton';
+import LoadIndicator from 'components/LoadIndicator';
 
 // hooks
 import {useDispatch} from 'hooks/useRedux';
@@ -39,6 +40,8 @@ interface LoginScreenProps {
 }
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
+  const [fbLoading, setFbLoading] = useState(false);
+
   useEffect(() => {
     return () => {
       if (appleAuth.isSupported) {
@@ -64,12 +67,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
               result.grantedPermissions?.toString(),
           );
           AccessToken.getCurrentAccessToken().then(data => {
+            setFbLoading(true);
             console.log(data?.accessToken.toString());
-            dispatch(fbLogin(data?.accessToken.toString() || '')).catch(
-              (err: Error) => {
+            dispatch(fbLogin(data?.accessToken.toString() || ''))
+              .then(() => setFbLoading(false))
+              .catch((err: Error) => {
+                setFbLoading(false);
                 console.log(err);
-              },
-            );
+              });
           });
         }
       },
@@ -173,6 +178,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           </View>
         </View>
       </ScrollView>
+      {fbLoading && <LoadIndicator withShadow />}
     </SafeAreaView>
   );
 };
