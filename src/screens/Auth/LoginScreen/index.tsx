@@ -25,6 +25,7 @@ import {useDispatch} from 'hooks/useRedux';
 
 // actions
 import {appleLogin, fbLogin} from 'store/auth/auth.actions';
+import {setInfoMessage} from 'store/base/base.actions';
 
 // constants
 import {Routes} from 'navigation/Routes';
@@ -84,8 +85,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
       })
       .catch((error: Error) => {
         setFbLoading(false);
-        // eslint-disable-next-line no-alert
-        alert(fbAuthFailureMessage);
+        dispatch(setInfoMessage({title: 'Error', text: fbAuthFailureMessage}));
         console.log('Login fail with error: ' + error);
       });
   };
@@ -168,6 +168,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           />
           <View style={styles.disclaimerWrapper}>
             <Text
+              // eslint-disable-next-line react-native/no-inline-styles
               style={{...styles.noteText, minWidth: 100, textAlign: 'center'}}>
               Need help?
             </Text>
