@@ -98,10 +98,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   let rowRefs = new Map<string | mealTypes, Swipeable>();
   const userData = useSelector(state => state.auth.userData);
   const uncompletedProfile =
-    !userData.weight_kg ||
-    !userData.height_cm ||
-    !userData.gender ||
-    !userData.birth_year;
+    !userData.weight_kg || !userData.height_cm || !userData.gender;
+  // !userData.birth_year;
   const consumedWater = totals.find(
     (item: TotalProps) => item.date === selectedDate,
   )?.water_consumed_liter;
@@ -503,7 +501,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     navigation.navigate(Routes.Totals, {
                       foods: foods.filter(
                         (item: FoodProps) =>
-                          moment.utc(item.consumed_at).tz(userData.timezone).format('YYYY-MM-DD') === selectedDate,
+                          moment
+                            .utc(item.consumed_at)
+                            .tz(userData.timezone)
+                            .format('YYYY-MM-DD') === selectedDate,
                       ),
                       type: 'daily',
                     })
@@ -514,23 +515,24 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </View>
                 </TouchableHighlight>
               )}
-              {section.key === foodLogSections.Exercise && uncompletedProfile && (
-                <View style={styles.summary}>
-                  <Text>
-                    Complete your profile{' '}
-                    <Text
-                      style={{color: Colors.Info}}
-                      onPress={() =>
-                        navigation.navigate(Routes.Preferences, {
-                          screen: Routes.Profile,
-                        })
-                      }>
-                      here
-                    </Text>{' '}
-                    for more accurate exercise tracking
-                  </Text>
-                </View>
-              )}
+              {section.key === foodLogSections.Exercise &&
+                uncompletedProfile && (
+                  <View style={styles.summary}>
+                    <Text>
+                      Complete your profile{' '}
+                      <Text
+                        style={{color: Colors.Info}}
+                        onPress={() =>
+                          navigation.navigate(Routes.Preferences, {
+                            screen: Routes.Profile,
+                          })
+                        }>
+                        here
+                      </Text>{' '}
+                      for more accurate exercise tracking
+                    </Text>
+                  </View>
+                )}
             </>
           );
         }}
