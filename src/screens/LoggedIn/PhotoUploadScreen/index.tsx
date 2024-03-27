@@ -40,6 +40,8 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {TouchableOpacity} from 'react-native';
 import {aws_config, grocery_photo_upload} from 'config/index';
 
+import * as Sentry from '@sentry/react-native';
+
 interface PhotoUploadScreenProps {
   navigation: NativeStackNavigationProp<
     StackNavigatorParamList,
@@ -100,37 +102,33 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
     setFrontPackagePicture(null);
     setNutritionPackagePicture(null);
     const infoMessage = new_product
-      ? 'We will have this product added to our database in the next three business days. To add a comparable food to your log right now, use the "Freeform" tab and enter the calories of the food, followed by a generic name of the food. Examples: 100 cal greek yogurt, 150 cal granola bar, 250 cal lean cuisine'
-      : 'We will have this product updated in our database in the next three business days.';
+      ? 'We will have this product added to our database. To add a comparable food to your log right now, use the "Freeform" tab and enter the calories of the food, followed by a generic name of the food. Examples: 100 cal greek yogurt, 150 cal granola bar, 250 cal lean cuisine'
+      : 'We will have this product updated in our database.';
     if (from) {
       navigation.navigate(from);
     } else {
       navigation.navigate(Routes.Dashboard);
     }
-    dispatch(setInfoMessage({title: infoMessage}));
+    dispatch(setInfoMessage({title: 'Thank you!', text: infoMessage}));
   };
 
   const uploadPhotos = async () => {
-    // const s3bucket = new AWS.S3({
-    //   params: {
-    //     accessKeyId: "AKIAICGAVNR5YBUYKE4A",
-    //     secretAccessKey: "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",
-    //     Bucket: 'nix-ios-upload',
-    //   }
-    // });
     const timestamp = new Date().getTime();
     const filename1 = `${barcode}-1-TRACK${userData.id}-${timestamp}.jpg`;
     const filename2 = `${barcode}-2-TRACK${userData.id}-${timestamp}.jpg`;
 
-    const blob1 = await fetch(frontPackagePicture?.uri || '').then(res => {
-      console.log(res);
-      return res.blob();
-    });
-    const blob2 = await fetch(nutritionPackagePicture?.uri || '').then(res => {
-      console.log(res);
-      return res.blob();
-    });
     try {
+      const blob1 = await fetch(frontPackagePicture?.uri || '').then(res => {
+        console.log(res);
+        return res.blob();
+      });
+      const blob2 = await fetch(nutritionPackagePicture?.uri || '').then(
+        res => {
+          console.log(res);
+          return res.blob();
+        },
+      );
+
       const params1 = {
         Key: filename1,
         Body: blob1,
@@ -141,34 +139,49 @@ export const PhotoUploadScreen: React.FC<PhotoUploadScreenProps> = ({
         Body: blob2,
         ContentType: 'image/jpeg',
       };
+
+      const uploadPromise1 = new Promise((resolve, reject) => {
+        uploadBucket.upload(params1, (err: any, data: any) => {
+          if (err) {
+            console.log('upload error: ', err);
+            reject(err);
+          } else {
+            console.log('upload success: ' + data.Location);
+            resolve(data);
+          }
+        });
+      });
+
+      const uploadPromise2 = new Promise((resolve, reject) => {
+        uploadBucket.upload(params2, (err: any, data: any) => {
+          if (err) {
+            console.log('upload error', err);
+            reject(err);
+          } else {
+            console.log('upload success: ' + data.Location);
+            resolve(data);
+          }
+        });
+      });
+
       setUploadInProgress1(true);
-      uploadBucket.upload(params1, (err: any, data: any) => {
-        if (err) {
-          console.log('error in callback', err);
-          setUploadInProgress1(false);
-          throw err;
-        }
-        setUploadInProgress1(false);
-        if (!uploadInProgress2) {
-          uploadFinished();
-        }
-        console.log('Response URL : ' + data.Location);
-      });
+      const uploadPromise1Result = await uploadPromise1;
+      console.log(' uploadPromise1Result', uploadPromise1Result);
+      setUploadInProgress1(false);
+
       setUploadInProgress2(true);
-      uploadBucket.upload(params2, (err: any, data: any) => {
-        if (err) {
-          console.log('error in callback', err);
-          setUploadInProgress2(false);
-          throw err;
-        }
-        setUploadInProgress2(false);
-        if (!uploadInProgress1) {
-          uploadFinished();
-        }
-        console.log('Response URL : ' + data.Location);
-      });
+      const uploadPromise2Result = await uploadPromise2;
+      console.log(' uploadPromise2Result', uploadPromise2Result);
+      setUploadInProgress2(false);
+
+      uploadFinished();
     } catch (err) {
       console.log(err);
+      Sentry.captureException(err, scope => {
+        scope.setTag('nix_photo_upload', 'error');
+        return scope;
+      });
+      uploadFinished();
     }
   };
 
