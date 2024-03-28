@@ -4,7 +4,7 @@ import React, {useRef, useCallback, useState, useEffect} from 'react';
 import 'react-native-reanimated';
 
 // components
-import { Camera, CameraType } from 'react-native-camera-kit';
+import {Camera, CameraType} from 'react-native-camera-kit';
 import {
   View,
   Linking,
@@ -28,7 +28,8 @@ import {setInfoMessage} from 'store/base/base.actions';
 
 // styles
 import {styles} from './Scanner.styles';
-import { PictureProps } from 'screens/LoggedIn/PhotoUploadScreen';
+import {PictureProps} from 'screens/LoggedIn/PhotoUploadScreen';
+import LoadIndicator from 'components/LoadIndicator';
 
 interface ScannerProps {
   callBack: (newBarcode: string) => void;
@@ -43,6 +44,12 @@ export interface IPhoto {
   uri: string;
 }
 
+interface IScannerEvent {
+  nativeEvent: {
+    codeStringValue: string;
+  };
+}
+
 const Scanner: React.FC<ScannerProps> = ({
   callBack,
   withPreView,
@@ -51,13 +58,13 @@ const Scanner: React.FC<ScannerProps> = ({
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation<any>();
-  
+
   const camera = useRef<Camera>(null);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [barcode, setBarcode] = useState<string | null>(null);
   const [picture, setPicture] = useState<IPhoto | null>(null);
 
-  const takePhoto = async () => {    
+  const takePhoto = async () => {
     const photo = await camera.current?.capture();
 
     if (photo?.uri) {
@@ -73,7 +80,7 @@ const Scanner: React.FC<ScannerProps> = ({
 
   const requestPermission = useCallback(async () => {
     const status = await requestCameraPermission();
-    if(!status) {
+    if (!status) {
       await Linking.openSettings();
     }
     setHasPermission(!!status);
@@ -83,54 +90,54 @@ const Scanner: React.FC<ScannerProps> = ({
     requestPermission();
   }, [requestPermission]);
 
-  const handleBarcodeScanner = useCallback((event: any) => {
-    const code = event.nativeEvent.codeStringValue;
-   
-    if(!code) {
-      return
-    }
-
-    Vibration.vibrate(100);
-    setBarcode(code);
-
-    if (code?.includes('nutritionix.com') || !isNaN(parseFloat(code))) {
-      if (withPreView) {
-          takePhoto();
-        }
-      } else {
-        if (from) {
-          navigation.navigate(from);
-        }
-        dispatch(
-          setInfoMessage({
-            title: 'Error',
-            text: 'We scanned an unrecognized QR code, if you are trying to scan a food product barcode, please try to avoid scanning the QR code near the barcode and try scanning this product again',
-            btnText: 'Ok',
-          }),
-        );
-      }
-    
-      if (code) {
-        callBack(code);
+  const handleBarcodeScanner = useCallback(
+    (event: IScannerEvent) => {
+      const code = event.nativeEvent.codeStringValue;
+      if (!code || barcode) {
         return;
       }
-  }, [dispatch, navigation, callBack, from, withPreView])
 
-  if (!hasPermission || !isFocused || barcode) {
+      Vibration.vibrate(100);
+      setBarcode(code);
+
+      if (!isNaN(parseFloat(code)) || code?.includes('nutritionix.com')) {
+        return callBack(code);
+      }
+      if (withPreView) {
+        return takePhoto();
+      }
+      if (from) {
+        navigation.navigate(from);
+      }
+
+      dispatch(
+        setInfoMessage({
+          title: 'Error',
+          text: 'We scanned an unrecognized QR code, if you are trying to scan a food product barcode, please try to avoid scanning the QR code near the barcode and try scanning this product again',
+          btnText: 'Ok',
+        }),
+      );
+    },
+    [dispatch, navigation, callBack, from, withPreView],
+  );
+
+  if (!hasPermission || !isFocused) {
     return <ActivityIndicator />;
   }
 
   return (
     <>
-    <Camera
-      style={{flex :1}}
-      ref={camera}
-      cameraType={CameraType.Back}
-      flashMode='auto'
-      scanBarcode={isFocused && !barcode}
-      onReadCode={handleBarcodeScanner} 
-      showFrame={false}
-    />
+      <Camera
+        style={{flex: 1}}
+        ref={camera}
+        cameraType={CameraType.Back}
+        flashMode="auto"
+        scanBarcode={isFocused && !barcode}
+        onReadCode={(event: IScannerEvent) =>
+          isFocused && !barcode ? handleBarcodeScanner(event) : null
+        }
+        showFrame={false}
+      />
       <View style={styles.qrCodeContainer}>
         <Svg height="100%" width="100%">
           <Defs>
@@ -162,6 +169,7 @@ const Scanner: React.FC<ScannerProps> = ({
           <Text style={styles.qrCodeTitle}>Please scan a barcode</Text>
         </View>
       )}
+      {barcode && <LoadIndicator withShadow />}
     </>
   );
 };

@@ -188,6 +188,15 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
       volunteer,
     ]);
 
+    useEffect(() => {
+      const t = setTimeout(() => {
+        setBarcode('');
+      }, 2000);
+      return () => {
+        clearTimeout(t);
+      };
+    }, [barcode]);
+
     const changeBarcodeCallback = useCallback((newBarcode: string) => {
       setTimeout(() => {
         setBarcode(prev => {
