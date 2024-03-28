@@ -3,7 +3,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import moment from 'moment-timezone';
 
 // components
-import {Text, View} from 'react-native';
+import {SafeAreaView, Text, View} from 'react-native';
 import Scanner from 'components/Scanner';
 
 // hooks
@@ -188,6 +188,15 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
       volunteer,
     ]);
 
+    useEffect(() => {
+      const t = setTimeout(() => {
+        setBarcode('');
+      }, 2000);
+      return () => {
+        clearTimeout(t);
+      };
+    }, [barcode]);
+
     const changeBarcodeCallback = useCallback((newBarcode: string) => {
       setTimeout(() => {
         setBarcode(prev => {
@@ -201,7 +210,7 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
     }, []);
 
     return (
-      <View style={styles.root}>
+      <SafeAreaView style={styles.root}>
         {isFocused && (
           <Scanner
             isFocused={isFocused}
@@ -216,6 +225,6 @@ export const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> =
             </Text>
           </View>
         )}
-      </View>
+      </SafeAreaView>
     );
   });

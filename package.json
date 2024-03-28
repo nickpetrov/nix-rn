@@ -50,6 +50,7 @@
     "react-native": "0.70.0",
     "react-native-bouncy-checkbox": "^3.0.4",
     "react-native-calendars": "^1.1294.0",
+    "react-native-camera-kit": "^13.0.0",
     "react-native-chart-kit": "^6.12.0",
     "react-native-config": "^1.4.11",
     "react-native-country-picker-modal": "^2.0.0",
