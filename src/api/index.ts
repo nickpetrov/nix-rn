@@ -39,7 +39,7 @@ apiClient.interceptors.response.use(
     return response;
   },
   async function (error) {
-    if(!(error.config.url.includes('search/item') || error.config.url.includes('natural/nutrients'))) {
+    if(!(error.config?.url?.includes('search/item') || error.config?.url?.includes('natural/nutrients'))) {
       Sentry.captureException(error.response, scope => {
         scope.setTag('nix_api_response', 'error');
         return scope;
