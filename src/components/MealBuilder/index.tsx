@@ -7,6 +7,9 @@ import nutritionixApiDataUtilities from 'nutritionix-api-data-utilities';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'hooks/useRedux';
 
+// helpers
+import getAttrValueById from 'helpers/getAttrValueById';
+
 // components
 import {TouchableWithoutFeedback, View, Text} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -36,11 +39,7 @@ const MealBuilder = () => {
       ),
     };
 
-    totalCalories +=
-      food.nf_calories ||
-      food?.full_nutrients?.filter(
-        (item: NutrientProps) => item.attr_id === 208,
-      )[0].value;
+    totalCalories += food.nf_calories ?? getAttrValueById(food.full_nutrients, 208);
   });
 
   useEffect(() => {

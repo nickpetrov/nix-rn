@@ -11,6 +11,7 @@ import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import requestCameraPermission from 'helpers/cameraPermision';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
 import {replaceRegexForNumber} from 'helpers/index';
+import getAttrValueById from 'helpers/getAttrValueById';
 
 // components
 import BasketButton from 'components/BasketButton';
@@ -135,15 +136,13 @@ export const BasketScreen: React.FC<BasketScreenProps> = ({
       ),
     };
 
-    totalCalories +=
-      food.nf_calories ||
-      food?.full_nutrients?.filter(
-        (item: NutrientProps) => item.attr_id === 208,
-      )[0].value;
+    totalCalories += food.nf_calories ?? getAttrValueById(food.full_nutrients, 208);
     totalProtein += food.nf_protein || 0;
     totalFat += food.nf_total_fat || 0;
     totalCarb += food.nf_total_carbohydrate || 0;
   });
+
+  console.log(foods.map(food => food.full_nutrients.filter(item => item.attr_id === 208)[0].value), '-=-=-==--==--==-=-')
 
   useLayoutEffect(() => {
     navigation.setOptions({

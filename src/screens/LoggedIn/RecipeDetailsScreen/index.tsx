@@ -71,6 +71,7 @@ import {multiply} from 'helpers/multiply';
 import {guessMealTypeByTime} from 'helpers/foodLogHelpers';
 import {analyticTrackEvent} from 'helpers/analytics.ts';
 import {replaceRegexForNumber} from 'helpers/index';
+import getAttrValueById from 'helpers/getAttrValueById';
 
 // styles
 import {styles} from './RecipeDetailsScreen.styles';
@@ -324,9 +325,7 @@ export const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({
         totalCalories += ingredient.nf_calories;
       } else {
         recipe.ingredients.forEach(item => {
-          totalCalories += item.full_nutrients.filter(
-            el => el.attr_id === 208,
-          )[0].value;
+          totalCalories += getAttrValueById(item.full_nutrients, 208)
         });
       }
     });

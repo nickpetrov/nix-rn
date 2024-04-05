@@ -79,7 +79,7 @@ const FoodLabel: React.FC<FoodLabelProps> = ({data}) => {
         const newLabel = {...prevLabelData};
         dataArray.forEach(item => {
           newLabel.totalCalories +=
-            item.nf_calories || getAttrValueById(item.full_nutrients, 208) || 0;
+            item.nf_calories ?? getAttrValueById(item.full_nutrients, 208);
           newLabel.totalFat +=
             item.nf_total_fat ||
             getAttrValueById(item.full_nutrients, 204) ||

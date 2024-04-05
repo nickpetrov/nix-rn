@@ -1,4 +1,4 @@
-import {NutrientProps} from 'store/userLog/userLog.types';
+import { NutrientProps } from 'store/userLog/userLog.types';
 
 const getAttrById = (full_nutrients: Array<NutrientProps>, attrId: number) => {
   if (typeof full_nutrients === 'undefined') {
